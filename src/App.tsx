@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { Beat, Note, NoteType, ReadMaimaiData } from './maireader';
 
-import tapSoundData from './resource/tap.wav';
-import musicData from './resource/40mP - だんだん早くなる.mp3';
-import { hold, holdBody, holdHead, holdShort, tap, tapBreak, tapEach, tapEx, tapSlide, tapSlideEx } from './resourceReader';
+import { hold, holdBody, holdHead, holdShort, music, tap, tapBreak, tapEach, tapEx, tapSlide, tapSlideEx } from './resourceReader';
 
 const sheetdata = `
 &title=sweet little sister
@@ -96,11 +94,6 @@ enum GameState {
   Stop,
   Finish,
 }
-
-const tapSound = new Audio(tapSoundData);
-tapSound.volume = 0.6;
-const music = new Audio(musicData);
-music.volume = 0.3;
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 

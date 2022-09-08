@@ -17,26 +17,31 @@ import holdShortIcon from './resource/img/short_hold.png';
 import tapSoundData from './resource/sound/tap.wav';
 import musicData from './resource/music/40mP - だんだん早くなる.mp3';
 
-export let tap = new Image();
+export const tap = new Image();
 tap.src = tapIcon;
-export let tapBreak = new Image();
+export const tapBreak = new Image();
 tapBreak.src = tapBreakIcon;
-export let tapEach = new Image();
+export const tapEach = new Image();
 tapEach.src = tapEachIcon;
-export let tapSlide = new Image();
+export const tapSlide = new Image();
 tapSlide.src = tapSlideIcon;
-export let tapEx = new Image();
+export const tapEx = new Image();
 tapEx.src = tapExIcon;
-export let tapSlideEx = new Image();
+export const tapSlideEx = new Image();
 tapSlideEx.src = tapSlideExIcon;
 
-export let hold = new Image();
+export const hold = new Image();
 hold.src = holdIcon;
 
-export let holdHead = new Image();
+export const holdHead = new Image();
 holdHead.src = holdHeadIcon;
-export let holdBody = new Image();
+export const holdBody = new Image();
 holdBody.src = holdBodyIcon;
 
-export let holdShort = new Image();
+export const holdShort = new Image();
 holdShort.src = holdShortIcon;
+
+export const tapSound = new Audio(tapSoundData);
+tapSound.volume = 0.6;
+export const music = new Audio(musicData);
+music.volume = 0.3;
