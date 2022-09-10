@@ -1,8 +1,26 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
-import { Beat, Note, NoteType, ReadMaimaiData } from "./maireader";
+import React, { useEffect, useState } from 'react';
+import './App.css';
+import { Beat, Note, NoteType, ReadMaimaiData } from './maireader';
 
-import { hold, holdBody, holdHead, holdShort, music, tap, tapBreak, tapDoubleSlide, tapDoubleSlideBreak, tapDoubleSlideEach, tapDoubleSlideEx, tapEach, tapEx, tapSlide, tapSlideBreak, tapSlideEach, tapSlideEx } from "./resourceReader";
+import {
+  hold,
+  holdBody,
+  holdHead,
+  holdShort,
+  music,
+  tap,
+  tapBreak,
+  tapDoubleSlide,
+  tapDoubleSlideBreak,
+  tapDoubleSlideEach,
+  tapDoubleSlideEx,
+  tapEach,
+  tapEx,
+  tapSlide,
+  tapSlideBreak,
+  tapSlideEach,
+  tapSlideEx,
+} from './resourceReader';
 
 const sheetdata = `
 &title=sweet little sister
@@ -89,10 +107,10 @@ const sheetdata = `
 {1} 8b>8[4:7]*<8[4:7]Cf,,,,,,,,,,E
 `;
 enum GameState {
-	Standby,
-	Play,
-	Stop,
-	Finish,
+  Standby,
+  Play,
+  Stop,
+  Finish,
 }
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
@@ -116,7 +134,7 @@ const timerPeriod: number = 1;
 let tapMoveSpeed: number = 1;
 let tapEmergeSpeed: number = 0.2;
 
-let speed: number = 3;
+let speed: number = 4;
 
 let starttime: number = 0;
 let currentTime: number = 0;
@@ -127,97 +145,100 @@ let first: boolean = true;
 let advanceTime: number = (maimaiJudgeLineR - maimaiSummonLineR) / speed;
 
 const drawBackground = () => {
-	const el: HTMLCanvasElement = document.getElementsByClassName("canvasMain")[0] as HTMLCanvasElement;
-	const ctx: CanvasRenderingContext2D = el.getContext("2d") as CanvasRenderingContext2D;
+  const el: HTMLCanvasElement = document.getElementsByClassName('canvasMain')[0] as HTMLCanvasElement;
+  const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
-	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-	ctx.beginPath();
-	ctx.arc(center[0], center[1], maimaiScreenR, 0, 2 * Math.PI);
-	ctx.fillStyle = "#000";
-	ctx.fill();
-	ctx.strokeStyle = "gray";
-	ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(center[0], center[1], maimaiScreenR, 0, 2 * Math.PI);
+  ctx.fillStyle = '#000';
+  ctx.fill();
+  ctx.strokeStyle = 'gray';
+  ctx.stroke();
 
-	ctx.beginPath();
-	ctx.arc(center[0], center[1], maimaiJudgeLineR, 0, 2 * Math.PI);
-	ctx.strokeStyle = "white";
-	ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(center[0], center[1], maimaiJudgeLineR, 0, 2 * Math.PI);
+  ctx.strokeStyle = 'white';
+  ctx.stroke();
 
-	ctx.beginPath();
-	ctx.arc(center[0], center[1], maimaiSummonLineR, 0, 2 * Math.PI);
-	ctx.strokeStyle = "#333333";
-	ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(center[0], center[1], maimaiSummonLineR, 0, 2 * Math.PI);
+  ctx.strokeStyle = '#333333';
+  ctx.stroke();
 
-	const ρ = maimaiJudgeLineR;
-	const θ = -1 / 8;
+  const ρ = maimaiJudgeLineR;
+  const θ = -1 / 8;
 
-	const judgeDotWidth = 5;
+  const judgeDotWidth = 5;
 
-	for (let i = 0; i < 8; i++) {
-		ctx.beginPath();
-		ctx.arc(center[0] + ρ * Math.cos((θ + i / 4) * Math.PI), center[1] + ρ * Math.sin((θ + i / 4) * Math.PI), judgeDotWidth, 0, 2 * Math.PI);
-		ctx.fillStyle = "#fff";
-		ctx.fill();
-	}
+  for (let i = 0; i < 8; i++) {
+    ctx.beginPath();
+    ctx.arc(center[0] + ρ * Math.cos((θ + i / 4) * Math.PI), center[1] + ρ * Math.sin((θ + i / 4) * Math.PI), judgeDotWidth, 0, 2 * Math.PI);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+  }
 };
 
 const drawOver = () => {
-	const el: HTMLCanvasElement = document.getElementsByClassName("canvasOver")[0] as HTMLCanvasElement;
-	const ctx: CanvasRenderingContext2D = el.getContext("2d") as CanvasRenderingContext2D;
+  const el: HTMLCanvasElement = document.getElementsByClassName('canvasOver')[0] as HTMLCanvasElement;
+  const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
-	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-	ctx.beginPath();
-	ctx.fillStyle = "white";
-	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+  ctx.beginPath();
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-	ctx.beginPath();
-	ctx.arc(center[0], center[1], maimaiR, 0, 2 * Math.PI);
-	ctx.fillStyle = "lightgray";
-	ctx.fill();
-	ctx.strokeStyle = "gray";
-	ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(center[0], center[1], maimaiR, 0, 2 * Math.PI);
+  ctx.fillStyle = 'lightgray';
+  ctx.fill();
+  ctx.strokeStyle = 'gray';
+  ctx.stroke();
 
-	ctx.beginPath();
-	ctx.arc(center[0], center[1], maimaiScreenR, 0, 2 * Math.PI);
-	ctx.strokeStyle = "gray";
-	ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(center[0], center[1], maimaiScreenR, 0, 2 * Math.PI);
+  ctx.strokeStyle = 'gray';
+  ctx.stroke();
 
-	clearArcFun(center[0], center[1], maimaiScreenR, ctx);
+  clearArcFun(center[0], center[1], maimaiScreenR, ctx);
 };
 
 const starttimer = () => {
-	starttime = performance.now();
-	console.log(sheet.beats5?.beat);
-	timer1 = setInterval(reader, timerPeriod);
-	//timer2 = setInterval(updater, timerPeriod);
-	timer3 = setInterval(drawer, timerPeriod);
+  starttime = performance.now();
+  console.log(sheet.beats5?.beat);
+  timer1 = setInterval(reader, timerPeriod);
+  //timer2 = setInterval(updater, timerPeriod);
+  timer3 = setInterval(drawer, timerPeriod);
 };
 
 const sheet = ReadMaimaiData(sheetdata);
 
 interface ShowingNoteProps {
-	/** 绘制的NoteGroup的index */
-	index: number;
+  /** 绘制的NoteGroup的index */
+  index: number;
 
-	noteIndex: number;
+  noteIndex: number;
 
-	/**
-	 * TAP:
-	 * 0: emerge 1:move
-	 * HOLD:
-	 * 0: emerge 1: grow 2: move 3: die
-	 */
-	status: number;
-	radius: number;
-	// 位置
-	rho: number;
+  /**
+   * TAP:
+   * 0: emerge 1:move
+   * HOLD:
+   * 0: emerge 1: grow 2: move 3: die
+   */
+  status: number;
+  radius: number;
+  // 位置
+  rho: number;
 
-	tailRho: number;
-	placeTime: number;
+  // 从生成到消亡的不间断变化量
+  timer: number;
 
-	isEach: boolean;
+  tailRho: number;
+  placeTime: number;
+
+  isEach: boolean;
 }
 
 let showingNotes: ShowingNoteProps[] = [];
@@ -226,382 +247,411 @@ let showingNotes: ShowingNoteProps[] = [];
 let nextNoteGroupIndex = 0;
 
 const reader = async () => {
-	currentTime = performance.now() - starttime;
+  currentTime = performance.now() - starttime;
 
-	//updater
+  //updater
 
-	showingNotes = showingNotes.map((note) => {
-		const newNote = note;
-		const type = sheet.beats5?.beat[note.index].notes[note.noteIndex].type;
+  showingNotes = showingNotes.map((note) => {
+    const newNote = note;
+    const type = sheet.beats5?.beat[note.index].notes[note.noteIndex].type;
 
-		switch (type) {
-			case NoteType.Tap:
-				if (newNote.status === 0) {
-					// emerge
-					newNote.radius += tapEmergeSpeed * speed;
-					if (newNote.radius >= maimaiTapR) {
-						newNote.status = 1;
-					}
-				} else if (newNote.status === 1) {
-					// move
-					newNote.rho += tapMoveSpeed * speed;
-				}
-				break;
-			case NoteType.Hold:
-				if (newNote.status === 0) {
-					//emerge
-					newNote.radius += tapEmergeSpeed * speed;
-					if (newNote.radius >= maimaiTapR) {
-						newNote.status = 1;
-					}
-				} else if (newNote.status === 1) {
-					// grow
-					newNote.rho += tapMoveSpeed * speed;
-					//console.log(currentTime, sheet.beats5?.beat[note.index].time! + sheet.beats5?.beat[note.index].notes[note.noteIndex].remainTime!, sheet.beats5?.beat[note.index].notes[note.noteIndex]);
-					if (currentTime >= sheet.beats5?.beat[note.index].time! + sheet.beats5?.beat[note.index].notes[note.noteIndex].remainTime!) {
-						newNote.status = 2;
-					}
-				} else if (newNote.status === 2) {
-					// move
-					newNote.tailRho += tapMoveSpeed * speed;
-					newNote.rho += tapMoveSpeed * speed;
-				} else if (newNote.status === 3) {
-					// die
-					newNote.tailRho += tapMoveSpeed * speed;
-					newNote.rho += tapMoveSpeed * speed;
-				}
-				break;
-			default:
-				if (newNote.status === 0) {
-					// emerge
-					newNote.radius += tapEmergeSpeed * speed;
-					if (newNote.radius >= maimaiTapR) {
-						newNote.status = 1;
-					}
-				} else if (newNote.status === 1) {
-					// move
-					newNote.rho += tapMoveSpeed * speed;
-				}
-				break;
-		}
+    switch (type) {
+      case NoteType.Tap:
+        if (newNote.status === 0) {
+          // emerge
+          newNote.radius += tapEmergeSpeed * speed;
+          if (newNote.radius >= maimaiTapR) {
+            newNote.status = 1;
+          }
+        } else if (newNote.status === 1) {
+          // move
+          newNote.rho += tapMoveSpeed * speed;
+        }
+        break;
+      case NoteType.Hold:
+        if (newNote.status === 0) {
+          //emerge
+          newNote.radius += tapEmergeSpeed * speed;
+          if (newNote.radius >= maimaiTapR) {
+            newNote.status = 1;
+          }
+        } else if (newNote.status === 1) {
+          // grow
+          newNote.rho += tapMoveSpeed * speed;
+          //console.log(currentTime, sheet.beats5?.beat[note.index].time! + sheet.beats5?.beat[note.index].notes[note.noteIndex].remainTime!, sheet.beats5?.beat[note.index].notes[note.noteIndex]);
+          if (currentTime >= sheet.beats5?.beat[note.index].time! + sheet.beats5?.beat[note.index].notes[note.noteIndex].remainTime!) {
+            newNote.status = 2;
+          }
+        } else if (newNote.status === 2) {
+          // move
+          newNote.tailRho += tapMoveSpeed * speed;
+          newNote.rho += tapMoveSpeed * speed;
+        } else if (newNote.status === 3) {
+          // die
+          newNote.tailRho += tapMoveSpeed * speed;
+          newNote.rho += tapMoveSpeed * speed;
+        }
+        newNote.timer++;
+        break;
+      default:
+        if (newNote.status === 0) {
+          // emerge
+          newNote.radius += tapEmergeSpeed * speed;
+          if (newNote.radius >= maimaiTapR) {
+            newNote.status = 1;
+          }
+        } else if (newNote.status === 1) {
+          // move
+          newNote.rho += tapMoveSpeed * speed;
+        }
+        newNote.timer++;
+        break;
+    }
 
-		return newNote;
-	});
+    return newNote;
+  });
 
-	// 清除大于屏幕的note
-	showingNotes = showingNotes.filter((note) => {
-		const type = sheet.beats5?.beat[note.index].notes[note.noteIndex].type;
-		if (type === NoteType.Hold) {
-			return note.tailRho < maimaiScreenR - maimaiSummonLineR + maimaiTapR;
-		} else {
-			return note.rho < maimaiScreenR - maimaiSummonLineR + maimaiTapR;
-		}
-	});
+  // 清除大于屏幕的note
+  showingNotes = showingNotes.filter((note) => {
+    const type = sheet.beats5?.beat[note.index].notes[note.noteIndex].type;
+    if (type === NoteType.Hold) {
+      return note.tailRho < maimaiScreenR - maimaiSummonLineR + maimaiTapR;
+    } else {
+      return note.rho < maimaiScreenR - maimaiSummonLineR + maimaiTapR;
+    }
+  });
 
-	// reader
-	if (currentTime >= sheet.beats5?.beat[nextNoteGroupIndex].time!) {
-		sheet.beats5?.beat[nextNoteGroupIndex].notes.forEach((note, i) => {
-			showingNotes.push({
-				index: nextNoteGroupIndex,
-				noteIndex: i,
-				status: 0,
-				radius: 0,
-				rho: 0,
-				tailRho: 0,
-				placeTime: currentTime,
-				isEach: sheet.beats5?.beat[nextNoteGroupIndex].notes.length! > 1,
-			});
-		});
-		nextNoteGroupIndex++;
-	}
+  // reader
+  if (currentTime >= sheet.beats5?.beat[nextNoteGroupIndex].time!) {
+    sheet.beats5?.beat[nextNoteGroupIndex].notes.forEach((note, i) => {
+      showingNotes.push({
+        index: nextNoteGroupIndex,
+        noteIndex: i,
+        status: 0,
+        radius: 0,
+        rho: 0,
+        tailRho: 0,
+        timer: 0,
+        placeTime: currentTime,
+        isEach: sheet.beats5?.beat[nextNoteGroupIndex].notes.length! > 1,
+      });
+    });
+    nextNoteGroupIndex++;
+  }
 
-	//console.log(nextNoteGroupIndex, showingNotes);
+  //console.log(nextNoteGroupIndex, showingNotes);
 };
 
 const updater = async () => {};
 
 const drawer = async () => {
-	const el: HTMLCanvasElement = document.getElementsByClassName("canvasFloat")[0] as HTMLCanvasElement;
-	const ctx: CanvasRenderingContext2D = el.getContext("2d") as CanvasRenderingContext2D;
+  const el: HTMLCanvasElement = document.getElementsByClassName('canvasFloat')[0] as HTMLCanvasElement;
+  const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
-	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-	//不用foreach是为了从里往外，这样外侧的才会绘制在内侧Note之上
-	for (let i = showingNotes.length - 1; i >= 0; i--) {
-		const note = showingNotes[i];
-		drawNote(ctx, sheet.beats5?.beat[note.index].notes[note.noteIndex]!, note.isEach, note);
-	}
+  //不用foreach是为了从里往外，这样外侧的才会绘制在内侧Note之上
+  for (let i = showingNotes.length - 1; i >= 0; i--) {
+    const note = showingNotes[i];
+    drawNote(ctx, sheet.beats5?.beat[note.index].notes[note.noteIndex]!, note.isEach, note);
+  }
 };
 
 const draw_old = () => {
-	const el: HTMLCanvasElement = document.getElementsByClassName("canvasFloat")[0] as HTMLCanvasElement;
-	const ctx: CanvasRenderingContext2D = el.getContext("2d") as CanvasRenderingContext2D;
+  const el: HTMLCanvasElement = document.getElementsByClassName('canvasFloat')[0] as HTMLCanvasElement;
+  const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
-	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-	currentTime = performance.now() - starttime;
+  currentTime = performance.now() - starttime;
 
-	console.log(currentTime);
+  console.log(currentTime);
 
-	if (currentTime > advanceTime && first) {
-		first = false;
-		// 开始
-		music.currentTime = 0;
-		music.play();
-	}
+  if (currentTime > advanceTime && first) {
+    first = false;
+    // 开始
+    music.currentTime = 0;
+    music.play();
+  }
 
-	for (let i = 0; i < sheet?.beats5?.length!; i++) {
-		bpm = sheet?.beats5?.beat[i].bpm!;
-		noteNumber = sheet?.beats5?.beat[i].notevalue!;
-		if (sheet?.beats5?.beat[i].notes.length! > 0) {
-			const beat: number = Number(i);
+  for (let i = 0; i < sheet?.beats5?.length!; i++) {
+    bpm = sheet?.beats5?.beat[i].bpm!;
+    noteNumber = sheet?.beats5?.beat[i].notevalue!;
+    if (sheet?.beats5?.beat[i].notes.length! > 0) {
+      const beat: number = Number(i);
 
-			//理论到达时间
-			let theoreticTime = (240 / bpm / noteNumber) * beat * 1000;
+      //理论到达时间
+      let theoreticTime = (240 / bpm / noteNumber) * beat * 1000;
 
-			// 位移
-			let displacement = (theoreticTime - currentTime + advanceTime) * speed;
-			let ρ = maimaiJudgeLineR - maimaiSummonLineR - (displacement + maimaiSummonLineR);
+      // 位移
+      let displacement = (theoreticTime - currentTime + advanceTime) * speed;
+      let ρ = maimaiJudgeLineR - maimaiSummonLineR - (displacement + maimaiSummonLineR);
 
-			sheet?.beats5?.beat[i].notes.forEach((note) => {
-				let θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
+      sheet?.beats5?.beat[i].notes.forEach((note) => {
+        let θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
 
-				let x = center[0] + ρ * Math.cos(θ);
-				let y = center[1] + ρ * Math.sin(θ);
+        let x = center[0] + ρ * Math.cos(θ);
+        let y = center[1] + ρ * Math.sin(θ);
 
-				// 画
-				if (ρ >= maimaiSummonLineR && ρ <= maimaiScreenR) {
-					ctx.beginPath();
-					ctx.arc(x, y, maimaiTapR, 0, 2 * Math.PI);
+        // 画
+        if (ρ >= maimaiSummonLineR && ρ <= maimaiScreenR) {
+          ctx.beginPath();
+          ctx.arc(x, y, maimaiTapR, 0, 2 * Math.PI);
 
-					if (sheet?.beats5?.beat[i].notes.length! > 1) {
-						ctx.strokeStyle = "yellow";
-					} else {
-						ctx.strokeStyle = "pink";
-					}
-					ctx.lineWidth = 10;
-					ctx.stroke();
-				}
-			});
+          if (sheet?.beats5?.beat[i].notes.length! > 1) {
+            ctx.strokeStyle = 'yellow';
+          } else {
+            ctx.strokeStyle = 'pink';
+          }
+          ctx.lineWidth = 10;
+          ctx.stroke();
+        }
+      });
 
-			// // 到判定线时tap音效
-			// if (Math.abs(theoreticTime - currentTime + advanceTime) < 5) {
-			//   console.log(theoreticTime, currentTime, x, y);
-			//   tapSound.play();
-			// }
-		}
-	}
+      // // 到判定线时tap音效
+      // if (Math.abs(theoreticTime - currentTime + advanceTime) < 5) {
+      //   console.log(theoreticTime, currentTime, x, y);
+      //   tapSound.play();
+      // }
+    }
+  }
 };
 
 const drawNoteGroup = (ctx: CanvasRenderingContext2D, beat: ShowingNoteProps) => {
-	const noteGroup = beat;
-	sheet.beats5?.beat[noteGroup.index].notes.forEach((note) => {
-		drawNote(ctx, note, sheet.beats5?.beat[noteGroup.index].notes.length! > 1, beat);
-	});
+  const noteGroup = beat;
+  sheet.beats5?.beat[noteGroup.index].notes.forEach((note) => {
+    drawNote(ctx, note, sheet.beats5?.beat[noteGroup.index].notes.length! > 1, beat);
+  });
 };
 
 const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = false, props: ShowingNoteProps) => {
-	let θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
+  let θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
 
-	let x = center[0] + (props.rho + maimaiSummonLineR) * Math.cos(θ);
-	let y = center[1] + (props.rho + maimaiSummonLineR) * Math.sin(θ);
+  let x = center[0] + (props.rho + maimaiSummonLineR) * Math.cos(θ);
+  let y = center[1] + (props.rho + maimaiSummonLineR) * Math.sin(θ);
 
-	let tx = 0,
-		ty = 0;
-	if (note.type === NoteType.Hold) {
-		tx = center[0] + (props.tailRho + maimaiSummonLineR) * Math.cos(θ);
-		ty = center[1] + (props.tailRho + maimaiSummonLineR) * Math.sin(θ);
-	}
+  let tx = 0,
+    ty = 0;
+  if (note.type === NoteType.Hold) {
+    tx = center[0] + (props.tailRho + maimaiSummonLineR) * Math.cos(θ);
+    ty = center[1] + (props.tailRho + maimaiSummonLineR) * Math.sin(θ);
+  }
 
-	//console.log(props, ty )
+  //console.log(props, ty )
 
-	// // 画
-	// ctx.beginPath();
-	// ctx.arc(x, y, maimaiTapR, 0, 2 * Math.PI);
+  // // 画
+  // ctx.beginPath();
+  // ctx.arc(x, y, maimaiTapR, 0, 2 * Math.PI);
 
-	let k = 0.8;
+  let k = 0.8;
 
-	const drawTapImage = (image: HTMLImageElement) => {
-		const centerx = x,
-			centery = y;
-		drawRotationImage(ctx, image, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (props.radius * 2) / k, centerx, centery, -22.5 + Number(note.pos) * 45);
-	};
+  const drawTapImage = (image: HTMLImageElement) => {
+    const centerx = x,
+      centery = y;
+    drawRotationImage(ctx, image, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (props.radius * 2) / k, centerx, centery, -22.5 + Number(note.pos) * 45);
+  };
 
-	const drawHoldImage = (imagehead: HTMLImageElement, imagebody: HTMLImageElement, shortHoldImage?: HTMLImageElement, isShortHold: boolean = false) => {
-		//console.log(y, ty);
-		const centerx = x,
-			centery = y;
+  const drawSlideTapImage = (image: HTMLImageElement, rotate: boolean = true) => {
+    const centerx = x,
+      centery = y;
+    drawRotationImage(
+      ctx,
+      image,
+      x - props.radius / k,
+      y - props.radius / k,
+      (props.radius * 2) / k,
+      (props.radius * 2) / k,
+      centerx,
+      centery,
+      -22.5 + Number(note.pos) * 45 + (rotate ? (props.timer * 50000) / sheet.beats5?.beat[props.index].notes![props.noteIndex]!.slideTracks![0]!.remainTime! : 0)
+    );
+  };
 
-		if (isShortHold) {
-			drawRotationImage(ctx, shortHoldImage!, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (props.radius * 2) / k, centerx, centery, -22.5 + Number(note.pos) * 45);
-		} else {
-			if (props.status === 0) {
-				drawRotationImage(ctx, shortHoldImage!, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (props.radius * 2) / k, centerx, centery, -22.5 + Number(note.pos) * 45);
-			} else {
-				drawRotationImage(ctx, imagehead, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (imagehead.height - 30) / k, centerx, centery, -22.5 + Number(note.pos) * 45);
-				drawRotationImage(ctx, imagebody, x - props.radius / k, y - props.radius / k + imagehead.height - 30, (props.radius * 2) / k, props.rho - props.tailRho + (props.radius * 2) / k - (imagehead.height - 30) * 2, centerx, centery, -22.5 + Number(note.pos) * 45);
-				drawRotationImage(ctx, imagehead, tx - props.radius / k, ty - props.radius / k, (props.radius * 2) / k, (imagehead.height - 30) / k, tx, ty, 157.5 + Number(note.pos) * 45);
-			}
-		}
-	};
+  const drawHoldImage = (imagehead: HTMLImageElement, imagebody: HTMLImageElement, shortHoldImage?: HTMLImageElement, isShortHold: boolean = false) => {
+    //console.log(y, ty);
+    const centerx = x,
+      centery = y;
 
-	switch (note.type) {
-		case NoteType.Tap:
-			if (isEach) {
-				if (note.isBreak) {
-					drawTapImage(tapBreak);
-				} else {
-					drawTapImage(tapEach);
-				}
-			} else {
-				if (note.isBreak) {
-					drawTapImage(tapBreak);
-				} else {
-					drawTapImage(tap);
-				}
-			}
-			if (note.isEx) {
-				drawTapImage(tapEx);
-			}
-			break;
-		case NoteType.Hold:
-			if (isEach) {
-				if (note.isBreak) {
-					drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
-				} else {
-					drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
-				}
-			} else {
-				if (note.isBreak) {
-					drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
-				} else {
-					drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
-				}
-			}
-			break;
-		case NoteType.Slide:
+    if (isShortHold) {
+      drawRotationImage(ctx, shortHoldImage!, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (props.radius * 2) / k, centerx, centery, -22.5 + Number(note.pos) * 45);
+    } else {
+      if (props.status === 0) {
+        drawRotationImage(ctx, shortHoldImage!, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (props.radius * 2) / k, centerx, centery, -22.5 + Number(note.pos) * 45);
+      } else {
+        drawRotationImage(ctx, imagehead, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (imagehead.height - 30) / k, centerx, centery, -22.5 + Number(note.pos) * 45);
+        drawRotationImage(
+          ctx,
+          imagebody,
+          x - props.radius / k,
+          y - props.radius / k + imagehead.height - 30,
+          (props.radius * 2) / k,
+          props.rho - props.tailRho + (props.radius * 2) / k - (imagehead.height - 30) * 2,
+          centerx,
+          centery,
+          -22.5 + Number(note.pos) * 45
+        );
+        drawRotationImage(ctx, imagehead, tx - props.radius / k, ty - props.radius / k, (props.radius * 2) / k, (imagehead.height - 30) / k, tx, ty, 157.5 + Number(note.pos) * 45);
+      }
+    }
+  };
+
+  switch (note.type) {
+    case NoteType.Tap:
+      if (isEach) {
+        if (note.isBreak) {
+          drawTapImage(tapBreak);
+        } else {
+          drawTapImage(tapEach);
+        }
+      } else {
+        if (note.isBreak) {
+          drawTapImage(tapBreak);
+        } else {
+          drawTapImage(tap);
+        }
+      }
+      if (note.isEx) {
+        drawTapImage(tapEx);
+      }
+      break;
+    case NoteType.Hold:
+      if (isEach) {
+        if (note.isBreak) {
+          drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
+        } else {
+          drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
+        }
+      } else {
+        if (note.isBreak) {
+          drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
+        } else {
+          drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
+        }
+      }
+      break;
+    case NoteType.Slide:
       // console.log(note, note.slideTracks)
-			if (note.slideTracks?.length! > 1) {
-				// DOUBLE TRACK
-				if (isEach) {
-					if (note.isBreak) {
-						drawTapImage(tapDoubleSlideBreak);
-					} else {
-						drawTapImage(tapDoubleSlideEach);
-					}
-				} else {
-					if (note.isBreak) {
-						drawTapImage(tapDoubleSlideBreak);
-					} else {
-						drawTapImage(tapDoubleSlide);
-					}
-				}
-				if (note.isEx) {
-					drawTapImage(tapDoubleSlideEx);
-				}
-			} else {
-				// SINGLE
+      if (note.slideTracks?.length! > 1) {
+        // DOUBLE TRACK
         if (isEach) {
-					if (note.isBreak) {
-						drawTapImage(tapSlideBreak);
-					} else {
-						drawTapImage(tapSlideEach);
-					}
-				} else {
-					if (note.isBreak) {
-						drawTapImage(tapSlideBreak);
-					} else {
-						drawTapImage(tapSlide);
-					}
-				}
-				if (note.isEx) {
-					drawTapImage(tapSlideEx);
-				}
-			}
-			break;
-		case NoteType.Touch:
-			break;
-		case NoteType.TouchHold:
-			break;
-	}
+          if (note.isBreak) {
+            drawTapImage(tapDoubleSlideBreak);
+          } else {
+            drawTapImage(tapDoubleSlideEach);
+          }
+        } else {
+          if (note.isBreak) {
+            drawSlideTapImage(tapDoubleSlideBreak);
+          } else {
+            drawSlideTapImage(tapDoubleSlide);
+          }
+        }
+        if (note.isEx) {
+          drawSlideTapImage(tapDoubleSlideEx);
+        }
+      } else {
+        // SINGLE
+        if (isEach) {
+          if (note.isBreak) {
+            drawSlideTapImage(tapSlideBreak);
+          } else {
+            drawSlideTapImage(tapSlideEach);
+          }
+        } else {
+          if (note.isBreak) {
+            drawSlideTapImage(tapSlideBreak);
+          } else {
+            drawSlideTapImage(tapSlide);
+          }
+        }
+        if (note.isEx) {
+          drawSlideTapImage(tapSlideEx);
+        }
+      }
+      break;
+    case NoteType.Touch:
+      break;
+    case NoteType.TouchHold:
+      break;
+  }
 };
 
 const drawSlide = () => {};
 
 const drawRotationImage = (ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, w: number, h: number, centerX?: number, centerY?: number, r?: number) => {
-	const TO_RADIANS = Math.PI / 180;
-	if (centerX && centerY && r) {
-		ctx.save(); //保存状态
+  const TO_RADIANS = Math.PI / 180;
+  if (centerX && centerY && r) {
+    ctx.save(); //保存状态
 
-		ctx.translate(centerX, centerY); //设置画布上的(0,0)位置，也就是旋转的中心点
-		ctx.rotate(r * TO_RADIANS);
-		ctx.drawImage(image, x - centerX, y - centerY, w, h);
-		ctx.restore(); //恢复状态
-	} else {
-		ctx.drawImage(image, x, y, w, h);
-	}
+    ctx.translate(centerX, centerY); //设置画布上的(0,0)位置，也就是旋转的中心点
+    ctx.rotate(r * TO_RADIANS);
+    ctx.drawImage(image, x - centerX, y - centerY, w, h);
+    ctx.restore(); //恢复状态
+  } else {
+    ctx.drawImage(image, x, y, w, h);
+  }
 };
 
 function clearArcFun(x: number, y: number, r: number, cxt: CanvasRenderingContext2D) {
-	//(x,y)为要清除的圆的圆心，r为半径，cxt为context
-	var stepClear = 1; //别忘记这一步
-	clearArc(x, y, r);
-	function clearArc(x: number, y: number, radius: number) {
-		var calcWidth = radius - stepClear;
-		var calcHeight = Math.sqrt(radius * radius - calcWidth * calcWidth);
-		var posX = x - calcWidth;
-		var posY = y - calcHeight;
+  //(x,y)为要清除的圆的圆心，r为半径，cxt为context
+  var stepClear = 1; //别忘记这一步
+  clearArc(x, y, r);
+  function clearArc(x: number, y: number, radius: number) {
+    var calcWidth = radius - stepClear;
+    var calcHeight = Math.sqrt(radius * radius - calcWidth * calcWidth);
+    var posX = x - calcWidth;
+    var posY = y - calcHeight;
 
-		var widthX = 2 * calcWidth;
-		var heightY = 2 * calcHeight;
+    var widthX = 2 * calcWidth;
+    var heightY = 2 * calcHeight;
 
-		if (stepClear <= radius) {
-			cxt.clearRect(posX, posY, widthX, heightY);
-			stepClear += 1;
-			clearArc(x, y, radius);
-		}
-	}
+    if (stepClear <= radius) {
+      cxt.clearRect(posX, posY, widthX, heightY);
+      stepClear += 1;
+      clearArc(x, y, radius);
+    }
+  }
 }
 
 function App() {
-	const [gameState, setGameState] = useState(GameState.Standby);
+  const [gameState, setGameState] = useState(GameState.Standby);
 
-	useEffect(() => {
-		drawBackground();
-		drawOver();
-	}, []);
+  useEffect(() => {
+    drawBackground();
+    drawOver();
+  }, []);
 
-	return (
-		<div className="App">
-			<div className="canvasContainer">
-				<canvas className="canvasMain" height="700" width="700" />
-				<canvas className="canvasFloat" height="700" width="700" />
-				<canvas className="canvasOver" height="700" width="700" />
-			</div>
-			<div style={{ position: "absolute", zIndex: 3 }}>
-				<button
-					onClick={() => {
-						if (gameState === GameState.Standby) {
-							starttimer();
-							setGameState(GameState.Play);
-						} else if (gameState === GameState.Play) {
-							clearInterval(timer1);
-							clearInterval(timer3);
-							setGameState(GameState.Stop);
-						} else if (gameState === GameState.Stop) {
-							timer1 = setInterval(reader, timerPeriod);
-							//timer2 = setInterval(updater, timerPeriod);
-							timer3 = setInterval(drawer, timerPeriod);
-							setGameState(GameState.Play);
-						} else {
-						}
-					}}
-				>
-					{gameState === GameState.Play ? "stop" : "start"}
-				</button>
-				<button
-					onClick={() => {
-						const sheetdata = `
+  return (
+    <div className="App">
+      <div className="canvasContainer">
+        <canvas className="canvasMain" height="700" width="700" />
+        <canvas className="canvasFloat" height="700" width="700" />
+        <canvas className="canvasOver" height="700" width="700" />
+      </div>
+      <div style={{ position: 'absolute', zIndex: 3 }}>
+        <button
+          onClick={() => {
+            if (gameState === GameState.Standby) {
+              starttimer();
+              setGameState(GameState.Play);
+            } else if (gameState === GameState.Play) {
+              clearInterval(timer1);
+              clearInterval(timer3);
+              setGameState(GameState.Stop);
+            } else if (gameState === GameState.Stop) {
+              timer1 = setInterval(reader, timerPeriod);
+              //timer2 = setInterval(updater, timerPeriod);
+              timer3 = setInterval(drawer, timerPeriod);
+              setGameState(GameState.Play);
+            } else {
+            }
+          }}
+        >
+          {gameState === GameState.Play ? 'stop' : 'start'}
+        </button>
+        <button
+          onClick={() => {
+            const sheetdata = `
           &title=sweet little sister
 &wholebpm=168
 &lv_5=11
@@ -695,15 +745,15 @@ E
 
           `;
 
-						const res = ReadMaimaiData(sheetdata);
-						console.log(res);
-					}}
-				>
-					read
-				</button>
-			</div>
-		</div>
-	);
+            const res = ReadMaimaiData(sheetdata);
+            console.log(res);
+          }}
+        >
+          read
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export default App;
