@@ -6,6 +6,12 @@ import { Beat, Note, NoteType, ReadMaimaiData } from './maireader';
 import {
   hold,
   holdBody,
+  holdEachBody,
+  holdEachHead,
+  holdEachShort,
+  holdExBody,
+  holdExHead,
+  holdExShort,
   holdHead,
   holdShort,
   music,
@@ -639,17 +645,13 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
       break;
     case NoteType.Hold:
       if (isEach) {
-        if (note.isBreak) {
-          drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
-        } else {
-          drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
-        }
+        drawHoldImage(holdEachHead, holdEachBody, holdEachShort, note.isShortHold);
       } else {
-        if (note.isBreak) {
-          drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
-        } else {
-          drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
-        }
+        drawHoldImage(holdHead, holdBody, holdShort, note.isShortHold);
+      }
+
+      if (note.isEx) {
+        drawHoldImage(holdExHead, holdExBody, holdExShort, note.isShortHold);
       }
       break;
     case NoteType.Slide:
