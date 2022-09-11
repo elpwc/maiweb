@@ -35,6 +35,12 @@ import touchCenterIcon from './resource/img/UI_NOTES_Touch_Point.png';
 import touchEachIcon from './resource/img/UI_NOTES_Touch_Each_01.png';
 import touchEachCenterIcon from './resource/img/UI_NOTES_Touch_Each_Point.png';
 
+import touchHold1Icon from './resource/img/UI_NOTES_Touch_Hold_01.png';
+import touchHold2Icon from './resource/img/UI_NOTES_Touch_Hold_04.png';
+import touchHold3Icon from './resource/img/UI_NOTES_Touch_Hold_03.png';
+import touchHold4Icon from './resource/img/UI_NOTES_Touch_Hold_02.png';
+import touchHoldGageIcon from './resource/img/UI_NOTES_Touch_Hold_hold.png';
+
 import tapSoundData from './resource/sound/tap.wav';
 import musicData from './resource/music/40mP - だんだん早くなる.mp3';
 
@@ -96,6 +102,17 @@ export const touchEach = new Image();
 touchEach.src = touchEachIcon;
 export const touchEachCenter = new Image();
 touchEachCenter.src = touchEachCenterIcon;
+
+export const touchHold1 = new Image();
+touchHold1.src = touchHold1Icon;
+export const touchHold2 = new Image();
+touchHold2.src = touchHold2Icon;
+export const touchHold3 = new Image();
+touchHold3.src = touchHold3Icon;
+export const touchHold4 = new Image();
+touchHold4.src = touchHold4Icon;
+export const touchHoldGage = new Image();
+touchHoldGage.src = touchHoldGageIcon;
 
 export const tapSound = new Audio(tapSoundData);
 tapSound.volume = 0.6;
