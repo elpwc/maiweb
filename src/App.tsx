@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { finished } from 'stream';
 import './App.css';
-import { Beat, Note, NoteType, ReadMaimaiData } from './maireader';
+import { Beat, Note, NoteType, ReadMaimaiData, Sheet, Song } from './maireader';
 
 import {
   hold,
@@ -46,9 +46,81 @@ const sheetdata = `
 &wait=0
 &track=track.mp3
 &bg=bg.png
-&inote_5=(60){4},
-1,Ch[1:1],1,
-E
+&inote_5=(210)
+{1} ,
+{8} 3h[4:1]/5,,4,,3,3,5,4,6,6,4,5,
+{4} 4/6h[4:1],5,35,4,46,B2/5,35,4/B7,35,46,3xh[4:1]/7V53[4:3],,2,2,1h[2:1],,C,B4,2V46[4:3]/6h[4:1],,7,7,8h[2:1],,C/B5,,4xh[4:1]/7xh[4:3],,E5,E3,2xh[4:3]/5xh[4:1],,E5,E7,
+{2} 4xh[4:1]/7xh[4:1],5h[4:1]/7h[4:1],6h[4:1]/7h[4:1],7h[4:1]/8x,1x/2h[4:1],2h[4:1]/3h[4:1],2h[4:1]/4h[4:1],
+{4} 36,1-5[23.3333333333#72:1]/8-4[23.3333333333#72:1],
+{1} 1h[4:7]/8h[4:7],,
+{8} 1b/8b,,,3/6h[8:3],,,5h[8:3],,,4h[8:3],,,3x,,4x/5x,,2h[8:3]/7x,,,3h[8:3],,,4h[8:3],,,5h[8:3],,,6x,5x,4x/7x,,3h[8:3]/6x,,,2h[8:3],,,1h[8:3],,,8h[8:3],,,7x,,1x/6x,,2x/8h[8:3],,,6h[8:3],,,4h[8:3],,,2h[8:3],,,1x,3x/8x,4x/7x,,3h[8:3],,4,6h[8:3],,5,3h[8:3],,4,6h[8:3],,5,4x-8[8:1],,3x,,2h[8:3],,1,7h[8:3],,8,2h[8:3],,1,7h[8:3],,8,2x,3x/6x,4x/5x,,7h[8:3],,5,2h[8:3],,4,7h[8:3],,5,2h[8:3],,4,7x-3[8:1],,1x,,2h[8:3],,1,7h[8:3],,5,
+{4} 3p6[4:1],4b,,1x/8x,4x/5x,2b-5[8:1]/6b,2/8-4[8:1],3-8[8:1]/8,3/5-1[8:1],2>5[8:1]/5,28,17,
+{8} 34,2,
+{4} 1x/8V64[8:1],4-8[8:1],8-4[8:1],4,
+{16} 1x/8x,,6,5,6,5,6,5,8x,,3,4,3,4,3,4,
+{4} 2x-5[8:1],2/6-2[8:1],4-8[8:1]/6,48,16,
+{8} 56,47,38,
+{16} 2,1,2,,18,,2x/7x,,6,5,7,,3,4,2,,6,5,7,,3,4,
+{8} 3>8[8:1],,7,7<4[8:1],,1,
+{4} 1b,3b/7b-4[8:1],1-5[8:1]/7,1/6-1[8:1],4-8[8:1]/6,4/7<4[8:1],17,
+{8} 12,3,46,7,1V35[8:1]/8x,,5-1[8:1],,1-5[8:1],,5,,
+{16} 1x/8x,,3h,4h,3h,4h,3h,4h,1xh,,6h,5h,6h,5h,6h,5h,
+{4} 8xw4[8:1],8x,2x/6x,5x-3[8:1]/6x,7x-5[8:1],2x,
+{8} 1x/2x,3,45,6,5-1[8:1]/7-5[8:1],,,,2-4[8:1]/4-8[8:1],,,,5x/7x,,3x/4x,,1b/8b,2x/8x,3x/8x,4x/8x,
+{4} 5/7-5[8:1],4/7-1[8:1],3/7-3[8:1],2-6[8:1]/7,1/2-4[8:1],28,
+{8} 5x/6x,7x,6x/8x,1x,
+{4} 2/4-8[8:1],34,5-1[8:1]/7,56,2x-5[8:1]/4x,
+{8} 6,7,
+{4} 8,1x/7x,2-4[8:1]/4,2-8[8:1]/5,2-6[8:1]/6,2/7-3[8:1],7-5[8:1]/8,17,
+{8} 2x/4x,3x,4x/5x,6x,
+{4} 5xv8[8:1]/7x-5[8:1],57,2x-4[8:1]/4xv1[8:1],24,5x/7x-3[8:1],17,
+{16} 1,5,2,6,3,7,4,8,
+{1} 1b/5b<5[4:5],,
+{4} B2/B3,B6/B7,
+{8} B5,B4,
+{4} E4,E3/E7,,E1,E5,
+{8} Ch[1:1],,,B1,,,B8,,E1,,,,E6,B5,B4,,B2/B3,,,,E4,B4,B5,,B6/B7,,,E5,,,E3,,B1/B8,,,E5,,,
+{4} E7,E1,C,E5,,4b/5b,36,
+{8} 5,4,
+{4} 3<6[2:1],6,,7,6,
+{8} 45,,,3,3,,46,,3/5h[2:1],,,,4,5,4,,2h[4:1]/4h[4:1],,,,5,4,5,,5h[4:1]/7h[4:1],,,,4,5,4,,
+{1} 2/4-8[2:1],5-1[2:1]/7,2h[4:3]/4<8[2:1],5>1[2:1]/7h[4:3],
+{8} 2b/8b,,1,1h[4:1],,3,3h[4:1],,5,5h[4:1],,6,47,,35,,4/8h[4:1],,6,6h[4:1],,4,4h[4:1],,2,2h[4:1],,1,38,47,
+{4} 56,4/7-4[8:1],2-5[8:1]/7,2/8-4[8:1],18,
+{8} 25,25,36,36,
+{32} 4,5,6,7,8,1,2,3,4-8[26.25#64:1],5-1[26.6666666667#63:1],6,7,8,1,2,3,
+{4} 4xh[2:3]/5xh[2:3],,,,,,,4b/5b,2x/7x,
+{16} 6x,5,6,,7x,,1,8,1x,,2,,3x/5x,,4,,6x,5,
+{8} 6,7/8x,1,2/4x,3/5x,4/6x,
+{16} 7,8,7x,,1,,3x,4,3,,5x,,1/8x,2x/7,
+{8} 3/6x,,1/2x,3/8x,,3/4x,4/5x,5/6x,4b/7b,
+{16} 6,5,6x,,4,,2x,1,
+{8} 2,8x,7x,5/6x,
+{16} 3,4,3x,,2x,,8,1,
+{8} 8x,37,6x,2x-6[8:1]/5,2/5x,2x/5,,4/8x,5x/7,,1x/8,2/4x,3/5x,4x/6,5/7x,
+{16} 1x,8x,2x,7x,3x,6x,4x,5x,2b/7b,,,,3x,4,3,,2x,,8,1,
+{8} 8x,7,4x/6x,5,
+{16} 3x,4,
+{8} 3,1x/2,8,5/7x,4x/6,3/5x,
+{16} 2,1,2x,,8,,6x,5,6,,3x,4x,3x,4x,
+{4} 2x-5[8:1]/5,2/6x-1[8:1],6/8x-4[8:1],
+{16} 7x/8,,6,,2b/5b,,3,4,3x,,5,,7x,8,7,,1x/2,,3,,4b/5b,,6,5,6x,,7,,1x,8,
+{8} 1,3/4x,3x/4,2b/5b,,5x/6,47,,34,2x/5x,3x/6x,
+{16} 4xh[8:1]/7xh[8:1],,,2xh[8:1]/5xh[8:1],,,
+{8} 1x/8x,,4x/5x,4x/5x,2b/7b,,
+{16} 3,4,3,,25,,6,5,7,5,6,,3,,12,,7,8,6,,57,,3,4,2,4,3,,6,,1/7<5[8:1],,2,3,7>1[8:1],,2,3,7-3[8:1],,2,3,7,,1,,1b/5b,,,,48,,48,,
+{24} 7,6,5,2,3,4,
+{16} 8b,,,,3x/7,,6,5,6,,45,,3-1[8:1],4,3,4,3,,8,,2x/6x,,3,4,3,,45,,6-8[8:1],5,6,5,
+{8} 6,2,13,13,24,35,46,57,
+{16} 1,8,1,8,2b-5[8:1]/7b-4[8:1],,,,27,,,,
+{32} 1x/8x,2,3,4,5,6,7,8,
+{16} 1b/5b,,,,3x/8x,,6,5,6,,47,,3,4,2,4,3,,6,,78,,2,1,3,,24,,6,5,7,5,6,,3,,2>4[8:1]/8,,7,6,2<8[8:1],,7,6,2-6[8:1],,7,6,
+{8} 2,8,3x-8[8:1]/7x-4[8:1],,3x/7x,,2b/6b,,
+{24} 2,3,4,7,6,5,
+{16} 1b,,3,4,3,,25,,6>3[8:1],5,7,5,6,,2,,1x/8x,,6,5,6,,47,,3<6[8:1],4,2,4,3,,7,,
+{24} 1xh[4:1]/2x,3,4,5,6,,,,,7x/8xh[4:1],6,5,4,3,,,,,1x,5,1,5,1,5,
+{8} 1h[4:1],,,4h[4:1]/6h[4:1],,,1/8w4[8:1],,
+{1} 8b>8[4:7]*<8[4:7]Cf,,,,,,,,,,E
 
 
 `;
@@ -76,23 +148,20 @@ const maimaiER = maimaiScreenR * 0.574;
 
 const touchMaxDistance = maimaiTapR * 0.4;
 
-let bpm: number = 170;
-let noteNumber: number = 1;
-
 const timerPeriod: number = 1;
 
 let tapMoveSpeed: number = 1;
 let tapEmergeSpeed: number = 0.2;
 
-let speed: number = 1;
+let speed: number = 2.2;
 
 let starttime: number = 0;
 let currentTime: number = 0;
 
-let first: boolean = true;
+let currentDifficulty = 5;
 
-// 提前时间
-let advanceTime: number = (maimaiJudgeLineR - maimaiSummonLineR) / speed;
+/** 提前绘制了的时间 */
+let advancedTime = 0;
 
 const drawBackground = () => {
   const el: HTMLCanvasElement = document.getElementsByClassName('canvasMain')[0] as HTMLCanvasElement;
@@ -156,8 +225,11 @@ const drawOver = () => {
 };
 
 const starttimer = () => {
+  readSheet();
+  advancedTime = (currentSheet.notes[0].emergeTime ?? 0) < 0 ? -(currentSheet.notes[0].emergeTime ?? 0) : 0;
   starttime = performance.now();
-  console.log(sheet.beats5?.beat);
+
+  //console.log(sheet.beats5?.beat);
   timer1 = setInterval(reader, timerPeriod);
   //timer2 = setInterval(updater, timerPeriod);
   timer3 = setInterval(drawer, timerPeriod);
@@ -168,12 +240,35 @@ const finish = () => {
   clearInterval(timer3);
 };
 
-const sheet = ReadMaimaiData(sheetdata);
+let songdata: Song;
+
+let currentSheet: Sheet;
+
+/** 初始化谱面 */
+const readSheet = () => {
+  songdata = ReadMaimaiData(sheetdata);
+
+  currentSheet = songdata.sheets[0];
+  currentSheet.notes = calculate_emerge_move_time_of_notes(currentSheet.notes);
+};
+
+/** 为Notes计算浮现的时机 */
+const calculate_emerge_move_time_of_notes = (notesOri: Note[]) => {
+  const notes = notesOri;
+  notes.forEach((note: Note, i: number) => {
+    const emergingTime = maimaiTapR / ((tapEmergeSpeed * speed) / timerPeriod);
+    const movingTime = (maimaiJudgeLineR - maimaiSummonLineR) / ((tapMoveSpeed * speed) / timerPeriod);
+    notes[i].emergeTime = notes[i].time - emergingTime;
+    notes[i].moveTime = notes[i].time - movingTime;
+  });
+
+  return notes;
+};
 
 interface ShowingNoteProps {
-  /** 绘制的NoteGroup的index */
-  index: number;
-
+  /** 所在的Beat的index */
+  beatIndex: number;
+  /** 在所有Notes中的index */
   noteIndex: number;
 
   /**
@@ -198,17 +293,17 @@ interface ShowingNoteProps {
 
 let showingNotes: ShowingNoteProps[] = [];
 
-// 下一个noteGroup标号
-let nextNoteGroupIndex = 0;
+// 下一个note标号
+let nextNoteIndex = 0;
 
 const reader = async () => {
-  currentTime = performance.now() - starttime;
+  currentTime = performance.now() - starttime - advancedTime;
 
   //updater
 
   showingNotes = showingNotes.map((note) => {
     const newNote = note;
-    const type = sheet.beats5?.beat[note.index].notes[note.noteIndex].type;
+    const type = currentSheet.notes[note.noteIndex].type;
 
     switch (type) {
       case NoteType.Tap:
@@ -234,7 +329,7 @@ const reader = async () => {
           // grow
           newNote.rho += tapMoveSpeed * speed;
           //console.log(currentTime, sheet.beats5?.beat[note.index].time! + sheet.beats5?.beat[note.index].notes[note.noteIndex].remainTime!, sheet.beats5?.beat[note.index].notes[note.noteIndex]);
-          if (currentTime >= sheet.beats5?.beat[note.index].time! + sheet.beats5?.beat[note.index].notes[note.noteIndex].remainTime!) {
+          if (currentTime >= currentSheet.notes[note.noteIndex].time! + currentSheet.notes[note.noteIndex].remainTime!) {
             newNote.status = 2;
           }
         } else if (newNote.status === 2) {
@@ -258,9 +353,9 @@ const reader = async () => {
         } else if (newNote.status === 1) {
           // converge
           newNote.rho += tapMoveSpeed * speed;
-          console.log(currentTime, sheet.beats5?.beat[note.index].time! + sheet.beats5?.beat[note.index].notes[note.noteIndex].remainTime!, sheet.beats5?.beat[note.index].notes[note.noteIndex]);
-          
-          if (currentTime >= sheet.beats5?.beat[note.index].time! + sheet.beats5?.beat[note.index].notes[note.noteIndex].remainTime!) {
+          console.log(currentTime, currentSheet.notes[note.noteIndex].time! + currentSheet.notes[note.noteIndex].remainTime!, currentSheet.notes[note.noteIndex]);
+
+          if (currentTime >= currentSheet.notes[note.noteIndex].time! + currentSheet.notes[note.noteIndex].remainTime!) {
             newNote.status = 2;
           }
         } else if (newNote.status === 2) {
@@ -295,7 +390,7 @@ const reader = async () => {
 
   // 清除大于屏幕的note
   showingNotes = showingNotes.filter((note) => {
-    const type = sheet.beats5?.beat[note.index].notes[note.noteIndex].type;
+    const type = currentSheet.notes[note.noteIndex].type;
     if (type === NoteType.Hold) {
       return note.tailRho < maimaiScreenR - maimaiSummonLineR + maimaiTapR;
     } else {
@@ -304,24 +399,22 @@ const reader = async () => {
   });
 
   // reader
-  if (currentTime >= sheet.beats5?.beat[nextNoteGroupIndex].time!) {
-    sheet.beats5?.beat[nextNoteGroupIndex].notes.forEach((note, i) => {
-      showingNotes.push({
-        index: nextNoteGroupIndex,
-        noteIndex: i,
-        status: 0,
-        radius: 0,
-        rho: 0,
-        tailRho: 0,
-        timer: 0,
-        placeTime: currentTime,
-        isEach: sheet.beats5?.beat[nextNoteGroupIndex].notes.length! > 1,
-      });
+  if (currentTime >= currentSheet.notes[nextNoteIndex].time!) {
+    showingNotes.push({
+      beatIndex: currentSheet.notes[nextNoteIndex].beatIndex,
+      noteIndex: nextNoteIndex,
+      status: 0,
+      radius: 0,
+      rho: 0,
+      tailRho: 0,
+      timer: 0,
+      placeTime: currentTime,
+      isEach: currentSheet.notes[nextNoteIndex].isEach ?? false,
     });
-    nextNoteGroupIndex++;
+    nextNoteIndex++;
   }
 
-  //console.log(nextNoteGroupIndex, showingNotes);
+  //console.log(nextNoteIndex, showingNotes);
 };
 
 const updater = async () => {};
@@ -335,75 +428,8 @@ const drawer = async () => {
   //不用foreach是为了从里往外，这样外侧的才会绘制在内侧Note之上
   for (let i = showingNotes.length - 1; i >= 0; i--) {
     const note = showingNotes[i];
-    drawNote(ctx, sheet.beats5?.beat[note.index].notes[note.noteIndex]!, note.isEach, note);
+    drawNote(ctx, currentSheet.notes[note.noteIndex]!, note.isEach, note);
   }
-};
-
-const draw_old = () => {
-  const el: HTMLCanvasElement = document.getElementsByClassName('canvasFloat')[0] as HTMLCanvasElement;
-  const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
-
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-  currentTime = performance.now() - starttime;
-
-  console.log(currentTime);
-
-  if (currentTime > advanceTime && first) {
-    first = false;
-    // 开始
-    music.currentTime = 0;
-    music.play();
-  }
-
-  for (let i = 0; i < sheet?.beats5?.length!; i++) {
-    bpm = sheet?.beats5?.beat[i].bpm!;
-    noteNumber = sheet?.beats5?.beat[i].notevalue!;
-    if (sheet?.beats5?.beat[i].notes.length! > 0) {
-      const beat: number = Number(i);
-
-      //理论到达时间
-      let theoreticTime = (240 / bpm / noteNumber) * beat * 1000;
-
-      // 位移
-      let displacement = (theoreticTime - currentTime + advanceTime) * speed;
-      let ρ = maimaiJudgeLineR - maimaiSummonLineR - (displacement + maimaiSummonLineR);
-
-      sheet?.beats5?.beat[i].notes.forEach((note) => {
-        let θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
-
-        let x = center[0] + ρ * Math.cos(θ);
-        let y = center[1] + ρ * Math.sin(θ);
-
-        // 画
-        if (ρ >= maimaiSummonLineR && ρ <= maimaiScreenR) {
-          ctx.beginPath();
-          ctx.arc(x, y, maimaiTapR, 0, 2 * Math.PI);
-
-          if (sheet?.beats5?.beat[i].notes.length! > 1) {
-            ctx.strokeStyle = 'yellow';
-          } else {
-            ctx.strokeStyle = 'pink';
-          }
-          ctx.lineWidth = 10;
-          ctx.stroke();
-        }
-      });
-
-      // // 到判定线时tap音效
-      // if (Math.abs(theoreticTime - currentTime + advanceTime) < 5) {
-      //   console.log(theoreticTime, currentTime, x, y);
-      //   tapSound.play();
-      // }
-    }
-  }
-};
-
-const drawNoteGroup = (ctx: CanvasRenderingContext2D, beat: ShowingNoteProps) => {
-  const noteGroup = beat;
-  sheet.beats5?.beat[noteGroup.index].notes.forEach((note) => {
-    drawNote(ctx, note, sheet.beats5?.beat[noteGroup.index].notes.length! > 1, beat);
-  });
 };
 
 const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = false, props: ShowingNoteProps) => {
@@ -439,13 +465,13 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
         break;
       case 'D':
         θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-        console.log('D', -1 / 4 + (1 / 4) * Number(touchPos), touchPos);
+        //console.log('D', -1 / 4 + (1 / 4) * Number(touchPos), touchPos);
         x = center[0] + maimaiScreenR * Math.cos(θ);
         y = center[1] + maimaiScreenR * Math.sin(θ);
         break;
       case 'E':
         θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-        console.log('E', -1 / 4 + (1 / 4) * Number(touchPos), touchPos);
+        //console.log('E', -1 / 4 + (1 / 4) * Number(touchPos), touchPos);
         x = center[0] + maimaiER * Math.cos(θ);
         y = center[1] + maimaiER * Math.sin(θ);
         break;

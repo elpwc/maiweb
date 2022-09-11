@@ -1,4 +1,5 @@
 export enum Difficulty {
+  Empty,
   Easy,
   Basic,
   Advanced,
@@ -6,13 +7,6 @@ export enum Difficulty {
   Master,
   ReMaster,
   Original,
-}
-
-export enum NoteIconType {
-  TapNormal,
-  TapEach,
-  TapBreak,
-  TapSlide,
 }
 
 export enum NoteType {
@@ -28,19 +22,19 @@ export enum NoteType {
   EndMark,
 }
 
-export interface SubSheet {
-  beat: Beat[];
-  length: number;
-}
-
+/** 一拍（可能是空白的，代表空拍） */
 export interface Beat {
-  notes: Note[];
+  // notes: Note[];
   notevalue: number;
   bpm: number;
   // 触发时间
   time: number;
+
+  /** 包含的全部notes的索引 */
+  noteIndexes: number[];
 }
 
+/** Slide轨迹 */
 export interface SlideTrack {
   slideType?: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V';
   endPos?: string;
@@ -53,6 +47,7 @@ export interface SlideTrack {
   stopTime?: number;
 }
 
+/** 一个Note */
 export interface Note {
   // 顺序
   index: number;
@@ -75,14 +70,42 @@ export interface Note {
   // 适用于HOLD,TOUCH HOLD, SLIDE不适用
   isShortHold?: boolean;
 
+  // HOLD延时的节拍
   notevalue?: number;
   notenumber?: number;
 
   /**  持续时间/ms（HOLD）*/
   remainTime?: number;
+
+  // 以下2个属性在生成後由speed之类的决定
+  /** 浮现时间/ms */
+  emergeTime?: number;
+  /** 移动时间/ms */
+  moveTime?: number;
+
+  isEach?: boolean;
+
+  /** 在beats中的索引 */
+  beatIndex: number;
+
+  // 这一段的节拍
+  partnotevalue: number;
+  bpm: number;
+  // 触发时间
+  time: number;
 }
 
+/** 一个谱面 */
 export interface Sheet {
+  designer?: string;
+  difficulty: Difficulty;
+  level: number;
+  notes: Note[];
+  beats: Beat[];
+}
+
+/** 一整首收录的乐曲信息 */
+export interface Song {
   title: string;
   artist?: string;
   smsg?: string;
@@ -91,38 +114,19 @@ export interface Sheet {
   bg?: string;
   track?: string;
 
-  lv_1?: number;
-  lv_2?: number;
-  lv_3?: number;
-  lv_4?: number;
-  lv_5?: number;
-  lv_6?: number;
-  lv_7?: number;
+  sheets: Sheet[];
 
-  des_1?: string;
-  des_2?: string;
-  des_3?: string;
-  des_4?: string;
-  des_5?: string;
-  des_6?: string;
-  des_7?: string;
-
-  beats1?: SubSheet;
-  beats2?: SubSheet;
-  beats3?: SubSheet;
-  beats4?: SubSheet;
-  beats5?: SubSheet;
-  beats6?: SubSheet;
-  beats7?: SubSheet;
-
-  availableDifficulties: [boolean, boolean, boolean, boolean, boolean, boolean, boolean];
+  availableDifficulties: number[];
 }
 
 export const ReadMaimaiData = (sheetData: string) => {
-  let res: Sheet = {
+  let res: Song = {
     title: '',
-    availableDifficulties: [false, false, false, false, false, false, false],
+    availableDifficulties: [],
+    sheets: [],
   };
+
+  const predeeledSheets: Sheet[] = new Array(7);
 
   sheetData.split('&').map((e) => {
     const splitPos = e.indexOf('=');
@@ -154,77 +158,42 @@ export const ReadMaimaiData = (sheetData: string) => {
         res.track = pvalue;
         break;
 
-      case 'lv_1':
-        res.availableDifficulties[0] = true;
-        res.lv_1 = Number(pvalue);
-        break;
-      case 'lv_2':
-        res.availableDifficulties[1] = true;
-        res.lv_2 = Number(pvalue);
-        break;
-      case 'lv_3':
-        res.availableDifficulties[2] = true;
-        res.lv_3 = Number(pvalue);
-        break;
-      case 'lv_4':
-        res.availableDifficulties[3] = true;
-        res.lv_4 = Number(pvalue);
-        break;
-      case 'lv_5':
-        res.availableDifficulties[4] = true;
-        res.lv_5 = Number(pvalue);
-        break;
-      case 'lv_6':
-        res.availableDifficulties[5] = true;
-        res.lv_6 = Number(pvalue);
-        break;
-      case 'lv_7':
-        res.availableDifficulties[6] = true;
-        res.lv_7 = Number(pvalue);
-        break;
+      default:
+        // 处理各个带等级数字的属性
+        const sheetinfos = pname.split('_');
+        if (sheetinfos.length === 2 && !isNaN(Number(sheetinfos[1]))) {
+          const propPrefix = sheetinfos[0],
+            propDifficulty = Number(sheetinfos[1]);
 
-      case 'des_1':
-        res.des_1 = pvalue;
-        break;
-      case 'des_2':
-        res.des_2 = pvalue;
-        break;
-      case 'des_3':
-        res.des_3 = pvalue;
-        break;
-      case 'des_4':
-        res.des_4 = pvalue;
-        break;
-      case 'des_5':
-        res.des_5 = pvalue;
-        break;
-      case 'des_6':
-        res.des_6 = pvalue;
-        break;
-      case 'des_7':
-        res.des_7 = pvalue;
-        break;
+          let sheetIndex = res.sheets.findIndex((sheet: Sheet) => {
+            return sheet.difficulty === propDifficulty;
+          });
+          if (sheetIndex === -1) {
+            res.availableDifficulties.push(propDifficulty);
+            res.sheets.push({
+              difficulty: propDifficulty,
+              level: 0,
+              notes: [],
+              beats: [],
+            });
+          }
+          sheetIndex = res.sheets.length - 1;
 
-      case 'inote_1':
-        res.beats1 = read_inote(pvalue);
-        break;
-      case 'inote_2':
-        res.beats2 = read_inote(pvalue);
-        break;
-      case 'inote_3':
-        res.beats3 = read_inote(pvalue);
-        break;
-      case 'inote_4':
-        res.beats4 = read_inote(pvalue);
-        break;
-      case 'inote_5':
-        res.beats5 = read_inote(pvalue);
-        break;
-      case 'inote_6':
-        res.beats6 = read_inote(pvalue);
-        break;
-      case 'inote_7':
-        res.beats7 = read_inote(pvalue);
+          switch (propPrefix) {
+            case 'lv':
+              res.sheets[sheetIndex].level = Number(pvalue);
+              break;
+            case 'des':
+              res.sheets[sheetIndex].designer = pvalue;
+              break;
+            case 'inote':
+              const noteRes = read_inote(pvalue);
+              res.sheets[sheetIndex].beats = noteRes.beats;
+              res.sheets[sheetIndex].notes = noteRes.notes;
+              break;
+          }
+        }
+
         break;
     }
   });
@@ -239,11 +208,17 @@ export const ReadMaimaiData = (sheetData: string) => {
     */
 };
 
-export const read_inote = (inoteOri: string) => {
+/**
+ * 读取maimaiDX谱面文件的inote属性
+ * @param inoteOri inote内容
+ * @returns
+ */
+export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } => {
   let currentBPM: number = 0;
   let currentNoteNumber: number = 0;
 
   let beatRes: Beat[] = [];
+  let notesRes: Note[] = [];
 
   let inote = inoteOri;
 
@@ -306,6 +281,10 @@ export const read_inote = (inoteOri: string) => {
       pos: '',
       slideTracks: [],
       type: NoteType.Empty,
+      beatIndex: 0,
+      partnotevalue: 0,
+      bpm: 0,
+      time: 0,
     };
     let hyoshiData = hyoshiDataOri;
 
@@ -487,10 +466,11 @@ export const read_inote = (inoteOri: string) => {
   //处理所有
   hyoshis.forEach((hyoshiGroup: string[], index) => {
     let beatT: Beat = {
-      notes: [],
+      //notes: [],
       notevalue: 0,
       bpm: 0,
       time: currentTime,
+      noteIndexes: [],
     };
 
     // (){}
@@ -530,13 +510,23 @@ export const read_inote = (inoteOri: string) => {
         beatT.time = beatRes[beatRes.length - 1].time + 3 / currentBPM;
       }
 
+      if (hyoshiGroup.length > 1 && res) {
+        res.isEach = true;
+      }
+
       // 终止标记
       if (hyoshi === 'E' && res) {
         res.type = NoteType.EndMark;
       }
 
       if (res !== null) {
-        beatT.notes.push(res);
+        res.beatIndex = beatRes.length;
+        res.time = beatT.time;
+        res.bpm = beatT.bpm;
+        res.partnotevalue = beatT.notevalue;
+
+        notesRes.push(res);
+        beatT.noteIndexes.push(notesRes.length - 1);
       }
     });
 
@@ -551,6 +541,7 @@ export const read_inote = (inoteOri: string) => {
     }
   });
 
-  console.log(beatRes);
-  return { beat: beatRes, length } as SubSheet;
+  console.log(beatRes, notesRes);
+
+  return { beats: beatRes, notes: notesRes };
 };
