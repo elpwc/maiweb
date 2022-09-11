@@ -16,12 +16,16 @@ export enum NoteIconType {
 }
 
 export enum NoteType {
+  Empty,
+
   Tap,
   Hold,
   Slide,
 
   Touch,
   TouchHold,
+
+  EndMark,
 }
 
 export interface SubSheet {
@@ -60,7 +64,7 @@ export interface Note {
   /** 位置 / 头位置 */
   pos: string;
 
-  type?: number;
+  type: number;
 
   // 伪EACH
   isNiseEach?: boolean;
@@ -297,7 +301,12 @@ export const read_inote = (inoteOri: string) => {
   // 分析单个note
   const hyoshiAnalyse = (hyoshiDataOri: string, index: number) => {
     //console.log(hyoshiDataOri, index);
-    let hyoshiRes: Note = { index, pos: '', slideTracks: [] };
+    let hyoshiRes: Note = {
+      index,
+      pos: '',
+      slideTracks: [],
+      type: NoteType.Empty,
+    };
     let hyoshiData = hyoshiDataOri;
 
     if (hyoshiData === '') {
@@ -505,10 +514,6 @@ export const read_inote = (inoteOri: string) => {
       hyoshiGroup[0] = hyoshiGroup[0].substring(0, hyoshiGroup[0].indexOf('{')) + hyoshiGroup[0].substring(hyoshiGroup[0].indexOf('}') + 1, hyoshiGroup[0].length);
     }
 
-    // // End
-    // if (hyoshiGroup[0] === 'E') {
-    // }
-
     beatT.bpm = currentBPM;
     beatT.notevalue = currentNoteNumber;
     beatT.time = currentTime;
@@ -523,6 +528,11 @@ export const read_inote = (inoteOri: string) => {
       isNiseEach = res?.isNiseEach ?? false;
       if (res?.isNiseEach) {
         beatT.time = beatRes[beatRes.length - 1].time + 3 / currentBPM;
+      }
+
+      // 终止标记
+      if (hyoshi === 'E' && res) {
+        res.type = NoteType.EndMark;
       }
 
       if (res !== null) {
