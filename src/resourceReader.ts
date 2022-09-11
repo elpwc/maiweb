@@ -19,10 +19,13 @@ import holdBodyIcon from './resource/img/hold_body.png';
 import holdIcon from './resource/img/hold.png';
 import holdEachIcon from './resource/img/hold_each.png';
 import holdExIcon from './resource/img/hold_ex.png';
-
 import holdShortIcon from './resource/img/short_hold.png';
 
+import touchIcon from './resource/img/UI_NOTES_Touch_01.png';
+import touchCenterIcon from './resource/img/UI_NOTES_Touch_Point.png';
 
+import touchEachIcon from './resource/img/UI_NOTES_Touch_Each_01.png';
+import touchEachCenterIcon from './resource/img/UI_NOTES_Touch_Each_Point.png';
 
 import tapSoundData from './resource/sound/tap.wav';
 import musicData from './resource/music/40mP - だんだん早くなる.mp3';
@@ -54,17 +57,23 @@ tapDoubleSlideEach.src = tapDoubleSlideEachIcon;
 export const tapDoubleSlideEx = new Image();
 tapDoubleSlideEx.src = tapDoubleSlideExIcon;
 
-
 export const hold = new Image();
 hold.src = holdIcon;
-
 export const holdHead = new Image();
 holdHead.src = holdHeadIcon;
 export const holdBody = new Image();
 holdBody.src = holdBodyIcon;
-
 export const holdShort = new Image();
 holdShort.src = holdShortIcon;
+
+export const touch = new Image();
+touch.src = touchIcon;
+export const touchCenter = new Image();
+touchCenter.src = touchCenterIcon;
+export const touchEach = new Image();
+touchEach.src = touchEachIcon;
+export const touchEachCenter = new Image();
+touchEachCenter.src = touchEachCenterIcon;
 
 export const tapSound = new Audio(tapSoundData);
 tapSound.volume = 0.6;

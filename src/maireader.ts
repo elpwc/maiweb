@@ -264,12 +264,29 @@ export const read_inote = (inoteOri: string) => {
     .replaceAll('`', '`速')
     .split(/,|`/)
     .map((e) => {
-      if (/^[0-9]+$/.test(e)) {
-        //连续数字为TAP EACH
-        return e.split('');
+      if (e.includes('(') || e.includes('{')) {
+        // 针对 (4)12 这样的情况（即简写的TAP EACH前带了拍数或BPM变换）
+        let endpos1 = e.lastIndexOf('}');
+        const endpos2 = e.lastIndexOf(')');
+        if (endpos2 > endpos1) endpos1 = endpos2;
+        const notesdata = e.substring(endpos1 + 1, e.length);
+        if (/^[0-9]+$/.test(notesdata)) {
+          //连续数字为TAP EACH
+          const tempRes = notesdata.split('');
+          tempRes[0] = e.substring(0, endpos1 + 1) + tempRes[0];
+          return tempRes;
+        } else {
+          //EACH
+          return e.split('/');
+        }
       } else {
-        //EACH
-        return e.split('/');
+        if (/^[0-9]+$/.test(e)) {
+          //连续数字为TAP EACH
+          return e.split('');
+        } else {
+          //EACH
+          return e.split('/');
+        }
       }
     });
 

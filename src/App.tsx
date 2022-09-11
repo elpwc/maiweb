@@ -20,6 +20,10 @@ import {
   tapSlideBreak,
   tapSlideEach,
   tapSlideEx,
+  touch,
+  touchCenter,
+  touchEach,
+  touchEachCenter,
 } from './resourceReader';
 
 const sheetdata = `
@@ -105,6 +109,8 @@ const sheetdata = `
 {24} 1xh[4:1]/2x,3,4,5,6,,,,,7x/8xh[4:1],6,5,4,3,,,,,1x,5,1,5,1,5,
 {8} 1h[4:1],,,4h[4:1]/6h[4:1],,,1/8w4[8:1],,
 {1} 8b>8[4:7]*<8[4:7]Cf,,,,,,,,,,E
+
+
 `;
 enum GameState {
   Standby,
@@ -122,9 +128,13 @@ const center = [canvasWidth / 2, canvasHeight / 2];
 
 const maimaiR = 350;
 const maimaiScreenR = maimaiR * 0.8;
-const maimaiJudgeLineR = (maimaiScreenR / 9) * 8;
-const maimaiSummonLineR = (maimaiScreenR / 9) * 2;
+const maimaiJudgeLineR = maimaiScreenR * 0.885;
+const maimaiSummonLineR = maimaiScreenR * 0.22;
 const maimaiTapR = (maimaiScreenR / 9) * 0.8;
+const maimaiBR = maimaiScreenR * 0.418;
+const maimaiER = maimaiScreenR * 0.574;
+
+const touchMaxDistance = maimaiTapR * 0.4;
 
 let bpm: number = 170;
 let noteNumber: number = 1;
@@ -134,7 +144,7 @@ const timerPeriod: number = 1;
 let tapMoveSpeed: number = 1;
 let tapEmergeSpeed: number = 0.2;
 
-let speed: number = 4;
+let speed: number = 3.3;
 
 let starttime: number = 0;
 let currentTime: number = 0;
@@ -425,13 +435,53 @@ const drawNoteGroup = (ctx: CanvasRenderingContext2D, beat: ShowingNoteProps) =>
 };
 
 const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = false, props: ShowingNoteProps) => {
-  let θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
-
-  let x = center[0] + (props.rho + maimaiSummonLineR) * Math.cos(θ);
-  let y = center[1] + (props.rho + maimaiSummonLineR) * Math.sin(θ);
-
-  let tx = 0,
+  let θ = 0,
+    x = 0,
+    y = 0,
+    tx = 0,
     ty = 0;
+
+  const firstWord = note.pos.substring(0, 1);
+  if (!isNaN(Number(firstWord))) {
+    // 数字开头的位置
+    θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
+    x = center[0] + (props.rho + maimaiSummonLineR) * Math.cos(θ);
+    y = center[1] + (props.rho + maimaiSummonLineR) * Math.sin(θ);
+  } else {
+    // 字母开头的位置（TOUCH）
+    const touchPos = note.pos.substring(1, 2);
+    switch (firstWord) {
+      case 'C':
+        x = center[0];
+        y = center[1];
+        break;
+      case 'A':
+        θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+        x = center[0] + maimaiScreenR * Math.cos(θ);
+        y = center[1] + maimaiScreenR * Math.sin(θ);
+        break;
+      case 'B':
+        θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+        x = center[0] + maimaiBR * Math.cos(θ);
+        y = center[1] + maimaiBR * Math.sin(θ);
+        break;
+      case 'D':
+        θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+        console.log('D', -1 / 4 + (1 / 4) * Number(touchPos), touchPos);
+        x = center[0] + maimaiScreenR * Math.cos(θ);
+        y = center[1] + maimaiScreenR * Math.sin(θ);
+        break;
+      case 'E':
+        θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+        console.log('E', -1 / 4 + (1 / 4) * Number(touchPos), touchPos);
+        x = center[0] + maimaiER * Math.cos(θ);
+        y = center[1] + maimaiER * Math.sin(θ);
+        break;
+      default:
+        break;
+    }
+  }
+
   if (note.type === NoteType.Hold) {
     tx = center[0] + (props.tailRho + maimaiSummonLineR) * Math.cos(θ);
     ty = center[1] + (props.tailRho + maimaiSummonLineR) * Math.sin(θ);
@@ -463,7 +513,7 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
       (props.radius * 2) / k,
       centerx,
       centery,
-      -22.5 + Number(note.pos) * 45 + (rotate ? (props.timer * 50000) / sheet.beats5?.beat[props.index].notes![props.noteIndex]!.slideTracks![0]!.remainTime! : 0)
+      -22.5 + Number(note.pos) * 45 + (rotate ? (props.timer * 50000) / note.slideTracks![0]!.remainTime! : 0)
     );
   };
 
@@ -493,6 +543,29 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
         drawRotationImage(ctx, imagehead, tx - props.radius / k, ty - props.radius / k, (props.radius * 2) / k, (imagehead.height - 30) / k, tx, ty, 157.5 + Number(note.pos) * 45);
       }
     }
+  };
+
+  const drawTouchImage = (image: HTMLImageElement, imageCenter: HTMLImageElement) => {
+    const centerx = x,
+      centery = y;
+    const k = 0.4,
+      centerk = 0.5;
+    console.log(note, props, x, y);
+    for (let i = 0; i < 4; i++) {
+      drawRotationImage(
+        ctx,
+        image,
+        x - (image.width * k) / 2,
+        y + (image.height * 0.20) / 2 - touchMaxDistance * (props.rho / (maimaiJudgeLineR - maimaiSummonLineR)),
+        image.width * k,
+        image.height * k,
+        x,
+        y,
+        90 * i,
+        props.radius / maimaiTapR
+      );
+    }
+    drawRotationImage(ctx, imageCenter, x - (imageCenter.width * centerk) / 2, y - (imageCenter.height * centerk) / 2, imageCenter.width * centerk, imageCenter.height * centerk);
   };
 
   switch (note.type) {
@@ -570,6 +643,11 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
       }
       break;
     case NoteType.Touch:
+      if (isEach) {
+        drawTouchImage(touchEach, touchEachCenter);
+      } else {
+        drawTouchImage(touch, touchCenter);
+      }
       break;
     case NoteType.TouchHold:
       break;
@@ -578,16 +656,18 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
 
 const drawSlide = () => {};
 
-const drawRotationImage = (ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, w: number, h: number, centerX?: number, centerY?: number, r?: number) => {
+const drawRotationImage = (ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, w: number, h: number, centerX?: number, centerY?: number, r?: number, alpha?: number) => {
   const TO_RADIANS = Math.PI / 180;
   if (centerX && centerY && r) {
     ctx.save(); //保存状态
 
     ctx.translate(centerX, centerY); //设置画布上的(0,0)位置，也就是旋转的中心点
     ctx.rotate(r * TO_RADIANS);
+    ctx.globalAlpha = alpha ?? 1;
     ctx.drawImage(image, x - centerX, y - centerY, w, h);
     ctx.restore(); //恢复状态
   } else {
+    ctx.globalAlpha = alpha ?? 1;
     ctx.drawImage(image, x, y, w, h);
   }
 };
