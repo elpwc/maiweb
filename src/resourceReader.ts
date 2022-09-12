@@ -13,21 +13,15 @@ import tapDoubleSlideBreakIcon from './resource/img/star_break_double.png';
 import tapDoubleSlideEachIcon from './resource/img/star_each_double.png';
 import tapDoubleSlideExIcon from './resource/img/star_ex_double.png';
 
-import holdHeadIcon from './resource/img/hold_head.png';
-import holdBodyIcon from './resource/img/hold_body.png';
-
-import holdEachHeadIcon from './resource/img/hold_each_head.png';
-import holdEachBodyIcon from './resource/img/hold_each_body.png';
-
-import holdExHeadIcon from './resource/img/hold_ex_head.png';
-import holdExBodyIcon from './resource/img/hold_ex_body.png';
-
 import holdIcon from './resource/img/hold.png';
 import holdEachIcon from './resource/img/hold_each.png';
 import holdExIcon from './resource/img/hold_ex.png';
+import holdMissIcon from './resource/img/hold_miss.png';
+
 import holdShortIcon from './resource/img/short_hold.png';
 import holdEachShortIcon from './resource/img/short_hold_each.png';
 import holdExShortIcon from './resource/img/short_hold_ex.png';
+import holdMissShortIcon from './resource/img/short_hold_miss.png';
 
 import touchIcon from './resource/img/UI_NOTES_Touch_01.png';
 import touchCenterIcon from './resource/img/UI_NOTES_Touch_Point.png';
@@ -43,6 +37,8 @@ import touchHoldGageIcon from './resource/img/UI_NOTES_Touch_Hold_hold.png';
 
 import tapSoundData from './resource/sound/tap.wav';
 import musicData from './resource/music/40mP - だんだん早くなる.mp3';
+
+export const holdHeadHeight: number = 70;
 
 export const tap = new Image();
 tap.src = tapIcon;
@@ -73,26 +69,23 @@ tapDoubleSlideEx.src = tapDoubleSlideExIcon;
 
 export const hold = new Image();
 hold.src = holdIcon;
-export const holdHead = new Image();
-holdHead.src = holdHeadIcon;
-export const holdBody = new Image();
-holdBody.src = holdBodyIcon;
 export const holdShort = new Image();
 holdShort.src = holdShortIcon;
 
-export const holdEachHead = new Image();
-holdEachHead.src = holdEachHeadIcon;
-export const holdEachBody = new Image();
-holdEachBody.src = holdEachBodyIcon;
+export const holdEach = new Image();
+holdEach.src = holdEachIcon;
 export const holdEachShort = new Image();
 holdEachShort.src = holdEachShortIcon;
 
-export const holdExHead = new Image();
-holdExHead.src = holdExHeadIcon;
-export const holdExBody = new Image();
-holdExBody.src = holdExBodyIcon;
+export const holdEx = new Image();
+holdEx.src = holdExIcon;
 export const holdExShort = new Image();
 holdExShort.src = holdExShortIcon;
+
+export const holdMiss = new Image();
+holdMiss.src = holdMissIcon;
+export const holdMissShort = new Image();
+holdMissShort.src = holdMissShortIcon;
 
 export const touch = new Image();
 touch.src = touchIcon;
