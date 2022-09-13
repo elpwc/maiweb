@@ -575,13 +575,14 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 
     beatRes.push(beatT);
 
-    beatRes = beatRes.sort((a: Beat, b: Beat) => {
-      return a.time - b.time;
-    });
-
     if (!isNiseEach) {
       currentTime += (240 / beatT.notevalue / beatT.bpm) * 1000;
     }
+  });
+
+  // 排序
+  beatRes.sort((a: Beat, b: Beat) => {
+    return a.time - b.time;
   });
 
   console.log(beatRes, notesRes);
