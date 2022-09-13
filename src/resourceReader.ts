@@ -8,6 +8,9 @@ import tapSlideBreakIcon from './resource/img/star_break.png';
 import tapSlideEachIcon from './resource/img/star_each.png';
 import tapSlideExIcon from './resource/img/star_ex.png';
 
+import slideTrackIcon from './resource/img/slide.png';
+import slideTrackEachIcon from './resource/img/slide_each.png';
+
 import tapDoubleSlideIcon from './resource/img/star_double.png';
 import tapDoubleSlideBreakIcon from './resource/img/star_break_double.png';
 import tapDoubleSlideEachIcon from './resource/img/star_each_double.png';
@@ -35,7 +38,7 @@ import touchHold3Icon from './resource/img/UI_NOTES_Touch_Hold_03.png';
 import touchHold4Icon from './resource/img/UI_NOTES_Touch_Hold_02.png';
 import touchHoldGageIcon from './resource/img/UI_NOTES_Touch_Hold_hold.png';
 
-import judgeArea from './resource/img/Outline_03.png'
+import judgeArea from './resource/img/Outline_03.png';
 
 import tapSoundData from './resource/sound/tap.wav';
 import musicData from './resource/music/40mP - だんだん早くなる.mp3';
@@ -59,6 +62,11 @@ export const tapSlideEach = new Image();
 tapSlideEach.src = tapSlideEachIcon;
 export const tapSlideEx = new Image();
 tapSlideEx.src = tapSlideExIcon;
+
+export const slideTrack = new Image();
+slideTrack.src = slideTrackIcon;
+export const slideTrackEach = new Image();
+slideTrackEach.src = slideTrackEachIcon;
 
 export const tapDoubleSlide = new Image();
 tapDoubleSlide.src = tapDoubleSlideIcon;

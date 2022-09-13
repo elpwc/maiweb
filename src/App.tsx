@@ -13,6 +13,8 @@ import {
   holdShort,
   judgeAreaImage,
   music,
+  slideTrack,
+  slideTrackEach,
   tap,
   tapBreak,
   tapDoubleSlide,
@@ -44,144 +46,8 @@ const sheetdata = `
 &wait=0
 &track=track.mp3
 &bg=bg.png
-&inote_5=(190){4}
-3h[4:14],,4,,4h[4:8],,5,,5h[4:6],,6,,6h[4:2],,4b,,
-6h[4:14],,5,,5h[4:8],,4,,4h[4:6],,3,,3h[4:2],,5b,,
-
-{8}
-6,,,,2-8[8:1]/3-8[8:1]/4-8[8:1],,,,6,,6,6,2-8[8:1]/3-8[18:1]/4-8[8:1],,,,
-6,,,,2-8[8:1]/3-8[8:1]/4-8[8:1],,,,,6,,6,2-8[8:1]/3-8[8:1]/4-8[8:1],6,432,,
-
-3,,,,5-1[8:1]/6-1[8:1]/7-1[8:1],,,3,,3,,3,5-1[8:1]/6-1[8:1]/7-1[8:1],,,,
-3,,,,5-1[8:1]/6-1[8:1]/7-1[8:1],,3,,
-
-{4}3>1[8:1]/4p8[8:1],,5q1[8:1]/6<8[8:1],,
-{16}45,,34,56,34,56,34,56,3-8[8:1]/4-8[8:1],,,,7b,,,,
-
-45,,2,4,3,,7,5,6,,2,4,3,,7,5,6,,2,4,3,,7,5,6b<1[8:1],,,,2,,,,
-45,,7,8,7,,45,,45,,2,1,2,,45,,3456,,3456,,2367,,2367,,
-1/2-4[8:1]*-5[8:1]/7-4[8:1]*-5[8:1]/8,,,,2b/7b,,,,
-
-45,,7,5,6,,2,4,3,,7,5,6,,2,4,3,,56,,78,,12,,3b>8[8:1]/4b,,,,7,,7,,
-{8}6,57,48,1h[8:2]/3,,8,26,35,,
-3478,,1256,,1h[8:2]/4h[8:2]/5h[8:2]/8h[8:2],,,
-
-{4}
-5w1[8:1],5,4w8[8:1],4,5w1[8:1],1?w5[8:1],5?w1[8:1],,
-
-{16}
-45,,7,5,6,,47,,56,,2,4,3,,25,,
-{4}3p7[8:1]*-8[8:1]/4-7[8:1]*q8[8:1],,
-1-3[8:1]*-4[8:1]*-5[8:1]*-6[8:1]*-7[8:1],1b,
-
-4w8[8:1],4,5w1[8:1],5,
-{8}1256,1256,2367,2367,3-1[8:1]/4-1[8:1]/7-5[8:1]/8-5[8:1],,,,
-2-4[8:1]*-5[8:1]/8-5[8:1]*-6[8:1],,28,,1-3[8:1]*-4[8:1]/7-4[8:1]*-5[8:1],,17,,
-{32}1b$,2$,3$,4$,5$,6$,7$,8$,1b$,2$,3$,4$,5$,6$,7$,8$,{4}1b-5[8:1],,
-
-{8}
-37,1-5[8:1],,1>3[8:1]*<7[8:1],,1-4[8:1]*-5[8:1]*-6[8:1],,1,,4,5,6,78,1,78,6,
-{16}7-4[8:1]*-5[8:1],8,7,8,7,,,,2-4[8:1]*-5[8:1],1,2,1,2,,,,
-13,,,,68,,,,{32}3456,2,7,1,8,,,,,2b/7b,,,,,,,
-
-{8}
-26,8-4[8:1],,8>2[8:1]*<6[8:1],,8-3[8:1]*-4[8:1]*-5[8:1],,8,,
-5,4,3,12,8,12,3,12,3,4,5,78,6,5,4,18,,,,45,,1b/2b/7b/8b,,
-
-{8}
-4/8<5[8:1],,4/8>3[8:1],,4/8-5[8:1],,4/8-3[8:1],,4/8V64[8:1],,4/8V24[8:1],,
-58,6,7,8,
-1-5[8:1]/2-4[8:1],,1-7[8:1]/2-6[8:1],,1-5[8:1]/2-4[8:1],,1-7[8:1]/2-6[8:1],,
-12,,4,4,5,28,4,71,
-
-1>4[8:1]/5,,1<6[8:1]/5,,1-4[8:1]/5,,1-6[8:1]/5,,1V35[8:1]/5,,1V75[8:1]/5,,
-14,3,2,1,
-78,6,45,3,12,3,45,6,1278,,,,45,,1b/2b/3b/6b/7b/8b,,
-
-1>4[8:1]*-4[8:1]/5,,1<6[8:1]*-6[8:1]/5,,1>4[8:1]*-4[8:1]/5,,1<6[8:1]*-6[8:1]/5,,
-1>4[8:1]*-4[8:1]/5,,1<6[8:1]*-6[8:1]/5,,14,3,2,1,
-
-1-6[8:1]/2-6[8:1]/7<6[8:1]/8-6[8:1],,1-4[8:1]/2>4[8:1]/7v4[8:1]/8-4[8:1],,
-1-6[8:1]/2-6[8:1]/7<6[8:1]/8-6[8:1],,1-4[8:1]/2>4[8:1]/7v4[8:1]/8-4[8:1],,
-1278,,35,35,4,17,5,28,
-
-4/8<5[8:1]*-5[8:1],,4/8>3[8:1]*-3[8:1],,4/8<5[8:1]*-5[8:1],,4/8>3[8:1]*-3[8:1],,
-4/8<5[8:1]*-5[8:1],,4/8>3[8:1]*-3[8:1],,48,5,6,7,
-
-{16}
-8,1,7,2,8,1,7,2,{32}8,7,6,5,4,3,2,1,8,7,6,5,4,3,2,1,8b,,,,,,,,
-{12}3,4,2,6,5,7,{32}56,12,7,3,8,4,1,5,{8}2b/6b,,
-
-7,5,8h[8:2],,1h[8:2],,4h[1:1],,2,,3,,4,,3,,
-2,4,1h[8:2],,8h[8:2],,5h[1:1],,7,,6,,5,,6,,
-7,5,8h[8:2],,2h[8:2],,6h[8:2],,34,,3h[8:2],,56,,
-6h[8:2]/7h[8:2],,45,,2h[8:2]/3h[8:2],,45,,
-18,,1-5[8:1]/2-5[8:1]/7-4[8:1]/8-4[8:1],,1278,,,,3b/6b,,
-
-2,4,1h[8:2],,8h[8:2],,5h[1:1]/6h[1:1],,7,,6,,5,,6,,
-7,5,8h[8:2],,1h[8:2],,3h[1:1]/4h[1:1],,2,,3,,4,,3,,
-2,4,1h[8:2],,7h[8:2],,5h[1:1]/6h[1:1],,6,,5,,6,,
-7h[8:4]/8h[8:4],,1,,6,,18,18,,1,1,2,34,2,56,7,
-
-{1}
-4$/5w1[8:4]/5qq1[8:4]/5pp1[8:4],
-{16}27,,4,5,4,,45,,67,,,,23,,,,
-{1}4w8[8:4]/4qq8[8:4]/4pp8[8:4],
-{16}27,,4,5,4,5,4,5,34,,,,8b,8b,8b,8b,
-
-8b,,,57,,,2/4h[8:3]/5h[8:3],,,,1b,,1b,,,,
-18,,,24,,,4h[8:3]/5h[8:3]/7,,,,8b,,8b,,,,
-18,,,57,,,2/4h[8:3]/5h[8:3],,,,1b,,1b,,,,
-18,,,23,,,457,,8b,,4b,5b,4b,5b,4b,5b,
-
-{8}
-4h[8:2],1,5h[8:2],8,4h[8:2],1,5h[8:2],8,
-4h[8:2],18,5h[8:2],18,4h[8:2],18,5h[8:2],18,
-48,48,37,37,26,26,15,15,
-
-{16}
-2,7,2,7,2,7,2,7,23,67,23,67,23,67,23,67,
-1w5[8:22],1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-1,1,1,1,1,,,,1,1,1,1,1,,,,1,1,1,1,1-5[8:1],,,,{4}1b/2b/8b,,
-
-{16}
-18,,2,4,3,,7,5,6,,2,1,2,,7,8,7,,
-2,1,4-2[8:1]*-1[8:1]*-6[8:1]*-7[8:1]*-8[8:1],,,,3b/4b/5b,,,,,,,,
-{32}12,,,,,,,,6h[8:1]/8,7,6,5,,,,,78,,,,,,,,1/3h[8:1],2,3,4,,,,,
-{8}18,27,36,45,
-4>1[8:1]*-1[8:1]*-2[8:1]*-8[8:1]/5-1[8:1]*-7[8:1]*-8[8:1]*<8[8:1],,4b/5b,,
-
-{16}
-18,,2,4,3,,7,5,6,,2,1,2,,7,8,7,,2,1,4,,
-7,8,5-1[8:1]*-2[8:1]*-3[8:1]*-7[8:1]*-8[8:1],,,,4b/5b/6b,,,,
-18,,7,8,7,,2,1,2,,48,,37,,1/2/5h[32:26]/6h[32:26],,,,
-{32}1,2,3,4,,,,,2,1,8,7,,,,,1,2,3,4,,,,,,,,,
-
-{16}
-12,,3,4,3,,6,5,6,,8,7,8,,1,2,1>4[8:1],,,,
-{32}1<6[8:1],2,3,4,,,,,
-1w5[8:1]*-5[8:1]*s5[8:1]*z5[8:1],8,7,6,,,,,1b,,,,,,,,,
-
-1<5[8:1]/8,,,,,,,,1/6h[8:1]8,7,6,5,,,,1/8>4[8:1],,,,,,,,2h[8:1]/8,1,2,3,4,,,,
-{8}18,27,36,45,
-4>1[8:1]*-1[8:1]*-2[8:1]*-8[8:1]*w8[8:1]/5-1[8:1]*w1[8:1]*-7[8:1]*<8[8:1]*-8[8:1],,3b/4b/5b/6b,,
-
-{16}
-45,,2,4,3,,7,5,6,,1,4,3,,
-{8}78,24,57,13,68,2b/3b/6b/7b,,1b/4b/5b/8b,,
-
-{32}
-1b,2,3,4,5h[8:3],,,,18,,,,18,,,,8b,7,6,5,4h[8:3],,,,18,,,,18,,,,
-{16}1,8,2,7,1,8,3,6h[8:4],{32}1b,2,3,4,5,6,7,8,1b,2,3,4,5,6,7,8,
-
-{8}
-1b>8[4:5],,,,,,,,1<5[4:1],,,,,,,
-{16}8z4[4:3],8,{8}8,{4},,,,
-
-(47.5){32}
-,2h[16:4]/6h[16:4]/2?-6[32:1],
-
-{4},,,E
+&inote_5=(210)
+{1} ,1-5[1:1],E
 
 `;
 enum GameState {
@@ -293,7 +159,7 @@ const starttimer = () => {
   starttime = performance.now();
 
   //console.log(sheet.beats5?.beat);
-  timer1 = setInterval(reader, timerPeriod);
+  timer1 = setInterval(reader_and_updater, timerPeriod);
   //timer2 = setInterval(updater, timerPeriod);
   timer3 = setInterval(drawer, timerPeriod);
 };
@@ -307,7 +173,7 @@ let songdata: Song;
 
 let currentSheet: Sheet;
 
-/** 在判定线停留的时间 */
+/** 在判定线停留的时间 ms */
 let judgeLineRemainTime: number = 100;
 
 /** 初始化谱面 */
@@ -322,15 +188,23 @@ const readSheet = () => {
 const calculate_emerge_move_time_of_notes = (notesOri: Note[]) => {
   const notes = notesOri;
   notes.forEach((note: Note, i: number) => {
-    const emergingTime = maimaiTapR / ((tapEmergeSpeed * speed) / timerPeriod);
-    const movingTime = (maimaiJudgeLineR - maimaiSummonLineR) / ((tapMoveSpeed * speed) / timerPeriod);
-    notes[i].moveTime = notes[i].time - movingTime;
-    notes[i].emergeTime = notes[i].time - movingTime - emergingTime;
+    if (note.type === NoteType.SlideTrack) {
+      const emergingTime = (maimaiJudgeLineR - maimaiSummonLineR) / ((tapMoveSpeed * speed) / timerPeriod);
+      notes[i].moveTime = note.time - note.remainTime!;
+      notes[i].emergeTime = note.time - note.remainTime! - note.stopTime! - emergingTime;
+      notes[i].guideStarEmergeTime = note.time - note.remainTime! - note.stopTime!;
+    } else {
+      const emergingTime = maimaiTapR / ((tapEmergeSpeed * speed) / timerPeriod);
+      const movingTime = (maimaiJudgeLineR - maimaiSummonLineR) / ((tapMoveSpeed * speed) / timerPeriod);
+      notes[i].moveTime = note.time - movingTime;
+      notes[i].emergeTime = note.time - movingTime - emergingTime;
+    }
   });
 
   return notes;
 };
 
+/** 当前绘制的Note，包含各类实时变化量 */
 interface ShowingNoteProps {
   /** 所在的Beat的index */
   beatIndex: number;
@@ -342,11 +216,15 @@ interface ShowingNoteProps {
    * -2: stop at judge line -1: die 0: emerge 1:move
    * HOLD:
    * -2: stop at judge line -1: die 0: emerge 1: grow 2: move 3: disappear 4: fill(充满 长度暂时不改变)
+   * SLIDE TRACK:
+   * -2: stop at judge line -1: die 0: emerge 1: hangup 2: move
    */
   status: number;
   radius: number;
   // 位置
   rho: number;
+  // 仅适用于SLIDE TRACK，GUIDE STAR半径
+  guideStarRadius?: number;
 
   // 从生成到消亡的不间断变化量
   timer: number;
@@ -356,10 +234,10 @@ interface ShowingNoteProps {
 
   isEach: boolean;
 }
-
+/** 当前绘制的所有Notes */
 let showingNotes: ShowingNoteProps[] = [];
 
-// 下一个note标号
+/** 下一个note标号 */
 let nextNoteIndex = 0;
 
 /**
@@ -373,7 +251,20 @@ const touchConvergeCurrentRho = (c: number, m: number, t: number) => {
   return (touchMaxDistance * c * (c - m)) / (t * (t - m));
 };
 
-const reader = async () => {
+/*
+　いちおう此処にてちょっと解説したげるにゃ！
+
+　このプログラムの基礎がreader・updater・drawerという３つの互いに独立的なtimerなのじゃ
+　そしてこれらのtimerが現在表示するノーツの集合showingNotesに対して繰り返し操作しながら、画面を作り出すのじゃ！
+
+　readerはsongdataから次の表示するノーツをshowingNotesに読み込んで、またnextNoteIndexを1加算するヤツなのじゃ
+　あとupdaterがshowingNotesのアイテム１つ１つの状態を更新するのじゃ
+　最後にdrawerがshowingNotesの値でcanvasに描くのじゃ
+　簡単にゃろ！
+
+　ここは便利のためreaderとupdaterを1つのtimerにしたんにゃ
+ */
+const reader_and_updater = async () => {
   currentTime = performance.now() - starttime - advancedTime;
 
   //updater
@@ -382,69 +273,62 @@ const reader = async () => {
     const newNote = note;
     const type = currentSheet.notes[note.noteIndex].type;
 
+    const noteIns = currentSheet.notes[note.noteIndex];
+
     switch (type) {
+      /////////////////////////////// TAP ///////////////////////////////
       case NoteType.Tap:
         if (newNote.status === 0) {
           // emerge
-          newNote.radius =
-            ((currentTime - currentSheet.notes[note.noteIndex].emergeTime!) / (currentSheet.notes[note.noteIndex].moveTime! - currentSheet.notes[note.noteIndex].emergeTime!)) * maimaiTapR;
+          newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
 
-          if (currentTime >= currentSheet.notes[note.noteIndex].moveTime!) {
+          if (currentTime >= noteIns.moveTime!) {
             newNote.status = 1;
           }
         } else if (newNote.status === 1) {
           // move
-          newNote.rho =
-            ((currentTime - currentSheet.notes[note.noteIndex].moveTime!) / (currentSheet.notes[note.noteIndex].time! - currentSheet.notes[note.noteIndex].moveTime!)) *
-            (maimaiJudgeLineR - maimaiSummonLineR);
+          newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
           if (newNote.rho > maimaiScreenR + maimaiTapR) {
             newNote.status = -2;
           }
         }
         break;
+      /////////////////////////////// HOLD ///////////////////////////////
       case NoteType.Hold:
         if (newNote.status === 0) {
           //emerge
-          newNote.radius =
-            ((currentTime - currentSheet.notes[note.noteIndex].emergeTime!) / (currentSheet.notes[note.noteIndex].moveTime! - currentSheet.notes[note.noteIndex].emergeTime!)) * maimaiTapR;
+          newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
 
-          if (currentTime >= currentSheet.notes[note.noteIndex].moveTime!) {
+          if (currentTime >= noteIns.moveTime!) {
             newNote.status = 1;
           }
         } else if (newNote.status === 1) {
           // grow
-          newNote.rho =
-            ((currentTime - currentSheet.notes[note.noteIndex].moveTime!) / (currentSheet.notes[note.noteIndex].time! - currentSheet.notes[note.noteIndex].moveTime!)) *
-            (maimaiJudgeLineR - maimaiSummonLineR);
+          newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
-          if (currentTime >= currentSheet.notes[note.noteIndex].time!) {
+          if (currentTime >= noteIns.time!) {
             newNote.status = 2;
           }
-          if (currentTime >= currentSheet.notes[note.noteIndex].remainTime! + currentSheet.notes[note.noteIndex].moveTime!) {
+          if (currentTime >= noteIns.remainTime! + noteIns.moveTime!) {
             newNote.status = 2;
           }
         } else if (newNote.status === 2) {
           // move
-          if (currentSheet.notes[note.noteIndex].time! < currentSheet.notes[note.noteIndex].moveTime! + currentSheet.notes[note.noteIndex].remainTime!) {
+          if (noteIns.time! < noteIns.moveTime! + noteIns.remainTime!) {
             // HOLD长度大于maimaiJudgeLine-maimaiSummonLine
-            if (currentTime >= currentSheet.notes[note.noteIndex].moveTime! + currentSheet.notes[note.noteIndex].remainTime!) {
+            if (currentTime >= noteIns.moveTime! + noteIns.remainTime!) {
               newNote.status = 3;
             }
           } else {
             // HOLD长度小于maimaiJudgeLine-maimaiSummonLine
 
-            newNote.tailRho =
-              ((currentTime - currentSheet.notes[note.noteIndex].moveTime! - currentSheet.notes[note.noteIndex].remainTime!) /
-                (currentSheet.notes[note.noteIndex].time! - currentSheet.notes[note.noteIndex].moveTime!)) *
-              (maimaiJudgeLineR - maimaiSummonLineR);
+            newNote.tailRho = ((currentTime - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
-            newNote.rho =
-              ((currentTime - currentSheet.notes[note.noteIndex].moveTime!) / (currentSheet.notes[note.noteIndex].time! - currentSheet.notes[note.noteIndex].moveTime!)) *
-              (maimaiJudgeLineR - maimaiSummonLineR);
+            newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
-            if (currentTime >= currentSheet.notes[note.noteIndex].time!) {
-              if (currentSheet.notes[note.noteIndex].isShortHold) {
+            if (currentTime >= noteIns.time!) {
+              if (noteIns.isShortHold) {
                 newNote.status = -2;
               } else {
                 newNote.status = 3;
@@ -453,37 +337,34 @@ const reader = async () => {
           }
         } else if (newNote.status === 3) {
           // die
-          newNote.tailRho =
-            ((currentTime - currentSheet.notes[note.noteIndex].moveTime! - currentSheet.notes[note.noteIndex].remainTime!) /
-              (currentSheet.notes[note.noteIndex].time! - currentSheet.notes[note.noteIndex].moveTime!)) *
-            (maimaiJudgeLineR - maimaiSummonLineR);
+          newNote.tailRho = ((currentTime - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
-          if (currentTime >= currentSheet.notes[note.noteIndex].time! + currentSheet.notes[note.noteIndex].remainTime!) {
+          if (currentTime >= noteIns.time! + noteIns.remainTime!) {
             newNote.status = -1;
           }
         } else if (newNote.status === -2) {
           // stop
-          if (currentTime >= currentSheet.notes[note.noteIndex].time! + judgeLineRemainTime) {
+          if (currentTime >= noteIns.time! + judgeLineRemainTime) {
             newNote.status = -1;
           }
         }
         newNote.timer++;
         break;
+      /////////////////////////////// TOUCH HOLD ///////////////////////////////
       case NoteType.TouchHold:
         if (newNote.status === 0) {
           //emerge
-          newNote.radius =
-            ((currentTime - currentSheet.notes[note.noteIndex].emergeTime!) / (currentSheet.notes[note.noteIndex].moveTime! - currentSheet.notes[note.noteIndex].emergeTime!)) * maimaiTapR;
+          newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
 
-          if (currentTime > currentSheet.notes[note.noteIndex].moveTime!) {
+          if (currentTime > noteIns.moveTime!) {
             newNote.status = 1;
           }
         } else if (newNote.status === 1) {
           // converge
-          newNote.rho = touchConvergeCurrentRho(currentTime, currentSheet.notes[note.noteIndex].moveTime!, currentSheet.notes[note.noteIndex].time!);
+          newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
 
-          if (currentTime >= currentSheet.notes[note.noteIndex].time!) {
-            if (currentSheet.notes[note.noteIndex].isShortHold) {
+          if (currentTime >= noteIns.time!) {
+            if (noteIns.isShortHold) {
               newNote.status = -2;
             } else {
               newNote.status = 2;
@@ -491,65 +372,94 @@ const reader = async () => {
           }
         } else if (newNote.status === 2) {
           // save
-          newNote.tailRho = ((currentTime - currentSheet.notes[note.noteIndex].time!) / currentSheet.notes[note.noteIndex].remainTime!) * 2 * Math.PI;
+          newNote.tailRho = ((currentTime - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
 
-          if (currentTime >= currentSheet.notes[note.noteIndex].time! + currentSheet.notes[note.noteIndex].remainTime!) {
+          if (currentTime >= noteIns.time! + noteIns.remainTime!) {
             newNote.status = -2;
           }
         } else if (newNote.status === -2) {
           // stop
-          if (currentTime >= currentSheet.notes[note.noteIndex].time! + (currentSheet.notes[note.noteIndex].remainTime! ?? 0) + judgeLineRemainTime) {
+          if (currentTime >= noteIns.time! + (noteIns.remainTime! ?? 0) + judgeLineRemainTime) {
             newNote.status = -1;
           }
         }
         newNote.timer++;
         break;
+      /////////////////////////////// TOUCH ///////////////////////////////
       case NoteType.Touch:
         if (newNote.status === 0) {
           // emerge
-          newNote.radius =
-            ((currentTime - currentSheet.notes[note.noteIndex].emergeTime!) / (currentSheet.notes[note.noteIndex].moveTime! - currentSheet.notes[note.noteIndex].emergeTime!)) * maimaiTapR;
+          newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
 
-          if (currentTime >= currentSheet.notes[note.noteIndex].moveTime!) {
+          if (currentTime >= noteIns.moveTime!) {
             newNote.status = 1;
           }
         } else if (newNote.status === 1) {
           // converge
-          newNote.rho = touchConvergeCurrentRho(currentTime, currentSheet.notes[note.noteIndex].moveTime!, currentSheet.notes[note.noteIndex].time!);
+          newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
 
-          if (currentTime >= currentSheet.notes[note.noteIndex].time!) {
+          if (currentTime >= noteIns.time!) {
             newNote.status = -2;
           }
         } else if (newNote.status === -2) {
           // stop
           newNote.rho = touchMaxDistance;
-          if (currentTime >= currentSheet.notes[note.noteIndex].time! + judgeLineRemainTime) {
+          if (currentTime >= noteIns.time! + judgeLineRemainTime) {
             newNote.status = -1;
           }
         }
         newNote.timer++;
         break;
-      default:
+      /////////////////////////////// SLIDE TRACK ///////////////////////////////
+      case NoteType.SlideTrack:
         if (newNote.status === 0) {
           // emerge
-          newNote.radius =
-            ((currentTime - currentSheet.notes[note.noteIndex].emergeTime!) / (currentSheet.notes[note.noteIndex].moveTime! - currentSheet.notes[note.noteIndex].emergeTime!)) * maimaiTapR;
+          newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.guideStarEmergeTime! - noteIns.emergeTime!)) * maimaiTapR;
 
-          if (currentTime >= currentSheet.notes[note.noteIndex].moveTime!) {
+          if (currentTime >= noteIns.guideStarEmergeTime!) {
             newNote.status = 1;
           }
         } else if (newNote.status === 1) {
-          // move
-          newNote.rho =
-            ((currentTime - currentSheet.notes[note.noteIndex].moveTime!) / (currentSheet.notes[note.noteIndex].time! - currentSheet.notes[note.noteIndex].moveTime!)) *
-            (maimaiJudgeLineR - maimaiSummonLineR);
+          // hangup
+          newNote.guideStarRadius = ((currentTime - noteIns.guideStarEmergeTime!) / (noteIns.moveTime! - noteIns.guideStarEmergeTime!)) * maimaiTapR;
 
-          if (currentTime >= currentSheet.notes[note.noteIndex].time!) {
+          if (currentTime >= noteIns.moveTime!) {
+            newNote.status = 2;
+          }
+        } else if (newNote.status === 2) {
+          // move
+          newNote.rho = (currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!);
+          if (currentTime >= noteIns.time!) {
             newNote.status = -2;
           }
         } else if (newNote.status === -2) {
           // stop
-          if (currentTime >= currentSheet.notes[note.noteIndex].time! + judgeLineRemainTime) {
+          newNote.rho = touchMaxDistance;
+          if (currentTime >= noteIns.time! + judgeLineRemainTime) {
+            newNote.status = -1;
+          }
+        }
+        newNote.timer++;
+        break;
+      /////////////////////////////// SLIDE TAP ///////////////////////////////
+      default:
+        if (newNote.status === 0) {
+          // emerge
+          newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
+
+          if (currentTime >= noteIns.moveTime!) {
+            newNote.status = 1;
+          }
+        } else if (newNote.status === 1) {
+          // move
+          newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+
+          if (currentTime >= noteIns.time!) {
+            newNote.status = -2;
+          }
+        } else if (newNote.status === -2) {
+          // stop
+          if (currentTime >= noteIns.time! + judgeLineRemainTime) {
             newNote.status = -1;
           }
         }
@@ -863,6 +773,13 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
     }
   };
 
+  const drawSlideTrackImage = (imageTrack: HTMLImageElement, imageStar: HTMLImageElement) => {
+    // TRACK
+
+    // GUIDE STAR
+    //drawRotationImage(ctx, imageStar, x, y, props.guideStarRadius!, props.guideStarRadius!, x, y, 0, props.guideStarRadius! / maimaiTapR);
+  };
+
   switch (note.type) {
     case NoteType.Tap:
       if (isEach) {
@@ -943,13 +860,18 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
     case NoteType.TouchHold:
       drawTouchHoldImage(note.isShortHold);
       break;
+    case NoteType.SlideTrack:
+      if (isEach) {
+        drawSlideTrackImage(slideTrackEach, tapSlide);
+      } else {
+        drawSlideTrackImage(slideTrack, tapSlide);
+      }
+      break;
     case NoteType.EndMark:
       //finish();
       break;
   }
 };
-
-const drawSlide = () => {};
 
 /**
  * 画图
@@ -1045,7 +967,7 @@ function App() {
               clearInterval(timer3);
               setGameState(GameState.Stop);
             } else if (gameState === GameState.Stop) {
-              timer1 = setInterval(reader, timerPeriod);
+              timer1 = setInterval(reader_and_updater, timerPeriod);
               //timer2 = setInterval(updater, timerPeriod);
               timer3 = setInterval(drawer, timerPeriod);
               setGameState(GameState.Play);

@@ -16,6 +16,7 @@ export enum NoteType {
   Tap,
   Hold,
   Slide,
+  SlideTrack,
 
   Touch,
   TouchHold,
@@ -50,7 +51,7 @@ export interface SlideTrack {
 
 /** 一个Note */
 export interface Note {
-  // 顺序
+  /** 顺序 (实际好像没用过？) */
   index: number;
 
   isBreak?: boolean;
@@ -78,10 +79,16 @@ export interface Note {
   /**  持续时间/ms（HOLD）*/
   remainTime?: number;
 
-  // 以下2个属性在生成後由speed之类的决定
-  /** 浮现时间/ms */
+  // 以下2个属性（还有下面的guideStarEmergeTime）在生成後由speed之类的决定
+  /**
+   * 浮现时间/ms
+   *  对于TRACK: TRACK浮现时间（其实就是SLIDE TAP的movetime喵
+   * */
   emergeTime?: number;
-  /** 移动时间/ms */
+  /**
+   * 移动时间/ms
+   *  对于TRACK: GUIDE STAR开始移动的时间
+   */
   moveTime?: number;
 
   isEach?: boolean;
@@ -94,6 +101,16 @@ export interface Note {
   bpm: number;
   // 触发时间
   time: number;
+
+  // 以下仅适用于SlideTrack
+  slideType?: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V';
+  endPos?: string;
+  turnPos?: string;
+  /**  ため時間 */
+  stopTime?: number;
+  // 以下在生成後由speed之类的决定
+  /** GUIDE STAR开始浮现的时间 */
+  guideStarEmergeTime?: number;
 }
 
 /** 一个谱面 */
@@ -128,8 +145,6 @@ export const ReadMaimaiData = (sheetData: string) => {
     availableDifficulties: [],
     sheets: [],
   };
-
-  const predeeledSheets: Sheet[] = new Array(7);
 
   sheetData.split('&').map((e) => {
     const splitPos = e.indexOf('=');
@@ -530,6 +545,31 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 
         notesRes.push(res);
         beatT.noteIndexes.push(notesRes.length - 1);
+
+        // 加入SLIDE TRACK
+        if (res.type === NoteType.Slide) {
+          res.slideTracks?.forEach((slideTrack: SlideTrack) => {
+            const tempSlideTrackNote: Note = {
+              index: res.index,
+              pos: res.pos,
+              type: NoteType.SlideTrack,
+              beatIndex: -1,
+              partnotevalue: res.partnotevalue,
+              bpm: res.bpm,
+              time: res.time + slideTrack.stopTime! + slideTrack.remainTime!,
+              slideType: slideTrack.slideType,
+              endPos: slideTrack.endPos,
+              turnPos: slideTrack.turnPos,
+              /**  ため時間 */
+              stopTime: slideTrack.stopTime,
+              remainTime: slideTrack.remainTime,
+              notenumber: slideTrack.notenumber,
+              notevalue: slideTrack.notevalue,
+              isEach: res.slideTracks!.length > 1,
+            };
+            notesRes.push(tempSlideTrackNote);
+          });
+        }
       }
     });
 
