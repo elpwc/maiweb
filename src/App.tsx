@@ -649,7 +649,7 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
           touchHoldPieces[i].height * k,
           x,
           y,
-          -45 + 90 * i,
+          135 + 90 * i,
           props.radius / maimaiTapR
         );
       }
@@ -666,7 +666,7 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
             touchHoldPieces[i].height * k,
             x,
             y,
-            -45 + 90 * i,
+            135 + 90 * i,
             props.radius / maimaiTapR
           );
         }
@@ -682,7 +682,7 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
             touchHoldPieces[i].height * k,
             x,
             y,
-            -45 + 90 * i,
+            135 + 90 * i,
             props.radius / maimaiTapR
           );
         }

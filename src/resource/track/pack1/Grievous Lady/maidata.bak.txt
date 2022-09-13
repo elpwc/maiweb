@@ -7,8 +7,8 @@
 &track=track.mp3
 &bg=bg.png
 &lv_5=12
-&inote_1=(60){4},
-Chf[1:1],
+&inote_1=(180){4},
+1p4[1:1],
 E
 &inote_5=(210)
 {1} ,
