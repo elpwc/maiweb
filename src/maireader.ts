@@ -7,6 +7,7 @@ export enum Difficulty {
   Master,
   ReMaster,
   Original,
+  Utage,
 }
 
 export enum NoteType {
@@ -102,6 +103,8 @@ export interface Sheet {
   level: number;
   notes: Note[];
   beats: Beat[];
+
+  utageType?: string;
 }
 
 /** 一整首收录的乐曲信息 */
