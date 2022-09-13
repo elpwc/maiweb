@@ -35,6 +35,8 @@ import touchHold3Icon from './resource/img/UI_NOTES_Touch_Hold_03.png';
 import touchHold4Icon from './resource/img/UI_NOTES_Touch_Hold_02.png';
 import touchHoldGageIcon from './resource/img/UI_NOTES_Touch_Hold_hold.png';
 
+import judgeArea from './resource/img/Outline_03.png'
+
 import tapSoundData from './resource/sound/tap.wav';
 import musicData from './resource/music/40mP - だんだん早くなる.mp3';
 
@@ -106,6 +108,9 @@ export const touchHold4 = new Image();
 touchHold4.src = touchHold4Icon;
 export const touchHoldGage = new Image();
 touchHoldGage.src = touchHoldGageIcon;
+
+export const judgeAreaImage = new Image();
+judgeAreaImage.src = judgeArea;
 
 export const tapSound = new Audio(tapSoundData);
 tapSound.volume = 0.6;
