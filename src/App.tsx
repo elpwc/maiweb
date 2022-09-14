@@ -1,7 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { finished } from 'stream';
 import './App.css';
+import {
+  canvasWidth,
+  canvasHeight,
+  center,
+  maimaiScreenR,
+  maimaiJudgeLineR,
+  maimaiR,
+  timerPeriod,
+  maimaiSummonLineR,
+  maimaiTapR,
+  touchMaxDistance,
+  maimaiBR,
+  maimaiER,
+  trackItemWidth,
+  trackItemHeight,
+  trackItemGap,
+} from './global';
 import { Beat, Note, NoteType, ReadMaimaiData, Sheet, Song } from './maireader';
+import { π } from './math';
 
 import {
   hold,
@@ -37,6 +55,8 @@ import {
   touchHold4,
   touchHoldGage,
 } from './resourceReader';
+import { getTrackProps } from './slideTracks/tracks';
+import { trackLength } from './slideTracks/_global';
 
 const sheetdata = `
 &title=sweet little sister
@@ -47,20 +67,7 @@ const sheetdata = `
 &track=track.mp3
 &bg=bg.png
 &inote_5=(210)
-{1} ,
-{8} 3h[4:1]/5,,4,,3,3,5,4,6,6,4,5,
-{4} 4/6h[4:1],5,35,4,46,B2/5,35,4/B7,35,46,3xh[4:1]/7V53[4:3],,2,2,1h[2:1],,C,B4,2V46[4:3]/6h[4:1],,7,7,8h[2:1],,C/B5,,4xh[4:1]/7xh[4:3],,E5,E3,2xh[4:3]/5xh[4:1],,E5,E7,
-{2} 4xh[4:1]/7xh[4:1],5h[4:1]/7h[4:1],6h[4:1]/7h[4:1],7h[4:1]/8x,1x/2h[4:1],2h[4:1]/3h[4:1],2h[4:1]/4h[4:1],
-{4} 36,1-5[23.3333333333#72:1]/8-4[23.3333333333#72:1],
-{1} 1h[4:7]/8h[4:7],,
-{8} 1b/8b,,,3/6h[8:3],,,5h[8:3],,,4h[8:3],,,3x,,4x/5x,,2h[8:3]/7x,,,3h[8:3],,,4h[8:3],,,5h[8:3],,,6x,5x,4x/7x,,3h[8:3]/6x,,,2h[8:3],,,1h[8:3],,,8h[8:3],,,7x,,1x/6x,,2x/8h[8:3],,,6h[8:3],,,4h[8:3],,,2h[8:3],,,1x,3x/8x,4x/7x,,3h[8:3],,4,6h[8:3],,5,3h[8:3],,4,6h[8:3],,5,4x-8[8:1],,3x,,2h[8:3],,1,7h[8:3],,8,2h[8:3],,1,7h[8:3],,8,2x,3x/6x,4x/5x,,7h[8:3],,5,2h[8:3],,4,7h[8:3],,5,2h[8:3],,4,7x-3[8:1],,1x,,2h[8:3],,1,7h[8:3],,5,
 {4} 3p6[4:1],4b,,1x/8x,4x/5x,2b-5[8:1]/6b,2/8-4[8:1],3-8[8:1]/8,3/5-1[8:1],2>5[8:1]/5,28,17,
-{8} 34,2,
-{4} 1x/8V64[8:1],4-8[8:1],8-4[8:1],4,
-{16} 1x/8x,,6,5,6,5,6,5,8x,,3,4,3,4,3,4,
-{4} 2x-5[8:1],2/6-2[8:1],4-8[8:1]/6,48,16,
-{8} 56,47,38,
-{16} 2,1,2,,18,,2x/7x,,6,5,7,,3,4,2,,6,5,7,,3,4,
 {8} 3>8[8:1],,7,7<4[8:1],,1,
 {4} 1b,3b/7b-4[8:1],1-5[8:1]/7,1/6-1[8:1],4-8[8:1]/6,4/7<4[8:1],17,
 {8} 12,3,46,7,1V35[8:1]/8x,,5-1[8:1],,1-5[8:1],,5,,
@@ -123,6 +130,7 @@ const sheetdata = `
 {1} 8b>8[4:7]*<8[4:7]Cf,,,,,,,,,,E
 
 
+
 `;
 enum GameState {
   Standby,
@@ -132,23 +140,6 @@ enum GameState {
 }
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
-
-const canvasWidth = 700;
-const canvasHeight = 700;
-
-const center = [canvasWidth / 2, canvasHeight / 2];
-
-const maimaiR = 350;
-const maimaiScreenR = maimaiR * 0.8;
-const maimaiJudgeLineR = maimaiScreenR * 0.885;
-const maimaiSummonLineR = maimaiScreenR * 0.22;
-const maimaiTapR = (maimaiScreenR / 9) * 0.8;
-const maimaiBR = maimaiScreenR * 0.418;
-const maimaiER = maimaiScreenR * 0.574;
-
-const touchMaxDistance = maimaiTapR * 0.8;
-
-const timerPeriod: number = 15;
 
 let tapMoveSpeed: number = 1;
 let tapEmergeSpeed: number = 0.2;
@@ -175,28 +166,6 @@ const drawBackground = () => {
   ctx.fill();
   ctx.strokeStyle = 'gray';
   ctx.stroke();
-
-  // ctx.beginPath();
-  // ctx.arc(center[0], center[1], maimaiJudgeLineR, 0, 2 * Math.PI);
-  // ctx.strokeStyle = 'white';
-  // ctx.stroke();
-
-  // ctx.beginPath();
-  // ctx.arc(center[0], center[1], maimaiSummonLineR, 0, 2 * Math.PI);
-  // ctx.strokeStyle = '#333333';
-  // ctx.stroke();
-
-  // const ρ = maimaiJudgeLineR;
-  // const θ = -1 / 8;
-
-  // const judgeDotWidth = 5;
-
-  // for (let i = 0; i < 8; i++) {
-  //   ctx.beginPath();
-  //   ctx.arc(center[0] + ρ * Math.cos((θ + i / 4) * Math.PI), center[1] + ρ * Math.sin((θ + i / 4) * Math.PI), judgeDotWidth, 0, 2 * Math.PI);
-  //   ctx.fillStyle = '#fff';
-  //   ctx.fill();
-  // }
 
   const k = 1.02;
   ctx.drawImage(judgeAreaImage, center[0] - maimaiJudgeLineR * k, center[1] - maimaiJudgeLineR * k, maimaiJudgeLineR * k * 2, maimaiJudgeLineR * k * 2);
@@ -370,6 +339,11 @@ const reader_and_updater = async () => {
           if (newNote.rho > maimaiScreenR + maimaiTapR) {
             newNote.status = -2;
           }
+        } else if (newNote.status === -2) {
+          // stop
+          if (currentTime >= noteIns.time! + judgeLineRemainTime) {
+            newNote.status = -1;
+          }
         }
         break;
       /////////////////////////////// HOLD ///////////////////////////////
@@ -492,7 +466,7 @@ const reader_and_updater = async () => {
       case NoteType.SlideTrack:
         if (newNote.status === 0) {
           // emerge
-          newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.guideStarEmergeTime! - noteIns.emergeTime!)) * maimaiTapR;
+          newNote.radius = (currentTime - noteIns.emergeTime!) / (noteIns.guideStarEmergeTime! - noteIns.emergeTime!);
 
           if (currentTime >= noteIns.guideStarEmergeTime!) {
             newNote.status = 1;
@@ -506,13 +480,13 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === 2) {
           // move
-          newNote.rho = (currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!);
+          newNote.rho = currentTime - noteIns.moveTime!;
           if (currentTime >= noteIns.time!) {
             newNote.status = -2;
           }
         } else if (newNote.status === -2) {
           // stop
-          newNote.rho = touchMaxDistance;
+          newNote.rho = noteIns.time;
           if (currentTime >= noteIns.time! + judgeLineRemainTime) {
             newNote.status = -1;
           }
@@ -520,6 +494,29 @@ const reader_and_updater = async () => {
         newNote.timer++;
         break;
       /////////////////////////////// SLIDE TAP ///////////////////////////////
+      case NoteType.Slide:
+        if (newNote.status === 0) {
+          // emerge
+          newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
+
+          if (currentTime >= noteIns.moveTime!) {
+            newNote.status = 1;
+          }
+        } else if (newNote.status === 1) {
+          // move
+          newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+
+          if (currentTime >= noteIns.time!) {
+            newNote.status = -2;
+          }
+        } else if (newNote.status === -2) {
+          // stop
+          if (currentTime >= noteIns.time! + judgeLineRemainTime) {
+            newNote.status = -1;
+          }
+        }
+        newNote.timer++;
+        break;
       default:
         if (newNote.status === 0) {
           // emerge
@@ -578,20 +575,28 @@ const reader_and_updater = async () => {
   //console.log(nextNoteIndex, showingNotes);
 };
 
-const drawer = async () => {
-  const el: HTMLCanvasElement = document.getElementsByClassName('canvasFloat')[0] as HTMLCanvasElement;
-  const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
+let ctx_notes: CanvasRenderingContext2D;
 
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+let ctx_slideTrack: CanvasRenderingContext2D;
+
+const initCtx = () => {
+  ctx_notes = (document.getElementsByClassName('canvasNotes')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
+
+  ctx_slideTrack = (document.getElementsByClassName('canvasSlideTrack')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
+};
+
+const drawer = async () => {
+  ctx_notes.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx_slideTrack.clearRect(0, 0, canvasWidth, canvasHeight);
 
   //不用foreach是为了从里往外，这样外侧的才会绘制在内侧Note之上
   for (let i = showingNotes.length - 1; i >= 0; i--) {
     const note = showingNotes[i];
-    drawNote(ctx, currentSheet.notes[note.noteIndex]!, note.isEach, note);
+    drawNote(ctx_notes, ctx_slideTrack, currentSheet.notes[note.noteIndex]!, note.isEach, note);
   }
 };
 
-const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = false, props: ShowingNoteProps) => {
+const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRenderingContext2D, note: Note, isEach: boolean = false, props: ShowingNoteProps) => {
   let θ = 0,
     x = 0,
     y = 0,
@@ -852,9 +857,51 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
   };
 
   const drawSlideTrackImage = (imageTrack: HTMLImageElement, imageStar: HTMLImageElement) => {
-    // TRACK
-    // GUIDE STAR
-    //drawRotationImage(ctx, imageStar, x, y, props.guideStarRadius!, props.guideStarRadius!, x, y, 0, props.guideStarRadius! / maimaiTapR);
+    let tempendpos = Number(note.endPos) - (Number(note.pos) - 1);
+    if (tempendpos < 1) tempendpos += 8;
+    const trackItemGapTime = (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos));
+
+    console.log(trackLength(note.slideType!, Number(note.pos), Number(note.endPos)), trackItemGapTime);
+
+    ctx_slideTrack.save();
+    ctx_slideTrack.translate(center[0], center[1]);
+    ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+
+    for (let i = 0; i < note.remainTime!; i += trackItemGapTime) {
+      const slideData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!);
+      drawRotationImage(
+        ctx_slideTrack,
+        imageTrack,
+        slideData.x - trackItemWidth / 2 - center[0],
+        slideData.y - trackItemHeight / 2 - center[1],
+        trackItemWidth,
+        trackItemHeight,
+        slideData.x - center[0],
+        slideData.y - center[1],
+        slideData.direction,
+        props.radius
+      );
+    }
+    ctx_slideTrack.restore();
+
+    ctx.save();
+    ctx.translate(center[0], center[1]);
+    ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+
+    const guideStarData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), props.rho, note.remainTime!);
+    drawRotationImage(
+      ctx,
+      imageStar,
+      guideStarData.x - props.guideStarRadius! * 2 - center[0],
+      guideStarData.y - props.guideStarRadius! * 2 - center[1],
+      props.guideStarRadius! * 4,
+      props.guideStarRadius! * 4,
+      guideStarData.x - center[0],
+      guideStarData.y - center[1],
+      guideStarData.direction,
+      props.guideStarRadius! / maimaiTapR
+    );
+    ctx.restore();
   };
 
   switch (note.type) {
@@ -939,7 +986,7 @@ const drawNote = (ctx: CanvasRenderingContext2D, note: Note, isEach: boolean = f
       break;
     case NoteType.SlideTrack:
       if (isEach) {
-        drawSlideTrackImage(slideTrackEach, tapSlide);
+        drawSlideTrackImage(slideTrackEach, tapSlideEach);
       } else {
         drawSlideTrackImage(slideTrack, tapSlide);
       }
@@ -1024,6 +1071,8 @@ function App() {
   useEffect(() => {
     // 暂时用来等待图像加载，後面再解决
     setTimeout(() => {
+      initCtx();
+
       drawBackground();
       drawOver();
     }, 500);
@@ -1033,10 +1082,11 @@ function App() {
     <div className="App">
       <div className="canvasContainer">
         <canvas className="canvasMain" height="700" width="700" />
-        <canvas className="canvasFloat" height="700" width="700" />
+        <canvas className="canvasSlideTrack" height="700" width="700" />
+        <canvas className="canvasNotes" height="700" width="700" />
         <canvas className="canvasOver" height="700" width="700" />
       </div>
-      <div style={{ position: 'absolute', zIndex: 3 }}>
+      <div style={{ position: 'absolute', zIndex: 114514 }}>
         <button
           onClick={() => {
             if (gameState === GameState.Standby) {
@@ -1057,108 +1107,7 @@ function App() {
         >
           {gameState === GameState.Play ? 'stop' : 'start'}
         </button>
-        <button
-          onClick={() => {
-            const sheetdata = `
-          &title=sweet little sister
-&wholebpm=168
-&lv_5=11
-&seek=5
-&wait=0
-&track=track.mp3
-&bg=bg.png
-&inote_5= (168){4} 
-1-5[8:1],,8-4[8:1],,2-5[8:1],,7-4[8:1], 
-{8} 
-,,,2,,2,,5,,5,,7,,7,,4,,4, 
-{4} 
-5-7[8:1],,4-2[8:1],,6-8[8:1],,3-1[8:1],, 
-{8} 
-8-6[8:1],,1-3[8:1],,7-5[8:1],,2-4[8:1],, 
-8-4[8:1],,1-5[8:1],,,,,, 
-1h[4:1],,2h[4:1],,3h[4:1],,4h[4:1],, 
-5h[4:1],,6h[4:1],,7h[4:1],,8,, 
-8h[4:1],,7h[4:1],,6h[4:1],,5h[4:1],,4h[4:1],,3h[4:1],,2h[4:1],,1,, 
-1v2[8:1],,,,5v6[8:1],,,,3v4[8:1],,,,7v8[8:1],,,, 
-1-5[8:1],,8-4[8:1],,2-6[8:1],,7-3[8:1],,1^4[8:1],,8^5[8:1],,1-5[8:1],,,, 
-,,7-4[8:1],,1-3[8:1],,5h[4:3],,,,3,,3,, 
-1h[4:1],,7h[8:3],,,5h[8:3],,,8,,,,8,,1,2,3,, 
-,,8q5[8:1],,2,,1p4[8:1],,7 
-,,8q6[8:1],,2,,1p3[8:1],,7 
-,,,,,,12,,,,78,,1,8,27,, 
-1-5[16:3],82,,,8-4[16:3],17,,, 
-2-6[16:3],13,,,7-3[16:3],86,,, 
-1-5[16:3],82,,,8-4[16:3],17,,, 
-2-6[16:3],13,,,7-3[16:3],86,,, 
-2-4[8:1],,1-4[8:1],,8-4[8:1],,7-4[8:1],, 
-1-4[8:1],,7-4[8:1],,8-4[8:1],,,, 
-{16}3,2,1,8,7,6,5,4,3,2,1,8,7,6,5,4, 
-3h[4:3]{8},,,,7h[4:1],,,,15,,73,, 
-8v6[8:1]/4v2[8:1],,,, 
-8^3[8:1],7,6,,4^7[8:1],3,2,,4,8,6,2,8,1,27,, 
-{16}6,,8,,1,,3,,24,,6,5,6,,57,, 
-{8}45,45,34,34,56,,,, 
-1-3[8:1],7,5,,8-6[8:1],2,4,,3,7,5,1,8,1,27,, 
-{16}2h[4:2],,3,,4,,5,,7,,5,6,5,,4,, 
-{8}5-1[8:1],,,,1b/2b,,7b/8b,, 
-1^6[8:1],2,3,,5^2[8:1],6,7,,5,1,3,7,1,8,27,, 
-{16}3,,1,,8,,6,,75,,3,4,3,,24,, 
-{8}45,45,56,56,34,,,, 
-2-6[8:1],8,4,,7-3[8:1],1,5,,2,4,7,5,3,6,18,, 
-{16}3h[4:2],,2,,1,,8,,6,,8,7,8,,1,, 
-{12}2b/7b,,,,,,,,,,,, 
-3,4,3,6,5,6,3,4,3,6b/7b,,3b/4b,,1b/8b,, 
-3,4,2,6,5,7,3,6,3,1b/8b,,6b/7b,,3b/4b,, 
-2,4,3,7,5,6,2,7,2,6b/8b,,4b/5b,,1b/3b,, 
-2,8,1,7,1,8,4,5,4,3b/7b,,1b/5b,,2b/6b,, 
-{8}2h[4:3],,1,,3,,8h[4:4],,7,,1,,6,,3,, 
-3h[4:3],,4,,2,,6h[4:3],,5,,7,,4h[4:1],,2,, 
-8h[4:2],,7,,1h[4:2],,2,, 
-8h[4:1],,6h[4:1],,4h[4:1],,2,, 
-1h[4:1],,2h[4:1],,5h[4:1],,6h[4:1],, 
-7h[4:1],,8h[4:1],,3h[4:1],,4,, 
-2^4[8:1],,5,,6^8[8:1],,1,, 
-1-5[8:1],,7,,7-4[8:1],,2,, 
-5^7[8:1],,4,,3^1[8:1],,8,, 
-2-6[8:1],,1-5[8:1],,8-4[8:1],,1,, 
-1-5[16:3],,1/8-4[16:3],,8/2-5[16:3],,5,, 
-7-4[16:3],,7/1-5[16:3],,1/8-4[16:3],,8,, 
-1-3[16:3],,1/7-5[16:3],,7/4-8[16:3],,4,, 
-37,, 
-1z5[4:1],,,,,, 
-3-7[8:1],,1,,5-1[8:1],,3,, 
-2,2,8^3[8:1],7,6,,34,56,(175),1,5,3,7, 
-{16} 
-1,6,4,,8,, 
-{8}2^5[4:1],,6,7,8^3[4:1],,4,, 
-(176)2q7[8:1],,8,,6^3[8:1],,1,, 
-8,1,8-4[8:1],1,8-5[8:1],,,7h[8:3], 
-,5,2h[4:1],4,7, 
-{16} 
-1,8,1,,36,, 
-{8} 
-(177)7-5[8:1],,1-5[8:1],,8-5[8:1],,,, 
-(181)2-6[8:1],1,8,7,(182)6^1[8:1],5,4,3 
-(183),2,8,4,6,15,,37(184),4^7[8:1]/8 
-,,3,2,1,82, 
-{16}1,6,4,,35,, 
-(185){8}45,45,34,34,56,,18,, 
-(186)6^3[8:1],7,8,1,2q7[8:1],3,4,5, 
-(187)6,5,4,3,18,,12,78, 
-(188),7,5,3,17,1{16}8,3,5,,46,, 
-(189){8}15,37,26,48,12,57,25,78, 
-(190)2,,1,,8,,2>7[1:1]/5z1[1:1] 
-{1},, 
-E
-
-          `;
-
-            const res = ReadMaimaiData(sheetdata);
-            console.log(res);
-          }}
-        >
-          read
-        </button>
+        <button onClick={() => {}}>read</button>
       </div>
     </div>
   );

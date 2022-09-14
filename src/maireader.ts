@@ -418,7 +418,7 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
               //slide = slide.substring(0, slide.indexOf('['));
 
               currentSlideTrackRes.remainTime = (240_000 * currentSlideTrackRes.notenumber) / (currentBPM * currentSlideTrackRes.notevalue);
-              currentSlideTrackRes.stopTime = 240_000 / noteValue_and_noteNumber[0];
+              currentSlideTrackRes.stopTime = 60_000 / noteValue_and_noteNumber[0];
             } else {
               const noteValue_and_noteNumber_original_data_split_by_numbersign = noteValue_and_noteNumber_original_data.split('#').map((e) => {
                 return Number(e);
@@ -426,7 +426,7 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
               if (noteValue_and_noteNumber_original_data_split_by_numbersign.length === 2) {
                 // [持续时间BPM#秒]
                 currentSlideTrackRes.remainTime = noteValue_and_noteNumber_original_data_split_by_numbersign[1] * 1000;
-                currentSlideTrackRes.stopTime = 240_000 / noteValue_and_noteNumber_original_data_split_by_numbersign[0];
+                currentSlideTrackRes.stopTime = 60_000 / noteValue_and_noteNumber_original_data_split_by_numbersign[0];
               } else {
                 // [持续时间秒##秒]
                 currentSlideTrackRes.remainTime = noteValue_and_noteNumber_original_data_split_by_numbersign[1] * 1000;
@@ -443,15 +443,14 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 
             currentSlideTrackRes.remainTime = (240 * currentSlideTrackRes.notenumber * 1000) / (currentBPM * currentSlideTrackRes.notevalue);
             currentSlideTrackRes.stopTime = 60_000 / currentBPM;
+          }
+          currentSlideTrackRes.slideType = slide.substring(0, 1) as '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V';
 
-            currentSlideTrackRes.slideType = slide.substring(0, 1) as '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V';
-
-            if (currentSlideTrackRes.slideType === 'V') {
-              currentSlideTrackRes.turnPos = slide.substring(1, 2);
-              currentSlideTrackRes.endPos = slide.substring(2, 3);
-            } else {
-              currentSlideTrackRes.endPos = slide.substring(1, 2);
-            }
+          if (currentSlideTrackRes.slideType === 'V') {
+            currentSlideTrackRes.turnPos = slide.substring(1, 2);
+            currentSlideTrackRes.endPos = slide.substring(2, 3);
+          } else {
+            currentSlideTrackRes.endPos = slide.substring(1, 2);
           }
 
           hyoshiData = hyoshiData.substring(0, hyoshiData.indexOf('['));
