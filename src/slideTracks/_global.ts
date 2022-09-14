@@ -7,6 +7,12 @@ for (let i = 1; i <= 8; i++) {
   APositions.push([center[0] + maimaiJudgeLineR * Math.cos((-5 / 8 + (1 / 4) * i) * Math.PI), center[1] + maimaiJudgeLineR * Math.sin((-5 / 8 + (1 / 4) * i) * Math.PI)]);
 }
 
+const szk = (APositions[2][1] - APositions[6][1]) / (APositions[2][0] - APositions[6][0]);
+
+// sz轨迹的左右拐点
+export const szLeftPoint: [number, number] = [APositions[7][0], szk * APositions[7][0] + APositions[2][1] - APositions[2][0] * szk];
+export const szRightPoint: [number, number] = [APositions[0][0], szk * APositions[0][0] + APositions[2][1] - APositions[2][0] * szk];
+
 export const centerCircleR = maimaiScreenR * 0.356;
 
 export const leftRightCircleCenterR = maimaiScreenR * 0.402;
@@ -71,7 +77,7 @@ export const trackLength = (type: string, startPos: number, endPosOri: number): 
 
       break;
     case 'v':
-      break;
+      return maimaiJudgeLineR * 2;
     case 'p':
       break;
     case 'q':
@@ -81,9 +87,9 @@ export const trackLength = (type: string, startPos: number, endPosOri: number): 
     case 'qq':
       break;
     case 's':
-      break;
+      return maimaiJudgeLineR * 2.9932;
     case 'z':
-      break;
+      return maimaiJudgeLineR * 2.9932;
     case 'V':
       break;
     case 'w':
