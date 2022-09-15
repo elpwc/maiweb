@@ -28,6 +28,7 @@ import { ShowingNoteProps } from '../enums/showingNoteProps';
 import { clearArcFun } from './drawUtils/_base';
 import { judgeAreaImage } from './resourceReader';
 import { drawNote } from './drawUtils/drawNotes';
+import { Area, areas, initAreas, whichArea } from './areas';
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
@@ -61,6 +62,18 @@ const drawBackground = () => {
 
   const k = 1.02;
   ctx.drawImage(judgeAreaImage, center[0] - maimaiJudgeLineR * k, center[1] - maimaiJudgeLineR * k, maimaiJudgeLineR * k * 2, maimaiJudgeLineR * k * 2);
+
+  areas.forEach((area: Area) => {
+    if (area.type !== 'C') {
+      ctx.beginPath();
+      area.points.forEach((p: [number, number], i) => {
+        ctx.lineTo(p[0], p[1]);
+      });
+      ctx.lineTo(area.points[0][0], area.points[0][1]);
+      ctx.strokeStyle = 'red';
+      ctx.stroke();
+    }
+  });
 };
 
 const drawOver = () => {
@@ -455,6 +468,23 @@ const drawer = async () => {
   }
 };
 
+const onClick = (e: Event) => {
+  // @ts-ignore
+  const area = whichArea(e.clientX, e.clientY);
+  console.log(e, area);
+};
+
+//设置事件处理程序
+function initEvent() {
+  var el = document.getElementsByClassName('canvasOver')[0];
+  el.addEventListener('click', onClick, false);
+  // el.addEventListener("touchstart", handleStart, false);
+  // el.addEventListener("touchend", handleEnd, false);
+  // el.addEventListener("touchcancel", handleCancel, false);
+  // el.addEventListener("touchleave", handleEnd, false);
+  // el.addEventListener("touchmove", handleMove, false);
+}
+
 interface Props {
   gameState: GameState;
   setGameState: (gameState: GameState) => void;
@@ -466,6 +496,8 @@ export default (props: Props) => {
     // 暂时用来等待图像加载，後面再解决
     setTimeout(() => {
       initCtx();
+      initAreas();
+      initEvent();
 
       drawBackground();
       drawOver();

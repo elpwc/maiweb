@@ -1,3 +1,5 @@
+import { sqrt } from '../../math';
+
 /**
  * 画图
  * @param ctx
@@ -63,4 +65,40 @@ export const clearArcFun = (x: number, y: number, r: number, cxt: CanvasRenderin
       clearArc(x, y, radius);
     }
   }
+};
+
+/** 点是否在线段围成的多边形内 */
+export const isInner = (x: number, y: number, points: [number, number][]): boolean => {
+  // 射线(?)最右x
+  let rightMaxX: number = 0;
+  points.forEach((p) => {
+    if (p[0] > rightMaxX) {
+      rightMaxX = p[0];
+    }
+  });
+  rightMaxX++;
+
+  let crossNum: number = 0;
+  for (let i = 0; i < points.length; i++) {
+    const res = judgeIntersect(x, y, rightMaxX, y, points[i][0], points[i][1], points[i === points.length - 1 ? 0 : i + 1][0], points[i === points.length - 1 ? 0 : i + 1][1]);
+    if (res) crossNum++;
+  }
+
+  return crossNum % 2 === 1;
+};
+
+/** 线段相交 */
+export const judgeIntersect = (x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x4: number, y4: number) => {
+  if (!(Math.min(x1, x2) <= Math.max(x3, x4) && Math.min(y3, y4) <= Math.max(y1, y2) && Math.min(x3, x4) <= Math.max(x1, x2) && Math.min(y1, y2) <= Math.max(y3, y4))) return false;
+
+  let u, v, w, z;
+  u = (x3 - x1) * (y2 - y1) - (x2 - x1) * (y3 - y1);
+  v = (x4 - x1) * (y2 - y1) - (x2 - x1) * (y4 - y1);
+  w = (x1 - x3) * (y4 - y3) - (x4 - x3) * (y1 - y3);
+  z = (x2 - x3) * (y4 - y3) - (x4 - x3) * (y2 - y3);
+  return u * v <= 0.00000001 && w * z <= 0.00000001;
+};
+
+export const lineLen = (x1: number, y1: number, x2: number, y2: number) => {
+  return sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
 };
