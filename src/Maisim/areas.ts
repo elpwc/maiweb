@@ -22,7 +22,7 @@ const ar1 = 0.735294 * maimaiJudgeLineR,
   er3 = (8.4 / 17) * maimaiJudgeLineR;
 
 /** 点在哪个区 */
-export const whichArea = (x: number, y: number) => {
+export const whichArea = (x: number, y: number): Area | undefined => {
   if (lineLen(center[0], center[1], x, y) <= maimaiSummonLineR) {
     return areas.find((area) => {
       return area.name === 'C';

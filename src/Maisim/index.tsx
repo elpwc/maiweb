@@ -29,6 +29,7 @@ import { clearArcFun } from './drawUtils/_base';
 import { judgeAreaImage } from './resourceReader';
 import { drawNote } from './drawUtils/drawNotes';
 import { Area, areas, initAreas, whichArea } from './areas';
+import { drawAllTouchingAreas } from './drawUtils/drawTouchingAreas';
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
@@ -63,17 +64,18 @@ const drawBackground = () => {
   const k = 1.02;
   ctx.drawImage(judgeAreaImage, center[0] - maimaiJudgeLineR * k, center[1] - maimaiJudgeLineR * k, maimaiJudgeLineR * k * 2, maimaiJudgeLineR * k * 2);
 
-  areas.forEach((area: Area) => {
-    if (area.type !== 'C') {
-      ctx.beginPath();
-      area.points.forEach((p: [number, number], i) => {
-        ctx.lineTo(p[0], p[1]);
-      });
-      ctx.lineTo(area.points[0][0], area.points[0][1]);
-      ctx.strokeStyle = 'red';
-      ctx.stroke();
-    }
-  });
+  // 判定区的线
+  // areas.forEach((area: Area) => {
+  //   if (area.type !== 'C') {
+  //     ctx.beginPath();
+  //     area.points.forEach((p: [number, number], i) => {
+  //       ctx.lineTo(p[0], p[1]);
+  //     });
+  //     ctx.lineTo(area.points[0][0], area.points[0][1]);
+  //     ctx.strokeStyle = 'red';
+  //     ctx.stroke();
+  //   }
+  // });
 };
 
 const drawOver = () => {
@@ -461,28 +463,161 @@ const drawer = async () => {
   ctx_notes.clearRect(0, 0, canvasWidth, canvasHeight);
   ctx_slideTrack.clearRect(0, 0, canvasWidth, canvasHeight);
 
-  //不用foreach是为了从里往外，这样外侧的才会绘制在内侧Note之上
+  // 高亮点击的区域
+  drawAllTouchingAreas(ctx_notes, currentTouchingArea);
+
+  // 不用foreach是为了从里往外，这样外侧的才会绘制在内侧Note之上
   for (let i = showingNotes.length - 1; i >= 0; i--) {
     const note = showingNotes[i];
     drawNote(ctx_notes, ctx_slideTrack, currentSheet.notes[note.noteIndex]!, note.isEach, note);
   }
 };
 
-const onClick = (e: Event) => {
+const onMouseDown = (e: Event) => {
   // @ts-ignore
   const area = whichArea(e.clientX, e.clientY);
-  console.log(e, area);
+  if (area) {
+    currentTouchingArea.push({
+      area,
+      pressTime: currentTime,
+    });
+  }
+
+  console.log(currentTouchingArea);
+};
+const onMouseUp = (e: Event) => {
+  // @ts-ignore
+  const area = whichArea(e.clientX, e.clientY);
+  if (area) {
+    currentTouchingArea = currentTouchingArea.filter((ta) => {
+      return ta.area.name !== area.name;
+    });
+  }
+  console.log(currentTouchingArea);
+};
+
+const onTouchStart = (ev: Event) => {
+  ev.preventDefault(); //阻止事件的默认行为
+  const e = ev as TouchEvent;
+  const touches: TouchList = e.targetTouches;
+
+  for (let i = 0; i < touches.length; i++) {
+    const area = whichArea(touches[i].clientX, touches[i].clientY);
+    if (area) {
+      if (
+        currentTouchingArea.find((ta) => {
+          return ta.area.name === area.name;
+        }) === undefined
+      ) {
+        currentTouchingArea.push({
+          area,
+          pressTime: currentTime,
+        });
+      }
+    }
+  }
+  console.log(currentTouchingArea);
+};
+const onTouchEnd = (ev: Event) => {
+  ev.preventDefault(); //阻止事件的默认行为
+  const e = ev as TouchEvent;
+  const touches: TouchList = e.changedTouches;
+
+  for (let i = 0; i < touches.length; i++) {
+    const area = whichArea(touches[i].clientX, touches[i].clientY);
+    if (area) {
+      currentTouchingArea = currentTouchingArea.filter((ta) => {
+        return ta.area.name !== area.name;
+      });
+    }
+  }
+  console.log(e);
+};
+const onTouchCancel = (ev: Event) => {
+  ev.preventDefault(); //阻止事件的默认行为
+  const e = ev as TouchEvent;
+  const touches: TouchList = e.changedTouches;
+
+  for (let i = 0; i < touches.length; i++) {
+    const area = whichArea(touches[i].clientX, touches[i].clientY);
+    if (area) {
+      currentTouchingArea = currentTouchingArea.filter((ta) => {
+        return ta.area.name !== area.name;
+      });
+    }
+  }
+};
+const onTouchLeave = (ev: Event) => {
+  ev.preventDefault(); //阻止事件的默认行为
+  const e = ev as TouchEvent;
+  const touches: TouchList = e.changedTouches;
+
+  for (let i = 0; i < touches.length; i++) {
+    const area = whichArea(touches[i].clientX, touches[i].clientY);
+    if (area) {
+      currentTouchingArea = currentTouchingArea.filter((ta) => {
+        return ta.area.name !== area.name;
+      });
+    }
+  }
+};
+const onTouchMove = (ev: Event) => {
+  ev.preventDefault(); //阻止事件的默认行为
+  const e = ev as TouchEvent;
+  const touches: TouchList = e.changedTouches;
+
+  let tempTouchingArea: TouchArea[] = [];
+
+  for (let i = 0; i < touches.length; i++) {
+    const area = whichArea(touches[i].clientX, touches[i].clientY);
+    if (area) {
+      if (
+        tempTouchingArea.find((ta) => {
+          return ta.area.name === area.name;
+        }) === undefined
+      ) {
+        tempTouchingArea.push({
+          area,
+          pressTime: currentTime,
+        });
+      }
+    }
+    // 新增的
+    for (let i = 0; i < tempTouchingArea.length; i++) {
+      if (
+        currentTouchingArea.find((ta) => {
+          return ta.area.name === tempTouchingArea[i].area.name;
+        }) === undefined
+      ) {
+        currentTouchingArea.push(tempTouchingArea[i]);
+      }
+    }
+    // 离开的
+    for (let i = 0; i < currentTouchingArea.length; i++) {
+      if (
+        // eslint-disable-next-line no-loop-func
+        tempTouchingArea.find((ta) => {
+          return ta.area.name === currentTouchingArea[i].area.name;
+        }) === undefined
+      ) {
+        currentTouchingArea = currentTouchingArea.filter((ta, j) => {
+          return j !== i;
+        });
+      }
+    }
+  }
 };
 
 //设置事件处理程序
 function initEvent() {
-  var el = document.getElementsByClassName('canvasOver')[0];
-  el.addEventListener('click', onClick, false);
-  // el.addEventListener("touchstart", handleStart, false);
-  // el.addEventListener("touchend", handleEnd, false);
-  // el.addEventListener("touchcancel", handleCancel, false);
-  // el.addEventListener("touchleave", handleEnd, false);
-  // el.addEventListener("touchmove", handleMove, false);
+  const el = document.getElementsByClassName('canvasOver')[0];
+  el.addEventListener('mousedown', onMouseDown, false);
+  el.addEventListener('mouseup', onMouseUp, false);
+  el.addEventListener('touchstart', onTouchStart, false);
+  el.addEventListener('touchend', onTouchEnd, false);
+  el.addEventListener('touchcancel', onTouchCancel, false);
+  el.addEventListener('touchleave', onTouchLeave, false);
+  el.addEventListener('touchmove', onTouchMove, false);
 }
 
 interface Props {

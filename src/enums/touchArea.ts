@@ -1,4 +1,6 @@
+import { Area } from "../Maisim/areas";
+
 export interface TouchArea {
-  area: string;
+  area: Area;
   pressTime: number;
 }
