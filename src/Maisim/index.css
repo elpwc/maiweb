@@ -32,3 +32,17 @@ canvas {
   left: 0;
   z-index: 30;
 }
+
+.canvasKeys {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 40;
+}
+
+.canvasEvent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 114513;
+}

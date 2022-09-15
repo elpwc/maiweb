@@ -1,4 +1,4 @@
-import { ShowingNoteProps } from '../../enums/showingNoteProps';
+import { ShowingNoteProps } from '../../utils/showingNoteProps';
 import { π } from '../../math';
 import { center, maimaiSummonLineR, maimaiScreenR, maimaiBR, maimaiER, touchMaxDistance, maimaiTapR, trackItemGap, trackItemWidth, trackItemHeight } from '../global';
 import { Note, NoteType } from '../maireader';
@@ -302,8 +302,6 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
     let tempendpos = Number(note.endPos) - (Number(note.pos) - 1);
     if (tempendpos < 1) tempendpos += 8;
     const trackItemGapTime = (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos));
-
-    console.log(trackLength(note.slideType!, Number(note.pos), Number(note.endPos)), trackItemGapTime);
 
     ctx_slideTrack.save();
     ctx_slideTrack.translate(center[0], center[1]);

@@ -1,15 +1,21 @@
-import { cos, sin, π } from '../math';
+import { abs, atan, cos, sin, π } from '../math';
 import { isInner, lineLen } from './drawUtils/_base';
-import { center, maimaiJudgeLineR, maimaiScreenR, maimaiSummonLineR } from './global';
+import { center, keyInnerR, keyOuterR, keyWidth, maimaiJudgeLineR, maimaiScreenR, maimaiSummonLineR } from './global';
 
 export interface Area {
   type: string;
   id: number;
   name: string;
   points: [number, number][];
+
+  // 适用于key
+  leftAngle?: number;
+  rightAngle?: number;
 }
 
 export let areas: Area[] = [];
+
+export let keys: Area[] = [];
 
 const ar1 = 0.735294 * maimaiJudgeLineR,
   ar2 = 0.67647 * maimaiJudgeLineR,
@@ -23,9 +29,25 @@ const ar1 = 0.735294 * maimaiJudgeLineR,
 
 /** 点在哪个区 */
 export const whichArea = (x: number, y: number): Area | undefined => {
-  if (lineLen(center[0], center[1], x, y) <= maimaiSummonLineR) {
+  const r = lineLen(center[0], center[1], x, y);
+  if (r <= maimaiSummonLineR) {
     return areas.find((area) => {
       return area.name === 'C';
+    });
+  } else if (r <= keyOuterR && r >= keyInnerR) {
+    const angle1 = atan((x - center[0]) / (y - center[1]));
+    let resAngle = 0;
+    if (y > center[1]) {
+      resAngle = 0.5 * π - angle1;
+    } else {
+      if (x > center[0]) {
+        resAngle = 0.5 * π - angle1 - π;
+      } else {
+        resAngle = 0.5 * π - angle1 + π;
+      }
+    }
+    return keys.find((area: Area) => {
+      return area.type === 'K' && resAngle >= area.leftAngle! && resAngle <= area.rightAngle!;
     });
   } else {
     return areas.find((area: Area) => {
@@ -111,6 +133,18 @@ export const initAreas = () => {
         [cx + er3 * cos((i * 0.25 - 0.5) * π), cy + er3 * sin((i * 0.25 - 0.5) * π)],
         [cx + er2 * cos((i * 0.25 - 0.5 - 0.073) * π), cy + er2 * sin((i * 0.25 - 0.5 - 0.073) * π)],
       ],
+    });
+  }
+
+  //K
+  for (let i = 0; i < 8; i++) {
+    keys.push({
+      type: 'K',
+      id: i + 1,
+      name: 'K' + (i + 1).toString(),
+      points: [],
+      leftAngle: (i * 0.25 - 0.5 + 0.125 - keyWidth) * π,
+      rightAngle: (i * 0.25 - 0.5 + 0.125 + keyWidth) * π,
     });
   }
 };

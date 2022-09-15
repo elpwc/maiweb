@@ -8,6 +8,10 @@ export const tan = (num: number): number => {
   return Math.tan(num);
 };
 
+export const atan = (num: number): number => {
+  return Math.atan(num);
+}
+
 export const abs = (num: number): number => {
   return Math.abs(num);
 };

@@ -20,16 +20,18 @@ import {
 } from './global';
 import { Note, NoteType, ReadMaimaiData, Sheet, Song } from './maireader';
 
-import { GameState } from '../enums/gamestate';
+import { GameState } from '../utils/gamestate';
 
 import { sheetdata } from './devNotes';
-import { TouchArea } from '../enums/touchArea';
-import { ShowingNoteProps } from '../enums/showingNoteProps';
+import { TouchArea } from '../utils/touchArea';
+import { ShowingNoteProps } from '../utils/showingNoteProps';
 import { clearArcFun } from './drawUtils/_base';
 import { judgeAreaImage } from './resourceReader';
 import { drawNote } from './drawUtils/drawNotes';
 import { Area, areas, initAreas, whichArea } from './areas';
-import { drawAllTouchingAreas } from './drawUtils/drawTouchingAreas';
+import { drawAllKeys, drawAllTouchingAreas } from './drawUtils/drawTouchingAreas';
+import { KeyState } from '../utils/keyState';
+import { drawOutRing } from './drawUtils/drawOurRing';
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
@@ -44,6 +46,8 @@ let currentTime: number = 0;
 let currentDifficulty = 5;
 
 let currentTouchingArea: TouchArea[] = [];
+
+let keyStates: KeyState[] = [];
 
 /** 提前绘制了的时间 */
 let advancedTime = 0;
@@ -78,29 +82,19 @@ const drawBackground = () => {
   // });
 };
 
+const drawKeys = () => {
+  const el: HTMLCanvasElement = document.getElementsByClassName('canvasKeys')[0] as HTMLCanvasElement;
+  const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
+
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  drawAllKeys(ctx, currentTouchingArea, keyStates);
+};
+
 const drawOver = () => {
   const el: HTMLCanvasElement = document.getElementsByClassName('canvasOver')[0] as HTMLCanvasElement;
   const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-  ctx.beginPath();
-  ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-  ctx.beginPath();
-  ctx.arc(center[0], center[1], maimaiR, 0, 2 * Math.PI);
-  ctx.fillStyle = 'lightgray';
-  ctx.fill();
-  ctx.strokeStyle = 'gray';
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(center[0], center[1], maimaiScreenR, 0, 2 * Math.PI);
-  ctx.strokeStyle = 'gray';
-  ctx.stroke();
-
-  clearArcFun(center[0], center[1], maimaiScreenR, ctx);
+  drawOutRing(ctx);
 };
 
 const starttimer = () => {
@@ -110,7 +104,6 @@ const starttimer = () => {
 
   //console.log(sheet.beats5?.beat);
   timer1 = setInterval(reader_and_updater, timerPeriod);
-  //timer2 = setInterval(updater, timerPeriod);
   timer3 = setInterval(drawer, timerPeriod);
 };
 
@@ -610,7 +603,7 @@ const onTouchMove = (ev: Event) => {
 
 //设置事件处理程序
 function initEvent() {
-  const el = document.getElementsByClassName('canvasOver')[0];
+  const el = document.getElementsByClassName('canvasEvent')[0];
   el.addEventListener('mousedown', onMouseDown, false);
   el.addEventListener('mouseup', onMouseUp, false);
   el.addEventListener('touchstart', onTouchStart, false);
@@ -625,27 +618,39 @@ interface Props {
   setGameState: (gameState: GameState) => void;
 }
 
+// React18生产环境useEffect运行两次 https://juejin.cn/post/7137654077743169573
+let hasinit = false;
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (props: Props) => {
   useEffect(() => {
-    // 暂时用来等待图像加载，後面再解决
-    setTimeout(() => {
-      initCtx();
-      initAreas();
-      initEvent();
+    if (!hasinit) {
+      // 暂时用来等待图像加载，後面再解决
+      setTimeout(() => {
+        initCtx();
+        initAreas();
+        initEvent();
 
-      drawBackground();
-      drawOver();
-    }, 500);
+        drawBackground();
+        drawOver();
+        timer2 = setInterval(drawKeys, timerPeriod);
+      }, 500);
+      hasinit = true;
+    }
+
+    return () => {};
   }, []);
 
   return (
     <div className="maisim">
       <div className="canvasContainer">
-        <canvas className="canvasMain" height="700" width="700" />
-        <canvas className="canvasSlideTrack" height="700" width="700" />
-        <canvas className="canvasNotes" height="700" width="700" />
-        <canvas className="canvasOver" height="700" width="700" />
+        <canvas className="canvasMain" height={canvasHeight} width={canvasWidth} />
+        <canvas className="canvasSlideTrack" height={canvasHeight} width={canvasWidth} />
+        <canvas className="canvasNotes" height={canvasHeight} width={canvasWidth} />
+        <canvas className="canvasOver" height={canvasHeight} width={canvasWidth} />
+        <canvas className="canvasKeys" height={canvasHeight} width={canvasWidth} />
+
+        <canvas className="canvasEvent" height={canvasHeight} width={canvasWidth} />
       </div>
       <div style={{ position: 'absolute', zIndex: 114514 }}>
         <button

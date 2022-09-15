@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { GameState } from './enums/gamestate';
+import { GameState } from './utils/gamestate';
 import Maisim from './Maisim';
 
 function App() {
