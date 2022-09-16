@@ -66,6 +66,7 @@ const drawBackground = () => {
   ctx.stroke();
 
   const k = 1.02;
+  console.log(judgeAreaImage);
   ctx.drawImage(judgeAreaImage, center[0] - maimaiJudgeLineR * k, center[1] - maimaiJudgeLineR * k, maimaiJudgeLineR * k * 2, maimaiJudgeLineR * k * 2);
 
   // 判定区的线
