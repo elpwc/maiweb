@@ -66,7 +66,9 @@ export const drawAllKeys = (ctx: CanvasRenderingContext2D, currentTouchingArea: 
 
 export const drawArea = (ctx: CanvasRenderingContext2D, area: Area, alpha: number = 0.4) => {
   if (area.type === 'C') {
+    ctx.beginPath();
     ctx.arc(center[0], center[1], maimaiSummonLineR, 0, 360);
+    ctx.closePath();
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.fillStyle = 'white';
@@ -82,6 +84,7 @@ export const drawArea = (ctx: CanvasRenderingContext2D, area: Area, alpha: numbe
       ctx.lineTo(p[0], p[1]);
     });
     ctx.lineTo(area.points[0][0], area.points[0][1]);
+    ctx.closePath();
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.fillStyle = 'white';
