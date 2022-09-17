@@ -377,7 +377,7 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 
         hyoshiData = hyoshiData.substring(0, hyoshiData.indexOf('['));
 
-        console.log(hyoshiRes);
+        //console.log(hyoshiRes);
         if (hyoshiData.substring(0, 1) === 'C') {
           // TOUCH HOLD
           hyoshiRes.type = NoteType.TouchHold;
@@ -445,8 +445,13 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
             currentSlideTrackRes.stopTime = 60_000 / currentBPM;
           }
           currentSlideTrackRes.slideType = slide.substring(0, 1) as '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V';
-
-          if (currentSlideTrackRes.slideType === 'V') {
+          if (currentSlideTrackRes.slideType === 'p' && slide.substring(1, 2) === 'p') {
+            currentSlideTrackRes.slideType = 'pp';
+            currentSlideTrackRes.endPos = slide.substring(2, 3);
+          } else if (currentSlideTrackRes.slideType === 'q' && slide.substring(1, 2) === 'q') {
+            currentSlideTrackRes.slideType = 'qq';
+            currentSlideTrackRes.endPos = slide.substring(2, 3);
+          } else if (currentSlideTrackRes.slideType === 'V') {
             currentSlideTrackRes.turnPos = slide.substring(1, 2);
             currentSlideTrackRes.endPos = slide.substring(2, 3);
           } else {

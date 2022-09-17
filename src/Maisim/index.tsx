@@ -25,7 +25,6 @@ import { GameState } from '../utils/gamestate';
 import { sheetdata } from './devNotes';
 import { TouchArea } from '../utils/touchArea';
 import { ShowingNoteProps } from '../utils/showingNoteProps';
-import { clearArcFun } from './drawUtils/_base';
 import { drawNote } from './drawUtils/drawNotes';
 import { Area, areas, initAreas, whichArea } from './areas';
 import { drawAllKeys, drawAllTouchingAreas } from './drawUtils/drawTouchingAreas';
@@ -33,6 +32,7 @@ import { KeyState } from '../utils/keyState';
 import { drawOutRing } from './drawUtils/drawOurRing';
 import { initResources } from './resourceReaders/_init';
 import { OutlineIcon } from './resourceReaders/outlineIconReader';
+import { ppqqAnglCalc } from './slideTracks/_global';
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
@@ -635,6 +635,9 @@ export default (props: Props) => {
         drawBackground();
         drawOver();
         timer2 = setInterval(drawKeys, timerPeriod);
+
+        // 计算用
+        //ppqqAnglCalc();
       });
       hasinit = true;
     }

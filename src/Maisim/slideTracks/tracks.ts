@@ -1,6 +1,6 @@
 import { center, maimaiJudgeLineR } from '../global';
 import { cos, sin, π } from '../../math';
-import { APositions, qpCenterCircleR, qplen, szLeftPoint, szRightPoint } from './_global';
+import { APositions, ppPoints, qpCenterCircleR, qpLeftCircleCenter, qpLeftRighCircleR, qpLeftRightCircleCenterR, qplen, qpRightCircleCenter, qqPoints, szLeftPoint, szRightPoint } from './_global';
 import { lineLen } from '../drawUtils/_base';
 
 /**
@@ -34,6 +34,10 @@ export const getTrackProps = (type: string, startPos: number, endPosOri: number,
       return p(endPos, ct, rt);
     case 'q':
       return q(endPos, ct, rt);
+    case 'pp':
+      return pp(endPos, ct, rt);
+    case 'qq':
+      return qq(endPos, ct, rt);
     default:
       return { x: 0, y: 0, direction: 0 };
   }
@@ -284,6 +288,94 @@ const q = (endPos: number, ct: number, rt: number): { x: number; y: number; dire
       x: p2[0] + (APositions[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - qplen) / qplen),
       y: p2[1] + (APositions[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - qplen) / qplen),
       direction: 45 * (endPos <= 4 ? endPos - 6 : endPos - 6),
+    };
+  } else {
+    return { x: 0, y: 0, direction: 0 };
+  }
+};
+
+// pp
+const pp = (endPos: number, ct: number, rt: number): { x: number; y: number; direction: number } => {
+  /** 圆弧开始画的角度 */
+  const startAngle = ppPoints[0];
+  /** 圆弧的角度 */
+  const angle = endPos === 4 ? 1 - ppPoints[endPos] + 1 + startAngle + 2 : 1 - ppPoints[endPos] + 1 + startAngle;
+  /** 圆弧开始的点 */
+  const p1 = [qpRightCircleCenter[0] + qpLeftRighCircleR * cos(startAngle * π), qpRightCircleCenter[1] + qpLeftRighCircleR * sin(startAngle * π)];
+  /** 圆弧终止的点 */
+  const p2 = [qpRightCircleCenter[0] + qpLeftRighCircleR * cos((startAngle - angle) * π), qpRightCircleCenter[1] + qpLeftRighCircleR * sin((startAngle - angle) * π)];
+
+  const l1 = lineLen(APositions[0][0], APositions[0][1], p1[0], p1[1]);
+  const l2 = lineLen(APositions[endPos - 1][0], APositions[endPos - 1][1], p2[0], p2[1]);
+
+  /** 圆弧长度 */
+  const curveLen = angle * qpLeftRighCircleR * π;
+  /** 总长度 */
+  const sumLen = curveLen + l1 + l2;
+
+  const b = ct / rt;
+
+  if (b <= l1 / sumLen) {
+    return {
+      x: APositions[0][0] + (p1[0] - APositions[0][0]) * (b / (l1 / sumLen)),
+      y: APositions[0][1] + (p1[1] - APositions[0][1]) * (b / (l1 / sumLen)),
+      direction: 90 + startAngle * 180,
+    };
+  } else if (b > l1 / sumLen && b < (l1 + curveLen) / sumLen) {
+    return {
+      x: qpRightCircleCenter[0] + qpLeftRighCircleR * cos((startAngle - ((sumLen * b - l1) / curveLen) * angle) * π),
+      y: qpRightCircleCenter[1] + qpLeftRighCircleR * sin((startAngle - ((sumLen * b - l1) / curveLen) * angle) * π),
+      direction: (startAngle - ((sumLen * b - l1) / curveLen) * angle + 0.5) * 180,
+    };
+  } else if (b >= (l1 + curveLen) / sumLen) {
+    return {
+      x: p2[0] + (APositions[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - l1) / l2),
+      y: p2[1] + (APositions[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - l1) / l2),
+      direction: 90 + ppPoints[endPos] * 180,
+    };
+  } else {
+    return { x: 0, y: 0, direction: 0 };
+  }
+};
+
+// qq
+const qq = (endPos: number, ct: number, rt: number): { x: number; y: number; direction: number } => {
+  /** 圆弧开始画的角度 */
+  const startAngle = qqPoints[0];
+  /** 圆弧的角度 */
+  const angle = endPos === 6 ? 1 + qqPoints[endPos] + 1 - startAngle + 2 : 1 + qqPoints[endPos] + 1 - startAngle;
+  /** 圆弧开始的点 */
+  const p1 = [qpLeftCircleCenter[0] + qpLeftRighCircleR * cos(startAngle * π), qpLeftCircleCenter[1] + qpLeftRighCircleR * sin(startAngle * π)];
+  /** 圆弧终止的点 */
+  const p2 = [qpLeftCircleCenter[0] + qpLeftRighCircleR * cos((startAngle + angle) * π), qpLeftCircleCenter[1] + qpLeftRighCircleR * sin((startAngle + angle) * π)];
+
+  const l1 = lineLen(APositions[0][0], APositions[0][1], p1[0], p1[1]);
+  const l2 = lineLen(APositions[endPos - 1][0], APositions[endPos - 1][1], p2[0], p2[1]);
+
+  /** 圆弧长度 */
+  const curveLen = angle * qpLeftRighCircleR * π;
+  /** 总长度 */
+  const sumLen = curveLen + l1 + l2;
+
+  const b = ct / rt;
+
+  if (b <= l1 / sumLen) {
+    return {
+      x: APositions[0][0] + (p1[0] - APositions[0][0]) * (b / (l1 / sumLen)),
+      y: APositions[0][1] + (p1[1] - APositions[0][1]) * (b / (l1 / sumLen)),
+      direction: startAngle * 180 - 90,
+    };
+  } else if (b > l1 / sumLen && b < (l1 + curveLen) / sumLen) {
+    return {
+      x: qpLeftCircleCenter[0] + qpLeftRighCircleR * cos((startAngle + ((sumLen * b - l1) / curveLen) * angle) * π),
+      y: qpLeftCircleCenter[1] + qpLeftRighCircleR * sin((startAngle + ((sumLen * b - l1) / curveLen) * angle) * π),
+      direction: (startAngle + ((sumLen * b - l1) / curveLen) * angle + 0.5) * 180 + 180,
+    };
+  } else if (b >= (l1 + curveLen) / sumLen) {
+    return {
+      x: p2[0] + (APositions[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - l1) / l2),
+      y: p2[1] + (APositions[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - l1) / l2),
+      direction: qqPoints[endPos] * 180 - 90,
     };
   } else {
     return { x: 0, y: 0, direction: 0 };

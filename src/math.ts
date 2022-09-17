@@ -11,6 +11,12 @@ export const tan = (num: number): number => {
 export const atan = (num: number): number => {
   return Math.atan(num);
 };
+export const asin = (num: number): number => {
+  return Math.asin(num);
+};
+export const acos = (num: number): number => {
+  return Math.acos(num);
+};
 
 export const abs = (num: number): number => {
   return Math.abs(num);
