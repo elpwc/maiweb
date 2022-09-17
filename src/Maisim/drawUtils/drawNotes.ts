@@ -298,13 +298,16 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
   const drawSlideTrackImage = (imageTrack: HTMLImageElement, imageStar: HTMLImageElement) => {
     let tempendpos = Number(note.endPos) - (Number(note.pos) - 1);
     if (tempendpos < 1) tempendpos += 8;
+    // 间隔放置TRACK元素的时间
     const trackItemGapTime = (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos));
 
+    // SLIDE TRACK
     ctx_slideTrack.save();
     ctx_slideTrack.translate(center[0], center[1]);
     ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
 
-    for (let i = 0; i < note.remainTime!; i += trackItemGapTime) {
+    // 得从後往前画
+    for (let i = note.remainTime!; i >= 0; i -= trackItemGapTime) {
       const slideData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!);
       drawRotationImage(
         ctx_slideTrack,
@@ -321,6 +324,7 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
     }
     ctx_slideTrack.restore();
 
+    // GUIDE STAR
     ctx.save();
     ctx.translate(center[0], center[1]);
     ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
@@ -423,9 +427,9 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
       break;
     case NoteType.SlideTrack:
       if (isEach) {
-        drawSlideTrackImage(NoteIcon.slide, NoteIcon.star_each);
+        drawSlideTrackImage(NoteIcon.slide_each, NoteIcon.star_each);
       } else {
-        drawSlideTrackImage(NoteIcon.slide_each, NoteIcon.star);
+        drawSlideTrackImage(NoteIcon.slide, NoteIcon.star);
       }
       break;
     case NoteType.EndMark:

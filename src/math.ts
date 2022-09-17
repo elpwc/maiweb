@@ -10,7 +10,7 @@ export const tan = (num: number): number => {
 
 export const atan = (num: number): number => {
   return Math.atan(num);
-}
+};
 
 export const abs = (num: number): number => {
   return Math.abs(num);

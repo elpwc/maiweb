@@ -1,5 +1,6 @@
 import { center, maimaiJudgeLineR, maimaiScreenR } from '../global';
 import { sqrt, π } from '../../math';
+import { lineLen } from '../drawUtils/_base';
 
 export let APositions: [number, number][] = [];
 
@@ -13,13 +14,16 @@ const szk = (APositions[2][1] - APositions[6][1]) / (APositions[2][0] - APositio
 export const szLeftPoint: [number, number] = [APositions[7][0], szk * APositions[7][0] + APositions[2][1] - APositions[2][0] * szk];
 export const szRightPoint: [number, number] = [APositions[0][0], szk * APositions[0][0] + APositions[2][1] - APositions[2][0] * szk];
 
-export const centerCircleR = maimaiScreenR * 0.356;
+export const qpCenterCircleR = maimaiScreenR * 0.356;
 
-export const leftRightCircleCenterR = maimaiScreenR * 0.402;
-export const leftRighCircleR = maimaiScreenR * 0.424;
+export const qpLeftRightCircleCenterR = maimaiScreenR * 0.402;
+export const qpLleftRighCircleR = maimaiScreenR * 0.424;
 
-export const leftCircleCenterAngle = 1.75;
-export const rightCircleCenterAngle = 0.5;
+export const qpLleftCircleCenterAngle = 1.75;
+export const qpLrightCircleCenterAngle = 0.5;
+
+/** qp一条直线的长度 */
+export const qplen = lineLen(APositions[0][0], APositions[0][1], APositions[5][0], APositions[5][1]) / 2;
 
 export interface Segment {
   /** start */
@@ -74,14 +78,13 @@ export const trackLength = (type: string, startPos: number, endPosOri: number): 
           return π * maimaiJudgeLineR * 2;
         }
       }
-
       break;
     case 'v':
       return maimaiJudgeLineR * 2;
     case 'p':
-      break;
+      return 0.25 * (endPos >= 6 ? 14 - endPos : 6 - endPos) * qpCenterCircleR * π + qplen * 2;
     case 'q':
-      break;
+      return 0.25 * (endPos <= 4 ? endPos + 4 : endPos - 4) * qpCenterCircleR * π + qplen * 2;
     case 'pp':
       break;
     case 'qq':
