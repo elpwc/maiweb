@@ -24,6 +24,8 @@ export const trackItemGap: number = 25;
 export const trackItemWidth: number = maimaiTapR * 1.5;
 export const trackItemHeight: number = maimaiTapR * 2;
 
+export const holdHeadHeight: number = 70;
+
 /** 在判定线停留的时间 ms */
 export const judgeLineRemainTime: number = 100;
 

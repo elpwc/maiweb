@@ -26,12 +26,13 @@ import { sheetdata } from './devNotes';
 import { TouchArea } from '../utils/touchArea';
 import { ShowingNoteProps } from '../utils/showingNoteProps';
 import { clearArcFun } from './drawUtils/_base';
-import { judgeAreaImage } from './resourceReader';
 import { drawNote } from './drawUtils/drawNotes';
 import { Area, areas, initAreas, whichArea } from './areas';
 import { drawAllKeys, drawAllTouchingAreas } from './drawUtils/drawTouchingAreas';
 import { KeyState } from '../utils/keyState';
 import { drawOutRing } from './drawUtils/drawOurRing';
+import { initResources } from './resourceReaders/_init';
+import { OutlineIcon } from './resourceReaders/outlineIconReader';
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
@@ -66,8 +67,8 @@ const drawBackground = () => {
   ctx.stroke();
 
   const k = 1.02;
-  console.log(judgeAreaImage);
-  ctx.drawImage(judgeAreaImage, center[0] - maimaiJudgeLineR * k, center[1] - maimaiJudgeLineR * k, maimaiJudgeLineR * k * 2, maimaiJudgeLineR * k * 2);
+
+  ctx.drawImage(OutlineIcon.Outline_03, center[0] - maimaiJudgeLineR * k, center[1] - maimaiJudgeLineR * k, maimaiJudgeLineR * k * 2, maimaiJudgeLineR * k * 2);
 
   // 判定区的线
   // areas.forEach((area: Area) => {
@@ -558,7 +559,7 @@ const onTouchLeave = (ev: Event) => {
 const onTouchMove = (ev: Event) => {
   ev.preventDefault(); //阻止事件的默认行为
   const e = ev as TouchEvent;
-  const touches: TouchList = e.changedTouches;
+  const touches: TouchList = e.targetTouches;
 
   let tempTouchingArea: TouchArea[] = [];
 
@@ -626,8 +627,7 @@ let hasinit = false;
 export default (props: Props) => {
   useEffect(() => {
     if (!hasinit) {
-      // 暂时用来等待图像加载，後面再解决
-      setTimeout(() => {
+      initResources(() => {
         initCtx();
         initAreas();
         initEvent();
@@ -635,7 +635,7 @@ export default (props: Props) => {
         drawBackground();
         drawOver();
         timer2 = setInterval(drawKeys, timerPeriod);
-      }, 500);
+      });
       hasinit = true;
     }
 

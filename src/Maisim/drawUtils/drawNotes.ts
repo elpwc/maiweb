@@ -1,42 +1,11 @@
 import { ShowingNoteProps } from '../../utils/showingNoteProps';
 import { π } from '../../math';
-import { center, maimaiSummonLineR, maimaiScreenR, maimaiBR, maimaiER, touchMaxDistance, maimaiTapR, trackItemGap, trackItemWidth, trackItemHeight } from '../global';
+import { center, maimaiSummonLineR, maimaiScreenR, maimaiBR, maimaiER, touchMaxDistance, maimaiTapR, trackItemGap, trackItemWidth, trackItemHeight, holdHeadHeight } from '../global';
 import { Note, NoteType } from '../maireader';
-import {
-  holdHeadHeight,
-  touchHold1,
-  touchHold2,
-  touchHold3,
-  touchHold4,
-  touchCenter,
-  touchHoldGage,
-  tapBreak,
-  tapEach,
-  tap,
-  tapEx,
-  holdEach,
-  holdEachShort,
-  hold,
-  holdShort,
-  holdEx,
-  holdExShort,
-  tapDoubleSlideBreak,
-  tapDoubleSlideEach,
-  tapDoubleSlide,
-  tapDoubleSlideEx,
-  tapSlideBreak,
-  tapSlideEach,
-  tapSlide,
-  tapSlideEx,
-  touchEach,
-  touchEachCenter,
-  touch,
-  slideTrackEach,
-  slideTrack,
-} from '../resourceReader';
 import { getTrackProps } from '../slideTracks/tracks';
 import { trackLength } from '../slideTracks/_global';
 import { drawRotationImage } from './_base';
+import { NoteIcon } from '../resourceReaders/noteIconReader';
 
 export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRenderingContext2D, note: Note, isEach: boolean = false, props: ShowingNoteProps) => {
   let θ = 0,
@@ -212,7 +181,7 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
     const k = 0.5,
       centerk = 0.6;
 
-    const touchHoldPieces = [touchHold1, touchHold2, touchHold3, touchHold4];
+    const touchHoldPieces = [NoteIcon.touch_hold_1, NoteIcon.touch_hold_2, NoteIcon.touch_hold_3, NoteIcon.touch_hold_4];
     if (isShortHold) {
       for (let i = 0; i < 4; i++) {
         drawRotationImage(
@@ -228,7 +197,14 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
           props.radius / maimaiTapR
         );
       }
-      drawRotationImage(ctx, touchCenter, x - (touchCenter.width * centerk) / 2, y - (touchCenter.height * centerk) / 2, touchCenter.width * centerk, touchCenter.height * centerk);
+      drawRotationImage(
+        ctx,
+        NoteIcon.touch_center,
+        x - (NoteIcon.touch_center.width * centerk) / 2,
+        y - (NoteIcon.touch_center.height * centerk) / 2,
+        NoteIcon.touch_center.width * centerk,
+        NoteIcon.touch_center.height * centerk
+      );
     } else {
       if (props.status === 0 || props.status === 1) {
         for (let i = 0; i < 4; i++) {
@@ -245,7 +221,14 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
             props.radius / maimaiTapR
           );
         }
-        drawRotationImage(ctx, touchCenter, x - (touchCenter.width * centerk) / 2, y - (touchCenter.height * centerk) / 2, touchCenter.width * centerk, touchCenter.height * centerk);
+        drawRotationImage(
+          ctx,
+          NoteIcon.touch_center,
+          x - (NoteIcon.touch_center.width * centerk) / 2,
+          y - (NoteIcon.touch_center.height * centerk) / 2,
+          NoteIcon.touch_center.width * centerk,
+          NoteIcon.touch_center.height * centerk
+        );
       } else if (props.status === 2) {
         for (let i = 0; i < 4; i++) {
           drawRotationImage(
@@ -261,9 +244,16 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
             props.radius / maimaiTapR
           );
         }
-        drawRotationImage(ctx, touchCenter, x - (touchCenter.width * centerk) / 2, y - (touchCenter.height * centerk) / 2, touchCenter.width * centerk, touchCenter.height * centerk);
+        drawRotationImage(
+          ctx,
+          NoteIcon.touch_center,
+          x - (NoteIcon.touch_center.width * centerk) / 2,
+          y - (NoteIcon.touch_center.height * centerk) / 2,
+          NoteIcon.touch_center.width * centerk,
+          NoteIcon.touch_center.height * centerk
+        );
 
-        const cutCircleR = touchHoldGage.width * centerk;
+        const cutCircleR = NoteIcon.touch_hold_gage.width * centerk;
         ctx.save();
 
         ctx.beginPath();
@@ -292,7 +282,14 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
         ctx.closePath();
         ctx.clip();
 
-        drawRotationImage(ctx, touchHoldGage, x - (touchHoldGage.width * centerk) / 2, y - (touchHoldGage.height * centerk) / 2, touchHoldGage.width * centerk, touchHoldGage.height * centerk);
+        drawRotationImage(
+          ctx,
+          NoteIcon.touch_hold_gage,
+          x - (NoteIcon.touch_hold_gage.width * centerk) / 2,
+          y - (NoteIcon.touch_hold_gage.height * centerk) / 2,
+          NoteIcon.touch_hold_gage.width * centerk,
+          NoteIcon.touch_hold_gage.height * centerk
+        );
         ctx.restore();
       }
     }
@@ -348,30 +345,30 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
     case NoteType.Tap:
       if (isEach) {
         if (note.isBreak) {
-          drawTapImage(tapBreak);
+          drawTapImage(NoteIcon.tap_break);
         } else {
-          drawTapImage(tapEach);
+          drawTapImage(NoteIcon.tap_each);
         }
       } else {
         if (note.isBreak) {
-          drawTapImage(tapBreak);
+          drawTapImage(NoteIcon.tap_break);
         } else {
-          drawTapImage(tap);
+          drawTapImage(NoteIcon.tap);
         }
       }
       if (note.isEx) {
-        drawTapImage(tapEx);
+        drawTapImage(NoteIcon.tap_ex);
       }
       break;
     case NoteType.Hold:
       if (isEach) {
-        drawHoldImage(holdEach, holdEachShort, note.isShortHold);
+        drawHoldImage(NoteIcon.hold_each, NoteIcon.short_hold_each, note.isShortHold);
       } else {
-        drawHoldImage(hold, holdShort, note.isShortHold);
+        drawHoldImage(NoteIcon.hold, NoteIcon.short_hold, note.isShortHold);
       }
 
       if (note.isEx) {
-        drawHoldImage(holdEx, holdExShort, note.isShortHold);
+        drawHoldImage(NoteIcon.hold_ex, NoteIcon.short_hold_ex, note.isShortHold);
       }
       break;
     case NoteType.Slide:
@@ -380,45 +377,45 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
         // DOUBLE TRACK
         if (isEach) {
           if (note.isBreak) {
-            drawTapImage(tapDoubleSlideBreak);
+            drawTapImage(NoteIcon.star_break_double);
           } else {
-            drawTapImage(tapDoubleSlideEach);
+            drawTapImage(NoteIcon.star_each_double);
           }
         } else {
           if (note.isBreak) {
-            drawSlideTapImage(tapDoubleSlideBreak);
+            drawSlideTapImage(NoteIcon.star_break_double);
           } else {
-            drawSlideTapImage(tapDoubleSlide);
+            drawSlideTapImage(NoteIcon.star_double);
           }
         }
         if (note.isEx) {
-          drawSlideTapImage(tapDoubleSlideEx);
+          drawSlideTapImage(NoteIcon.star_ex_double);
         }
       } else {
         // SINGLE
         if (isEach) {
           if (note.isBreak) {
-            drawSlideTapImage(tapSlideBreak);
+            drawSlideTapImage(NoteIcon.star_break);
           } else {
-            drawSlideTapImage(tapSlideEach);
+            drawSlideTapImage(NoteIcon.star_each);
           }
         } else {
           if (note.isBreak) {
-            drawSlideTapImage(tapSlideBreak);
+            drawSlideTapImage(NoteIcon.star_break);
           } else {
-            drawSlideTapImage(tapSlide);
+            drawSlideTapImage(NoteIcon.star);
           }
         }
         if (note.isEx) {
-          drawSlideTapImage(tapSlideEx);
+          drawSlideTapImage(NoteIcon.star_ex);
         }
       }
       break;
     case NoteType.Touch:
       if (isEach) {
-        drawTouchImage(touchEach, touchEachCenter);
+        drawTouchImage(NoteIcon.touch_each, NoteIcon.touch_each_center);
       } else {
-        drawTouchImage(touch, touchCenter);
+        drawTouchImage(NoteIcon.touch, NoteIcon.touch_center);
       }
       break;
     case NoteType.TouchHold:
@@ -426,9 +423,9 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
       break;
     case NoteType.SlideTrack:
       if (isEach) {
-        drawSlideTrackImage(slideTrackEach, tapSlideEach);
+        drawSlideTrackImage(NoteIcon.slide, NoteIcon.star_each);
       } else {
-        drawSlideTrackImage(slideTrack, tapSlide);
+        drawSlideTrackImage(NoteIcon.slide_each, NoteIcon.star);
       }
       break;
     case NoteType.EndMark:
