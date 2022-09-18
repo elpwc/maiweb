@@ -50,7 +50,40 @@ import touch_just_icon from '../../resource/maimai_img/notes/touch_just.png';
 import touch_three_icon from '../../resource/maimai_img/notes/touch_three.png';
 import touch_two_icon from '../../resource/maimai_img/notes/touch_two.png';
 import wifi_icon from '../../resource/maimai_img/notes/wifi.png';
+import wifi_0_icon from '../../resource/maimai_img/notes/wifi_0.png';
+import wifi_1_icon from '../../resource/maimai_img/notes/wifi_1.png';
+import wifi_10_icon from '../../resource/maimai_img/notes/wifi_10.png';
+import wifi_2_icon from '../../resource/maimai_img/notes/wifi_2.png';
+import wifi_3_icon from '../../resource/maimai_img/notes/wifi_3.png';
+import wifi_4_icon from '../../resource/maimai_img/notes/wifi_4.png';
+import wifi_5_icon from '../../resource/maimai_img/notes/wifi_5.png';
+import wifi_6_icon from '../../resource/maimai_img/notes/wifi_6.png';
+import wifi_7_icon from '../../resource/maimai_img/notes/wifi_7.png';
+import wifi_8_icon from '../../resource/maimai_img/notes/wifi_8.png';
+import wifi_9_icon from '../../resource/maimai_img/notes/wifi_9.png';
+import wifi_break_0_icon from '../../resource/maimai_img/notes/wifi_break_0.png';
+import wifi_break_1_icon from '../../resource/maimai_img/notes/wifi_break_1.png';
+import wifi_break_10_icon from '../../resource/maimai_img/notes/wifi_break_10.png';
+import wifi_break_2_icon from '../../resource/maimai_img/notes/wifi_break_2.png';
+import wifi_break_3_icon from '../../resource/maimai_img/notes/wifi_break_3.png';
+import wifi_break_4_icon from '../../resource/maimai_img/notes/wifi_break_4.png';
+import wifi_break_5_icon from '../../resource/maimai_img/notes/wifi_break_5.png';
+import wifi_break_6_icon from '../../resource/maimai_img/notes/wifi_break_6.png';
+import wifi_break_7_icon from '../../resource/maimai_img/notes/wifi_break_7.png';
+import wifi_break_8_icon from '../../resource/maimai_img/notes/wifi_break_8.png';
+import wifi_break_9_icon from '../../resource/maimai_img/notes/wifi_break_9.png';
 import wifi_each_icon from '../../resource/maimai_img/notes/wifi_each.png';
+import wifi_each_0_icon from '../../resource/maimai_img/notes/wifi_each_0.png';
+import wifi_each_1_icon from '../../resource/maimai_img/notes/wifi_each_1.png';
+import wifi_each_10_icon from '../../resource/maimai_img/notes/wifi_each_10.png';
+import wifi_each_2_icon from '../../resource/maimai_img/notes/wifi_each_2.png';
+import wifi_each_3_icon from '../../resource/maimai_img/notes/wifi_each_3.png';
+import wifi_each_4_icon from '../../resource/maimai_img/notes/wifi_each_4.png';
+import wifi_each_5_icon from '../../resource/maimai_img/notes/wifi_each_5.png';
+import wifi_each_6_icon from '../../resource/maimai_img/notes/wifi_each_6.png';
+import wifi_each_7_icon from '../../resource/maimai_img/notes/wifi_each_7.png';
+import wifi_each_8_icon from '../../resource/maimai_img/notes/wifi_each_8.png';
+import wifi_each_9_icon from '../../resource/maimai_img/notes/wifi_each_9.png';
 
 export const NoteIcon = {
     hold: new Image(),
@@ -101,11 +134,44 @@ export const NoteIcon = {
     touch_three: new Image(),
     touch_two: new Image(),
     wifi: new Image(),
+    wifi_0: new Image(),
+    wifi_1: new Image(),
+    wifi_10: new Image(),
+    wifi_2: new Image(),
+    wifi_3: new Image(),
+    wifi_4: new Image(),
+    wifi_5: new Image(),
+    wifi_6: new Image(),
+    wifi_7: new Image(),
+    wifi_8: new Image(),
+    wifi_9: new Image(),
+    wifi_break_0: new Image(),
+    wifi_break_1: new Image(),
+    wifi_break_10: new Image(),
+    wifi_break_2: new Image(),
+    wifi_break_3: new Image(),
+    wifi_break_4: new Image(),
+    wifi_break_5: new Image(),
+    wifi_break_6: new Image(),
+    wifi_break_7: new Image(),
+    wifi_break_8: new Image(),
+    wifi_break_9: new Image(),
     wifi_each: new Image(),
+    wifi_each_0: new Image(),
+    wifi_each_1: new Image(),
+    wifi_each_10: new Image(),
+    wifi_each_2: new Image(),
+    wifi_each_3: new Image(),
+    wifi_each_4: new Image(),
+    wifi_each_5: new Image(),
+    wifi_each_6: new Image(),
+    wifi_each_7: new Image(),
+    wifi_each_8: new Image(),
+    wifi_each_9: new Image(),
 };
 
 export const initnotesicons = (onload: () => void) => {
-  const amount = 49;
+  const amount = 82;
   let loaded = 0;
   NoteIcon.hold.src = hold_icon;
   NoteIcon.hold.onload = () => { loaded++; if (loaded >= amount) onload(); }
@@ -203,6 +269,72 @@ export const initnotesicons = (onload: () => void) => {
   NoteIcon.touch_two.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.wifi.src = wifi_icon;
   NoteIcon.wifi.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_0.src = wifi_0_icon;
+  NoteIcon.wifi_0.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_1.src = wifi_1_icon;
+  NoteIcon.wifi_1.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_10.src = wifi_10_icon;
+  NoteIcon.wifi_10.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_2.src = wifi_2_icon;
+  NoteIcon.wifi_2.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_3.src = wifi_3_icon;
+  NoteIcon.wifi_3.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_4.src = wifi_4_icon;
+  NoteIcon.wifi_4.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_5.src = wifi_5_icon;
+  NoteIcon.wifi_5.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_6.src = wifi_6_icon;
+  NoteIcon.wifi_6.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_7.src = wifi_7_icon;
+  NoteIcon.wifi_7.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_8.src = wifi_8_icon;
+  NoteIcon.wifi_8.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_9.src = wifi_9_icon;
+  NoteIcon.wifi_9.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_0.src = wifi_break_0_icon;
+  NoteIcon.wifi_break_0.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_1.src = wifi_break_1_icon;
+  NoteIcon.wifi_break_1.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_10.src = wifi_break_10_icon;
+  NoteIcon.wifi_break_10.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_2.src = wifi_break_2_icon;
+  NoteIcon.wifi_break_2.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_3.src = wifi_break_3_icon;
+  NoteIcon.wifi_break_3.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_4.src = wifi_break_4_icon;
+  NoteIcon.wifi_break_4.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_5.src = wifi_break_5_icon;
+  NoteIcon.wifi_break_5.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_6.src = wifi_break_6_icon;
+  NoteIcon.wifi_break_6.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_7.src = wifi_break_7_icon;
+  NoteIcon.wifi_break_7.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_8.src = wifi_break_8_icon;
+  NoteIcon.wifi_break_8.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_break_9.src = wifi_break_9_icon;
+  NoteIcon.wifi_break_9.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.wifi_each.src = wifi_each_icon;
   NoteIcon.wifi_each.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_0.src = wifi_each_0_icon;
+  NoteIcon.wifi_each_0.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_1.src = wifi_each_1_icon;
+  NoteIcon.wifi_each_1.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_10.src = wifi_each_10_icon;
+  NoteIcon.wifi_each_10.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_2.src = wifi_each_2_icon;
+  NoteIcon.wifi_each_2.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_3.src = wifi_each_3_icon;
+  NoteIcon.wifi_each_3.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_4.src = wifi_each_4_icon;
+  NoteIcon.wifi_each_4.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_5.src = wifi_each_5_icon;
+  NoteIcon.wifi_each_5.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_6.src = wifi_each_6_icon;
+  NoteIcon.wifi_each_6.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_7.src = wifi_each_7_icon;
+  NoteIcon.wifi_each_7.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_8.src = wifi_each_8_icon;
+  NoteIcon.wifi_each_8.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.wifi_each_9.src = wifi_each_9_icon;
+  NoteIcon.wifi_each_9.onload = () => { loaded++; if (loaded >= amount) onload(); }
 };

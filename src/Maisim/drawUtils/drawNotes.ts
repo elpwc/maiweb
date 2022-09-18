@@ -1,10 +1,10 @@
 import { ShowingNoteProps } from '../../utils/showingNoteProps';
-import { π } from '../../math';
-import { center, maimaiSummonLineR, maimaiScreenR, maimaiBR, maimaiER, touchMaxDistance, maimaiTapR, trackItemGap, trackItemWidth, trackItemHeight, holdHeadHeight } from '../global';
+import { cos, sin, π } from '../../math';
+import { center, maimaiSummonLineR, maimaiScreenR, maimaiBR, maimaiER, touchMaxDistance, maimaiTapR, trackItemGap, trackItemWidth, trackItemHeight, holdHeadHeight, canvasWidth } from '../global';
 import { Note, NoteType } from '../maireader';
 import { getTrackProps } from '../slideTracks/tracks';
-import { trackLength } from '../slideTracks/_global';
-import { drawRotationImage } from './_base';
+import { APositions, trackLength } from '../slideTracks/_global';
+import { drawRotationImage, lineLen } from './_base';
 import { NoteIcon } from '../resourceReaders/noteIconReader';
 
 export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRenderingContext2D, note: Note, isEach: boolean = false, props: ShowingNoteProps) => {
@@ -295,54 +295,157 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
     }
   };
 
-  const drawSlideTrackImage = (imageTrack: HTMLImageElement, imageStar: HTMLImageElement) => {
-    let tempendpos = Number(note.endPos) - (Number(note.pos) - 1);
-    if (tempendpos < 1) tempendpos += 8;
-    // 间隔放置TRACK元素的时间
-    const trackItemGapTime = (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos), note.turnPos === undefined ? undefined : Number(note.turnPos));
+  const drawSlideTrackImage = (imageTrack: HTMLImageElement, imageStar: HTMLImageElement, wifiTrack?: HTMLImageElement[]) => {
+    if (note.slideType !== 'w') {
+      // 间隔放置TRACK元素的时间
+      const trackItemGapTime = (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos), note.turnPos === undefined ? undefined : Number(note.turnPos));
 
-    // SLIDE TRACK
-    ctx_slideTrack.save();
-    ctx_slideTrack.translate(center[0], center[1]);
-    ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+      // SLIDE TRACK
+      ctx_slideTrack.save();
+      ctx_slideTrack.translate(center[0], center[1]);
+      ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+      // 得从後往前画
+      for (let i = note.remainTime!; i >= 0; i -= trackItemGapTime) {
+        const slideData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
+          x: number;
+          y: number;
+          direction: number;
+        };
+        drawRotationImage(
+          ctx_slideTrack,
+          imageTrack,
+          slideData.x - trackItemWidth / 2 - center[0],
+          slideData.y - trackItemHeight / 2 - center[1],
+          trackItemWidth,
+          trackItemHeight,
+          slideData.x - center[0],
+          slideData.y - center[1],
+          slideData.direction,
+          props.radius
+        );
+      }
+      ctx_slideTrack.restore();
 
-    // 得从後往前画
-    for (let i = note.remainTime!; i >= 0; i -= trackItemGapTime) {
-      const slideData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos));
+      // GUIDE STAR
+      ctx.save();
+      ctx.translate(center[0], center[1]);
+      ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+
+      const guideStarData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), props.rho, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
+        x: number;
+        y: number;
+        direction: number;
+      };
       drawRotationImage(
-        ctx_slideTrack,
-        imageTrack,
-        slideData.x - trackItemWidth / 2 - center[0],
-        slideData.y - trackItemHeight / 2 - center[1],
-        trackItemWidth,
-        trackItemHeight,
-        slideData.x - center[0],
-        slideData.y - center[1],
-        slideData.direction,
-        props.radius
+        ctx,
+        imageStar,
+        guideStarData.x - props.guideStarRadius! * 2 - center[0],
+        guideStarData.y - props.guideStarRadius! * 2 - center[1],
+        props.guideStarRadius! * 4,
+        props.guideStarRadius! * 4,
+        guideStarData.x - center[0],
+        guideStarData.y - center[1],
+        guideStarData.direction,
+        props.guideStarRadius! / maimaiTapR
       );
+      ctx.restore();
+    } else {
+      // WIFI TRACK
+
+      // WIFI TRACK开始于screenR而不是judgeR
+      const startPoint = [center[0] + maimaiScreenR * cos((-5 / 8 + 1 / 4) * Math.PI), center[1] + maimaiScreenR * sin((-5 / 8 + 1 / 4) * Math.PI)];
+      const getWifiTrackProps = (ct: number, rt: number): { x: number; y: number; direction: number }[] => {
+        return [
+          {
+            x: startPoint[0] + (APositions[5][0] - startPoint[0]) * (ct / rt),
+            y: startPoint[1] + (APositions[5][1] - startPoint[1]) * (ct / rt),
+            direction: 22.5 * 5 + 202.5,
+          },
+          {
+            x: startPoint[0] + (APositions[4][0] - startPoint[0]) * (ct / rt),
+            y: startPoint[1] + (APositions[4][1] - startPoint[1]) * (ct / rt),
+            direction: 22.5 * 4 + 202.5,
+          },
+          {
+            x: 2 * APositions[0][0] - startPoint[0] + (APositions[3][0] - 2 * APositions[0][0] + startPoint[0]) * (ct / rt),
+            y: startPoint[1] + (APositions[3][1] - startPoint[1]) * (ct / rt),
+            direction: 22.5 * 3 + 202.5,
+          },
+        ];
+      };
+
+      // 相邻两判定点的距离
+      const dist = lineLen(APositions[4][0], APositions[4][1], APositions[5][0], APositions[5][1]);
+
+      // SLIDE TRACK
+      ctx_slideTrack.save();
+      ctx_slideTrack.translate(center[0], center[1]);
+      ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+      // 得从後往前画
+
+      for (let i = 11; i >= 1; i--) {
+        const ct = (note.remainTime! * i) / 12;
+
+        const slideData = getWifiTrackProps(ct, note.remainTime!);
+
+        drawRotationImage(
+          ctx_slideTrack,
+          wifiTrack![i - 1],
+          slideData[0].x - center[0] - ((dist * i) / 12) * 0.076,
+          slideData[0].y - center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
+          (dist * i) / 12,
+          ((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12,
+          slideData[0].x - center[0],
+          slideData[0].y - center[1],
+          22.534119524645373,
+          props.radius * 0.5
+        );
+
+        ctx_slideTrack.save();
+        ctx_slideTrack.scale(-1, 1); //左右镜像翻转
+        drawRotationImage(
+          ctx_slideTrack,
+          wifiTrack![i - 1],
+          slideData[2].x - (APositions[0][0] - APositions[7][0]) - center[0] - ((dist * i) / 12) * 0.076,
+          slideData[2].y - center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
+          (dist * i) / 12,
+          ((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12,
+          slideData[2].x - (APositions[0][0] - APositions[7][0]) - center[0],
+          slideData[2].y - center[1],
+          -22.534119524645373,
+          props.radius * 0.5
+        );
+        ctx_slideTrack.restore();
+      }
+      ctx_slideTrack.restore();
+
+      // GUIDE STAR
+      ctx.save();
+      ctx.translate(center[0], center[1]);
+      ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+
+      const guideStarData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), props.rho, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
+        x: number;
+        y: number;
+        direction: number;
+      }[];
+      guideStarData.forEach((wifiguide) => {
+        drawRotationImage(
+          ctx,
+          imageStar,
+          wifiguide.x - props.guideStarRadius! * 2 - center[0],
+          wifiguide.y - props.guideStarRadius! * 2 - center[1],
+          props.guideStarRadius! * 4,
+          props.guideStarRadius! * 4,
+          wifiguide.x - center[0],
+          wifiguide.y - center[1],
+          wifiguide.direction,
+          props.guideStarRadius! / maimaiTapR
+        );
+      });
+
+      ctx.restore();
     }
-    ctx_slideTrack.restore();
-
-    // GUIDE STAR
-    ctx.save();
-    ctx.translate(center[0], center[1]);
-    ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
-
-    const guideStarData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), props.rho, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos));
-    drawRotationImage(
-      ctx,
-      imageStar,
-      guideStarData.x - props.guideStarRadius! * 2 - center[0],
-      guideStarData.y - props.guideStarRadius! * 2 - center[1],
-      props.guideStarRadius! * 4,
-      props.guideStarRadius! * 4,
-      guideStarData.x - center[0],
-      guideStarData.y - center[1],
-      guideStarData.direction,
-      props.guideStarRadius! / maimaiTapR
-    );
-    ctx.restore();
   };
 
   switch (note.type) {
@@ -427,9 +530,65 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
       break;
     case NoteType.SlideTrack:
       if (isEach) {
-        drawSlideTrackImage(NoteIcon.slide_each, NoteIcon.star_each);
+        if (note.isBreak) {
+          drawSlideTrackImage(NoteIcon.slide_each, NoteIcon.star_each, [
+            NoteIcon.wifi_break_0,
+            NoteIcon.wifi_break_1,
+            NoteIcon.wifi_break_2,
+            NoteIcon.wifi_break_3,
+            NoteIcon.wifi_break_4,
+            NoteIcon.wifi_break_5,
+            NoteIcon.wifi_break_6,
+            NoteIcon.wifi_break_7,
+            NoteIcon.wifi_break_8,
+            NoteIcon.wifi_break_9,
+            NoteIcon.wifi_break_10,
+          ]);
+        } else {
+          drawSlideTrackImage(NoteIcon.slide_each, NoteIcon.star_each, [
+            NoteIcon.wifi_each_0,
+            NoteIcon.wifi_each_1,
+            NoteIcon.wifi_each_2,
+            NoteIcon.wifi_each_3,
+            NoteIcon.wifi_each_4,
+            NoteIcon.wifi_each_5,
+            NoteIcon.wifi_each_6,
+            NoteIcon.wifi_each_7,
+            NoteIcon.wifi_each_8,
+            NoteIcon.wifi_each_9,
+            NoteIcon.wifi_each_10,
+          ]);
+        }
       } else {
-        drawSlideTrackImage(NoteIcon.slide, NoteIcon.star);
+        if (note.isBreak) {
+          drawSlideTrackImage(NoteIcon.slide, NoteIcon.star, [
+            NoteIcon.wifi_break_0,
+            NoteIcon.wifi_break_1,
+            NoteIcon.wifi_break_2,
+            NoteIcon.wifi_break_3,
+            NoteIcon.wifi_break_4,
+            NoteIcon.wifi_break_5,
+            NoteIcon.wifi_break_6,
+            NoteIcon.wifi_break_7,
+            NoteIcon.wifi_break_8,
+            NoteIcon.wifi_break_9,
+            NoteIcon.wifi_break_10,
+          ]);
+        } else {
+          drawSlideTrackImage(NoteIcon.slide, NoteIcon.star, [
+            NoteIcon.wifi_0,
+            NoteIcon.wifi_1,
+            NoteIcon.wifi_2,
+            NoteIcon.wifi_3,
+            NoteIcon.wifi_4,
+            NoteIcon.wifi_5,
+            NoteIcon.wifi_6,
+            NoteIcon.wifi_7,
+            NoteIcon.wifi_8,
+            NoteIcon.wifi_9,
+            NoteIcon.wifi_10,
+          ]);
+        }
       }
       break;
     case NoteType.EndMark:

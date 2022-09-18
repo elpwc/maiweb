@@ -12,7 +12,14 @@ import { lineLen } from '../drawUtils/_base';
  * @param rt 总时间
  * @returns 这一时刻的位置，方向
  */
-export const getTrackProps = (type: string, startPos: number, endPosOri: number, ct: number, rt: number, turnPosOri?: number): { x: number; y: number; direction: number } => {
+export const getTrackProps = (
+  type: string,
+  startPos: number,
+  endPosOri: number,
+  ct: number,
+  rt: number,
+  turnPosOri?: number
+): { x: number; y: number; direction: number } | /* wifi */ { x: number; y: number; direction: number }[] => {
   let endPos = endPosOri - startPos + 1;
   let turnPos = (turnPosOri ?? 0) - startPos + 1;
   if (endPos < 1) endPos += 8;
@@ -412,10 +419,22 @@ const turn = (turnPos: number, endPos: number, ct: number, rt: number): { x: num
 };
 
 // w
-const w = (ct: number, rt: number): { x: number; y: number; direction: number } => {
-  return {
-    x: APositions[0][0] + (APositions[4][0] - APositions[0][0]) * (ct / rt),
-    y: APositions[0][1] + (APositions[4][1] - APositions[0][1]) * (ct / rt),
-    direction: 22.5 * 4 + 202.5,
-  };
+const w = (ct: number, rt: number): { x: number; y: number; direction: number }[] => {
+  return [
+    {
+      x: APositions[0][0] + (APositions[5][0] - APositions[0][0]) * (ct / rt),
+      y: APositions[0][1] + (APositions[5][1] - APositions[0][1]) * (ct / rt),
+      direction: 22.5 * 5 + 202.5,
+    },
+    {
+      x: APositions[0][0] + (APositions[4][0] - APositions[0][0]) * (ct / rt),
+      y: APositions[0][1] + (APositions[4][1] - APositions[0][1]) * (ct / rt),
+      direction: 22.5 * 4 + 202.5,
+    },
+    {
+      x: APositions[0][0] + (APositions[3][0] - APositions[0][0]) * (ct / rt),
+      y: APositions[0][1] + (APositions[3][1] - APositions[0][1]) * (ct / rt),
+      direction: 22.5 * 3 + 202.5,
+    },
+  ];
 };

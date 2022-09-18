@@ -5,7 +5,7 @@ import { lineLen } from '../drawUtils/_base';
 export let APositions: [number, number][] = [];
 
 for (let i = 1; i <= 8; i++) {
-  APositions.push([center[0] + maimaiJudgeLineR * Math.cos((-5 / 8 + (1 / 4) * i) * Math.PI), center[1] + maimaiJudgeLineR * Math.sin((-5 / 8 + (1 / 4) * i) * Math.PI)]);
+  APositions.push([center[0] + maimaiJudgeLineR * cos((-5 / 8 + (1 / 4) * i) * Math.PI), center[1] + maimaiJudgeLineR * sin((-5 / 8 + (1 / 4) * i) * Math.PI)]);
 }
 
 // sz轨迹的左右拐点
