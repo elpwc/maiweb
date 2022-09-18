@@ -90,6 +90,8 @@ const drawKeys = () => {
 
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   drawAllKeys(ctx, currentTouchingArea, keyStates);
+
+  drawFrame(ctx, canvasWidth - 100, 30);
 };
 
 const drawOver = () => {
@@ -454,7 +456,24 @@ const initCtx = () => {
   ctx_slideTrack = (document.getElementsByClassName('canvasSlideTrack')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
 };
 
+let lastFrameBeginTime = -1;
+let frame = 0;
+
+// 绘制帧率
+const drawFrame = (ctx: CanvasRenderingContext2D, x: number = 0, y: number = 0) => {
+  ctx.strokeStyle = 'red';
+  ctx.font = '20px Arial';
+  ctx.strokeText(frame.toFixed(2) + 'fps', x, y);
+};
+
 const drawer = async () => {
+  // 计算帧率
+  const currentFrameBeginTime = performance.now();
+  if (lastFrameBeginTime !== -1) {
+    frame = 1000 / (currentFrameBeginTime - lastFrameBeginTime);
+  }
+  lastFrameBeginTime = currentFrameBeginTime;
+
   ctx_notes.clearRect(0, 0, canvasWidth, canvasHeight);
   ctx_slideTrack.clearRect(0, 0, canvasWidth, canvasHeight);
 

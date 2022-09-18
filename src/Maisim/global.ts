@@ -17,7 +17,7 @@ export const maimaiER = maimaiScreenR * 0.574;
 export const touchMaxDistance = maimaiTapR * 0.8;
 
 // 帧
-export const timerPeriod: number = 15;
+export const timerPeriod: number = 16.6666666666667;
 
 // 轨迹
 export const trackItemGap: number = 25;
