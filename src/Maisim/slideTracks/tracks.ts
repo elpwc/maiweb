@@ -12,9 +12,11 @@ import { lineLen } from '../drawUtils/_base';
  * @param rt 总时间
  * @returns 这一时刻的位置，方向
  */
-export const getTrackProps = (type: string, startPos: number, endPosOri: number, ct: number, rt: number): { x: number; y: number; direction: number } => {
+export const getTrackProps = (type: string, startPos: number, endPosOri: number, ct: number, rt: number, turnPosOri?: number): { x: number; y: number; direction: number } => {
   let endPos = endPosOri - startPos + 1;
+  let turnPos = (turnPosOri ?? 0) - startPos + 1;
   if (endPos < 1) endPos += 8;
+  if (turnPos < 1) turnPos += 8;
   switch (type) {
     case '-':
       return straight(endPos, ct, rt);
@@ -38,6 +40,10 @@ export const getTrackProps = (type: string, startPos: number, endPosOri: number,
       return pp(endPos, ct, rt);
     case 'qq':
       return qq(endPos, ct, rt);
+    case 'V':
+      return turn(turnPos, endPos, ct, rt);
+    case 'w':
+      return w(ct, rt);
     default:
       return { x: 0, y: 0, direction: 0 };
   }
@@ -380,4 +386,36 @@ const qq = (endPos: number, ct: number, rt: number): { x: number; y: number; dir
   } else {
     return { x: 0, y: 0, direction: 0 };
   }
+};
+
+// V
+const turn = (turnPos: number, endPos: number, ct: number, rt: number): { x: number; y: number; direction: number } => {
+  const l1 = lineLen(APositions[turnPos - 1][0], APositions[turnPos - 1][1], APositions[0][0], APositions[0][1]);
+  const l2 = lineLen(APositions[turnPos - 1][0], APositions[turnPos - 1][1], APositions[endPos - 1][0], APositions[endPos - 1][1]);
+  const sumLen = l1 + l2;
+
+  const b = ct / rt;
+
+  if (b < l1 / sumLen) {
+    return {
+      x: APositions[0][0] + ((APositions[turnPos - 1][0] - APositions[0][0]) * (ct / rt)) / (l1 / sumLen),
+      y: APositions[0][1] + ((APositions[turnPos - 1][1] - APositions[0][1]) * (ct / rt)) / (l1 / sumLen),
+      direction: 22.5 * (turnPos - 1) + 202.5,
+    };
+  } else {
+    return {
+      x: APositions[turnPos - 1][0] + ((APositions[endPos - 1][0] - APositions[turnPos - 1][0]) * (ct / rt - l1 / sumLen)) / (l2 / sumLen),
+      y: APositions[turnPos - 1][1] + ((APositions[endPos - 1][1] - APositions[turnPos - 1][1]) * (ct / rt - l1 / sumLen)) / (l2 / sumLen),
+      direction: 22.5 * (endPos - turnPos - 1) + 180 + turnPos * 45,
+    };
+  }
+};
+
+// w
+const w = (ct: number, rt: number): { x: number; y: number; direction: number } => {
+  return {
+    x: APositions[0][0] + (APositions[4][0] - APositions[0][0]) * (ct / rt),
+    y: APositions[0][1] + (APositions[4][1] - APositions[0][1]) * (ct / rt),
+    direction: 22.5 * 4 + 202.5,
+  };
 };

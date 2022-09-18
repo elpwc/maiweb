@@ -50,13 +50,15 @@ export interface Segment {
   a: string[];
 }
 
-export const trackLength = (type: string, startPos: number, endPosOri: number): number => {
+export const trackLength = (type: string, startPos: number, endPosOri: number, turnPosOri?: number): number => {
   let endPos = endPosOri - startPos + 1;
   if (endPos < 1) endPos += 8;
+  let turnPos = (turnPosOri ?? 0) - startPos + 1;
+  if (turnPos < 1) turnPos += 8;
 
   switch (type) {
     case '-':
-      return sqrt((APositions[endPos - 1][0] - APositions[0][0]) ** 2 + (APositions[endPos - 1][1] - APositions[0][1]) ** 2);
+      return lineLen(APositions[0][0], APositions[0][1], APositions[endPos - 1][0], APositions[endPos - 1][1]);
     case '^':
       if (endPos > 1 && endPos < 5) {
         return π * maimaiJudgeLineR * 2 * ((endPos - 1) / 8);
@@ -131,9 +133,12 @@ export const trackLength = (type: string, startPos: number, endPosOri: number): 
     case 'z':
       return maimaiJudgeLineR * 2.9932;
     case 'V':
-      break;
+      return (
+        lineLen(APositions[turnPos - 1][0], APositions[turnPos - 1][1], APositions[0][0], APositions[0][1]) +
+        lineLen(APositions[turnPos - 1][0], APositions[turnPos - 1][1], APositions[endPos - 1][0], APositions[endPos - 1][1])
+      );
     case 'w':
-      break;
+      return lineLen(APositions[0][0], APositions[0][1], APositions[4][0], APositions[4][1]);
     default:
       break;
   }

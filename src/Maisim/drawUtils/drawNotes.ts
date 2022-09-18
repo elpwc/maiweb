@@ -299,7 +299,7 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
     let tempendpos = Number(note.endPos) - (Number(note.pos) - 1);
     if (tempendpos < 1) tempendpos += 8;
     // 间隔放置TRACK元素的时间
-    const trackItemGapTime = (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos));
+    const trackItemGapTime = (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos), note.turnPos === undefined ? undefined : Number(note.turnPos));
 
     // SLIDE TRACK
     ctx_slideTrack.save();
@@ -308,7 +308,7 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
 
     // 得从後往前画
     for (let i = note.remainTime!; i >= 0; i -= trackItemGapTime) {
-      const slideData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!);
+      const slideData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos));
       drawRotationImage(
         ctx_slideTrack,
         imageTrack,
@@ -329,7 +329,7 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
     ctx.translate(center[0], center[1]);
     ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
 
-    const guideStarData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), props.rho, note.remainTime!);
+    const guideStarData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), props.rho, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos));
     drawRotationImage(
       ctx,
       imageStar,
