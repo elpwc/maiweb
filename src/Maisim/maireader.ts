@@ -571,6 +571,14 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
               notevalue: slideTrack.notevalue,
               isEach: res.slideTracks!.length > 1,
             };
+            // isEach
+            notesRes.forEach((note, i) => {
+              if (note.type === NoteType.SlideTrack && note.time === tempSlideTrackNote.time) {
+                tempSlideTrackNote.isEach = true;
+                notesRes[i].isEach = true;
+              }
+            });
+
             notesRes.push(tempSlideTrackNote);
           });
         }
