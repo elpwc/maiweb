@@ -33,6 +33,8 @@ import { drawOutRing } from './drawUtils/drawOurRing';
 import { initResources } from './resourceReaders/_init';
 import { OutlineIcon } from './resourceReaders/outlineIconReader';
 import { ppqqAnglCalc } from './slideTracks/_global';
+import { abs } from '../math';
+import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
@@ -92,6 +94,7 @@ const drawKeys = () => {
   drawAllKeys(ctx, currentTouchingArea, keyStates);
 
   drawFrame(ctx, canvasWidth - 100, 30);
+  drawGameRecord(ctx);
 };
 
 const drawOver = () => {
@@ -212,6 +215,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === -2) {
           // stop
+
           if (currentTime >= noteIns.time! + judgeLineRemainTime) {
             newNote.status = -1;
           }
@@ -238,6 +242,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === 2) {
           // move
+
           if (noteIns.time! < noteIns.moveTime! + noteIns.remainTime!) {
             // HOLD长度大于maimaiJudgeLine-maimaiSummonLine
             if (currentTime >= noteIns.moveTime! + noteIns.remainTime!) {
@@ -260,6 +265,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === 3) {
           // die
+
           newNote.tailRho = ((currentTime - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
           if (currentTime >= noteIns.time! + noteIns.remainTime!) {
@@ -267,6 +273,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === -2) {
           // stop
+
           if (currentTime >= noteIns.time! + judgeLineRemainTime) {
             newNote.status = -1;
           }
@@ -284,6 +291,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === 1) {
           // converge
+
           newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
 
           if (currentTime >= noteIns.time!) {
@@ -295,6 +303,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === 2) {
           // save
+
           newNote.tailRho = ((currentTime - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
 
           if (currentTime >= noteIns.time! + noteIns.remainTime!) {
@@ -302,6 +311,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === -2) {
           // stop
+
           if (currentTime >= noteIns.time! + (noteIns.remainTime! ?? 0) + judgeLineRemainTime) {
             newNote.status = -1;
           }
@@ -319,6 +329,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === 1) {
           // converge
+
           newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
 
           if (currentTime >= noteIns.time!) {
@@ -326,6 +337,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === -2) {
           // stop
+
           newNote.rho = touchMaxDistance;
           if (currentTime >= noteIns.time! + judgeLineRemainTime) {
             newNote.status = -1;
@@ -375,6 +387,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === 1) {
           // move
+
           newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
           if (currentTime >= noteIns.time!) {
@@ -382,6 +395,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === -2) {
           // stop
+
           if (currentTime >= noteIns.time! + judgeLineRemainTime) {
             newNote.status = -1;
           }
@@ -398,6 +412,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === 1) {
           // move
+
           newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
           if (currentTime >= noteIns.time!) {
@@ -405,6 +420,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === -2) {
           // stop
+
           if (currentTime >= noteIns.time! + judgeLineRemainTime) {
             newNote.status = -1;
           }
@@ -416,9 +432,13 @@ const reader_and_updater = async () => {
     return newNote;
   });
 
-  // 清除die掉的note
+  // 清除die掉的 和 按过的 note
   showingNotes = showingNotes.filter((note) => {
-    return note.status !== -1;
+    // MISS
+    if (note.status === -1 && !note.isTouched) {
+      gameRecord.miss++;
+    }
+    return note.isTouched === false && note.status !== -1;
     // const type = currentSheet.notes[note.noteIndex].type;
     // if (type === NoteType.Hold) {
     //   return note.tailRho < maimaiScreenR - maimaiSummonLineR + maimaiTapR;
@@ -439,6 +459,9 @@ const reader_and_updater = async () => {
       timer: 0,
       placeTime: currentTime,
       isEach: currentSheet.notes[nextNoteIndex].isEach ?? false,
+      judgeStatus: JudgeStatus.Miss,
+      judgeTime: JudgeTimeStatus.Late,
+      isTouched: false,
     });
     nextNoteIndex++;
   }
@@ -487,6 +510,280 @@ const drawer = async () => {
   }
 };
 
+/** 游戏记录 */
+const gameRecord = {
+  criticalPerfect: 0,
+  perfect: 0,
+  great: 0,
+  good: 0,
+  miss: 0,
+  fast: 0,
+  late: 0,
+  max_combo: 0,
+  combo: 0,
+  achieving_rate: 0,
+  dx_point: 0,
+  tap: {
+    criticalPerfect: 0,
+    perfect: 0,
+    great: 0,
+    good: 0,
+    miss: 0,
+    fast: 0,
+    late: 0,
+  },
+  hold: {
+    criticalPerfect: 0,
+    perfect: 0,
+    great: 0,
+    good: 0,
+    miss: 0,
+    fast: 0,
+    late: 0,
+  },
+  slide: {
+    criticalPerfect: 0,
+    perfect: 0,
+    great: 0,
+    good: 0,
+    miss: 0,
+    fast: 0,
+    late: 0,
+  },
+  touch: {
+    criticalPerfect: 0,
+    perfect: 0,
+    great: 0,
+    good: 0,
+    miss: 0,
+    fast: 0,
+    late: 0,
+  },
+  break: {
+    criticalPerfect: 0,
+    perfect: 0,
+    great: 0,
+    good: 0,
+    miss: 0,
+    fast: 0,
+    late: 0,
+  },
+};
+
+const drawGameRecord = (ctx: CanvasRenderingContext2D) => {
+  ctx.strokeStyle = 'red';
+  ctx.font = '20px Arial';
+  ctx.strokeText(`Critical: ${gameRecord.criticalPerfect}, Perfect: ${gameRecord.perfect}, Great: ${gameRecord.great}, Good: ${gameRecord.good}, Miss: ${gameRecord.miss}`, 0, 50);
+};
+
+const onPressDown = (area: TouchArea) => {
+  console.log(area);
+  switch (area.area.type) {
+    case 'A' || 'K':
+      showingNotes.forEach((note, i) => {
+        console.log(currentSheet.notes[note.noteIndex].time - currentTime, 9 * timerPeriod);
+        if (
+          (currentSheet.notes[note.noteIndex].type === NoteType.Hold ||
+            currentSheet.notes[note.noteIndex].type === NoteType.Tap ||
+            currentSheet.notes[note.noteIndex].type === NoteType.Slide ||
+            currentSheet.notes[note.noteIndex].type === NoteType.Touch) &&
+          currentSheet.notes[note.noteIndex].pos === (area.area.type === 'A' ? String(area.area.id) : area.area.name) &&
+          abs(currentSheet.notes[note.noteIndex].time - currentTime) <= 9 * timerPeriod
+        ) {
+          showingNotes[i].isTouched = true;
+          showingNotes[i].touchedTime = currentTime;
+          const timeD = currentSheet.notes[note.noteIndex].time - currentTime;
+          console.log('timeD: ', timeD);
+          if (timeD >= 0) {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+            gameRecord.fast++;
+          } else {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+            gameRecord.late++;
+          }
+          if (abs(timeD) <= timerPeriod * 1) {
+            // CRITICAL PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+            gameRecord.criticalPerfect++;
+            switch (currentSheet.notes[note.noteIndex].type) {
+              case NoteType.Tap:
+                break;
+            }
+          } else if (abs(timeD) <= timerPeriod * 3 && abs(timeD) > timerPeriod * 1) {
+            // PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+            gameRecord.perfect++;
+          } else if (abs(timeD) <= timerPeriod * 6 && abs(timeD) > timerPeriod * 3) {
+            // GREAT
+            showingNotes[i].judgeStatus = JudgeStatus.Great;
+            gameRecord.great++;
+          } else if (abs(timeD) <= timerPeriod * 9 && abs(timeD) > timerPeriod * 6) {
+            // GOOD
+            showingNotes[i].judgeStatus = JudgeStatus.Good;
+            gameRecord.good++;
+          } else {
+          }
+        }
+      });
+      break;
+    case 'B':
+      showingNotes.forEach((note, i) => {
+        if (
+          currentSheet.notes[note.noteIndex].type === NoteType.Touch &&
+          currentSheet.notes[note.noteIndex].pos === area.area.name &&
+          abs(currentSheet.notes[note.noteIndex].time - currentTime) <= 9 * timerPeriod
+        ) {
+          showingNotes[i].isTouched = true;
+          showingNotes[i].touchedTime = currentTime;
+          const timeD = currentSheet.notes[note.noteIndex].time - currentTime;
+          if (timeD >= 0) {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+            gameRecord.fast++;
+          } else {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+            gameRecord.late++;
+          }
+          if (abs(timeD) <= timerPeriod * 1) {
+            // CRITICAL PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+            switch (currentSheet.notes[note.noteIndex].type) {
+              case NoteType.Tap:
+                break;
+            }
+          } else if (abs(timeD) <= timerPeriod * 3 && abs(timeD) > timerPeriod * 1) {
+            // PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+          } else if (abs(timeD) <= timerPeriod * 6 && abs(timeD) > timerPeriod * 3) {
+            // GREAT
+            showingNotes[i].judgeStatus = JudgeStatus.Great;
+          } else if (abs(timeD) <= timerPeriod * 9 && abs(timeD) > timerPeriod * 6) {
+            // GOOD
+            showingNotes[i].judgeStatus = JudgeStatus.Good;
+          } else {
+          }
+        }
+      });
+      break;
+    case 'C':
+      showingNotes.forEach((note, i) => {
+        if (
+          (currentSheet.notes[note.noteIndex].type === NoteType.TouchHold || currentSheet.notes[note.noteIndex].type === NoteType.Touch) &&
+          currentSheet.notes[note.noteIndex].pos === area.area.name &&
+          abs(currentSheet.notes[note.noteIndex].time - currentTime) <= 9 * timerPeriod
+        ) {
+          showingNotes[i].isTouched = true;
+          showingNotes[i].touchedTime = currentTime;
+          const timeD = currentSheet.notes[note.noteIndex].time - currentTime;
+          if (timeD >= 0) {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+            gameRecord.fast++;
+          } else {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+            gameRecord.late++;
+          }
+          if (abs(timeD) <= timerPeriod * 1) {
+            // CRITICAL PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+            switch (currentSheet.notes[note.noteIndex].type) {
+              case NoteType.Tap:
+                break;
+            }
+          } else if (abs(timeD) <= timerPeriod * 3 && abs(timeD) > timerPeriod * 1) {
+            // PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+          } else if (abs(timeD) <= timerPeriod * 6 && abs(timeD) > timerPeriod * 3) {
+            // GREAT
+            showingNotes[i].judgeStatus = JudgeStatus.Great;
+          } else if (abs(timeD) <= timerPeriod * 9 && abs(timeD) > timerPeriod * 6) {
+            // GOOD
+            showingNotes[i].judgeStatus = JudgeStatus.Good;
+          } else {
+          }
+        }
+      });
+      break;
+    case 'D':
+      showingNotes.forEach((note, i) => {
+        if (
+          currentSheet.notes[note.noteIndex].type === NoteType.Touch &&
+          currentSheet.notes[note.noteIndex].pos === area.area.name &&
+          abs(currentSheet.notes[note.noteIndex].time - currentTime) <= 9 * timerPeriod
+        ) {
+          showingNotes[i].isTouched = true;
+          showingNotes[i].touchedTime = currentTime;
+          const timeD = currentSheet.notes[note.noteIndex].time - currentTime;
+          if (timeD >= 0) {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+            gameRecord.fast++;
+          } else {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+            gameRecord.late++;
+          }
+          if (abs(timeD) <= timerPeriod * 1) {
+            // CRITICAL PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+            switch (currentSheet.notes[note.noteIndex].type) {
+              case NoteType.Tap:
+                break;
+            }
+          } else if (abs(timeD) <= timerPeriod * 3 && abs(timeD) > timerPeriod * 1) {
+            // PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+          } else if (abs(timeD) <= timerPeriod * 6 && abs(timeD) > timerPeriod * 3) {
+            // GREAT
+            showingNotes[i].judgeStatus = JudgeStatus.Great;
+          } else if (abs(timeD) <= timerPeriod * 9 && abs(timeD) > timerPeriod * 6) {
+            // GOOD
+            showingNotes[i].judgeStatus = JudgeStatus.Good;
+          } else {
+          }
+        }
+      });
+      break;
+    case 'E':
+      showingNotes.forEach((note, i) => {
+        if (
+          currentSheet.notes[note.noteIndex].type === NoteType.Touch &&
+          currentSheet.notes[note.noteIndex].pos === area.area.name &&
+          abs(currentSheet.notes[note.noteIndex].time - currentTime) <= 9 * timerPeriod
+        ) {
+          showingNotes[i].isTouched = true;
+          showingNotes[i].touchedTime = currentTime;
+          const timeD = currentSheet.notes[note.noteIndex].time - currentTime;
+          if (timeD >= 0) {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+            gameRecord.fast++;
+          } else {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+            gameRecord.late++;
+          }
+          if (abs(timeD) <= timerPeriod * 1) {
+            // CRITICAL PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+            switch (currentSheet.notes[note.noteIndex].type) {
+              case NoteType.Tap:
+                break;
+            }
+          } else if (abs(timeD) <= timerPeriod * 3 && abs(timeD) > timerPeriod * 1) {
+            // PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+          } else if (abs(timeD) <= timerPeriod * 6 && abs(timeD) > timerPeriod * 3) {
+            // GREAT
+            showingNotes[i].judgeStatus = JudgeStatus.Great;
+          } else if (abs(timeD) <= timerPeriod * 9 && abs(timeD) > timerPeriod * 6) {
+            // GOOD
+            showingNotes[i].judgeStatus = JudgeStatus.Good;
+          } else {
+          }
+        }
+      });
+      break;
+  }
+  console.log(gameRecord, showingNotes);
+};
+
+const onPressUp = (area: TouchArea) => {};
+
 const onMouseDown = (e: Event) => {
   // @ts-ignore
   const area = whichArea(e.clientX, e.clientY);
@@ -495,9 +792,13 @@ const onMouseDown = (e: Event) => {
       area,
       pressTime: currentTime,
     });
+    onPressDown({
+      area,
+      pressTime: currentTime,
+    });
   }
 
-  console.log(currentTouchingArea);
+  //console.log(currentTouchingArea);
 };
 const onMouseUp = (e: Event) => {
   // @ts-ignore
@@ -507,7 +808,7 @@ const onMouseUp = (e: Event) => {
       return ta.area.name !== area.name;
     });
   }
-  console.log(currentTouchingArea);
+  //console.log(currentTouchingArea);
 };
 
 const onTouchStart = (ev: Event) => {
@@ -524,6 +825,10 @@ const onTouchStart = (ev: Event) => {
         }) === undefined
       ) {
         currentTouchingArea.push({
+          area,
+          pressTime: currentTime,
+        });
+        onPressDown({
           area,
           pressTime: currentTime,
         });
@@ -604,6 +909,7 @@ const onTouchMove = (ev: Event) => {
         }) === undefined
       ) {
         currentTouchingArea.push(tempTouchingArea[i]);
+        onPressDown(tempTouchingArea[i]);
       }
     }
     // 离开的

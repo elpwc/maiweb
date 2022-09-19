@@ -1,3 +1,5 @@
+import { JudgeStatus, JudgeTimeStatus } from "./judgeStatus";
+
 /** 当前绘制的Note，包含各类实时变化量 */
 export interface ShowingNoteProps {
   /** 所在的Beat的index */
@@ -27,4 +29,13 @@ export interface ShowingNoteProps {
   placeTime: number;
 
   isEach: boolean;
+
+  // 判定相关
+  /** 是否已经被按下 */
+  isTouched: boolean;
+  /** 按下的时间 HOLD */
+  touchedTime?: number;
+  // 实时判定显示相关
+  judgeStatus: JudgeStatus;
+  judgeTime: JudgeTimeStatus;
 }

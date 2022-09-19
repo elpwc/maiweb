@@ -3,9 +3,13 @@ import { isInner, lineLen } from './drawUtils/_base';
 import { center, keyInnerR, keyOuterR, keyWidth, maimaiJudgeLineR, maimaiScreenR, maimaiSummonLineR } from './global';
 
 export interface Area {
+  /** A B C.. */
   type: string;
+  /** 1 2 3 4 5 6 7 8 */
   id: number;
+  /** A1 B2 C3... */
   name: string;
+  /** 围住的多边形的所有顶点 */
   points: [number, number][];
 
   // 适用于key

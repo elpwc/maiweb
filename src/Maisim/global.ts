@@ -27,7 +27,7 @@ export const trackItemHeight: number = maimaiTapR * 2;
 export const holdHeadHeight: number = 70;
 
 /** 在判定线停留的时间 ms */
-export const judgeLineRemainTime: number = 100;
+export const judgeLineRemainTime: number = timerPeriod * 10;
 
 // 外键
 export const keyWidth: number = 1 / 20;
