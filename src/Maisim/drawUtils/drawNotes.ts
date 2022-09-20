@@ -1,6 +1,20 @@
 import { ShowingNoteProps } from '../../utils/showingNoteProps';
 import { cos, sin, π } from '../../math';
-import { center, maimaiSummonLineR, maimaiScreenR, maimaiBR, maimaiER, touchMaxDistance, maimaiTapR, trackItemGap, trackItemWidth, trackItemHeight, holdHeadHeight, canvasWidth } from '../global';
+import {
+  center,
+  maimaiSummonLineR,
+  maimaiScreenR,
+  maimaiBR,
+  maimaiER,
+  touchMaxDistance,
+  maimaiTapR,
+  trackItemGap,
+  trackItemWidth,
+  trackItemHeight,
+  holdHeadHeight,
+  canvasWidth,
+  maimaiADTouchR,
+} from '../global';
 import { Note, NoteType } from '../maireader';
 import { getTrackProps } from '../slideTracks/tracks';
 import { APositions, trackLength } from '../slideTracks/_global';
@@ -30,8 +44,13 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
         break;
       case 'A':
         θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-        x = center[0] + maimaiScreenR * Math.cos(θ);
-        y = center[1] + maimaiScreenR * Math.sin(θ);
+        if (note.type === NoteType.Touch) {
+          x = center[0] + maimaiADTouchR * Math.cos(θ);
+          y = center[1] + maimaiADTouchR * Math.sin(θ);
+        } else {
+          x = center[0] + maimaiScreenR * Math.cos(θ);
+          y = center[1] + maimaiScreenR * Math.sin(θ);
+        }
         break;
       case 'B':
         θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
@@ -40,13 +59,16 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
         break;
       case 'D':
         θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-        //console.log('D', -1 / 4 + (1 / 4) * Number(touchPos), touchPos);
-        x = center[0] + maimaiScreenR * Math.cos(θ);
-        y = center[1] + maimaiScreenR * Math.sin(θ);
+        if (note.type === NoteType.Touch) {
+          x = center[0] + maimaiADTouchR * Math.cos(θ);
+          y = center[1] + maimaiADTouchR * Math.sin(θ);
+        } else {
+          x = center[0] + maimaiScreenR * Math.cos(θ);
+          y = center[1] + maimaiScreenR * Math.sin(θ);
+        }
         break;
       case 'E':
         θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-        //console.log('E', -1 / 4 + (1 / 4) * Number(touchPos), touchPos);
         x = center[0] + maimaiER * Math.cos(θ);
         y = center[1] + maimaiER * Math.sin(θ);
         break;

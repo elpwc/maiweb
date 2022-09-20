@@ -16,6 +16,9 @@ export const maimaiER = maimaiScreenR * 0.574;
 
 export const touchMaxDistance = maimaiTapR * 0.8;
 
+/** AD区的TOUCH的位置 */
+export const maimaiADTouchR = maimaiJudgeLineR * 0.875;
+
 // 帧
 export const timerPeriod: number = 16.6666666666667;
 
