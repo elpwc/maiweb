@@ -25,3 +25,5 @@ yarn-error.log*
 /resource/music/
 /resource/sound/
 /resource/track/
+
+/local/*
