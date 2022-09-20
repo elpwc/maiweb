@@ -111,6 +111,19 @@ export interface Note {
   // 以下在生成後由speed之类的决定
   /** GUIDE STAR开始浮现的时间 */
   guideStarEmergeTime?: number;
+
+  /** 伪SLIDE TAP(TAP、BREAKを強制的に☆型にする) */
+  isStarTap?: boolean;
+  /** 伪SLIDE TAP是否旋转 */
+  starTapRotate?: boolean;
+
+  /** 伪TAP(SLIDE時にTAP、BREAKを強制的に○型にする) */
+  isTapStar?: boolean;
+
+  /** ? */
+  isNoTapSlide?: boolean;
+  /** ! */
+  isNoTapNoTameTimeSlide?: boolean;
 }
 
 /** 一个谱面 */
@@ -332,6 +345,34 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
       hyoshiData = hyoshiData.replaceAll('f', '');
     }
 
+    // $ @ ? !
+    if (hyoshiData.indexOf('$') !== -1) {
+      // TAP、BREAKを強制的に☆型にする
+      hyoshiRes.isStarTap = true;
+      // 2つ並べて"$$"にすると、☆TAPが回転するようになる(回転速度は一定)
+      if (hyoshiData.substring(hyoshiData.indexOf('$') + 1, hyoshiData.indexOf('$') + 2) === '$') {
+        hyoshiRes.starTapRotate = true;
+      } else {
+        hyoshiRes.starTapRotate = false;
+      }
+      hyoshiData = hyoshiData.replaceAll('$', '');
+    }
+    if (hyoshiData.indexOf('@') !== -1) {
+      // SLIDE時にTAP、BREAKを強制的に○型にする
+      hyoshiRes.isTapStar = true;
+      hyoshiData = hyoshiData.replaceAll('@', '');
+    }
+    if (hyoshiData.indexOf('?') !== -1) {
+      // "?"の場合は、タメ時間中にSLIDEをなぞる用の☆が表示される
+      hyoshiRes.isNoTapSlide = true;
+      hyoshiData = hyoshiData.replaceAll('?', '');
+    }
+    if (hyoshiData.indexOf('!') !== -1) {
+      // "!"の場合は、SLIDEをなぞり始めるその瞬間にいきなり☆が表示される
+      hyoshiRes.isNoTapNoTameTimeSlide = true;
+      hyoshiData = hyoshiData.replaceAll('!', '');
+    }
+
     if (hyoshiData.length === 1) {
       // C TOUCH, TAP
       if (hyoshiData === 'C') {
@@ -523,7 +564,9 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
     let isNiseEach = false;
 
     //处理一组Note
+    // （二次处理）
     hyoshiGroup.forEach((hyoshi: string) => {
+      /** 要加入Notes列表的note */
       const res: Note | null = hyoshiAnalyse(hyoshi, index);
       //console.log(res);
 
@@ -547,11 +590,26 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
         res.bpm = beatT.bpm;
         res.partnotevalue = beatT.notevalue;
 
-        notesRes.push(res);
-        beatT.noteIndexes.push(notesRes.length - 1);
+        // 处理前的type
+        const foreType = res.type;
+
+        // 处理伪TAP 伪SLIDE
+        if (res.isStarTap) {
+          res.type = NoteType.Slide;
+        }
+        if (res.isTapStar) {
+          res.type = NoteType.Tap;
+        }
+
+        // 处理好的res加入Notes列表
+        // 并分离掉？！SLIDE的头
+        if (!(res.isNoTapSlide || res.isNoTapNoTameTimeSlide)) {
+          notesRes.push(res);
+          beatT.noteIndexes.push(notesRes.length - 1);
+        }
 
         // 加入SLIDE TRACK
-        if (res.type === NoteType.Slide) {
+        if (foreType === NoteType.Slide) {
           res.slideTracks?.forEach((slideTrack: SlideTrack) => {
             const tempSlideTrackNote: Note = {
               index: res.index,
@@ -570,6 +628,10 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
               notenumber: slideTrack.notenumber,
               notevalue: slideTrack.notevalue,
               isEach: res.slideTracks!.length > 1,
+              isTapStar: res.isTapStar,
+              isStarTap: res.isStarTap,
+              isNoTapSlide: res.isNoTapSlide,
+              isNoTapNoTameTimeSlide: res.isNoTapNoTameTimeSlide,
             };
             // isEach
             notesRes.forEach((note, i) => {
