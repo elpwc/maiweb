@@ -18,7 +18,7 @@ import {
   trackItemGap,
   judgeLineRemainTime,
 } from './global';
-import { Note, NoteType, ReadMaimaiData, Sheet, Song } from './maireader';
+import { ReadMaimaiData } from './maireader';
 
 import { GameState } from '../utils/gamestate';
 
@@ -35,6 +35,10 @@ import { OutlineIcon } from './resourceReaders/outlineIconReader';
 import { ppqqAnglCalc } from './slideTracks/_global';
 import { abs } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
+import { Note } from '../utils/note';
+import { NoteType } from '../utils/noteType';
+import { Sheet } from '../utils/sheet';
+import { Song } from '../utils/song';
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 

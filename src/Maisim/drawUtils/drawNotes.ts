@@ -15,11 +15,12 @@ import {
   canvasWidth,
   maimaiADTouchR,
 } from '../global';
-import { Note, NoteType } from '../maireader';
 import { getTrackProps } from '../slideTracks/tracks';
 import { APositions, trackLength } from '../slideTracks/_global';
 import { drawRotationImage, lineLen } from './_base';
 import { NoteIcon } from '../resourceReaders/noteIconReader';
+import { Note } from '../../utils/note';
+import { NoteType } from '../../utils/noteType';
 
 export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRenderingContext2D, note: Note, isEach: boolean = false, props: ShowingNoteProps) => {
   let θ = 0,
@@ -473,7 +474,7 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
 
     if (note.isNoTapNoTameTimeSlide) {
       // !
-      if (props.status >= 2) {
+      if (props.status >= 2 || props.status <= -1) {
         drawSlideTrackImage_();
       }
     } else {
