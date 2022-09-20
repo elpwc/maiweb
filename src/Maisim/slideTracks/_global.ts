@@ -1,4 +1,4 @@
-import { center, maimaiJudgeLineR, maimaiScreenR } from '../global';
+import { center, maimaiJudgeLineR, maimaiScreenR } from '../const';
 import { abs, acos, asin, atan, cos, sin, sqrt, π } from '../../math';
 import { lineLen } from '../drawUtils/_base';
 

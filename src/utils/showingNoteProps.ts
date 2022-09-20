@@ -9,11 +9,11 @@ export interface ShowingNoteProps {
 
   /**
    * TAP:
-   * -2: stop at judge line -1: die 0: emerge 1:move
+   * -2: stop at judge line but doesn't appear -1: die 0: emerge 1:move
    * HOLD:
-   * -2: stop at judge line -1: die 0: emerge 1: grow 2: move 3: disappear 4: fill(充满 长度暂时不改变)
+   * -2: stop at judge line but doesn't appear -1: die 0: emerge 1: grow 2: move 3: disappear 4: fill(充满 长度暂时不改变)
    * SLIDE TRACK:
-   * -2: stop at judge line -1: die 0: emerge 1: hangup 2: move
+   * -2: stop at judge line but doesn't appear -1: die 0: emerge 1: hangup 2: move
    */
   status: number;
   radius: number;
@@ -31,14 +31,17 @@ export interface ShowingNoteProps {
   isEach: boolean;
 
   // 判定相关
-  /** 是否已经被按下 */
-  isTouched: boolean;
-  /** 按下的时间 HOLD */
+  /** 是否已经被按过 */
+  touched: boolean;
+  /** 是否正在被按着 */
+  isTouching: boolean;
+  /** 按下时的时间 HOLD */
   touchedTime?: number;
   // 实时判定显示相关
+  /** 判定结果 */
   judgeStatus: JudgeStatus;
+  /** 判定前後 */
   judgeTime: JudgeTimeStatus;
-
 
   // 适用于HOLD, SLIDE HOLD 被按下的总时间
   holdingTime: number;

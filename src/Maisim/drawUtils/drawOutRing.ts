@@ -1,6 +1,6 @@
 import { cos, sin } from '../../math';
 import { keys } from '../areas';
-import { canvasHeight, canvasWidth, center, keySideDotDistance, keySideDotR, keySideDotRtoCenter, keySideLineDistance, maimaiR, maimaiScreenR } from '../global';
+import { canvasHeight, canvasWidth, center, keySideDotDistance, keySideDotR, keySideDotRtoCenter, keySideLineDistance, maimaiR, maimaiScreenR } from '../const';
 import { clearArcFun } from './_base';
 
 export const drawOutRing = (ctx: CanvasRenderingContext2D) => {

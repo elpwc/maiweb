@@ -14,7 +14,7 @@ import {
   maimaiR,
   maimaiScreenR,
   maimaiSummonLineR,
-} from '../global';
+} from '../const';
 import { KeyState } from '../../utils/keyState';
 
 const drawKey = (ctx: CanvasRenderingContext2D, key: Area, pressed: boolean = false, color: string = '') => {

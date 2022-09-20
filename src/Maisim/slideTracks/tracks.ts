@@ -1,4 +1,4 @@
-import { center, maimaiJudgeLineR } from '../global';
+import { center, maimaiJudgeLineR } from '../const';
 import { cos, sin, π } from '../../math';
 import { APositions, ppPoints, qpCenterCircleR, qpLeftCircleCenter, qpLeftRighCircleR, qpLeftRightCircleCenterR, qplen, qpRightCircleCenter, qqPoints, szLeftPoint, szRightPoint } from './_global';
 import { lineLen } from '../drawUtils/_base';

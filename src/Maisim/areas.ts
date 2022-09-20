@@ -1,6 +1,6 @@
 import { abs, atan, cos, sin, π } from '../math';
 import { isInner, lineLen } from './drawUtils/_base';
-import { center, keyInnerR, keyOuterR, keyWidth, maimaiJudgeLineR, maimaiScreenR, maimaiSummonLineR } from './global';
+import { center, keyInnerR, keyOuterR, keyWidth, maimaiJudgeLineR, maimaiScreenR, maimaiSummonLineR } from './const';
 
 export interface Area {
   /** A B C.. */
