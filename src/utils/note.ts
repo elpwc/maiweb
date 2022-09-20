@@ -57,6 +57,9 @@ export interface Note {
   /**
    * 浮现时间/ms
    *  对于TRACK: TRACK浮现时间（其实就是SLIDE TAP的movetime喵
+   * ⚠注意⚠：
+   * 所有Note的emergeTime在maireader中均未被定义
+   * 是在读取谱面数据後根据速度设定计算的
    * */
   emergeTime?: number;
   /**

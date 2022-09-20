@@ -484,13 +484,6 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
               isNoTapSlide: res.isNoTapSlide,
               isNoTapNoTameTimeSlide: res.isNoTapNoTameTimeSlide,
             };
-            // isEach
-            notesRes.forEach((note, i) => {
-              if (note.type === NoteType.SlideTrack && note.time === tempSlideTrackNote.time) {
-                tempSlideTrackNote.isEach = true;
-                notesRes[i].isEach = true;
-              }
-            });
 
             notesRes.push(tempSlideTrackNote);
           });

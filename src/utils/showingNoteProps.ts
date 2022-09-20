@@ -38,4 +38,8 @@ export interface ShowingNoteProps {
   // 实时判定显示相关
   judgeStatus: JudgeStatus;
   judgeTime: JudgeTimeStatus;
+
+
+  // 适用于HOLD, SLIDE HOLD 被按下的总时间
+  holdingTime: number;
 }

@@ -150,6 +150,14 @@ const calculate_emerge_move_time_of_notes = (notesOri: Note[]) => {
       notes[i].moveTime = note.time - movingTime;
       notes[i].emergeTime = note.time - movingTime - emergingTime;
     }
+
+    // isEach for SLIDE TRACK
+    notes.forEach((note2, j) => {
+      if (note.type === NoteType.SlideTrack && note2.type === NoteType.SlideTrack && i !== j && note.emergeTime === note2.emergeTime) {
+        notes[i].isEach = true;
+        notes[j].isEach = true;
+      }
+    });
   });
 
   notes.sort((a: Note, b: Note) => {
@@ -466,6 +474,7 @@ const reader_and_updater = async () => {
       judgeStatus: JudgeStatus.Miss,
       judgeTime: JudgeTimeStatus.Late,
       isTouched: false,
+      holdingTime: 0,
     });
     nextNoteIndex++;
   }
@@ -810,6 +819,10 @@ const onMouseUp = (e: Event) => {
   if (area) {
     currentTouchingArea = currentTouchingArea.filter((ta) => {
       return ta.area.name !== area.name;
+    });
+    onPressUp({
+      area,
+      pressTime: currentTime,
     });
   }
   //console.log(currentTouchingArea);
