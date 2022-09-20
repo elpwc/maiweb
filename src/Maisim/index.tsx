@@ -585,15 +585,16 @@ const onPressDown = (area: TouchArea) => {
   showingNotes.forEach((note, i) => {
     const noteIns = currentSheet.notes[note.noteIndex];
     console.log(noteIns.type);
+    let timeD = noteIns.time - currentTime;
+
     if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.Hold) {
       console.log(area.area.id, Number(noteIns.pos));
-      if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos)) {
+
+      if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos) && abs(timeD) <= timerPeriod * 9) {
         // 设置标志位
         showingNotes[i].touched = true;
         showingNotes[i].touchedTime = currentTime;
         showingNotes[i].isTouching = true;
-
-        let timeD = noteIns.time - currentTime;
 
         console.log('timeD: ', timeD);
 
@@ -636,7 +637,7 @@ const onPressDown = (area: TouchArea) => {
         } else {
         }
       }
-    } else if (noteIns.type === NoteType.Touch || noteIns.type === NoteType.TouchHold) {
+    } else if (noteIns.type === NoteType.Touch || noteIns.type === NoteType.TouchHold || (timeD >= timerPeriod * 9 && timeD <= timerPeriod * 18)) {
       if (area.area.name === noteIns.pos) {
         // 设置标志位
         showingNotes[i].touched = true;
