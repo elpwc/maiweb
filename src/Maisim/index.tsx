@@ -42,6 +42,11 @@ import { Sheet } from '../utils/sheet';
 import { Song } from '../utils/song';
 import { gameRecord } from './global';
 
+import musictest from '../resource/sound/track_start.wav';
+
+const testmusic = new Audio();
+testmusic.src = musictest;
+
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
 let tapMoveSpeed: number = 1;
@@ -1015,6 +1020,7 @@ export default (props: Props) => {
       <div style={{ position: 'absolute', zIndex: 114514 }}>
         <button
           onClick={() => {
+            //testmusic.play();
             if (props.gameState === GameState.Standby) {
               starttimer();
               props.setGameState(GameState.Play);
