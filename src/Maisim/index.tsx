@@ -587,7 +587,7 @@ const onPressDown = (area: TouchArea) => {
     console.log(noteIns.type);
     let timeD = noteIns.time - currentTime;
 
-    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.Hold) {
+    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
       console.log(area.area.id, Number(noteIns.pos));
 
       if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos) && abs(timeD) <= timerPeriod * 9) {
@@ -613,31 +613,68 @@ const onPressDown = (area: TouchArea) => {
         if (timeD <= timerPeriod * 1) {
           // CRITICAL PERFECT
           showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-          if (noteIns.type !== NoteType.Hold) {
-            gameRecord.criticalPerfect++;
-          }
+          gameRecord.criticalPerfect++;
         } else if (timeD <= timerPeriod * 3 && timeD > timerPeriod * 1) {
           // PERFECT
           showingNotes[i].judgeStatus = JudgeStatus.Perfect;
-          if (noteIns.type !== NoteType.Hold) {
-            gameRecord.perfect++;
-          }
+          gameRecord.perfect++;
         } else if (timeD <= timerPeriod * 6 && timeD > timerPeriod * 3) {
           // GREAT
           showingNotes[i].judgeStatus = JudgeStatus.Great;
-          if (noteIns.type !== NoteType.Hold) {
-            gameRecord.great++;
-          }
+          gameRecord.great++;
         } else if (timeD <= timerPeriod * 9 && timeD > timerPeriod * 6) {
           // GOOD
           showingNotes[i].judgeStatus = JudgeStatus.Good;
-          if (noteIns.type !== NoteType.Hold) {
-            gameRecord.good++;
-          }
+          gameRecord.good++;
         } else {
         }
       }
-    } else if (noteIns.type === NoteType.Touch || noteIns.type === NoteType.TouchHold || (timeD >= timerPeriod * 9 && timeD <= timerPeriod * 18)) {
+    } else if (noteIns.type === NoteType.Hold) {
+      if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos)) {
+        if (abs(timeD) <= timerPeriod * 9) {
+          // 头部
+          // 设置标志位
+          showingNotes[i].touched = true;
+          showingNotes[i].touchedTime = currentTime;
+          showingNotes[i].isTouching = true;
+
+          console.log('timeD: ', timeD);
+
+          // FAST LATE
+          if (timeD >= 0) {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+            gameRecord.fast++;
+          } else {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+            gameRecord.late++;
+          }
+          console.log(showingNotes);
+
+          // PERFECT GOOD GREAT
+          if (abs(timeD) <= timerPeriod * 1) {
+            // CRITICAL PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+          } else if (abs(timeD) <= timerPeriod * 3 && abs(timeD) > timerPeriod * 1) {
+            // PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+          } else if (abs(timeD) <= timerPeriod * 6 && abs(timeD) > timerPeriod * 3) {
+            // GREAT
+            showingNotes[i].judgeStatus = JudgeStatus.Great;
+          } else if (abs(timeD) <= timerPeriod * 9 && abs(timeD) > timerPeriod * 6) {
+            // GOOD
+            showingNotes[i].judgeStatus = JudgeStatus.Good;
+          } else {
+          }
+        }
+        console.log(timeD, timerPeriod * 6, noteIns.remainTime! - 12 * timerPeriod);
+        if (timeD < -timerPeriod * 6 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
+          // HOLD体
+          console.log(timeD);
+          showingNotes[i].touchedTime = currentTime;
+          showingNotes[i].isTouching = true;
+        }
+      }
+    } else if (noteIns.type === NoteType.Touch || (timeD >= timerPeriod * 9 && timeD <= timerPeriod * 18)) {
       if (area.area.name === noteIns.pos) {
         // 设置标志位
         showingNotes[i].touched = true;
@@ -661,28 +698,63 @@ const onPressDown = (area: TouchArea) => {
         if (abs(timeD) <= timerPeriod * 9) {
           // CRITICAL PERFECT
           showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-          if (noteIns.type !== NoteType.TouchHold) {
-            gameRecord.criticalPerfect++;
-          }
+          gameRecord.criticalPerfect++;
         } else if (timeD <= timerPeriod * 12 && timeD > timerPeriod * 9) {
           // PERFECT
           showingNotes[i].judgeStatus = JudgeStatus.Perfect;
-          if (noteIns.type !== NoteType.TouchHold) {
-            gameRecord.perfect++;
-          }
+          gameRecord.perfect++;
         } else if (timeD <= timerPeriod * 15 && timeD > timerPeriod * 12) {
           // GREAT
           showingNotes[i].judgeStatus = JudgeStatus.Great;
-          if (noteIns.type !== NoteType.TouchHold) {
-            gameRecord.great++;
-          }
+          gameRecord.great++;
         } else if (timeD <= timerPeriod * 18 && timeD > timerPeriod * 15) {
           // GOOD
           showingNotes[i].judgeStatus = JudgeStatus.Good;
-          if (noteIns.type !== NoteType.TouchHold) {
-            gameRecord.good++;
-          }
+          gameRecord.good++;
         } else {
+        }
+      }
+    } else if (noteIns.type === NoteType.TouchHold) {
+      if (area.area.name === noteIns.pos) {
+        if (abs(timeD) <= timerPeriod * 18) {
+          // 头部
+          // 设置标志位
+          showingNotes[i].touched = true;
+          showingNotes[i].touchedTime = currentTime;
+          showingNotes[i].isTouching = true;
+
+          console.log('timeD: ', timeD);
+
+          // FAST LATE
+          if (timeD >= 0) {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+            gameRecord.fast++;
+          } else {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+            gameRecord.late++;
+          }
+
+          // PERFECT GOOD GREAT
+          if (abs(timeD) <= timerPeriod * 9) {
+            // CRITICAL PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+          } else if (timeD <= timerPeriod * 12 && timeD > timerPeriod * 9) {
+            // PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+          } else if (timeD <= timerPeriod * 15 && timeD > timerPeriod * 12) {
+            // GREAT
+            showingNotes[i].judgeStatus = JudgeStatus.Great;
+          } else if (timeD <= timerPeriod * 18 && timeD > timerPeriod * 15) {
+            // GOOD
+            showingNotes[i].judgeStatus = JudgeStatus.Good;
+          } else {
+          }
+        }
+
+        if (timeD < -timerPeriod * 15 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
+          // HOLD体
+          showingNotes[i].touchedTime = currentTime;
+          showingNotes[i].isTouching = true;
         }
       }
     }
@@ -694,19 +766,25 @@ const onPressDown = (area: TouchArea) => {
 const onPressUp = (area: TouchArea) => {
   showingNotes.forEach((note, i) => {
     const noteIns = currentSheet.notes[note.noteIndex];
+
+    let timeD = noteIns.time - currentTime;
     switch (noteIns.type) {
       case NoteType.Hold:
         if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos)) {
-          // 设置标志位
-          showingNotes[i].isTouching = false;
-          showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
+          if (timeD < -timerPeriod * 6 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
+            // 设置标志位
+            showingNotes[i].isTouching = false;
+            showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
+          }
         }
         break;
       case NoteType.TouchHold:
         if (area.area.id === Number(noteIns.pos)) {
-          // 设置标志位
-          showingNotes[i].isTouching = false;
-          showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
+          if (timeD < -timerPeriod * 15 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
+            // 设置标志位
+            showingNotes[i].isTouching = false;
+            showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
+          }
         }
         break;
       case NoteType.SlideTrack:
