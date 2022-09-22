@@ -5,7 +5,7 @@ export const section = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z
   if (endPos < 1) endPos += 8;
   if (turnPos < 1) turnPos += 8;
 
-  return section_A1(type, endPos, turnPos)?.map((section) => {
+  return section_A1(type, endPos, turnPos, Number(startPos))?.map((section) => {
     const resAreas = section.areas.map((area) => {
       if (area !== 'C') {
         let newPos = Number(area.substring(1, 2)) + Number(startPos) - 1;
@@ -18,7 +18,7 @@ export const section = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z
 };
 
 /** SLIDE TRACK分段(适用于A1) */
-export const section_A1 = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V' | undefined, endPos: number, turnPos?: number) => {
+export const section_A1 = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V' | undefined, endPos: number, turnPos: number, startPos: number) => {
   switch (type) {
     case '-':
       switch (endPos) {
@@ -59,8 +59,44 @@ export const section_A1 = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' |
       }
       break;
     case '^':
-      break;
-    case '<':
+      const res = [];
+      if (endPos > 1 && endPos < 5) {
+        const points = [0, 0.104167, 0.416667, 0.729167, 1];
+        const areas = [['A1'], ['D2', 'A2'], ['D3', 'A3'], ['D4', 'A4']];
+        for (let i = 0; i < endPos; i++) {
+          res.push({ start: points[i] / ((endPos - 1) / 3), areas: areas[i] });
+        }
+      } else if (endPos > 5 && endPos <= 8) {
+        const points = [0, 0.104167, 0.416667, 0.729167, 1];
+        const areas = [['A1'], ['D1', 'A8'], ['D8', 'A7'], ['D7', 'A6']];
+        for (let i = 0; i < endPos - 4; i++) {
+          res.push({ start: points[i] / ((9 - endPos) / 3), areas: areas[i] });
+        }
+      }
+      return res;
+    case '<':  
+    const res2 = [];
+    if (startPos <= 2 || startPos >= 7) {
+      if (endPos > 1) {
+        return {
+        };
+      } else if (endPos === 1) {
+        return {
+        };
+      } else {
+        return { x: 0, y: 0, direction: 0 };
+      }
+    } else if (startPos >= 3 && startPos <= 6) {
+      if (endPos > 1) {
+        return {
+        };
+      } else if (endPos === 1) {
+        return {
+        };
+      } else {
+      }
+    } else {
+    }
       break;
     case '>':
       break;

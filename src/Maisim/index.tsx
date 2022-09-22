@@ -392,20 +392,20 @@ const reader_and_updater = async () => {
           // move
           newNote.rho = currentTime - noteIns.moveTime!;
 
-          // // 自动画线
-          // // SLIDE分段信息
-          // const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
-          // console.log(sectionInfo);
-          // for (let i = 0; i < sectionInfo!.length; i++) {
-          //   const section = sectionInfo![i];
-          //   console.log(section);
-          //   if (
-          //     currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
-          //     currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
-          //   ) {
-          //     note.currentSectionIndex = i;
-          //   }
-          // }
+          // 自动画线
+          // SLIDE分段信息
+          const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
+          console.log(sectionInfo);
+          for (let i = 0; i < sectionInfo!.length; i++) {
+            const section = sectionInfo![i];
+            console.log(section);
+            if (
+              currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
+              currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
+            ) {
+              note.currentSectionIndex = i;
+            }
+          }
 
           if (currentTime >= noteIns.time!) {
             newNote.status = -2;
