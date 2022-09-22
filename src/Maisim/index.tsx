@@ -43,6 +43,7 @@ import { Song } from '../utils/song';
 import { gameRecord } from './global';
 
 import musictest from '../resource/sound/track_start.wav';
+import { section } from './slideTracks/section';
 
 const testmusic = new Audio();
 testmusic.src = musictest;
@@ -390,6 +391,22 @@ const reader_and_updater = async () => {
         } else if (newNote.status === 2) {
           // move
           newNote.rho = currentTime - noteIns.moveTime!;
+
+          // // 自动画线
+          // // SLIDE分段信息
+          // const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
+          // console.log(sectionInfo);
+          // for (let i = 0; i < sectionInfo!.length; i++) {
+          //   const section = sectionInfo![i];
+          //   console.log(section);
+          //   if (
+          //     currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
+          //     currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
+          //   ) {
+          //     note.currentSectionIndex = i;
+          //   }
+          // }
+
           if (currentTime >= noteIns.time!) {
             newNote.status = -2;
           }
@@ -462,51 +479,49 @@ const reader_and_updater = async () => {
   showingNotes = showingNotes.filter((note) => {
     const noteIns = currentSheet.notes[note.noteIndex];
     // MISS
-    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.Touch) {
+    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.Touch || noteIns.type === NoteType.SlideTrack) {
       if (note.status === -1 && !note.touched) {
         gameRecord.miss++;
       }
     }
-    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
+    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.SlideTrack) {
       return note.touched === false && note.status !== -1;
-    } else {
-      if (noteIns.type === NoteType.Hold || noteIns.type === NoteType.TouchHold) {
-        if (note.status === -1) {
-          if (note.touched) {
-            note.holdingTime += currentTime - (note.touchedTime ?? 0);
+    } else if (noteIns.type === NoteType.Hold || noteIns.type === NoteType.TouchHold) {
+      if (note.status === -1) {
+        if (note.touched) {
+          note.holdingTime += currentTime - (note.touchedTime ?? 0);
+        }
+        const holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
+        console.log(114514, holdingPercent, note);
+        if (note.judgeStatus === JudgeStatus.Miss) {
+          //MISS修正为GOOD
+          if (holdingPercent >= 0.05) {
+            note.judgeStatus = JudgeStatus.Good;
           }
-          const holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
-          console.log(114514, holdingPercent, note);
-          if (note.judgeStatus === JudgeStatus.Miss) {
-            //MISS修正为GOOD
-            if (holdingPercent >= 0.05) {
-              note.judgeStatus = JudgeStatus.Good;
+        } else {
+          if (holdingPercent >= 1) {
+          } else if (holdingPercent >= 0.67 && holdingPercent < 1) {
+            if (note.judgeStatus === JudgeStatus.CriticalPerfect) {
+              note.judgeStatus = JudgeStatus.Perfect;
+            }
+          } else if (holdingPercent >= 0.33 && holdingPercent < 0.67) {
+            if (note.judgeStatus === JudgeStatus.CriticalPerfect || note.judgeStatus === JudgeStatus.Perfect) {
+              note.judgeStatus = JudgeStatus.Great;
             }
           } else {
-            if (holdingPercent >= 1) {
-            } else if (holdingPercent >= 0.67 && holdingPercent < 1) {
-              if (note.judgeStatus === JudgeStatus.CriticalPerfect) {
-                note.judgeStatus = JudgeStatus.Perfect;
-              }
-            } else if (holdingPercent >= 0.33 && holdingPercent < 0.67) {
-              if (note.judgeStatus === JudgeStatus.CriticalPerfect || note.judgeStatus === JudgeStatus.Perfect) {
-                note.judgeStatus = JudgeStatus.Great;
-              }
-            } else {
-              note.judgeStatus = JudgeStatus.Good;
-            }
+            note.judgeStatus = JudgeStatus.Good;
           }
-          if (note.judgeStatus === JudgeStatus.CriticalPerfect) {
-            gameRecord.criticalPerfect++;
-          } else if (note.judgeStatus === JudgeStatus.Perfect) {
-            gameRecord.perfect++;
-          } else if (note.judgeStatus === JudgeStatus.Great) {
-            gameRecord.great++;
-          } else if (note.judgeStatus === JudgeStatus.Good) {
-            gameRecord.good++;
-          } else if (note.judgeStatus === JudgeStatus.Miss) {
-            gameRecord.miss++;
-          }
+        }
+        if (note.judgeStatus === JudgeStatus.CriticalPerfect) {
+          gameRecord.criticalPerfect++;
+        } else if (note.judgeStatus === JudgeStatus.Perfect) {
+          gameRecord.perfect++;
+        } else if (note.judgeStatus === JudgeStatus.Great) {
+          gameRecord.great++;
+        } else if (note.judgeStatus === JudgeStatus.Good) {
+          gameRecord.good++;
+        } else if (note.judgeStatus === JudgeStatus.Miss) {
+          gameRecord.miss++;
         }
       }
       return note.status !== -1;
@@ -530,6 +545,7 @@ const reader_and_updater = async () => {
       touched: false,
       isTouching: false,
       holdingTime: 0,
+      currentSectionIndex: 0,
     });
     nextNoteIndex++;
   }
@@ -760,6 +776,106 @@ const onPressDown = (area: TouchArea) => {
           // HOLD体
           showingNotes[i].touchedTime = currentTime;
           showingNotes[i].isTouching = true;
+        }
+      }
+    } else if (noteIns.type === NoteType.SlideTrack) {
+      // SLIDE分段信息
+      const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
+      console.log(sectionInfo)
+      // 可供点击的下一个段的区域
+      const nextPositions = sectionInfo![note.currentSectionIndex].areas;
+      // 如果点了任意一个区域
+      if (nextPositions.includes(area.area.name)) {
+        if (note.currentSectionIndex === sectionInfo?.length! - 1) {
+          // 如果是最後一个区域
+          note.currentSectionIndex = -1;
+
+          // 设置标志位
+          showingNotes[i].touched = true;
+          showingNotes[i].touchedTime = currentTime;
+          showingNotes[i].isTouching = true;
+
+          let timeD = noteIns.time - currentTime;
+
+          console.log('timeD: ', timeD);
+
+          // FAST LATE
+          if (timeD >= 0) {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+            gameRecord.fast++;
+          } else {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+            gameRecord.late++;
+          }
+
+          /** 走完最後一段的时间ms */
+          const finalSectionTime = noteIns.remainTime! * (1 - sectionInfo![sectionInfo?.length! - 1].start);
+
+          // TOO FAST GOOD (提前划完)
+          if (timeD > finalSectionTime) {
+            showingNotes[i].judgeStatus = JudgeStatus.Good;
+            showingNotes[i].tooFast = true;
+            gameRecord.good++;
+          } else {
+            // 正常判断
+            // SLIDE TRACK的Perfect判定时间
+            const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
+
+            timeD = abs(timeD);
+
+            if (perfectJudgeTime < 26) {
+              // PERFECT GOOD GREAT
+              if (timeD <= timerPeriod * perfectJudgeTime) {
+                // CRITICAL PERFECT
+                showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                gameRecord.criticalPerfect++;
+              } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
+                // GREAT
+                showingNotes[i].judgeStatus = JudgeStatus.Great;
+                gameRecord.great++;
+              } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
+                // GOOD
+                showingNotes[i].judgeStatus = JudgeStatus.Good;
+                gameRecord.good++;
+              } else {
+              }
+            } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
+              // PERFECT GOOD GREAT
+              if (timeD <= timerPeriod * perfectJudgeTime) {
+                // CRITICAL PERFECT
+                showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                gameRecord.criticalPerfect++;
+              } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
+                // GOOD
+                showingNotes[i].judgeStatus = JudgeStatus.Good;
+                gameRecord.good++;
+              } else {
+              }
+            } else if (perfectJudgeTime >= 36) {
+              // PERFECT GOOD GREAT
+              if (timeD <= timerPeriod * perfectJudgeTime) {
+                // CRITICAL PERFECT
+                showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                gameRecord.criticalPerfect++;
+              } else {
+              }
+            }
+          }
+        } else {
+          // 当前分段位追加
+          note.currentSectionIndex++;
+
+          // 跳区机制
+          // 下一个分段信息
+          const nextNextPositions = sectionInfo![note.currentSectionIndex + 1].areas;
+          // 如果已经按住了下个分段的任意一个区域
+          for (let i = 0; i < currentTouchingArea.length; i++) {
+            if (nextNextPositions.includes(currentTouchingArea[i].area.name)) {
+              // 跳区激活
+              note.currentSectionIndex++;
+              break;
+            }
+          }
         }
       }
     }

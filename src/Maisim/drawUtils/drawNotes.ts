@@ -22,6 +22,7 @@ import { drawRotationImage, lineLen } from './_base';
 import { NoteIcon } from '../resourceReaders/noteIconReader';
 import { Note } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
+import { section } from '../slideTracks/section';
 
 export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRenderingContext2D, note: Note, isEach: boolean = false, props: ShowingNoteProps) => {
   if (/* hidden状态 (-2) 不显示 只等待判定 */ props.status !== -2) {
@@ -338,35 +339,41 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
     const drawSlideTrackImage = (imageTrack: HTMLImageElement, imageStar: HTMLImageElement, wifiTrack?: HTMLImageElement[]) => {
       const drawSlideTrackImage_ = () => {
         if (note.slideType !== 'w') {
-          // 间隔放置TRACK元素的时间
-          const trackItemGapTime =
-            (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos), note.turnPos === undefined ? undefined : Number(note.turnPos));
-
           // SLIDE TRACK
-          ctx_slideTrack.save();
-          ctx_slideTrack.translate(center[0], center[1]);
-          ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
-          // 得从後往前画
-          for (let i = note.remainTime!; i >= 0; i -= trackItemGapTime) {
-            const slideData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
-              x: number;
-              y: number;
-              direction: number;
-            };
-            drawRotationImage(
-              ctx_slideTrack,
-              imageTrack,
-              slideData.x - trackItemWidth / 2 - center[0],
-              slideData.y - trackItemHeight / 2 - center[1],
-              trackItemWidth,
-              trackItemHeight,
-              slideData.x - center[0],
-              slideData.y - center[1],
-              slideData.direction,
-              props.radius
-            );
+          if (/*如果沒有全部画完（-1表示最後一段也画了）*/ props.currentSectionIndex !== -1) {
+            // 间隔放置TRACK元素的时间
+            const trackItemGapTime =
+              (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos), note.turnPos === undefined ? undefined : Number(note.turnPos));
+
+            // SLIDE分段信息
+            const sectionInfo = section(note.slideType, note.pos, note.endPos ?? '', note.turnPos);
+
+            // 画SLIDE TRACK
+            ctx_slideTrack.save();
+            ctx_slideTrack.translate(center[0], center[1]);
+            ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+            // 得从後往前画
+            for (let i = note.remainTime!; i >= sectionInfo![props.currentSectionIndex].start * note.remainTime!; i -= trackItemGapTime) {
+              const slideData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
+                x: number;
+                y: number;
+                direction: number;
+              };
+              drawRotationImage(
+                ctx_slideTrack,
+                imageTrack,
+                slideData.x - trackItemWidth / 2 - center[0],
+                slideData.y - trackItemHeight / 2 - center[1],
+                trackItemWidth,
+                trackItemHeight,
+                slideData.x - center[0],
+                slideData.y - center[1],
+                slideData.direction,
+                props.radius
+              );
+            }
+            ctx_slideTrack.restore();
           }
-          ctx_slideTrack.restore();
 
           // GUIDE STAR
           ctx.save();

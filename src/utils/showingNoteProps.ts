@@ -1,4 +1,4 @@
-import { JudgeStatus, JudgeTimeStatus } from "./judgeStatus";
+import { JudgeStatus, JudgeTimeStatus } from './judgeStatus';
 
 /** 当前绘制的Note，包含各类实时变化量 */
 export interface ShowingNoteProps {
@@ -43,6 +43,11 @@ export interface ShowingNoteProps {
   /** 判定前後 */
   judgeTime: JudgeTimeStatus;
 
-  // 适用于HOLD, SLIDE HOLD 被按下的总时间
+  /** 适用于HOLD, SLIDE HOLD 被按下的总时间 */
   holdingTime: number;
+
+  /** 适用于SLIDE TRACK, 当前等待的下一个section index */
+  currentSectionIndex: number;
+  /** 适用于SLIDE TRACK, 当前GOOD是否是TOO FAST GOOD */
+  tooFast?: boolean;
 }

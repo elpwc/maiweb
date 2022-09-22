@@ -145,43 +145,6 @@ export const trackLength = (type: string, startPos: number, endPosOri: number, t
   return 0;
 };
 
-export const segment = (type: string, endPos: string) => {
-  switch (type) {
-    case '-':
-      switch (endPos) {
-        case '1':
-          return [{}];
-      }
-      break;
-    case '^':
-      break;
-    case '<':
-      break;
-    case '>':
-      break;
-    case 'v':
-      break;
-    case 'p':
-      break;
-    case 'q':
-      break;
-    case 'pp':
-      break;
-    case 'qq':
-      break;
-    case 's':
-      break;
-    case 'z':
-      break;
-    case 'V':
-      break;
-    case 'w':
-      break;
-    default:
-      break;
-  }
-};
-
 // 只是开发中计算数值用的，沒有实装（也不需要
 export const ppqqAnglCalc = () => {
   let res: number[] = [];
