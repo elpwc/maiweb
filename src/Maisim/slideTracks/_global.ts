@@ -248,3 +248,119 @@ export const ppqqAnglCalc = () => {
   });
   console.log(res);
 };
+
+export const pqTrackJudgeCalc = () => {
+  const len = lineLen(APositions[0][0], APositions[0][1], APositions[3][0], APositions[3][1]);
+  const c = qpCenterCircleR * 2 * π;
+  const len1 = len / 2;
+  let sum = len + c;
+
+  sum = c / 8 * 5 + len;
+  const res1 = [
+    0,
+    ((3.5 / 9) * len1) / sum,
+    len1 / sum,
+    (len1 + 0.125 * 2 * c) / sum,
+    (len1 + 0.125 * 3 * c) / sum,
+    (len1 + (c / 8) * 5 + (len1 / 9) * 1.5) / sum,
+    (len1 + (c / 8) * 5 + (len1 / 9) * 5.5) / sum,
+    1,
+  ];
+
+  sum = c / 8 * 4 + len;
+  const res2 = [
+    0,
+    ((3.5 / 9) * len1) / sum,
+    ((8 / 9) * len1) / sum,
+    (len1 + 0.125 * 1 * c) / sum,
+    (len1 + 0.125 * 2 * c) / sum,
+    (len1 + 0.125 * 3 * c) / sum,
+    (len1 + 0.125 * 4 * c) / sum,
+    (len1 + (c / 8) * 4 + (len1 / 9) * 3.5) / sum,
+    1,
+  ];
+
+  sum = c / 8 * 3 + len;
+  const res3 = [
+    0,
+    ((3.5 / 9) * len1) / sum,
+    len1 / sum,
+    (len1 + 0.125 * 1 * c) / sum,
+    (len1 + 0.125 * 2 * c) / sum,
+    (len1 + 0.125 * 3 * c) / sum,
+    (len1 + (c / 8) * 3 + (len1 / 9) * 3) / sum,
+    (len1 + (c / 8) * 3 + (len1 / 9) * 5.5) / sum,
+    1,
+  ];
+
+  sum = c / 8 * 2 + len;
+  const res4 = [
+    0,
+    ((3.5 / 9) * len1) / sum,
+    len1 / sum,
+    (len1 + 0.125 * 1 * c) / sum,
+    (len1 + (c / 8) * 2) / sum,
+    (len1 + (c / 8) * 2 + (len1 / 9) * 3) / sum,
+    (len1 + (c / 8) * 2 + (len1 / 9) * 5.5) / sum,
+    1,
+  ];
+
+  sum = c / 8 * 1 + len;
+  const res5 = [
+    0, ((3.5 / 9) * len1) / sum,
+     len1 / sum, 
+     (len1 + (c / 8) * 1) / sum,
+      (len1 + (c / 8) * 1 + (len1 / 9) * 3) / sum,
+       (len1 + (c / 8) * 1 + (len1 / 9) * 5.5) / sum, 
+       1
+      ];
+
+      sum = c / 8 * 8 + len;
+  const res6 = [
+    0,
+    ((3.5 / 9) * len1) / sum,
+    len1 / sum,
+    (len1 + 0.13542 * 1 * c) / sum,
+    (len1 + 0.13542 * 2 * c) / sum,
+    (len1 + 0.13542 * 3 * c) / sum,
+    (len1 + 0.13542 * 4 * c) / sum,
+    (len1 + 0.13542 * 5 * c) / sum,
+    (len1 + 0.13542 * 6 * c) / sum,
+    (len1 + c) / sum,
+    (len1 + c + (len1 / 9) * 3) / sum,
+    (len1 + c + (len1 / 9) * 5.7) / sum,
+    1,
+  ];
+
+  sum = c / 8 * 7 + len;
+  const res7 = [
+    0,
+    ((3.5 / 9) * len1) / sum,
+    len1 / sum,
+    (len1 + 0.13542 * 1 * c) / sum,
+    (len1 + 0.13542 * 2 * c) / sum,
+    (len1 + 0.13542 * 3 * c) / sum,
+    (len1 + 0.13542 * 4 * c) / sum,
+    (len1 + 0.13542 * 5 * c) / sum,
+    (len1 + 0.13542 * 6 * c) / sum,
+    (len1 + (c / 8) * 7 + (len1 / 9) * 3) / sum,
+    (len1 + (c / 8) * 7 + (len1 / 9) * 5.7) / sum,
+    1,
+  ];
+
+  sum = c / 8 * 6 + len;
+  const res8 = [
+    0,
+    ((3.5 / 9) * len1) / sum,
+    len1 / sum,
+    (len1 + 0.125 * 1 * c) / sum,
+    (len1 + 0.125 * 2 * c) / sum,
+    (len1 + 0.125 * 3 * c) / sum,
+    (len1 + 0.125 * 4 * c) / sum,
+    (len1 + 0.125 * 5 * c) / sum,
+    (len1 + 0.125 * 6 * c) / sum,
+    (len1 + (c / 8) * 6 + (len1 / 9) * 3.5) / sum,
+    1,
+  ];
+  console.log(res1, res2, res3, res4, res5, res6, res7, res8);
+};

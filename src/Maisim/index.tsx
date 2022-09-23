@@ -33,7 +33,7 @@ import { KeyState } from '../utils/keyState';
 import { drawOutRing } from './drawUtils/drawOutRing';
 import { initResources } from './resourceReaders/_init';
 import { OutlineIcon } from './resourceReaders/outlineIconReader';
-import { ppqqAnglCalc } from './slideTracks/_global';
+import { ppqqAnglCalc, pqTrackJudgeCalc } from './slideTracks/_global';
 import { abs } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
 import { Note } from '../utils/note';
@@ -1115,6 +1115,7 @@ export default (props: Props) => {
 
         // 计算用
         //ppqqAnglCalc();
+        pqTrackJudgeCalc();
       });
       hasinit = true;
     }
