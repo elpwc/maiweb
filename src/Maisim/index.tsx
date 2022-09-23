@@ -1115,7 +1115,7 @@ export default (props: Props) => {
 
         // 计算用
         //ppqqAnglCalc();
-        pqTrackJudgeCalc();
+        //pqTrackJudgeCalc();
       });
       hasinit = true;
     }

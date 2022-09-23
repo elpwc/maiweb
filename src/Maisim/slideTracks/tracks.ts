@@ -356,7 +356,7 @@ const qq = (endPos: number, ct: number, rt: number): { x: number; y: number; dir
   /** 圆弧开始画的角度 */
   const startAngle = qqPoints[0];
   /** 圆弧的角度 */
-  const angle = endPos === 6 ? 1 + qqPoints[endPos] + 1 - startAngle + 2 : 1 + qqPoints[endPos] + 1 - startAngle;
+  const angle = endPos ===  7 ? qqPoints[endPos] - startAngle : 1 + qqPoints[endPos] + 1 - startAngle;
   /** 圆弧开始的点 */
   const p1 = [qpLeftCircleCenter[0] + qpLeftRighCircleR * cos(startAngle * π), qpLeftCircleCenter[1] + qpLeftRighCircleR * sin(startAngle * π)];
   /** 圆弧终止的点 */

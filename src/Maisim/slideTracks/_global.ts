@@ -117,7 +117,7 @@ export const trackLength = (type: string, startPos: number, endPosOri: number, t
       );
 
     case 'qq':
-      const qqangle = endPos === 6 ? 1 + qqPoints[endPos] + 1 - qqPoints[0] + 2 : 1 + qqPoints[endPos] + 1 - qqPoints[0];
+      const qqangle = endPos === 7 ? qqPoints[endPos] - qqPoints[0] : 1 + qqPoints[endPos] + 1 - qqPoints[0];
       return (
         qqangle * qpLeftRighCircleR * π +
         lineLen(APositions[0][0], APositions[0][1], qpLeftCircleCenter[0] + qpLeftRighCircleR * cos(qqPoints[0] * π), qpLeftCircleCenter[1] + qpLeftRighCircleR * sin(qqPoints[0] * π)) +
@@ -255,7 +255,7 @@ export const pqTrackJudgeCalc = () => {
   const len1 = len / 2;
   let sum = len + c;
 
-  sum = c / 8 * 5 + len;
+  sum = (c / 8) * 5 + len;
   const res1 = [
     0,
     ((3.5 / 9) * len1) / sum,
@@ -267,7 +267,7 @@ export const pqTrackJudgeCalc = () => {
     1,
   ];
 
-  sum = c / 8 * 4 + len;
+  sum = (c / 8) * 4 + len;
   const res2 = [
     0,
     ((3.5 / 9) * len1) / sum,
@@ -280,7 +280,7 @@ export const pqTrackJudgeCalc = () => {
     1,
   ];
 
-  sum = c / 8 * 3 + len;
+  sum = (c / 8) * 3 + len;
   const res3 = [
     0,
     ((3.5 / 9) * len1) / sum,
@@ -293,7 +293,7 @@ export const pqTrackJudgeCalc = () => {
     1,
   ];
 
-  sum = c / 8 * 2 + len;
+  sum = (c / 8) * 2 + len;
   const res4 = [
     0,
     ((3.5 / 9) * len1) / sum,
@@ -305,17 +305,10 @@ export const pqTrackJudgeCalc = () => {
     1,
   ];
 
-  sum = c / 8 * 1 + len;
-  const res5 = [
-    0, ((3.5 / 9) * len1) / sum,
-     len1 / sum, 
-     (len1 + (c / 8) * 1) / sum,
-      (len1 + (c / 8) * 1 + (len1 / 9) * 3) / sum,
-       (len1 + (c / 8) * 1 + (len1 / 9) * 5.5) / sum, 
-       1
-      ];
+  sum = (c / 8) * 1 + len;
+  const res5 = [0, ((3.5 / 9) * len1) / sum, len1 / sum, (len1 + (c / 8) * 1) / sum, (len1 + (c / 8) * 1 + (len1 / 9) * 3) / sum, (len1 + (c / 8) * 1 + (len1 / 9) * 5.5) / sum, 1];
 
-      sum = c / 8 * 8 + len;
+  sum = (c / 8) * 8 + len;
   const res6 = [
     0,
     ((3.5 / 9) * len1) / sum,
@@ -332,7 +325,7 @@ export const pqTrackJudgeCalc = () => {
     1,
   ];
 
-  sum = c / 8 * 7 + len;
+  sum = (c / 8) * 7 + len;
   const res7 = [
     0,
     ((3.5 / 9) * len1) / sum,
@@ -348,7 +341,7 @@ export const pqTrackJudgeCalc = () => {
     1,
   ];
 
-  sum = c / 8 * 6 + len;
+  sum = (c / 8) * 6 + len;
   const res8 = [
     0,
     ((3.5 / 9) * len1) / sum,
