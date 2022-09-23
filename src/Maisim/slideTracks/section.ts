@@ -141,9 +141,25 @@ export const section_A1 = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' |
     case 'qq':
       break;
     case 's':
-      break;
+      return [
+        { start: 0, areas: ['A1'] },
+        { start: 0.118644, areas: ['B1', 'B8', 'E1'] },
+        { start: 0.294915, areas: ['B7'] },
+        { start: 0.420339, areas: ['C'] },
+        { start: 0.586441, areas: ['B3'] },
+        { start: 0.705085, areas: ['B4'] },
+        { start: 0.827119, areas: ['E5', 'A5'] },
+      ];
     case 'z':
-      break;
+      return [
+        { start: 0, areas: ['A1'] },
+        { start: 0.118644, areas: ['B1', 'B2', 'E2'] },
+        { start: 0.294915, areas: ['B3'] },
+        { start: 0.420339, areas: ['C'] },
+        { start: 0.586441, areas: ['B7'] },
+        { start: 0.705085, areas: ['B6'] },
+        { start: 0.827119, areas: ['E6', 'A5'] },
+      ];
     case 'V':
       break;
     case 'w':
