@@ -1,5 +1,12 @@
+import { trackLength } from './_global';
+
 /** SLIDE TRACK分段 */
-export const section = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V' | undefined, startPos: string, endPosOri: string, turnPosOri?: string) => {
+export const section = (
+  type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V' | undefined,
+  startPos: string,
+  endPosOri: string,
+  turnPosOri?: string
+): { start: number; areas: string[] }[] | undefined => {
   let endPos = Number(endPosOri) - Number(startPos) + 1;
   let turnPos = (Number(turnPosOri) ?? 0) - Number(startPos) + 1;
   if (endPos < 1) endPos += 8;
@@ -18,7 +25,12 @@ export const section = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z
 };
 
 /** SLIDE TRACK分段(适用于A1) */
-export const section_A1 = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V' | undefined, endPos: number, turnPos: number, startPos: number) => {
+export const section_A1 = (
+  type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V' | undefined,
+  endPos: number,
+  turnPos: number,
+  startPos: number
+): { start: number; areas: string[] }[] | undefined => {
   switch (type) {
     case '-':
       switch (endPos) {
@@ -161,7 +173,23 @@ export const section_A1 = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' |
         { start: 0.827119, areas: ['E6', 'A5'] },
       ];
     case 'V':
-      break;
+      const length1 = trackLength('-', 1, turnPos);
+      const length2 = trackLength('-', turnPos, endPos);
+      const part1: { start: number; areas: string[] }[] | undefined = section_A1('-', endPos, 0, 0);
+      const part2: { start: number; areas: string[] }[] | undefined = section('-', turnPos.toString(), endPos.toString());
+      const resV = [];
+
+      for (let i = 0; i < part1?.length! - 1; i++) {
+        resV.push({ start: (part1![i].start * length1) / (length1 + length2), areas: part1![i].areas });
+      }
+      resV.push({
+        start: (part1![part1?.length! - 1].start * length1) / (length1 + length2),
+        areas: part2![0].areas.concat(part1![part1!.length! - 1].areas.filter((v) => !part2![0].areas.includes(v))),
+      });
+      for (let i = 1; i < part2?.length!; i++) {
+        resV.push({ start: (part2![i].start * length2 + length1) / (length1 + length2), areas: part2![i].areas });
+      }
+      return resV;
     case 'w':
       break;
     default:
