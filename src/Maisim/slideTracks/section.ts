@@ -125,7 +125,13 @@ export const section_A1 = (type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' |
       }
       return res3;
     case 'v':
-      break;
+      return [
+        { start: 0, areas: ['A1'] },
+        { start: 0.17964, areas: ['B1'] },
+        { start: 0.34132, areas: ['C'] },
+        { start: 0.62874, areas: ['B' + endPos] },
+        { start: 0.80838, areas: ['A' + endPos] },
+      ];
     case 'p':
       break;
     case 'q':
