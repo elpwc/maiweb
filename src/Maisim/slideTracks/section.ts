@@ -343,9 +343,193 @@ export const section_A1 = (
           return [];
       }
     case 'pp':
-      break;
+      switch (endPos) {
+        case 1:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.1, areas: ['B1'] },
+            { start: 0.2, areas: ['C'] },
+            { start: 0.36, areas: ['B4', 'E4'] },
+            { start: 0.51, areas: ['A3', 'D3'] },
+            { start: 0.75, areas: ['A2'] },
+            { start: 0.87, areas: ['D2', 'A1'] },
+          ];
+        case 2:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.12, areas: ['B1'] },
+            { start: 0.25, areas: ['C'] },
+            { start: 0.48, areas: ['B4', 'E4'] },
+            { start: 0.65, areas: ['A3'] },
+            { start: 0.83, areas: ['A2', 'D3'] },
+          ];
+        case 3:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.17, areas: ['B1'] },
+            { start: 0.31, areas: ['C'] },
+            { start: 0.55, areas: ['B4', 'E4'] },
+            { start: 0.78, areas: ['A3'] },
+          ];
+        case 4:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.07, areas: ['B1'] },
+            { start: 0.14, areas: ['C'] },
+            { start: 0.25, areas: ['B4', 'E4'] },
+            { start: 0.35, areas: ['A3', 'D3'] },
+            { start: 0.52, areas: ['A2'] },
+            { start: 0.6, areas: ['E2', 'B1'] },
+            { start: 0.7, areas: ['C'] },
+            { start: 0.85, areas: ['B4'] },
+            { start: 0.92, areas: ['A4'] },
+          ];
+        case 5:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.08, areas: ['B1'] },
+            { start: 0.15, areas: ['C'] },
+            { start: 0.26, areas: ['B4', 'E4'] },
+            { start: 0.36, areas: ['A3', 'D3'] },
+            { start: 0.52, areas: ['A2'] },
+            { start: 0.6, areas: ['E2', 'B1'] },
+            { start: 0.7, areas: ['C'] },
+            { start: 0.85, areas: ['B4'] },
+            { start: 0.92, areas: ['A4'] },
+          ];
+        case 6:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.09, areas: ['B1'] },
+            { start: 0.15, areas: ['C'] },
+            { start: 0.28, areas: ['B4', 'E4'] },
+            { start: 0.38, areas: ['A3', 'D3'] },
+            { start: 0.53, areas: ['A2'] },
+            { start: 0.61, areas: ['E2', 'B1'] },
+            { start: 0.7, areas: ['C', 'B8'] },
+            { start: 0.78, areas: ['B7'] },
+            { start: 0.86, areas: ['A6', 'B6', 'E7'] },
+          ];
+        case 7:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.06, areas: ['B1'] },
+            { start: 0.16, areas: ['C'] },
+            { start: 0.31, areas: ['B4', 'E4'] },
+            { start: 0.41, areas: ['A3', 'D3'] },
+            { start: 0.56, areas: ['A2'] },
+            { start: 0.69, areas: ['E2', 'B1'] },
+            { start: 0.79, areas: ['E8', 'B8'] },
+            { start: 0.92, areas: ['A7'] },
+          ];
+        case 8:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.07, areas: ['B1'] },
+            { start: 0.17, areas: ['C'] },
+            { start: 0.31, areas: ['B4', 'E4'] },
+            { start: 0.43, areas: ['A3', 'D3'] },
+            { start: 0.61, areas: ['A2'] },
+            { start: 0.73, areas: ['E2', 'B1', 'A1'] },
+            { start: 0.87, areas: ['E1', 'A8'] },
+          ];
+        default:
+          return [];
+      }
     case 'qq':
-      break;
+      switch (endPos) {
+        case 1:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.1, areas: ['B1'] },
+            { start: 0.2, areas: ['C'] },
+            { start: 0.36, areas: ['B6', 'E7'] },
+            { start: 0.51, areas: ['A7', 'D8'] },
+            { start: 0.75, areas: ['A8'] },
+            { start: 0.87, areas: ['D1', 'A1'] },
+          ];
+        case 8:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.12, areas: ['B1'] },
+            { start: 0.25, areas: ['C'] },
+            { start: 0.48, areas: ['B6', 'E7'] },
+            { start: 0.65, areas: ['A7'] },
+            { start: 0.83, areas: ['A8', 'D8'] },
+          ];
+        case 7:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.17, areas: ['B1'] },
+            { start: 0.31, areas: ['C'] },
+            { start: 0.55, areas: ['B6', 'E7'] },
+            { start: 0.78, areas: ['A7'] },
+          ];
+        case 6:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.07, areas: ['B1'] },
+            { start: 0.14, areas: ['C'] },
+            { start: 0.25, areas: ['B6', 'E7'] },
+            { start: 0.35, areas: ['A7', 'D8'] },
+            { start: 0.52, areas: ['A8'] },
+            { start: 0.6, areas: ['E1', 'B1'] },
+            { start: 0.7, areas: ['C'] },
+            { start: 0.85, areas: ['B6'] },
+            { start: 0.92, areas: ['A6'] },
+          ];
+        case 5:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.08, areas: ['B1'] },
+            { start: 0.15, areas: ['C'] },
+            { start: 0.26, areas: ['B6', 'E7'] },
+            { start: 0.36, areas: ['A7', 'D8'] },
+            { start: 0.52, areas: ['A8'] },
+            { start: 0.6, areas: ['E1', 'B1'] },
+            { start: 0.7, areas: ['C'] },
+            { start: 0.85, areas: ['B5'] },
+            { start: 0.92, areas: ['A5'] },
+          ];
+        case 4:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.09, areas: ['B1'] },
+            { start: 0.15, areas: ['C'] },
+            { start: 0.28, areas: ['B6', 'E7'] },
+            { start: 0.38, areas: ['A7', 'D8'] },
+            { start: 0.53, areas: ['A8'] },
+            { start: 0.61, areas: ['E1', 'B1'] },
+            { start: 0.7, areas: ['C', 'B2'] },
+            { start: 0.78, areas: ['B3'] },
+            { start: 0.86, areas: ['A4', 'B4', 'E4'] },
+          ];
+        case 3:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.06, areas: ['B1'] },
+            { start: 0.16, areas: ['C'] },
+            { start: 0.31, areas: ['B6', 'E7'] },
+            { start: 0.41, areas: ['A7', 'D8'] },
+            { start: 0.56, areas: ['A8'] },
+            { start: 0.69, areas: ['E1', 'B1'] },
+            { start: 0.79, areas: ['E3', 'B2'] },
+            { start: 0.92, areas: ['A3'] },
+          ];
+        case 2:
+          return [
+            { start: 0, areas: ['A1'] },
+            { start: 0.07, areas: ['B1'] },
+            { start: 0.17, areas: ['C'] },
+            { start: 0.31, areas: ['B6', 'E7'] },
+            { start: 0.43, areas: ['A7', 'D8'] },
+            { start: 0.61, areas: ['A8'] },
+            { start: 0.73, areas: ['E1', 'B1', 'A1'] },
+            { start: 0.87, areas: ['E2', 'A2'] },
+          ];
+        default:
+          return [];
+      }
     case 's':
       return [
         { start: 0, areas: ['A1'] },
