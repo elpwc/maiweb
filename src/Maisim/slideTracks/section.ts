@@ -25,7 +25,7 @@ export const section = (
 };
 
 /** SLIDE TRACK分段(适用于A1) */
-export const section_A1 = (
+const section_A1 = (
   type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V' | undefined,
   endPos: number,
   turnPos: number,
@@ -394,8 +394,8 @@ export const section_A1 = (
             { start: 0.52, areas: ['A2'] },
             { start: 0.6, areas: ['E2', 'B1'] },
             { start: 0.7, areas: ['C'] },
-            { start: 0.85, areas: ['B4'] },
-            { start: 0.92, areas: ['A4'] },
+            { start: 0.85, areas: ['B5'] },
+            { start: 0.92, areas: ['A5'] },
           ];
         case 6:
           return [
@@ -573,4 +573,46 @@ export const section_A1 = (
     default:
       break;
   }
+};
+
+export const section_wifi = (startPos: string, endPosOri: string): { start: number; areas: string[] }[][] => {
+  let endPos = Number(endPosOri) - Number(startPos) + 1;
+  if (endPos < 1) endPos += 8;
+
+  const wifiSections = [
+    [
+      { start: 0, areas: ['A1'] },
+      { start: 0.2, areas: ['E2', 'B2'] },
+      { start: 0.5, areas: ['B3'] },
+      { start: 0.7, areas: ['B4', 'E4'] },
+      { start: 0.85, areas: ['A4', 'D5'] },
+    ],
+    [
+      { start: 0, areas: ['A1'] },
+      { start: 0.17964, areas: ['B1'] },
+      { start: 0.34132, areas: ['C'] },
+      { start: 0.62874, areas: ['B5'] },
+      { start: 0.80838, areas: ['A5'] },
+    ],
+    [
+      { start: 0, areas: ['A1'] },
+      { start: 0.2, areas: ['E1', 'B8'] },
+      { start: 0.5, areas: ['B7'] },
+      { start: 0.7, areas: ['B6', 'E7'] },
+      { start: 0.85, areas: ['A6', 'D6'] },
+    ],
+  ];
+
+  return wifiSections.map((wifisection) => {
+    return wifisection.map((section) => {
+      const resAreas = section.areas.map((area) => {
+        if (area !== 'C') {
+          let newPos = Number(area.substring(1, 2)) + Number(startPos) - 1;
+          if (newPos > 8) newPos -= 8;
+          return area.substring(0, 1) + newPos.toString();
+        } else return 'C';
+      });
+      return { start: section.start, areas: resAreas };
+    });
+  });
 };

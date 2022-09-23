@@ -50,4 +50,7 @@ export interface ShowingNoteProps {
   currentSectionIndex: number;
   /** 适用于SLIDE TRACK, 当前GOOD是否是TOO FAST GOOD */
   tooFast?: boolean;
+
+  /** 适用于WIFI, 各个判定区当前等待的下一个section index */
+  currentSectionIndexWifi: [number, number, number];
 }
