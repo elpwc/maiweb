@@ -498,7 +498,7 @@ const reader_and_updater = async () => {
         gameRecord.miss++;
       }
     }
-    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.SlideTrack) {
+    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.Touch || noteIns.type === NoteType.SlideTrack) {
       return note.touched === false && note.status !== -1;
     } else if (noteIns.type === NoteType.Hold || noteIns.type === NoteType.TouchHold) {
       if (note.status === -1) {
@@ -830,8 +830,6 @@ const onPressDown = (area: TouchArea) => {
 
                 let timeD = noteIns.time - finalSectionTime - currentTime;
 
-                console.log(114514,timeD, finalSectionTime);
-
                 // FAST LATE
                 if (timeD >= 0) {
                   showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
@@ -1040,15 +1038,13 @@ const onPressUp = (area: TouchArea) => {
         }
         break;
       case NoteType.TouchHold:
-        if (area.area.id === Number(noteIns.pos)) {
+        if (area.area.name === 'C') {
           if (timeD < -timerPeriod * 15 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
             // 设置标志位
             showingNotes[i].isTouching = false;
             showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
           }
         }
-        break;
-      case NoteType.SlideTrack:
         break;
     }
   });

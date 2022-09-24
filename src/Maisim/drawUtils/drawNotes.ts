@@ -407,9 +407,6 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
               if (w !== -1 && w <= min) min = w;
             });
 
-            // SLIDE分段信息
-            const sectionInfo = section_wifi(note.pos, note.endPos ?? '');
-
             // WIFI TRACK
 
             // WIFI TRACK开始于screenR而不是judgeR

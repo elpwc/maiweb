@@ -7,5 +7,6 @@ export const sheetdata = `
 &track=track.mp3
 &bg=bg.png
 &inote_5=(100)
-{16},1w5[1:4],E
+{4} ,5h[1:4],Ch[1:4],E
+
 `;
