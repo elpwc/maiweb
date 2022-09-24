@@ -356,7 +356,7 @@ const qq = (endPos: number, ct: number, rt: number): { x: number; y: number; dir
   /** 圆弧开始画的角度 */
   const startAngle = qqPoints[0];
   /** 圆弧的角度 */
-  const angle = endPos ===  7 ? qqPoints[endPos] - startAngle : 1 + qqPoints[endPos] + 1 - startAngle;
+  const angle = endPos === 7 ? qqPoints[endPos] - startAngle : 1 + qqPoints[endPos] + 1 - startAngle;
   /** 圆弧开始的点 */
   const p1 = [qpLeftCircleCenter[0] + qpLeftRighCircleR * cos(startAngle * π), qpLeftCircleCenter[1] + qpLeftRighCircleR * sin(startAngle * π)];
   /** 圆弧终止的点 */
@@ -413,7 +413,7 @@ const turn = (turnPos: number, endPos: number, ct: number, rt: number): { x: num
     return {
       x: APositions[turnPos - 1][0] + ((APositions[endPos - 1][0] - APositions[turnPos - 1][0]) * (ct / rt - l1 / sumLen)) / (l2 / sumLen),
       y: APositions[turnPos - 1][1] + ((APositions[endPos - 1][1] - APositions[turnPos - 1][1]) * (ct / rt - l1 / sumLen)) / (l2 / sumLen),
-      direction: 22.5 * (endPos - turnPos - 1) + 180 + turnPos * 45,
+      direction: 22.5 * (endPos - turnPos - 1) + turnPos * 45 + (endPos > 4 && turnPos < 5 ? 180 : 0),
     };
   }
 };
