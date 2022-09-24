@@ -101,4 +101,9 @@ export interface Note {
   isNoTapSlide?: boolean;
   /** ! */
   isNoTapNoTameTimeSlide?: boolean;
+
+  /** 是否是EACH对头部 */
+  isEachPairFirst?: boolean;
+  /** EACH对长度 */
+  eachPairDistance?: number;
 }

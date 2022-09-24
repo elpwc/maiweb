@@ -12,6 +12,13 @@ canvas {
   z-index: 0;
 }
 
+.canvasEffectBack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+}
+
 .canvasSlideTrack {
   position: absolute;
   top: 0;
@@ -24,6 +31,13 @@ canvas {
   top: 0;
   left: 0;
   z-index: 20;
+}
+
+.canvasEffectOver {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 25;
 }
 
 .canvasOver {

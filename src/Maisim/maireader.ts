@@ -1,3 +1,4 @@
+import { abs } from '../math';
 import { Note, Beat, SlideTrack } from '../utils/note';
 import { NoteType } from '../utils/noteType';
 import { Sheet } from '../utils/sheet';
@@ -490,6 +491,46 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
         }
       }
     });
+
+    // 设置eachPairDistance, isEachPairFirst
+    // 画EACH pair的黄线要用
+    if (beatT.noteIndexes.length > 1) {
+      /** 除了TOUCH TOUCH HOLD的Note的index，大于1的话就喵 */
+      let tapIndexes = [];
+      tapIndexes = beatT.noteIndexes.filter((noteIndex) => {
+        return notesRes[noteIndex].type !== NoteType.Touch && notesRes[noteIndex].type !== NoteType.TouchHold;
+      });
+
+      if (tapIndexes.length > 1) {
+        // Pos最大最小的note
+        let eachPairPosMin = 9;
+        let eachPairPosMax = -1;
+        let eachPairPosMinIndex: number = -1;
+        let eachPairPosMaxIndex: number = -1;
+        tapIndexes.forEach((noteIndex) => {
+          const noteIns = notesRes[noteIndex];
+          if (Number(noteIns.pos) >= eachPairPosMax) {
+            eachPairPosMax = Number(noteIns.pos);
+            eachPairPosMaxIndex = noteIndex;
+          }
+          if (Number(noteIns.pos) <= eachPairPosMin) {
+            eachPairPosMin = Number(noteIns.pos);
+            eachPairPosMinIndex = noteIndex;
+          }
+        });
+        /** 最大最小的Note间的距离 */
+        let eachPairDistance = abs(eachPairPosMax - eachPairPosMin);
+        if (eachPairDistance > 4) {
+          eachPairDistance = 8 - eachPairDistance;
+
+          notesRes[eachPairPosMaxIndex].eachPairDistance = eachPairDistance;
+          notesRes[eachPairPosMaxIndex].isEachPairFirst = true;
+        } else {
+          notesRes[eachPairPosMinIndex].eachPairDistance = eachPairDistance;
+          notesRes[eachPairPosMinIndex].isEachPairFirst = true;
+        }
+      }
+    }
 
     beatRes.push(beatT);
 

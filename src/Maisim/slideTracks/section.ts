@@ -553,7 +553,7 @@ const section_A1 = (
     case 'V':
       const length1 = trackLength('-', 1, turnPos);
       const length2 = trackLength('-', turnPos, endPos);
-      const part1: { start: number; areas: string[] }[] | undefined = section_A1('-', endPos, 0, 0);
+      const part1: { start: number; areas: string[] }[] | undefined = section_A1('-', turnPos, 0, 0);
       const part2: { start: number; areas: string[] }[] | undefined = section('-', turnPos.toString(), endPos.toString());
       const resV = [];
 

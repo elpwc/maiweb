@@ -22,9 +22,30 @@ import { drawRotationImage, lineLen } from './_base';
 import { NoteIcon } from '../resourceReaders/noteIconReader';
 import { Note } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
-import { section, section_wifi } from '../slideTracks/section';
+import { section } from '../slideTracks/section';
+import { EffectIcon } from '../resourceReaders/effectIconReader';
 
-export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRenderingContext2D, note: Note, isEach: boolean = false, props: ShowingNoteProps) => {
+/**
+ * 绘制一个Note
+ * @param ctx 绘制Note的图层
+ * @param ctx_slideTrack 绘制SLIDE TRACK的图层
+ * @param note Note
+ * @param isEach
+ * @param props 当前的Note状态
+ * @param effect
+ * @param eachDistance
+ * @param isEachPairFirst
+ */
+export const drawNote = (
+  ctx: CanvasRenderingContext2D,
+  ctx_slideTrack: CanvasRenderingContext2D,
+  note: Note,
+  isEach: boolean = false,
+  props: ShowingNoteProps,
+  effect: boolean = true,
+  effectBackCtx?: CanvasRenderingContext2D,
+  effectOverCtx?: CanvasRenderingContext2D
+) => {
   if (/* hidden状态 (-2) 不显示 只等待判定 */ props.status !== -2) {
     let θ = 0,
       x = 0,
@@ -93,10 +114,79 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
     // ctx.arc(x, y, maimaiTapR, 0, 2 * Math.PI);
 
     let k = 0.8;
+    /** effect circle */
+    let k2 = 0.89;
+    /** effect back line */
+    let k3 = 0.98;
+
+    const eachPairLines = [EffectIcon.EachLine1, EffectIcon.EachLine2, EffectIcon.EachLine3, EffectIcon.EachLine4];
+
+    const drawNoteLine = (lineImage: HTMLImageElement) => {
+      if (note.isBreak) {
+        drawRotationImage(
+          effectBackCtx!,
+          EffectIcon.BreakLine,
+          center[0] - (props.rho + maimaiSummonLineR) / k2,
+          center[1] - (props.rho + maimaiSummonLineR) / k2,
+          ((props.rho + maimaiSummonLineR) / k2) * 2,
+          ((props.rho + maimaiSummonLineR) / k2) * 2,
+          center[0],
+          center[1],
+          -22.5 + Number(note.pos) * 45
+        );
+      } else {
+        if (note.isEach) {
+          drawRotationImage(
+            effectBackCtx!,
+            EffectIcon.EachLine,
+            center[0] - (props.rho + maimaiSummonLineR) / k2,
+            center[1] - (props.rho + maimaiSummonLineR) / k2,
+            ((props.rho + maimaiSummonLineR) / k2) * 2,
+            ((props.rho + maimaiSummonLineR) / k2) * 2,
+            center[0],
+            center[1],
+            -22.5 + Number(note.pos) * 45
+          );
+        } else {
+          drawRotationImage(
+            effectBackCtx!,
+            lineImage,
+            center[0] - (props.rho + maimaiSummonLineR) / k2,
+            center[1] - (props.rho + maimaiSummonLineR) / k2,
+            ((props.rho + maimaiSummonLineR) / k2) * 2,
+            ((props.rho + maimaiSummonLineR) / k2) * 2,
+            center[0],
+            center[1],
+            -22.5 + Number(note.pos) * 45
+          );
+        }
+      }
+    };
+
+    const drawEachPairLine = () => {
+      if (note.isEachPairFirst) {
+        drawRotationImage(
+          effectBackCtx!,
+          eachPairLines[(note.eachPairDistance ?? 1) - 1],
+          center[0] - (props.rho + maimaiSummonLineR) / k3,
+          center[1] - (props.rho + maimaiSummonLineR) / k3,
+          ((props.rho + maimaiSummonLineR) / k3) * 2,
+          ((props.rho + maimaiSummonLineR) / k3) * 2,
+          center[0],
+          center[1],
+          -22.5 - (note.eachPairDistance ?? 1) * 11.25 + Number(note.pos) * 45
+        );
+      }
+    };
 
     const drawTapImage = (image: HTMLImageElement) => {
       const centerx = x,
         centery = y;
+
+      if (effect) {
+        drawEachPairLine();
+        drawNoteLine(EffectIcon.NormalLine);
+      }
       drawRotationImage(ctx, image, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (props.radius * 2) / k, centerx, centery, -22.5 + Number(note.pos) * 45);
     };
 
@@ -113,6 +203,12 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
       } else {
         rotateK = (props.timer * 10000) / note.slideTracks![0]!.remainTime!;
       }
+
+      if (effect) {
+        drawEachPairLine();
+        drawNoteLine(EffectIcon.SlideLine);
+      }
+
       drawRotationImage(
         ctx,
         image,
@@ -130,6 +226,11 @@ export const drawNote = (ctx: CanvasRenderingContext2D, ctx_slideTrack: CanvasRe
       //console.log(y, ty);
       const centerx = x,
         centery = y;
+
+      if (effect) {
+        drawEachPairLine();
+        drawNoteLine(EffectIcon.NormalLine);
+      }
 
       if (isShortHold) {
         drawRotationImage(ctx, shortHoldImage!, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (props.radius * 1.1547 * 2) / k, centerx, centery, -22.5 + Number(note.pos) * 45);

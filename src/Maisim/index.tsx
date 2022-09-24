@@ -272,6 +272,8 @@ const reader_and_updater = async () => {
 
           if (noteIns.time! < noteIns.moveTime! + noteIns.remainTime!) {
             // HOLD长度大于maimaiJudgeLine-maimaiSummonLine
+            newNote.rho = ((noteIns.time! - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+
             if (currentTime >= noteIns.moveTime! + noteIns.remainTime!) {
               newNote.status = 3;
             }
@@ -283,6 +285,7 @@ const reader_and_updater = async () => {
             newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
             if (currentTime >= noteIns.time!) {
+              newNote.rho = ((noteIns.time! - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
               if (noteIns.isShortHold) {
                 newNote.status = -2;
               } else {
@@ -392,34 +395,34 @@ const reader_and_updater = async () => {
           // move
           newNote.rho = currentTime - noteIns.moveTime!;
 
-          // // 自动画线
-          // if (noteIns.slideType === 'w') {
-          //   // SLIDE分段信息
-          //   const sectionInfoWifi = section_wifi(noteIns.pos, noteIns.endPos ?? '');
-          //   sectionInfoWifi.forEach((sectionInfo, j) => {
-          //     for (let i = 0; i < sectionInfo!.length; i++) {
-          //       const section = sectionInfo![i];
-          //       if (
-          //         currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
-          //         currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
-          //       ) {
-          //         note.currentSectionIndexWifi[j] = i;
-          //       }
-          //     }
-          //   });
-          // } else {
-          //   // SLIDE分段信息
-          //   const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
-          //   for (let i = 0; i < sectionInfo!.length; i++) {
-          //     const section = sectionInfo![i];
-          //     if (
-          //       currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
-          //       currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
-          //     ) {
-          //       note.currentSectionIndex = i;
-          //     }
-          //   }
-          // }
+          // 自动画线
+          if (noteIns.slideType === 'w') {
+            // SLIDE分段信息
+            const sectionInfoWifi = section_wifi(noteIns.pos, noteIns.endPos ?? '');
+            sectionInfoWifi.forEach((sectionInfo, j) => {
+              for (let i = 0; i < sectionInfo!.length; i++) {
+                const section = sectionInfo![i];
+                if (
+                  currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
+                  currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
+                ) {
+                  note.currentSectionIndexWifi[j] = i;
+                }
+              }
+            });
+          } else {
+            // SLIDE分段信息
+            const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
+            for (let i = 0; i < sectionInfo!.length; i++) {
+              const section = sectionInfo![i];
+              if (
+                currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
+                currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
+              ) {
+                note.currentSectionIndex = i;
+              }
+            }
+          }
 
           if (currentTime >= noteIns.time!) {
             newNote.status = -2;
@@ -568,17 +571,29 @@ const reader_and_updater = async () => {
   //console.log(nextNoteIndex, showingNotes);
 };
 
+// CTX
 let ctx_notes: CanvasRenderingContext2D;
 
 let ctx_slideTrack: CanvasRenderingContext2D;
 
+let ctx_effect_back: CanvasRenderingContext2D;
+
+let ctx_effect_over: CanvasRenderingContext2D;
+
+/** 初始化CTX */
 const initCtx = () => {
   ctx_notes = (document.getElementsByClassName('canvasNotes')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
 
   ctx_slideTrack = (document.getElementsByClassName('canvasSlideTrack')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
+
+  ctx_effect_back = (document.getElementsByClassName('canvasEffectBack')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
+
+  ctx_effect_over = (document.getElementsByClassName('canvasEffectOver')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
 };
 
+/** 上一帧开始的时间 */
 let lastFrameBeginTime = -1;
+/** 当前帧数 */
 let frame = 0;
 
 // 绘制帧率
@@ -596,8 +611,11 @@ const drawer = async () => {
   }
   lastFrameBeginTime = currentFrameBeginTime;
 
+  // 清空画布
   ctx_notes.clearRect(0, 0, canvasWidth, canvasHeight);
   ctx_slideTrack.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx_effect_over.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx_effect_back.clearRect(0, 0, canvasWidth, canvasHeight);
 
   // 高亮点击的区域
   drawAllTouchingAreas(ctx_notes, currentTouchingArea);
@@ -605,7 +623,7 @@ const drawer = async () => {
   // 不用foreach是为了从里往外，这样外侧的才会绘制在内侧Note之上
   for (let i = showingNotes.length - 1; i >= 0; i--) {
     const note = showingNotes[i];
-    drawNote(ctx_notes, ctx_slideTrack, currentSheet.notes[note.noteIndex]!, note.isEach, note);
+    drawNote(ctx_notes, ctx_slideTrack, currentSheet.notes[note.noteIndex]!, note.isEach, note, true, ctx_effect_back, ctx_effect_over);
   }
 };
 
@@ -1263,8 +1281,12 @@ export default (props: Props) => {
     <div className="maisim">
       <div className="canvasContainer">
         <canvas className="canvasMain" height={canvasHeight} width={canvasWidth} />
+
+        <canvas className="canvasEffectBack" height={canvasHeight} width={canvasWidth} />
         <canvas className="canvasSlideTrack" height={canvasHeight} width={canvasWidth} />
         <canvas className="canvasNotes" height={canvasHeight} width={canvasWidth} />
+        <canvas className="canvasEffectOver" height={canvasHeight} width={canvasWidth} />
+
         <canvas className="canvasOver" height={canvasHeight} width={canvasWidth} />
         <canvas className="canvasKeys" height={canvasHeight} width={canvasWidth} />
 
