@@ -405,34 +405,34 @@ const reader_and_updater = async () => {
           // move
           newNote.rho = currentTime - noteIns.moveTime!;
 
-          // 自动画线
-          if (noteIns.slideType === 'w') {
-            // SLIDE分段信息
-            const sectionInfoWifi = section_wifi(noteIns.pos, noteIns.endPos ?? '');
-            sectionInfoWifi.forEach((sectionInfo, j) => {
-              for (let i = 0; i < sectionInfo!.length; i++) {
-                const section = sectionInfo![i];
-                if (
-                  currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
-                  currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
-                ) {
-                  note.currentSectionIndexWifi[j] = i;
-                }
-              }
-            });
-          } else {
-            // SLIDE分段信息
-            const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
-            for (let i = 0; i < sectionInfo!.length; i++) {
-              const section = sectionInfo![i];
-              if (
-                currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
-                currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
-              ) {
-                note.currentSectionIndex = i;
-              }
-            }
-          }
+          // // 自动画线
+          // if (noteIns.slideType === 'w') {
+          //   // SLIDE分段信息
+          //   const sectionInfoWifi = section_wifi(noteIns.pos, noteIns.endPos ?? '');
+          //   sectionInfoWifi.forEach((sectionInfo, j) => {
+          //     for (let i = 0; i < sectionInfo!.length; i++) {
+          //       const section = sectionInfo![i];
+          //       if (
+          //         currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
+          //         currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
+          //       ) {
+          //         note.currentSectionIndexWifi[j] = i;
+          //       }
+          //     }
+          //   });
+          // } else {
+          //   // SLIDE分段信息
+          //   const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
+          //   for (let i = 0; i < sectionInfo!.length; i++) {
+          //     const section = sectionInfo![i];
+          //     if (
+          //       currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
+          //       currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
+          //     ) {
+          //       note.currentSectionIndex = i;
+          //     }
+          //   }
+          // }
 
           if (currentTime >= noteIns.time!) {
             newNote.status = -2;

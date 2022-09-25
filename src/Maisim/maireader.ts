@@ -406,8 +406,13 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 
   let currentTime: number = 0;
 
+  /** 上一拍所有TOUCH的位置，用来处理多TOUCH白线 */
+  let lastlastTouch: { index: number; pos: string }[] = [];
+  let lastTouch: { index: number; pos: string }[] = [];
+
   //处理所有
   hyoshis.forEach((hyoshiGroup: string[], index) => {
+    // 一次处理一个拍的
     let beatT: Beat = {
       //notes: [],
       notevalue: 0,
@@ -446,6 +451,7 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
     //处理一组Note
     // （二次处理）
     hyoshiGroup.forEach((hyoshi: string) => {
+      // 一次处理一拍里的一个
       /** 要加入Notes列表的note */
       const res: Note | null = hyoshiAnalyse(hyoshi, index);
       //console.log(res);
@@ -520,6 +526,48 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
         }
       }
     });
+
+    // 处理多TOUCH白线
+    const currentTouch = beatT.noteIndexes
+      .map((noteIndex) => {
+        if (notesRes[noteIndex].type === NoteType.Touch) {
+          return { index: noteIndex, pos: notesRes[noteIndex].pos };
+        } else {
+          return { index: -1, pos: '' };
+        }
+      })
+      .filter((t) => {
+        return t.index !== -1;
+      });
+    lastTouch.forEach((touch1) => {
+      currentTouch.forEach((touch2) => {
+        if (touch1.pos === touch2.pos) {
+          notesRes[touch1.index].touchCount = 1;
+        }
+      });
+    });
+    lastlastTouch.forEach((touch0) => {
+      lastTouch.forEach((touch1) => {
+        currentTouch.forEach((touch2) => {
+          if (touch0.pos === touch1.pos && touch1.pos === touch2.pos) {
+            notesRes[touch0.index].touchCount = 2;
+          }
+        });
+      });
+    });
+    // 更新上个节拍的所有TOUCH和上上个节拍的TOUCH位置
+    lastlastTouch = lastTouch;
+    lastTouch = beatT.noteIndexes
+      .map((noteIndex) => {
+        if (notesRes[noteIndex].type === NoteType.Touch) {
+          return { index: noteIndex, pos: notesRes[noteIndex].pos };
+        } else {
+          return { index: -1, pos: '' };
+        }
+      })
+      .filter((t) => {
+        return t.index !== -1;
+      });
 
     // 设置eachPairDistance, isEachPairFirst
     // 画EACH pair的黄线要用

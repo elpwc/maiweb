@@ -300,11 +300,26 @@ export const drawNote = (
       }
     };
 
-    const drawTouchImage = (image: HTMLImageElement, imageCenter: HTMLImageElement) => {
+    const drawTouchImage = (image: HTMLImageElement, imageCenter: HTMLImageElement, imageTouchTwo: HTMLImageElement, imageTouchThree: HTMLImageElement) => {
       const centerx = x,
         centery = y;
       const k = 0.5,
         centerk = 0.6;
+
+      if (note.touchCount ?? 0 >= 1) {
+        drawRotationImage(ctx, imageTouchTwo, x - (imageTouchTwo.width * centerk) / 2, y - (imageTouchTwo.height * centerk) / 2, imageTouchTwo.width * centerk, imageTouchTwo.height * centerk);
+      }
+      if (note.touchCount === 2) {
+        drawRotationImage(
+          ctx,
+          imageTouchThree,
+          x - (imageTouchThree.width * centerk) / 2,
+          y - (imageTouchThree.height * centerk) / 2,
+          imageTouchThree.width * centerk,
+          imageTouchThree.height * centerk
+        );
+      }
+
       for (let i = 0; i < 4; i++) {
         drawRotationImage(ctx, image, x - (image.width * k) / 2, y + touchMaxDistance - 6 - props.rho, image.width * k, image.height * k, x, y, 90 * i, props.radius / maimaiTapR);
       }
@@ -693,9 +708,9 @@ export const drawNote = (
         break;
       case NoteType.Touch:
         if (isEach) {
-          drawTouchImage(NoteIcon.touch_each, NoteIcon.touch_each_center);
+          drawTouchImage(NoteIcon.touch_each, NoteIcon.touch_each_center, NoteIcon.touch_each_two, NoteIcon.touch_each_three);
         } else {
-          drawTouchImage(NoteIcon.touch, NoteIcon.touch_center);
+          drawTouchImage(NoteIcon.touch, NoteIcon.touch_center, NoteIcon.touch_two, NoteIcon.touch_three);
         }
         break;
       case NoteType.TouchHold:

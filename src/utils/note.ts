@@ -109,4 +109,7 @@ export interface Note {
 
   /** SLIDE TRACK 节的长度 */
   sectionCount?: number;
+
+  /** 多TOUCH白框 */
+  touchCount?: number;// 1 2
 }
