@@ -1,8 +1,8 @@
 # file importing code builder
 import os
 
-pyRootRoute = './src/resource/maimai_img/'
-rootRoute = '../../resource/maimai_img/'
+pyRootRoute = './src/resource/'
+rootRoute = '../../resource/'
 saveRootRoute = './src/Maisim/resourceReaders/'
 
 
@@ -11,7 +11,7 @@ def tip(fo):
 
 
 def outlineIcons():
-    dictName = 'outline'
+    dictName = 'maimai_img/outline'
     root = rootRoute + dictName + '/'
     iconNames = [f.split('.')[0] for f in os.listdir(
         pyRootRoute + dictName) if f.endswith('.png')]
@@ -36,8 +36,7 @@ def outlineIcons():
     fo.write('\n')
 
     # init
-    fo.write('export const init' + dictName +
-             'icons = (onload: () => void) => {\n')
+    fo.write('export const initoutlineicons = (onload: () => void) => {\n')
     fo.write("  const amount = " + str(len(iconNames)) + ";\n")
     fo.write("  let loaded = 0;\n")
     for name in iconNames:
@@ -49,7 +48,7 @@ def outlineIcons():
 
 
 def effectsIcons():
-    dictName = 'effect'
+    dictName = 'maimai_img/effect'
     root = rootRoute + dictName + '/'
     iconNames = [f.split('.')[0] for f in os.listdir(
         pyRootRoute + dictName) if f.endswith('.png')]
@@ -75,8 +74,7 @@ def effectsIcons():
     fo.write('\n')
 
     # init
-    fo.write('export const init' + dictName +
-             'icons = (onload: () => void) => {\n')
+    fo.write('export const initeffecticons = (onload: () => void) => {\n')
     fo.write("  const amount = " + str(len(iconNames)) + ";\n")
     fo.write("  let loaded = 0;\n")
     for name in iconNames:
@@ -88,7 +86,7 @@ def effectsIcons():
 
 
 def notesIcons():
-    dictName = 'notes'
+    dictName = 'maimai_img/notes'
     root = rootRoute + dictName + '/'
     iconNames = [f.split('.')[0] for f in os.listdir(
         pyRootRoute + dictName) if f.endswith('.png')]
@@ -114,8 +112,7 @@ def notesIcons():
     fo.write('\n')
 
     # init
-    fo.write('export const init' + dictName +
-             'icons = (onload: () => void) => {\n')
+    fo.write('export const initnotesicons = (onload: () => void) => {\n')
     fo.write("  const amount = " + str(len(iconNames)) + ";\n")
     fo.write("  let loaded = 0;\n")
     for name in iconNames:
@@ -126,10 +123,51 @@ def notesIcons():
     fo.close()
 
 
+def notesSounds():
+    dictName = 'sound/note'
+    root = rootRoute + dictName + '/'
+    soundNames = [f.split('.')[0] for f in os.listdir(
+        pyRootRoute + dictName) if f.endswith('.wav')]
+
+    fo = open(saveRootRoute + "noteSoundReader.ts", "w", encoding="utf-8")
+    fo.seek(0)
+    tip(fo)
+
+    # import list
+    for name in soundNames:
+        fo.write("import " + name + "_sound from '" +
+                 root + name + ".wav';\n")
+
+    fo.write('\n')
+
+    # object
+    fo.write('export const NoteSound = {\n')
+    for name in soundNames:
+        fo.write("    " + name + ": new Audio(),\n")
+
+    fo.write("};\n")
+
+    fo.write('\n')
+
+    # init
+    fo.write('export const initnotesounds = (onload: () => void) => {\n')
+    fo.write("  const amount = " + str(len(soundNames)) + ";\n")
+    fo.write("  let loaded = 0;\n")
+    for name in soundNames:
+        fo.write("  NoteSound." + name + ".src = " + name + "_sound;\n")
+        #fo.write("  NoteSound." + name +
+        #         ".onload = () => { loaded++; if (loaded >= amount) onload(); }\n")
+        
+    fo.write("  onload();\n")
+    fo.write("};\n")
+    fo.close()
+
+
 def main():
     notesIcons()
     outlineIcons()
     effectsIcons()
+    notesSounds()
 
 
 if __name__ == '__main__':

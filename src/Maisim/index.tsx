@@ -41,14 +41,10 @@ import { NoteType } from '../utils/noteType';
 import { Sheet } from '../utils/sheet';
 import { Song } from '../utils/song';
 import { gameRecord } from './global';
-
-import musictest from '../resource/sound/track_start.wav';
 import { section, section_wifi } from './slideTracks/section';
 import { judge } from './judge';
 import { updateRecord } from './recordUpdater';
-
-const testmusic = new Audio();
-testmusic.src = musictest;
+import { NoteSound } from './resourceReaders/noteSoundReader';
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
@@ -365,6 +361,8 @@ const reader_and_updater = async () => {
           newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
 
           if (currentTime >= noteIns.time!) {
+            // @ts-ignore
+            NoteSound.touch.cloneNode().play();
             newNote.status = -2;
           }
         } else if (newNote.status === -2) {
@@ -391,6 +389,8 @@ const reader_and_updater = async () => {
           newNote.guideStarRadius = ((currentTime - noteIns.guideStarEmergeTime!) / (noteIns.moveTime! - noteIns.guideStarEmergeTime!)) * maimaiTapR;
 
           if (currentTime >= noteIns.moveTime!) {
+            // @ts-ignore
+            NoteSound.slide_track.cloneNode().play();
             newNote.status = 2;
           }
         } else if (newNote.status === 2) {

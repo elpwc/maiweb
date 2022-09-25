@@ -1,5 +1,6 @@
 import { initeffecticons } from './effectIconReader';
 import { initnotesicons } from './noteIconReader';
+import { initnotesounds } from './noteSoundReader';
 import { initoutlineicons } from './outlineIconReader';
 
 /**
@@ -10,7 +11,9 @@ export const initResources = (onload: (info?: any) => void) => {
   initeffecticons(() => {
     initoutlineicons(() => {
       initnotesicons(() => {
-        onload();
+        initnotesounds(() => {
+          onload();
+        });
       });
     });
   });
