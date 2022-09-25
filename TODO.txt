@@ -1,0 +1,28 @@
+TODO：
+1. 修改timeperiod→锁帧60fps✓
+2. 根据时间计算位置，而不是累加✓
+
+3. 为slide track添加新的NoteType类型，作为note统计在notes中✓
+
+4. 每个track轨迹：用一个interface表示
+包含一个函数(currentTime, remainTime):(x, y, slope)
+一个分段表✓
+segments[]✓
+
+分段Segment:
+start, end（0-1）, areas[string]→旋转时area後缀依次+(n-1)✓
+
+5. currentTouchingArea
+TouchingArea:
+area, pressTime✓
+
+6. 判断hold的条件
+1) hold头 -9~9✓
+2) hold体内（现在没整这个）✓
+
+
+
+9-26:
+TOUCH HOLD黄框
+TOUCH GROUP
+适配新语法
