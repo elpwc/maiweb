@@ -42,6 +42,8 @@ export interface ShowingNoteProps {
   judgeStatus: JudgeStatus;
   /** 判定前後 */
   judgeTime: JudgeTimeStatus;
+  /** BREAK结果细分 */
+  judgeLevel: number;
 
   /** 适用于HOLD, SLIDE HOLD 被按下的总时间 */
   holdingTime: number;

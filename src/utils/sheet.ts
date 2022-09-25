@@ -9,5 +9,11 @@ export interface Sheet {
   notes: Note[];
   beats: Beat[];
 
+  /** 宴谱类型 */
   utageType?: string;
+
+  /** 基础评价值 */
+  basicEvaluation: number;
+  /** 额外评价值 */
+  exEvaluation: number;
 }

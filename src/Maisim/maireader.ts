@@ -58,6 +58,8 @@ export const ReadMaimaiData = (sheetData: string) => {
               level: 0,
               notes: [],
               beats: [],
+              basicEvaluation: 0,
+              exEvaluation: 0,
             });
           }
           sheetIndex = res.sheets.length - 1;
@@ -73,6 +75,31 @@ export const ReadMaimaiData = (sheetData: string) => {
               const noteRes = read_inote(pvalue);
               res.sheets[sheetIndex].beats = noteRes.beats;
               res.sheets[sheetIndex].notes = noteRes.notes;
+
+              // evaluation
+              res.sheets[sheetIndex].basicEvaluation =
+                100 /
+                (res.sheets[sheetIndex].notes.filter((note) => {
+                  return (note.type === NoteType.Tap || note.type === NoteType.Slide || note.type === NoteType.Touch) && !note.isBreak;
+                }).length *
+                  1 +
+                  res.sheets[sheetIndex].notes.filter((note) => {
+                    return (note.type === NoteType.Hold || note.type === NoteType.TouchHold) && !note.isBreak;
+                  }).length *
+                    2 +
+                  res.sheets[sheetIndex].notes.filter((note) => {
+                    return note.type === NoteType.SlideTrack && !note.isBreak;
+                  }).length *
+                    3 +
+                  res.sheets[sheetIndex].notes.filter((note) => {
+                    return note.isBreak;
+                  }).length *
+                    5);
+              res.sheets[sheetIndex].exEvaluation =
+                1 /
+                res.sheets[sheetIndex].notes.filter((note) => {
+                  return note.isBreak;
+                }).length;
               break;
           }
         }
