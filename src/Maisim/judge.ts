@@ -53,7 +53,8 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 
         //TAP BREAK细分
         if (noteIns.isBreak) {
-          showingNotes[i].judgeLevel = Math.floor(abs(timeD) / timerPeriod);
+          showingNotes[i].judgeLevel = Math.ceil(abs(timeD) / timerPeriod);
+          console.log(showingNotes[i].judgeLevel,abs(timeD) ,timerPeriod)
         }
 
         // 更新game record
@@ -96,6 +97,11 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
             // GOOD
             showingNotes[i].judgeStatus = JudgeStatus.Good;
           } else {
+          }
+
+          // 更新game record
+          if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
+            updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true);
           }
         }
         console.log(timeD, timerPeriod * 6, noteIns.remainTime! - 12 * timerPeriod);

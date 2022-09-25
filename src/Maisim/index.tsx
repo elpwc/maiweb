@@ -45,10 +45,14 @@ import { section, section_wifi } from './slideTracks/section';
 import { judge } from './judge';
 import { updateRecord } from './recordUpdater';
 import { NoteSound } from './resourceReaders/noteSoundReader';
+import testsong_taiyoukei from '../resource/sound/track/太陽系デスコ.mp3';
+
+const SongTrack = new Audio();
+SongTrack.src = testsong_taiyoukei;
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
-let tapMoveSpeed: number = 1;
+let tapMoveSpeed: number = 0.85;
 let tapEmergeSpeed: number = 0.2;
 
 let speed: number = 10;
@@ -197,6 +201,8 @@ const touchConvergeCurrentRho = (c: number, m: number, t: number) => {
   return (touchMaxDistance * c * (c - m)) / (t * (t - m));
 };
 
+let songPlaying = false;
+
 /*
 　いちおう此処にてちょっと解説したげるにゃ！
 
@@ -323,6 +329,8 @@ const reader_and_updater = async () => {
           newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
 
           if (currentTime >= noteIns.time!) {
+            // @ts-ignore
+            NoteSound.touch.cloneNode().play();
             if (noteIns.isShortHold) {
               newNote.status = -2;
             } else {
@@ -499,6 +507,24 @@ const reader_and_updater = async () => {
     const noteIns = currentSheet.notes[note.noteIndex];
     // MISS
     if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.Touch || noteIns.type === NoteType.SlideTrack) {
+      // SLIDE TRACK 划过一半但沒划完修正为GOOD
+      if (noteIns.type === NoteType.SlideTrack && note.judgeStatus === JudgeStatus.Miss) {
+        if (noteIns.slideType === 'w') {
+          if (
+            note.currentSectionIndexWifi.sort((a, b) => {
+              return b - a;
+            })[0] +
+              1 >
+            noteIns.sectionCount! / 2
+          ) {
+            note.judgeStatus = JudgeStatus.Good;
+          }
+        } else {
+          if (note.currentSectionIndex + 1 > noteIns.sectionCount! / 2) {
+            note.judgeStatus = JudgeStatus.Good;
+          }
+        }
+      }
       if (note.status === -1 && !note.touched) {
         updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
       }
@@ -511,7 +537,7 @@ const reader_and_updater = async () => {
           note.holdingTime += currentTime - (note.touchedTime ?? 0);
         }
         const holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
-        console.log(114514, holdingPercent, note);
+
         if (note.judgeStatus === JudgeStatus.Miss) {
           //MISS修正为GOOD
           if (holdingPercent >= 0.05) {
@@ -539,6 +565,13 @@ const reader_and_updater = async () => {
   });
 
   // reader
+
+  //播放
+  if (currentTime >= advancedTime && !songPlaying) {
+    songPlaying = true;
+    SongTrack.play();
+  }
+
   while (currentTime >= currentSheet.notes[nextNoteIndex].emergeTime!) {
     showingNotes.push({
       beatIndex: currentSheet.notes[nextNoteIndex].beatIndex,
@@ -625,6 +658,10 @@ const drawGameRecord = (ctx: CanvasRenderingContext2D) => {
   ctx.strokeStyle = 'red';
   ctx.font = '20px Arial';
   ctx.strokeText(`Critical: ${gameRecord.criticalPerfect}, Perfect: ${gameRecord.perfect}, Great: ${gameRecord.great}, Good: ${gameRecord.good}, Miss: ${gameRecord.miss}`, 0, 50);
+  ctx.strokeStyle = 'white';
+  ctx.font = '30px Arial';
+  ctx.strokeText(`COMBO ${gameRecord.combo}`, center[0] - 50, center[1] - 30);
+  ctx.strokeText(`${gameRecord.achieving_rate.toFixed(2)}`, center[0] - 50, center[1]);
 };
 
 const onPressDown = (area: TouchArea) => {

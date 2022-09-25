@@ -106,4 +106,7 @@ export interface Note {
   isEachPairFirst?: boolean;
   /** EACH对长度 */
   eachPairDistance?: number;
+
+  /** SLIDE TRACK 节的长度 */
+  sectionCount?: number;
 }

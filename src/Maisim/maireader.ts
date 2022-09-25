@@ -3,6 +3,7 @@ import { Note, Beat, SlideTrack } from '../utils/note';
 import { NoteType } from '../utils/noteType';
 import { Sheet } from '../utils/sheet';
 import { Song } from '../utils/song';
+import { section } from './slideTracks/section';
 
 export const ReadMaimaiData = (sheetData: string) => {
   let res: Song = {
@@ -511,6 +512,7 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
               isStarTap: res.isStarTap,
               isNoTapSlide: res.isNoTapSlide,
               isNoTapNoTameTimeSlide: res.isNoTapNoTameTimeSlide,
+              sectionCount: slideTrack.slideType === 'w' ? 5 : section(slideTrack.slideType, res.pos, slideTrack.endPos!, slideTrack.turnPos)?.length,
             };
 
             notesRes.push(tempSlideTrackNote);
