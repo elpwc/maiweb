@@ -9,7 +9,12 @@ export const gameRecord = {
   late: 0,
   max_combo: 0,
   combo: 0,
+  /** 达成率 */
   achieving_rate: 0,
+  /** EX达成率 BREAK */
+  achieving_rate_ex: 0,
+  /** 已丢失达成率 */
+  achieving_rate_lost: 0,
   dx_point: 0,
   tap: {
     criticalPerfect: 0,

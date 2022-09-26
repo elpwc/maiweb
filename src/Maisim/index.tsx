@@ -563,7 +563,7 @@ const reader_and_updater = async () => {
       return note.status !== -1;
     }
   });
-
+  
   // reader
 
   //播放
@@ -661,7 +661,7 @@ const drawGameRecord = (ctx: CanvasRenderingContext2D) => {
   ctx.strokeStyle = 'white';
   ctx.font = '30px Arial';
   ctx.strokeText(`COMBO ${gameRecord.combo}`, center[0] - 50, center[1] - 30);
-  ctx.strokeText(`${gameRecord.achieving_rate.toFixed(2)}`, center[0] - 50, center[1]);
+  ctx.strokeText(`${(100 - gameRecord.achieving_rate_lost + gameRecord.achieving_rate_ex).toFixed(4)}%`, center[0] - 60, center[1]);
 };
 
 const onPressDown = (area: TouchArea) => {

@@ -17,6 +17,8 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
     gameRecord.combo = 0;
   }
 
+  //props.judgeStatus = JudgeStatus.CriticalPerfect as JudgeStatus;
+
   switch (note.type) {
     case NoteType.Tap:
     case NoteType.Slide:
@@ -39,7 +41,8 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.Good:
             gameRecord.break.criticalPerfect++;
             gameRecord.criticalPerfect++;
-            gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 1;
+            gameRecord.achieving_rate += basicEvaluation * 5;
+            gameRecord.achieving_rate_ex += exEvaluation * 1;
             gameRecord.dx_point += dx_score[0];
             // @ts-ignore
             NoteSound.break1.cloneNode().play();
@@ -65,7 +68,8 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.CriticalPerfect:
             gameRecord.break.criticalPerfect++;
             gameRecord.criticalPerfect++;
-            gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 1;
+            gameRecord.achieving_rate += basicEvaluation * 5;
+            gameRecord.achieving_rate_ex += exEvaluation * 1;
             gameRecord.dx_point += dx_score[0];
             // @ts-ignore
             NoteSound.break1.cloneNode().play();
@@ -75,10 +79,12 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             gameRecord.perfect++;
             switch (props.judgeLevel) {
               case 2:
-                gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 0.75;
+                gameRecord.achieving_rate += basicEvaluation * 5;
+                gameRecord.achieving_rate_ex += exEvaluation * 0.75;
                 break;
               case 3:
-                gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 0.5;
+                gameRecord.achieving_rate += basicEvaluation * 5;
+                gameRecord.achieving_rate_ex += exEvaluation * 0.5;
                 break;
             }
             gameRecord.dx_point += dx_score[1];
@@ -88,15 +94,19 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.Great:
             gameRecord.break.great++;
             gameRecord.great++;
+            gameRecord.achieving_rate_ex += exEvaluation * 0.4;
             switch (props.judgeLevel) {
               case 4:
-                gameRecord.achieving_rate += basicEvaluation * 4 + exEvaluation * 0.4;
+                gameRecord.achieving_rate += basicEvaluation * 4;
+                gameRecord.achieving_rate_lost += basicEvaluation * 1;
                 break;
               case 5:
-                gameRecord.achieving_rate += basicEvaluation * 3 + exEvaluation * 0.4;
+                gameRecord.achieving_rate += basicEvaluation * 3;
+                gameRecord.achieving_rate_lost += basicEvaluation * 2;
                 break;
               case 6:
-                gameRecord.achieving_rate += basicEvaluation * 2.5 + exEvaluation * 0.4;
+                gameRecord.achieving_rate += basicEvaluation * 2.5;
+                gameRecord.achieving_rate_lost += basicEvaluation * 2.5;
                 break;
             }
             gameRecord.dx_point += dx_score[2];
@@ -106,7 +116,9 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.Good:
             gameRecord.break.good++;
             gameRecord.good++;
-            gameRecord.achieving_rate += basicEvaluation * 2 + exEvaluation * 0.3;
+            gameRecord.achieving_rate += basicEvaluation * 2;
+            gameRecord.achieving_rate_ex += exEvaluation * 0.3;
+            gameRecord.achieving_rate_lost += basicEvaluation * 3;
             gameRecord.dx_point += dx_score[3];
             // @ts-ignore
             NoteSound.break2.cloneNode().play();
@@ -114,6 +126,7 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.Miss:
             gameRecord.break.miss++;
             gameRecord.miss++;
+            gameRecord.achieving_rate_lost += basicEvaluation * 5;
             break;
         }
       } else if (note.isEx) {
@@ -143,6 +156,7 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.Miss:
             gameRecord.tap.miss++;
             gameRecord.miss++;
+            gameRecord.achieving_rate_lost += basicEvaluation * 1;
             break;
         }
       } else {
@@ -178,6 +192,7 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             gameRecord.tap.great++;
             gameRecord.great++;
             gameRecord.achieving_rate += basicEvaluation * 0.8;
+            gameRecord.achieving_rate_lost += basicEvaluation * 0.2;
             gameRecord.dx_point += dx_score[2];
             // @ts-ignore
             NoteSound.great.cloneNode().play();
@@ -186,6 +201,7 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             gameRecord.tap.good++;
             gameRecord.good++;
             gameRecord.achieving_rate += basicEvaluation * 0.5;
+            gameRecord.achieving_rate_lost += basicEvaluation * 0.5;
             gameRecord.dx_point += dx_score[3];
             // @ts-ignore
             NoteSound.good.cloneNode().play();
@@ -193,6 +209,7 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.Miss:
             gameRecord.tap.miss++;
             gameRecord.miss++;
+            gameRecord.achieving_rate_lost += basicEvaluation * 1;
             break;
         }
       }
@@ -293,12 +310,14 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             case JudgeStatus.Good:
               gameRecord.break.criticalPerfect++;
               gameRecord.criticalPerfect++;
-              gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 1;
+              gameRecord.achieving_rate += basicEvaluation * 5;
+              gameRecord.achieving_rate_ex += exEvaluation * 1;
               gameRecord.dx_point += dx_score[0];
               break;
             case JudgeStatus.Miss:
               gameRecord.break.miss++;
               gameRecord.miss++;
+              gameRecord.achieving_rate_lost += basicEvaluation * 5;
               break;
           }
         } else if (note.isBreak) {
@@ -317,7 +336,8 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             case JudgeStatus.CriticalPerfect:
               gameRecord.break.criticalPerfect++;
               gameRecord.criticalPerfect++;
-              gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 1;
+              gameRecord.achieving_rate += basicEvaluation * 5;
+              gameRecord.achieving_rate_ex += exEvaluation * 1;
               gameRecord.dx_point += dx_score[0];
               break;
             case JudgeStatus.Perfect:
@@ -325,10 +345,12 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
               gameRecord.perfect++;
               switch (props.judgeLevel) {
                 case 2:
-                  gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 0.75;
+                  gameRecord.achieving_rate += basicEvaluation * 5;
+                  gameRecord.achieving_rate_ex += exEvaluation * 0.75;
                   break;
                 case 3:
-                  gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 0.5;
+                  gameRecord.achieving_rate += basicEvaluation * 5;
+                  gameRecord.achieving_rate_ex += exEvaluation * 0.5;
                   break;
               }
               gameRecord.dx_point += dx_score[1];
@@ -336,15 +358,19 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             case JudgeStatus.Great:
               gameRecord.break.great++;
               gameRecord.great++;
+              gameRecord.achieving_rate_ex += exEvaluation * 0.4;
               switch (props.judgeLevel) {
                 case 4:
-                  gameRecord.achieving_rate += basicEvaluation * 4 + exEvaluation * 0.4;
+                  gameRecord.achieving_rate += basicEvaluation * 4;
+                  gameRecord.achieving_rate_lost += basicEvaluation * 1;
                   break;
                 case 5:
-                  gameRecord.achieving_rate += basicEvaluation * 3 + exEvaluation * 0.4;
+                  gameRecord.achieving_rate += basicEvaluation * 3;
+                  gameRecord.achieving_rate_lost += basicEvaluation * 2;
                   break;
                 case 6:
-                  gameRecord.achieving_rate += basicEvaluation * 2.5 + exEvaluation * 0.4;
+                  gameRecord.achieving_rate += basicEvaluation * 2.5;
+                  gameRecord.achieving_rate_lost += basicEvaluation * 2.5;
                   break;
               }
               gameRecord.dx_point += dx_score[2];
@@ -352,12 +378,15 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             case JudgeStatus.Good:
               gameRecord.break.good++;
               gameRecord.good++;
-              gameRecord.achieving_rate += basicEvaluation * 2 + exEvaluation * 0.3;
+              gameRecord.achieving_rate += basicEvaluation * 2;
+              gameRecord.achieving_rate_ex += exEvaluation * 0.3;
+              gameRecord.achieving_rate_lost += basicEvaluation * 3;
               gameRecord.dx_point += dx_score[3];
               break;
             case JudgeStatus.Miss:
               gameRecord.break.miss++;
               gameRecord.miss++;
+              gameRecord.achieving_rate_lost += basicEvaluation * 5;
               break;
           }
         } else if (note.isEx) {
@@ -379,12 +408,13 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             case JudgeStatus.Good:
               gameRecord.hold.criticalPerfect++;
               gameRecord.criticalPerfect++;
-              gameRecord.achieving_rate += basicEvaluation * 1;
+              gameRecord.achieving_rate += basicEvaluation * 2;
               gameRecord.dx_point += dx_score[0];
               break;
             case JudgeStatus.Miss:
               gameRecord.hold.miss++;
               gameRecord.miss++;
+              gameRecord.achieving_rate_lost += basicEvaluation * 2;
               break;
           }
         } else {
@@ -416,17 +446,20 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
               gameRecord.hold.great++;
               gameRecord.great++;
               gameRecord.achieving_rate += basicEvaluation * 1.6;
+              gameRecord.achieving_rate_lost += basicEvaluation * 0.4;
               gameRecord.dx_point += dx_score[2];
               break;
             case JudgeStatus.Good:
               gameRecord.hold.good++;
               gameRecord.good++;
               gameRecord.achieving_rate += basicEvaluation * 1;
+              gameRecord.achieving_rate_lost += basicEvaluation * 1;
               gameRecord.dx_point += dx_score[3];
               break;
             case JudgeStatus.Miss:
               gameRecord.hold.miss++;
               gameRecord.miss++;
+              gameRecord.achieving_rate_lost += basicEvaluation * 2;
               break;
           }
         }
@@ -486,17 +519,20 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             gameRecord.hold.great++;
             gameRecord.great++;
             gameRecord.achieving_rate += basicEvaluation * 1.6;
+            gameRecord.achieving_rate_lost += basicEvaluation * 0.4;
             gameRecord.dx_point += dx_score[2];
             break;
           case JudgeStatus.Good:
             gameRecord.hold.good++;
             gameRecord.good++;
             gameRecord.achieving_rate += basicEvaluation * 1;
+            gameRecord.achieving_rate_lost += basicEvaluation * 1;
             gameRecord.dx_point += dx_score[3];
             break;
           case JudgeStatus.Miss:
             gameRecord.hold.miss++;
             gameRecord.miss++;
+            gameRecord.achieving_rate_lost += basicEvaluation * 2;
             break;
         }
       }
@@ -519,7 +555,8 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.CriticalPerfect:
             gameRecord.break.criticalPerfect++;
             gameRecord.criticalPerfect++;
-            gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 1;
+            gameRecord.achieving_rate += basicEvaluation * 5;
+            gameRecord.achieving_rate_ex += exEvaluation * 1;
             gameRecord.dx_point += dx_score[0];
             // @ts-ignore
             NoteSound.break1.cloneNode().play();
@@ -529,10 +566,12 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             gameRecord.perfect++;
             switch (props.judgeLevel) {
               case 2:
-                gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 0.75;
+                gameRecord.achieving_rate += basicEvaluation * 5;
+                gameRecord.achieving_rate_ex += exEvaluation * 0.75;
                 break;
               case 3:
-                gameRecord.achieving_rate += basicEvaluation * 5 + exEvaluation * 0.5;
+                gameRecord.achieving_rate += basicEvaluation * 5;
+                gameRecord.achieving_rate_ex += exEvaluation * 0.5;
                 break;
             }
             gameRecord.dx_point += dx_score[1];
@@ -542,15 +581,19 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.Great:
             gameRecord.break.great++;
             gameRecord.great++;
+            gameRecord.achieving_rate_ex += exEvaluation * 0.4;
             switch (props.judgeLevel) {
               case 4:
-                gameRecord.achieving_rate += basicEvaluation * 4 + exEvaluation * 0.4;
+                gameRecord.achieving_rate += basicEvaluation * 4;
+                gameRecord.achieving_rate_lost += basicEvaluation * 1;
                 break;
               case 5:
-                gameRecord.achieving_rate += basicEvaluation * 3 + exEvaluation * 0.4;
+                gameRecord.achieving_rate += basicEvaluation * 3;
+                gameRecord.achieving_rate_lost += basicEvaluation * 2;
                 break;
               case 6:
-                gameRecord.achieving_rate += basicEvaluation * 2.5 + exEvaluation * 0.4;
+                gameRecord.achieving_rate += basicEvaluation * 2.5;
+                gameRecord.achieving_rate_lost += basicEvaluation * 2.5;
                 break;
             }
             gameRecord.dx_point += dx_score[2];
@@ -560,7 +603,9 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.Good:
             gameRecord.break.good++;
             gameRecord.good++;
-            gameRecord.achieving_rate += basicEvaluation * 2 + exEvaluation * 0.3;
+            gameRecord.achieving_rate += basicEvaluation * 2;
+            gameRecord.achieving_rate_ex += exEvaluation * 0.3;
+            gameRecord.achieving_rate_lost += basicEvaluation * 3;
             gameRecord.dx_point += dx_score[3];
             // @ts-ignore
             NoteSound.break2.cloneNode().play();
@@ -568,6 +613,7 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.Miss:
             gameRecord.break.miss++;
             gameRecord.miss++;
+            gameRecord.achieving_rate_lost += basicEvaluation * 5;
             break;
         }
       } else {
@@ -599,17 +645,20 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             gameRecord.slide.great++;
             gameRecord.great++;
             gameRecord.achieving_rate += basicEvaluation * 2.4;
+            gameRecord.achieving_rate_lost += basicEvaluation * 0.6;
             gameRecord.dx_point += dx_score[2];
             break;
           case JudgeStatus.Good:
             gameRecord.slide.good++;
             gameRecord.good++;
             gameRecord.achieving_rate += basicEvaluation * 1.5;
+            gameRecord.achieving_rate_lost += basicEvaluation * 1.5;
             gameRecord.dx_point += dx_score[3];
             break;
           case JudgeStatus.Miss:
             gameRecord.slide.miss++;
             gameRecord.miss++;
+            gameRecord.achieving_rate_lost += basicEvaluation * 3;
             break;
         }
       }
@@ -640,6 +689,7 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
           case JudgeStatus.Miss:
             gameRecord.touch.miss++;
             gameRecord.miss++;
+            gameRecord.achieving_rate_lost += basicEvaluation * 1;
             break;
         }
       } else {
@@ -671,17 +721,20 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
             gameRecord.touch.great++;
             gameRecord.great++;
             gameRecord.achieving_rate += basicEvaluation * 0.8;
+            gameRecord.achieving_rate_lost += basicEvaluation * 0.2;
             gameRecord.dx_point += dx_score[2];
             break;
           case JudgeStatus.Good:
             gameRecord.touch.good++;
             gameRecord.good++;
             gameRecord.achieving_rate += basicEvaluation * 0.5;
+            gameRecord.achieving_rate_lost += basicEvaluation * 0.5;
             gameRecord.dx_point += dx_score[3];
             break;
           case JudgeStatus.Miss:
             gameRecord.touch.miss++;
             gameRecord.miss++;
+            gameRecord.achieving_rate_lost += basicEvaluation * 1;
             break;
         }
       }
