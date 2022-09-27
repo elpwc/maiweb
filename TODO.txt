@@ -23,6 +23,6 @@ area, pressTime✓
 
 
 9-26:
-TOUCH HOLD黄框
-TOUCH GROUP
+TOUCH HOLD黄框√
+TOUCH GROUP√
 适配新语法

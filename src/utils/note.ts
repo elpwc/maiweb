@@ -8,6 +8,11 @@ export interface Beat {
 
   /** 包含的全部notes的索引 */
   noteIndexes: number[];
+
+  /** touch group */
+  touchGroupStatus?: number[];
+  /** touch group内已触发数量 */
+  touchGroupTouched?: number;
 }
 
 /** Slide轨迹 */
@@ -111,5 +116,8 @@ export interface Note {
   sectionCount?: number;
 
   /** 多TOUCH白框 */
-  touchCount?: number;// 1 2
+  touchCount?: number; // 1 2
+
+  /** 是否在touch group */
+  inTouchGroup?: boolean;
 }

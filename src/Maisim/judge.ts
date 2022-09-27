@@ -144,9 +144,30 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 				} else {
 				}
 
-				// 更新game record
 				if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true);
+					// touch group
+					if (noteIns.inTouchGroup) {
+						currentSheet.beats[noteIns.beatIndex].touchGroupTouched!++;
+						if (currentSheet.beats[noteIns.beatIndex].touchGroupTouched! > currentSheet.beats[noteIns.beatIndex].touchGroupStatus?.length! / 2) {
+							currentSheet.beats[noteIns.beatIndex].touchGroupStatus?.forEach((touchGroupMemberIndex) => {
+								for (let j = 0; j < showingNotes.length; j++) {
+									if (showingNotes[j].noteIndex === touchGroupMemberIndex && !showingNotes[j].touched) {
+										showingNotes[j].touched = true;
+										showingNotes[j].touchedTime = showingNotes[i].touchedTime;
+										showingNotes[j].isTouching = true;
+										showingNotes[j].judgeTime = showingNotes[i].judgeTime;
+										showingNotes[j].judgeStatus = showingNotes[i].judgeStatus;
+
+										// 更新touch group自动判定的TOUCH的game record
+										updateRecord(currentSheet.notes[touchGroupMemberIndex], showingNotes[j], currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
+									}
+								}
+							});
+						}
+					}
+
+					// 更新game record
+					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
 				}
 			}
 		} else if (noteIns.type === NoteType.TouchHold) {
