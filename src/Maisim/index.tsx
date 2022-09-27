@@ -529,8 +529,10 @@ const reader_and_updater = async () => {
         updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
       }
     }
-    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.Touch || noteIns.type === NoteType.SlideTrack) {
+    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.SlideTrack) {
       return note.touched === false && note.status !== -1;
+    } else if (noteIns.type === NoteType.Touch) {
+      return note.status !== -1;
     } else if (noteIns.type === NoteType.Hold || noteIns.type === NoteType.TouchHold) {
       if (note.status === -1) {
         if (note.touched) {
@@ -563,7 +565,7 @@ const reader_and_updater = async () => {
       return note.status !== -1;
     }
   });
-  
+
   // reader
 
   //播放
