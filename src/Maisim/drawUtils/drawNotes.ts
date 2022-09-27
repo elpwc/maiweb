@@ -306,6 +306,7 @@ export const drawNote = (
       const k = 0.5,
         centerk = 0.6;
 
+      // 多重TOUCH线
       if (note.touchCount ?? 0 >= 1) {
         drawRotationImage(ctx, imageTouchTwo, x - (imageTouchTwo.width * centerk) / 2, y - (imageTouchTwo.height * centerk) / 2, imageTouchTwo.width * centerk, imageTouchTwo.height * centerk);
       }
@@ -326,7 +327,7 @@ export const drawNote = (
       drawRotationImage(ctx, imageCenter, x - (imageCenter.width * centerk) / 2, y - (imageCenter.height * centerk) / 2, imageCenter.width * centerk, imageCenter.height * centerk);
     };
 
-    const drawTouchHoldImage = (is_miss: boolean, isShortHold: boolean = false) => {
+    const drawTouchHoldImage = (is_miss: boolean, isShortHold: boolean = false, imageTouchTwo: HTMLImageElement, imageTouchThree: HTMLImageElement) => {
       const centerx = x,
         centery = y;
 
@@ -338,6 +339,21 @@ export const drawNote = (
         : [NoteIcon.touch_hold_1, NoteIcon.touch_hold_2, NoteIcon.touch_hold_3, NoteIcon.touch_hold_4];
       const touchHoldCenter = is_miss ? NoteIcon.touch_hold_center_miss : NoteIcon.touch_center;
       const touchHoldGage = is_miss ? NoteIcon.touch_hold_gage_miss : NoteIcon.touch_hold_gage;
+
+      // 多重TOUCH线
+      if (note.touchCount ?? 0 >= 1) {
+        drawRotationImage(ctx, imageTouchTwo, x - (imageTouchTwo.width * centerk) / 2, y - (imageTouchTwo.height * centerk) / 2, imageTouchTwo.width * centerk, imageTouchTwo.height * centerk);
+      }
+      if (note.touchCount === 2) {
+        drawRotationImage(
+          ctx,
+          imageTouchThree,
+          x - (imageTouchThree.width * centerk) / 2,
+          y - (imageTouchThree.height * centerk) / 2,
+          imageTouchThree.width * centerk,
+          imageTouchThree.height * centerk
+        );
+      }
 
       if (isShortHold) {
         for (let i = 0; i < 4; i++) {
@@ -715,9 +731,9 @@ export const drawNote = (
         break;
       case NoteType.TouchHold:
         if (props.isTouching || (!props.isTouching && props.tailRho <= 0)) {
-          drawTouchHoldImage(false, note.isShortHold);
+          drawTouchHoldImage(false, note.isShortHold, NoteIcon.touch_hold_two, NoteIcon.touch_hold_three);
         } else {
-          drawTouchHoldImage(true, note.isShortHold);
+          drawTouchHoldImage(true, note.isShortHold, NoteIcon.touch_hold_two, NoteIcon.touch_hold_three);
         }
         break;
       case NoteType.SlideTrack:

@@ -530,8 +530,9 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
     // 处理多TOUCH白线
     const currentTouch = beatT.noteIndexes
       .map((noteIndex) => {
-        if (notesRes[noteIndex].type === NoteType.Touch) {
-          return { index: noteIndex, pos: notesRes[noteIndex].pos };
+        if (notesRes[noteIndex].type === NoteType.Touch || notesRes[noteIndex].type === NoteType.TouchHold) {
+          // 下面pos後面还加了type是为了区分TouchHold和Touch，不然同样的位置Touch後面还接了TouchHold就会，嗯！
+          return { index: noteIndex, pos: notesRes[noteIndex].pos + notesRes[noteIndex].type.toString() };
         } else {
           return { index: -1, pos: '' };
         }
@@ -559,8 +560,8 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
     lastlastTouch = lastTouch;
     lastTouch = beatT.noteIndexes
       .map((noteIndex) => {
-        if (notesRes[noteIndex].type === NoteType.Touch) {
-          return { index: noteIndex, pos: notesRes[noteIndex].pos };
+        if (notesRes[noteIndex].type === NoteType.Touch || notesRes[noteIndex].type === NoteType.TouchHold) {
+          return { index: noteIndex, pos: notesRes[noteIndex].pos + notesRes[noteIndex].type.toString() };
         } else {
           return { index: -1, pos: '' };
         }
