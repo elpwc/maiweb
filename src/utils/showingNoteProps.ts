@@ -55,4 +55,7 @@ export interface ShowingNoteProps {
 
   /** 适用于WIFI, 各个判定区当前等待的下一个section index */
   currentSectionIndexWifi: [number, number, number];
+
+  /** 适用于人体蜈蚣，当前没画完的第一个Line */
+  currentLineIndex: number;
 }

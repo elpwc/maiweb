@@ -29,10 +29,15 @@ TOUCH GROUP√
 9-28:
 适配新语法
 
-1. SLIDE GROUP
-2. BREAK WIFI
-2.5. BREAK SLIDE TRACK
+1. SLIDE GROUP√
+2. BREAK WIFI√
+2.5. BREAK SLIDE TRACK√
 3. BREAK HOLD √
 4. 相应的判定
 
-Hanabi
+9.29:
+4. 相应的判定
+
+1. Hanabi
+2. 封装
+3. 外部UI

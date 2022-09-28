@@ -2,7 +2,7 @@ import { trackLength } from './_global';
 
 /** SLIDE TRACK分段 */
 export const section = (
-  type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V' | undefined,
+  type: string | undefined,
   startPos: string,
   endPosOri: string,
   turnPosOri?: string
@@ -26,7 +26,7 @@ export const section = (
 
 /** SLIDE TRACK分段(适用于A1) */
 const section_A1 = (
-  type: '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V' | undefined,
+  type: string | undefined,
   endPos: number,
   turnPos: number,
   startPos: number
