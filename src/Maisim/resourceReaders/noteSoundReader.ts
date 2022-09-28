@@ -51,5 +51,5 @@ export const initnotesounds = (onload: () => void) => {
   NoteSound.touchhold_great.src = touchhold_great_sound;
   NoteSound.touchhold_miss.src = touchhold_miss_sound;
   NoteSound.touchhold_perfect.src = touchhold_perfect_sound;
-onload();
+  onload();
 };

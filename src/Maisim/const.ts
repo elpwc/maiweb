@@ -27,6 +27,8 @@ export const trackItemGap: number = 25;
 export const trackItemWidth: number = maimaiTapR * 1.5;
 export const trackItemHeight: number = maimaiTapR * 2;
 
+// HOLD头部高度
+// 准确地说是头像顶端到头部中心点(?)的距离
 export const holdHeadHeight: number = 70;
 
 // 判定相关

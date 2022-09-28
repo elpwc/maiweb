@@ -48,12 +48,13 @@ import { NoteSound } from './resourceReaders/noteSoundReader';
 import testsong_taiyoukei from '../resource/sound/track/太陽系デスコ.mp3';
 
 const SongTrack = new Audio();
+SongTrack.volume = 0.1;
 SongTrack.src = testsong_taiyoukei;
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
-let tapMoveSpeed: number = 0.85;
-let tapEmergeSpeed: number = 0.2;
+let tapMoveSpeed: number = 0.85; // 0.85
+let tapEmergeSpeed: number = 0.2; // 0.2
 
 let speed: number = 10;
 

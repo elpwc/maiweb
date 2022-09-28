@@ -3,20 +3,12 @@
 // 这个文件是由 _codebuilder.py 自动生成的。
 
 import hold_icon from '../../resource/maimai_img/notes/hold.png';
-import hold_body_icon from '../../resource/maimai_img/notes/hold_body.png';
+import hold_break_icon from '../../resource/maimai_img/notes/hold_break.png';
 import hold_each_icon from '../../resource/maimai_img/notes/hold_each.png';
-import hold_each_body_icon from '../../resource/maimai_img/notes/hold_each_body.png';
-import hold_each_head_icon from '../../resource/maimai_img/notes/hold_each_head.png';
 import hold_ex_icon from '../../resource/maimai_img/notes/hold_ex.png';
-import hold_ex_body_icon from '../../resource/maimai_img/notes/hold_ex_body.png';
-import hold_ex_head_icon from '../../resource/maimai_img/notes/hold_ex_head.png';
-import hold_head_icon from '../../resource/maimai_img/notes/hold_head.png';
 import hold_miss_icon from '../../resource/maimai_img/notes/hold_miss.png';
-import short_hold_icon from '../../resource/maimai_img/notes/short_hold.png';
-import short_hold_each_icon from '../../resource/maimai_img/notes/short_hold_each.png';
-import short_hold_ex_icon from '../../resource/maimai_img/notes/short_hold_ex.png';
-import short_hold_miss_icon from '../../resource/maimai_img/notes/short_hold_miss.png';
 import slide_icon from '../../resource/maimai_img/notes/slide.png';
+import slide_break_icon from '../../resource/maimai_img/notes/slide_break.png';
 import slide_each_icon from '../../resource/maimai_img/notes/slide_each.png';
 import star_icon from '../../resource/maimai_img/notes/star.png';
 import star_break_icon from '../../resource/maimai_img/notes/star_break.png';
@@ -49,7 +41,6 @@ import touch_hold_two_icon from '../../resource/maimai_img/notes/touch_hold_two.
 import touch_just_icon from '../../resource/maimai_img/notes/touch_just.png';
 import touch_three_icon from '../../resource/maimai_img/notes/touch_three.png';
 import touch_two_icon from '../../resource/maimai_img/notes/touch_two.png';
-import wifi_icon from '../../resource/maimai_img/notes/wifi.png';
 import wifi_0_icon from '../../resource/maimai_img/notes/wifi_0.png';
 import wifi_1_icon from '../../resource/maimai_img/notes/wifi_1.png';
 import wifi_10_icon from '../../resource/maimai_img/notes/wifi_10.png';
@@ -72,7 +63,6 @@ import wifi_break_6_icon from '../../resource/maimai_img/notes/wifi_break_6.png'
 import wifi_break_7_icon from '../../resource/maimai_img/notes/wifi_break_7.png';
 import wifi_break_8_icon from '../../resource/maimai_img/notes/wifi_break_8.png';
 import wifi_break_9_icon from '../../resource/maimai_img/notes/wifi_break_9.png';
-import wifi_each_icon from '../../resource/maimai_img/notes/wifi_each.png';
 import wifi_each_0_icon from '../../resource/maimai_img/notes/wifi_each_0.png';
 import wifi_each_1_icon from '../../resource/maimai_img/notes/wifi_each_1.png';
 import wifi_each_10_icon from '../../resource/maimai_img/notes/wifi_each_10.png';
@@ -87,20 +77,12 @@ import wifi_each_9_icon from '../../resource/maimai_img/notes/wifi_each_9.png';
 
 export const NoteIcon = {
     hold: new Image(),
-    hold_body: new Image(),
+    hold_break: new Image(),
     hold_each: new Image(),
-    hold_each_body: new Image(),
-    hold_each_head: new Image(),
     hold_ex: new Image(),
-    hold_ex_body: new Image(),
-    hold_ex_head: new Image(),
-    hold_head: new Image(),
     hold_miss: new Image(),
-    short_hold: new Image(),
-    short_hold_each: new Image(),
-    short_hold_ex: new Image(),
-    short_hold_miss: new Image(),
     slide: new Image(),
+    slide_break: new Image(),
     slide_each: new Image(),
     star: new Image(),
     star_break: new Image(),
@@ -133,7 +115,6 @@ export const NoteIcon = {
     touch_just: new Image(),
     touch_three: new Image(),
     touch_two: new Image(),
-    wifi: new Image(),
     wifi_0: new Image(),
     wifi_1: new Image(),
     wifi_10: new Image(),
@@ -156,7 +137,6 @@ export const NoteIcon = {
     wifi_break_7: new Image(),
     wifi_break_8: new Image(),
     wifi_break_9: new Image(),
-    wifi_each: new Image(),
     wifi_each_0: new Image(),
     wifi_each_1: new Image(),
     wifi_each_10: new Image(),
@@ -171,38 +151,22 @@ export const NoteIcon = {
 };
 
 export const initnotesicons = (onload: () => void) => {
-  const amount = 82;
+  const amount = 72;
   let loaded = 0;
   NoteIcon.hold.src = hold_icon;
   NoteIcon.hold.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.hold_body.src = hold_body_icon;
-  NoteIcon.hold_body.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.hold_break.src = hold_break_icon;
+  NoteIcon.hold_break.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.hold_each.src = hold_each_icon;
   NoteIcon.hold_each.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.hold_each_body.src = hold_each_body_icon;
-  NoteIcon.hold_each_body.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.hold_each_head.src = hold_each_head_icon;
-  NoteIcon.hold_each_head.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.hold_ex.src = hold_ex_icon;
   NoteIcon.hold_ex.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.hold_ex_body.src = hold_ex_body_icon;
-  NoteIcon.hold_ex_body.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.hold_ex_head.src = hold_ex_head_icon;
-  NoteIcon.hold_ex_head.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.hold_head.src = hold_head_icon;
-  NoteIcon.hold_head.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.hold_miss.src = hold_miss_icon;
   NoteIcon.hold_miss.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.short_hold.src = short_hold_icon;
-  NoteIcon.short_hold.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.short_hold_each.src = short_hold_each_icon;
-  NoteIcon.short_hold_each.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.short_hold_ex.src = short_hold_ex_icon;
-  NoteIcon.short_hold_ex.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.short_hold_miss.src = short_hold_miss_icon;
-  NoteIcon.short_hold_miss.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.slide.src = slide_icon;
   NoteIcon.slide.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.slide_break.src = slide_break_icon;
+  NoteIcon.slide_break.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.slide_each.src = slide_each_icon;
   NoteIcon.slide_each.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.star.src = star_icon;
@@ -267,8 +231,6 @@ export const initnotesicons = (onload: () => void) => {
   NoteIcon.touch_three.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.touch_two.src = touch_two_icon;
   NoteIcon.touch_two.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.wifi.src = wifi_icon;
-  NoteIcon.wifi.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.wifi_0.src = wifi_0_icon;
   NoteIcon.wifi_0.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.wifi_1.src = wifi_1_icon;
@@ -313,8 +275,6 @@ export const initnotesicons = (onload: () => void) => {
   NoteIcon.wifi_break_8.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.wifi_break_9.src = wifi_break_9_icon;
   NoteIcon.wifi_break_9.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.wifi_each.src = wifi_each_icon;
-  NoteIcon.wifi_each.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.wifi_each_0.src = wifi_each_0_icon;
   NoteIcon.wifi_each_0.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.wifi_each_1.src = wifi_each_1_icon;
