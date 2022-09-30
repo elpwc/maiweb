@@ -49,6 +49,9 @@ export interface Note {
 	/** 顺序 (实际好像没用过？) */
 	index: number;
 
+	/** 唯一标识符（因为数组在排序後会乱掉 */
+	serial: number;
+
 	isBreak?: boolean;
 	isEx?: boolean;
 	isFirework?: boolean;
@@ -67,7 +70,7 @@ export interface Note {
 	// 适用于HOLD,TOUCH HOLD, SLIDE不适用
 	isShortHold?: boolean;
 
-	// HOLD延时的节拍
+	// HOLD延时的节拍 ([]里的内容)
 	notevalue?: number;
 	notenumber?: number;
 
@@ -145,4 +148,7 @@ export interface Note {
 
 	/** 是否在touch group */
 	inTouchGroup?: boolean;
+
+	/** 对应的firework触发Note serial索引(是Note接口中的serial)（有的话 */
+	fireworkTriggerIndex?: number;
 }

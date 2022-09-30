@@ -1,6 +1,7 @@
 import { abs } from '../../math';
 import { Note, Beat, SlideTrack } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
+import { fireworkLength } from '../const';
 // 仅仅用来计算分段数量
 import { section } from '../slideTracks/section';
 import { analyse_note_original_data } from './noteStrAnalyser';
@@ -71,6 +72,8 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 	/** 上一拍所有TOUCH的位置，用来处理多TOUCH白线 */
 	let lastlastTouch: { index: number; pos: string }[] = [];
 	let lastTouch: { index: number; pos: string }[] = [];
+
+	let serial: number = 0;
 
 	//处理所有
 	allNotes.forEach((noteGroup: string[], index) => {
@@ -150,7 +153,9 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 				// 处理好的res加入Notes列表
 				// 并分离掉？！SLIDE的头
 				if (!(res.isNoTapSlide || res.isNoTapNoTameTimeSlide)) {
+					res.serial = serial;
 					notesRes.push(res);
+					serial++;
 					beatT.noteIndexes.push(notesRes.length - 1);
 				}
 
@@ -159,6 +164,7 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 					res.slideTracks?.forEach((slideTrack: SlideTrack) => {
 						const tempSlideTrackNote: Note = {
 							index: res.index,
+							serial,
 							pos: res.pos,
 							type: NoteType.SlideTrack,
 							beatIndex: -1,
@@ -185,7 +191,29 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 						};
 
 						notesRes.push(tempSlideTrackNote);
+						serial++;
 					});
+				}
+
+				if (res.isFirework) {
+					const tempFirework: Note = {
+						index: res.index,
+						serial,
+						pos: res.pos,
+						type: NoteType.FireWork,
+						beatIndex: -1,
+						partnotevalue: res.partnotevalue,
+						bpm: res.bpm,
+						emergeTime: -1, // 在index读入时根据触发Touch的emergeTime初始化
+						time: res.time + (res.type === NoteType.TouchHold ? res.remainTime! : 0) + fireworkLength,
+						remainTime: 0, // 在index读入时根据触发Touch的emergeTime初始化
+						fireworkTriggerIndex: res.serial,
+					};
+
+					notesRes[notesRes.length - 1].fireworkTriggerIndex = serial;
+
+					notesRes.push(tempFirework);
+					serial++;
 				}
 			}
 		});

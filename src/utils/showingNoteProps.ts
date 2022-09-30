@@ -2,60 +2,65 @@ import { JudgeStatus, JudgeTimeStatus } from './judgeStatus';
 
 /** 当前绘制的Note，包含各类实时变化量 */
 export interface ShowingNoteProps {
-  /** 所在的Beat的index */
-  beatIndex: number;
-  /** 在所有Notes中的index */
-  noteIndex: number;
+	/** 所在的Beat的index */
+	beatIndex: number;
+	/** 在所有Notes中的index */
+	noteIndex: number;
 
-  /**
-   * TAP:
-   * -2: stop at judge line but doesn't appear -1: die 0: emerge 1:move
-   * HOLD:
-   * -2: stop at judge line but doesn't appear -1: die 0: emerge 1: grow 2: move 3: disappear 4: fill(充满 长度暂时不改变)
-   * SLIDE TRACK:
-   * -2: stop at judge line but doesn't appear -1: die 0: emerge 1: hangup 2: move
-   */
-  status: number;
-  radius: number;
-  // 位置
-  rho: number;
-  // 仅适用于SLIDE TRACK，GUIDE STAR半径
-  guideStarRadius?: number;
+	/**
+	 * TAP:
+	 * -2: stop at judge line but doesn't appear -1: die 0: emerge 1:move
+	 * HOLD:
+	 * -2: stop at judge line but doesn't appear -1: die 0: emerge 1: grow 2: move 3: disappear 4: fill(充满 长度暂时不改变)
+	 * SLIDE TRACK:
+	 * -2: stop at judge line but doesn't appear -1: die 0: emerge 1: hangup 2: move
+	 * FIREWORK:
+	 * -1: die 0: wait for trig 1: change
+	 */
+	status: number;
+	radius: number;
+	// 位置
+	rho: number;
+	// 仅适用于SLIDE TRACK，GUIDE STAR半径
+	guideStarRadius?: number;
 
-  // 从生成到消亡的不间断变化量
-  timer: number;
+	// 从生成到消亡的不间断变化量
+	timer: number;
 
-  tailRho: number;
-  placeTime: number;
+	tailRho: number;
+	placeTime: number;
 
-  isEach: boolean;
+	isEach: boolean;
 
-  // 判定相关
-  /** 是否已经被按过 */
-  touched: boolean;
-  /** 是否正在被按着 */
-  isTouching: boolean;
-  /** 按下时的时间 HOLD */
-  touchedTime?: number;
-  // 实时判定显示相关
-  /** 判定结果 */
-  judgeStatus: JudgeStatus;
-  /** 判定前後 */
-  judgeTime: JudgeTimeStatus;
-  /** BREAK结果细分 */
-  judgeLevel: number;
+	// 判定相关
+	/** 是否已经被按过 */
+	touched: boolean;
+	/** 是否正在被按着 */
+	isTouching: boolean;
+	/** 按下时的时间 HOLD */
+	touchedTime?: number;
+	// 实时判定显示相关
+	/** 判定结果 */
+	judgeStatus: JudgeStatus;
+	/** 判定前後 */
+	judgeTime: JudgeTimeStatus;
+	/** BREAK结果细分 */
+	judgeLevel: number;
 
-  /** 适用于HOLD, SLIDE HOLD 被按下的总时间 */
-  holdingTime: number;
+	/** 适用于HOLD, SLIDE HOLD 被按下的总时间 */
+	holdingTime: number;
 
-  /** 适用于SLIDE TRACK, 当前等待的下一个section index */
-  currentSectionIndex: number;
-  /** 适用于SLIDE TRACK, 当前GOOD是否是TOO FAST GOOD */
-  tooFast?: boolean;
+	/** 适用于SLIDE TRACK, 当前等待的下一个section index */
+	currentSectionIndex: number;
+	/** 适用于SLIDE TRACK, 当前GOOD是否是TOO FAST GOOD */
+	tooFast?: boolean;
 
-  /** 适用于WIFI, 各个判定区当前等待的下一个section index */
-  currentSectionIndexWifi: [number, number, number];
+	/** 适用于WIFI, 各个判定区当前等待的下一个section index */
+	currentSectionIndexWifi: [number, number, number];
 
-  /** 适用于人体蜈蚣，当前没画完的第一个Line */
-  currentLineIndex: number;
+	/** 适用于人体蜈蚣，当前没画完的第一个Line */
+	currentLineIndex: number;
+
+	/** firework是否已经被触发了 */
+	fireworkTrigged?: boolean;
 }

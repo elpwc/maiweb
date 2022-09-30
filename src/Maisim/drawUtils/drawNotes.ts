@@ -15,6 +15,7 @@ import {
 	canvasWidth,
 	maimaiADTouchR,
 	maimaiJudgeLineR,
+	fireworkInnerCircleR,
 } from '../const';
 import { getTrackProps } from '../slideTracks/tracks';
 import { APositions, trackLength } from '../slideTracks/_global';
@@ -43,8 +44,8 @@ export const drawNote = (
 	isEach: boolean = false,
 	props: ShowingNoteProps,
 	effect: boolean = true,
-	effectBackCtx?: CanvasRenderingContext2D,
-	effectOverCtx?: CanvasRenderingContext2D
+	effectBackCtx: CanvasRenderingContext2D,
+	effectOverCtx: CanvasRenderingContext2D
 ) => {
 	if (/* hidden状态 (-2) 不显示 只等待判定 */ props.status !== -2) {
 		let θ = 0,
@@ -71,7 +72,7 @@ export const drawNote = (
 					break;
 				case 'A':
 					θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-					if (note.type === NoteType.Touch) {
+					if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
 						x = center[0] + maimaiADTouchR * Math.cos(θ);
 						y = center[1] + maimaiADTouchR * Math.sin(θ);
 					} else {
@@ -86,7 +87,7 @@ export const drawNote = (
 					break;
 				case 'D':
 					θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-					if (note.type === NoteType.Touch) {
+					if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
 						x = center[0] + maimaiADTouchR * Math.cos(θ);
 						y = center[1] + maimaiADTouchR * Math.sin(θ);
 					} else {
@@ -518,7 +519,11 @@ export const drawNote = (
 								ctx_slideTrack.translate(center[0], center[1]);
 								ctx_slideTrack.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
 								// 得从後往前画
-								for (let i = slideLine.remainTime!; i >= sectionInfo![j === props.currentLineIndex ? props.currentSectionIndex : 0].start * slideLine.remainTime!; i -= trackItemGapTime) {
+								for (
+									let i = slideLine.remainTime!;
+									i >= sectionInfo![j === props.currentLineIndex ? props.currentSectionIndex : 0].start * slideLine.remainTime!;
+									i -= trackItemGapTime
+								) {
 									const slideData = getTrackProps(
 										slideLine.slideType!,
 										Number(slideLine.pos),
@@ -580,7 +585,7 @@ export const drawNote = (
 								ctx.restore();
 							}
 						} else {
-              // WIFI 人体蜈蚣（会有吗（
+							// WIFI 人体蜈蚣（会有吗（
 							if (
 								/*如果沒有全部画完（-1表示最後一段也画了）*/ props.currentSectionIndexWifi[0] === -1 &&
 								props.currentSectionIndexWifi[1] === -1 &&
@@ -589,13 +594,13 @@ export const drawNote = (
 							} else {
 								/** 目前Wifi中最小的还没画完的index, 也决定了要画的组的数量 (0 最多，6 最少)*/
 								let min = 6;
-                if(props.currentLineIndex === j){
-                  props.currentSectionIndexWifi.forEach((w) => {
-                    if (w !== -1 && w <= min) min = w;
-                  });
-                }else{
-                  min = 0;
-                }
+								if (props.currentLineIndex === j) {
+									props.currentSectionIndexWifi.forEach((w) => {
+										if (w !== -1 && w <= min) min = w;
+									});
+								} else {
+									min = 0;
+								}
 
 								// WIFI TRACK
 
@@ -908,6 +913,65 @@ export const drawNote = (
 			}
 		};
 
+		const drawFirework = () => {
+			const alphaMaxK = 0.5;
+			/** 烟花特效颜色变换的次数 */
+			const fireworkChangeTimes = 5;
+			// 烟花四散
+			drawRotationImage(
+				effectBackCtx,
+				EffectIcon.Firework,
+				x - maimaiScreenR,
+				y - maimaiScreenR,
+				maimaiScreenR * 2,
+				maimaiScreenR * 2,
+				x,
+				y,
+				45 * props.rho + (360 / 15) * Math.floor(props.rho * fireworkChangeTimes),
+				// alpha = x<k ? x/k : (1-x)/(1-k)
+				props.rho < alphaMaxK ? props.rho / alphaMaxK : (1 - props.rho) / (1 - alphaMaxK)
+			);
+			// 中央亮区
+			drawRotationImage(
+				effectBackCtx,
+				EffectIcon.FireworkInnerCircle,
+				x - fireworkInnerCircleR / 0.7,
+				y - fireworkInnerCircleR / 0.7,
+				(fireworkInnerCircleR * 2) / 0.7,
+				(fireworkInnerCircleR * 2) / 0.7,
+				x,
+				y,
+				0,
+				1 - props.rho
+			);
+			// 第二亮区
+			drawRotationImage(
+				effectBackCtx,
+				EffectIcon.FireworkInnerCircle,
+				x - maimaiSummonLineR * 2 * props.rho ** 0.1,
+				y - maimaiSummonLineR * 2 * props.rho ** 0.1,
+				maimaiSummonLineR * 2 * 2 * props.rho ** 0.1,
+				maimaiSummonLineR * 2 * 2 * props.rho ** 0.1,
+				x,
+				y,
+				0,
+				1 - props.rho ** 0.5
+			);
+			// 中心闪烁
+			drawRotationImage(
+				effectBackCtx,
+				EffectIcon.FireworkCenter,
+				x - fireworkInnerCircleR / 0.7,
+				y - fireworkInnerCircleR / 0.7,
+				(fireworkInnerCircleR * 2) / 0.7,
+				(fireworkInnerCircleR * 2) / 0.7,
+				x,
+				y,
+				0,
+				1
+			);
+		};
+
 		switch (note.type) {
 			case NoteType.Tap:
 				if (isEach) {
@@ -1065,6 +1129,11 @@ export const drawNote = (
 							NoteIcon.wifi_10,
 						]);
 					}
+				}
+				break;
+			case NoteType.FireWork:
+				if (props.fireworkTrigged) {
+					drawFirework();
 				}
 				break;
 			case NoteType.EndMark:

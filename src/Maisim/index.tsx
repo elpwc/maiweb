@@ -18,6 +18,7 @@ import {
 	trackItemGap,
 	judgeLineRemainTimeTap,
 	judgeLineRemainTimeTouch,
+	fireworkLength,
 } from './const';
 import { ReadMaimaiData } from './maiReader/maiReaderMain';
 
@@ -69,6 +70,23 @@ let keyStates: KeyState[] = [];
 
 /** 提前绘制了的时间 */
 let advancedTime = 0;
+
+export const fireworkTrigger = (triggerNote: Note) => {
+	// @ts-ignore
+	NoteSound.firework.cloneNode().play();
+	const fireworkNote = currentSheet.notes?.findIndex((n) => {
+		return n.serial !== triggerNote.serial && n.fireworkTriggerIndex === triggerNote.serial;
+	});
+	if (fireworkNote !== -1) {
+		const fireworkNoteProps = showingNotes.findIndex((n) => {
+			return n.noteIndex === fireworkNote;
+		});
+		console.log(fireworkNoteProps, showingNotes[fireworkNoteProps]);
+		if (fireworkNoteProps !== -1) {
+			showingNotes[fireworkNoteProps].fireworkTrigged = true;
+		}
+	}
+};
 
 const drawBackground = () => {
 	const el: HTMLCanvasElement = document.getElementsByClassName('canvasMain')[0] as HTMLCanvasElement;
@@ -162,6 +180,17 @@ const calculate_emerge_move_time_of_notes = (notesOri: Note[]) => {
 			notes[i].moveTime = note.time - note.remainTime!;
 			notes[i].emergeTime = note.time - note.remainTime! - note.stopTime! - emergingTime;
 			notes[i].guideStarEmergeTime = note.time - note.remainTime! - note.stopTime!;
+		} else if (note.type === NoteType.FireWork) {
+			const trigger = currentSheet.notes.find((n) => {
+				return n.serial === note.fireworkTriggerIndex;
+			});
+			if (trigger) {
+				notes[i].emergeTime = trigger.emergeTime;
+				// 开始描画时间
+				notes[i].moveTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime! : 0);
+				// 整体存续时间
+				notes[i].remainTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime! : 0) - trigger.emergeTime! + fireworkLength;
+			}
 		} else {
 			const emergingTime = maimaiTapR / ((tapEmergeSpeed * speed) / timerPeriod);
 			const movingTime = (maimaiJudgeLineR - maimaiSummonLineR) / ((tapMoveSpeed * speed) / timerPeriod);
@@ -520,10 +549,29 @@ const reader_and_updater = async () => {
 				}
 				newNote.timer++;
 				break;
+			/////////////////////////////// FIREWORK ///////////////////////////////
+			case NoteType.FireWork:
+				if (newNote.status === 0) {
+					// wait for trigging
+
+					if (currentTime >= noteIns.moveTime!) {
+						newNote.status = 1;
+					}
+				} else if (newNote.status === 1) {
+					// change
+
+					newNote.rho = (currentTime - noteIns.moveTime!) / fireworkLength;
+					if (currentTime >= noteIns.time) {
+						newNote.status = -1;
+					}
+				}
+				newNote.timer++;
+				break;
+			/////////////////////////////// default ///////////////////////////////
 			default:
 				if (newNote.status === 0) {
 					// emerge
-					newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
+					newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.time! - noteIns.emergeTime!)) * maimaiTapR;
 
 					if (currentTime >= noteIns.moveTime!) {
 						newNote.status = 1;
@@ -608,8 +656,11 @@ const reader_and_updater = async () => {
 					}
 				}
 
-				updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+				updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
 			}
+			return note.status !== -1;
+		} else {
+			// FIREWORK
 			return note.status !== -1;
 		}
 	});

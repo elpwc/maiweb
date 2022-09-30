@@ -22,6 +22,10 @@ export const maimaiADTouchR = maimaiJudgeLineR * 0.875;
 // 帧
 export const timerPeriod: number = 16.6666666666667;
 
+/** Firework持续时长 */
+export const fireworkLength: number = 1000;
+export const fireworkInnerCircleR: number = maimaiJudgeLineR * 0.4138;
+
 // 轨迹
 export const trackItemGap: number = 25;
 export const trackItemWidth: number = maimaiTapR * 1.5;

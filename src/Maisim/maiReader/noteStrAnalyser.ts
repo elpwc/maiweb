@@ -8,6 +8,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
 	//console.log(noteDataOri, index);
 	let noteRes: Note = {
 		index,
+		serial: -1,
 		pos: '',
 		slideTracks: [],
 		type: NoteType.Empty,

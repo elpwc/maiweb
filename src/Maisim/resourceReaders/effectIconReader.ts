@@ -11,6 +11,8 @@ import EachLine2_icon from '../../resource/maimai_img/effect/EachLine2.png';
 import EachLine3_icon from '../../resource/maimai_img/effect/EachLine3.png';
 import EachLine4_icon from '../../resource/maimai_img/effect/EachLine4.png';
 import Firework_icon from '../../resource/maimai_img/effect/Firework.png';
+import FireworkCenter_icon from '../../resource/maimai_img/effect/FireworkCenter.png';
+import FireworkInnerCircle_icon from '../../resource/maimai_img/effect/FireworkInnerCircle.png';
 import Firework_new_icon from '../../resource/maimai_img/effect/Firework_new.png';
 import Hex_icon from '../../resource/maimai_img/effect/Hex.png';
 import Just_curv_icon from '../../resource/maimai_img/effect/Just_curv.png';
@@ -42,6 +44,8 @@ export const EffectIcon = {
     EachLine3: new Image(),
     EachLine4: new Image(),
     Firework: new Image(),
+    FireworkCenter: new Image(),
+    FireworkInnerCircle: new Image(),
     Firework_new: new Image(),
     Hex: new Image(),
     Just_curv: new Image(),
@@ -65,7 +69,7 @@ export const EffectIcon = {
 };
 
 export const initeffecticons = (onload: () => void) => {
-  const amount = 29;
+  const amount = 31;
   let loaded = 0;
   EffectIcon.baseline_unfold_more_black_24dp.src = baseline_unfold_more_black_24dp_icon;
   EffectIcon.baseline_unfold_more_black_24dp.onload = () => { loaded++; if (loaded >= amount) onload(); }
@@ -85,6 +89,10 @@ export const initeffecticons = (onload: () => void) => {
   EffectIcon.EachLine4.onload = () => { loaded++; if (loaded >= amount) onload(); }
   EffectIcon.Firework.src = Firework_icon;
   EffectIcon.Firework.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.FireworkCenter.src = FireworkCenter_icon;
+  EffectIcon.FireworkCenter.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.FireworkInnerCircle.src = FireworkInnerCircle_icon;
+  EffectIcon.FireworkInnerCircle.onload = () => { loaded++; if (loaded >= amount) onload(); }
   EffectIcon.Firework_new.src = Firework_new_icon;
   EffectIcon.Firework_new.onload = () => { loaded++; if (loaded >= amount) onload(); }
   EffectIcon.Hex.src = Hex_icon;
