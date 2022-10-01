@@ -8,7 +8,16 @@ import { NoteSound } from './resourceReaders/noteSoundReader';
 
 const dx_score = [3, 2, 1, 0, 0];
 
-export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluation: number, exEvaluation: number, soundOnly: boolean = false) => {
+const touchHoldSounds: { sound: HTMLAudioElement; serial: number }[] = [];
+
+export const updateRecord = (
+	note: Note,
+	props: ShowingNoteProps,
+	basicEvaluation: number,
+	exEvaluation: number,
+	soundOnly: boolean = false,
+	soundControl: boolean = true /* true: play, false: pause */
+) => {
 	// combo 计算
 	if (props.judgeStatus !== JudgeStatus.Miss) {
 		gameRecord.combo++;
@@ -469,27 +478,62 @@ export const updateRecord = (note: Note, props: ShowingNoteProps, basicEvaluatio
 		case NoteType.TouchHold:
 			if (soundOnly) {
 				//NORMAL TAP
-				switch (props.judgeStatus) {
-					case JudgeStatus.CriticalPerfect:
-						// @ts-ignore
-						NoteSound.touchhold_perfect.cloneNode().play();
-						break;
-					case JudgeStatus.Perfect:
-						// @ts-ignore
-						NoteSound.touchhold_perfect.cloneNode().play();
-						break;
-					case JudgeStatus.Great:
-						// @ts-ignore
-						NoteSound.touchhold_great.cloneNode().play();
-						break;
-					case JudgeStatus.Good:
-						// @ts-ignore
-						NoteSound.touchhold_good.cloneNode().play();
-						break;
-					case JudgeStatus.Miss:
-						// @ts-ignore
-						NoteSound.touchhold_miss.cloneNode().play();
-						break;
+				if (!note.isShortHold) {
+					const touchHoldSoundIndex = touchHoldSounds.findIndex((s) => {
+						return s.serial === note.serial;
+					});
+          console.log(touchHoldSounds,touchHoldSoundIndex)
+					switch (props.judgeStatus) {
+						case JudgeStatus.CriticalPerfect:
+						case JudgeStatus.Perfect:
+							if (touchHoldSoundIndex !== -1) {
+								if (soundControl) {
+									touchHoldSounds[touchHoldSoundIndex].sound.play();
+								} else {
+									touchHoldSounds[touchHoldSoundIndex].sound.pause();
+								}
+							} else {
+								touchHoldSounds.push({ sound: NoteSound.touchhold_perfect.cloneNode() as HTMLAudioElement, serial: note.serial });
+								touchHoldSounds[touchHoldSounds.length - 1].sound.play();
+							}
+							break;
+						case JudgeStatus.Great:
+							if (touchHoldSoundIndex !== -1) {
+								if (soundControl) {
+									touchHoldSounds[touchHoldSoundIndex].sound.play();
+								} else {
+									touchHoldSounds[touchHoldSoundIndex].sound.pause();
+								}
+							} else {
+								touchHoldSounds.push({ sound: NoteSound.touchhold_great.cloneNode() as HTMLAudioElement, serial: note.serial });
+								touchHoldSounds[touchHoldSounds.length - 1].sound.play();
+							}
+							break;
+						case JudgeStatus.Good:
+							if (touchHoldSoundIndex !== -1) {
+								if (soundControl) {
+									touchHoldSounds[touchHoldSoundIndex].sound.play();
+								} else {
+									touchHoldSounds[touchHoldSoundIndex].sound.pause();
+								}
+							} else {
+								touchHoldSounds.push({ sound: NoteSound.touchhold_good.cloneNode() as HTMLAudioElement, serial: note.serial });
+								touchHoldSounds[touchHoldSounds.length - 1].sound.play();
+							}
+							break;
+						case JudgeStatus.Miss:
+							if (touchHoldSoundIndex !== -1) {
+								if (soundControl) {
+									touchHoldSounds[touchHoldSoundIndex].sound.play();
+								} else {
+									touchHoldSounds[touchHoldSoundIndex].sound.pause();
+								}
+							} else {
+								touchHoldSounds.push({ sound: NoteSound.touchhold_miss.cloneNode() as HTMLAudioElement, serial: note.serial });
+								touchHoldSounds[touchHoldSounds.length - 1].sound.play();
+							}
+							break;
+					}
 				}
 			} else {
 				//NORMAL TAP

@@ -203,17 +203,17 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 						showingNotes[i].judgeStatus = JudgeStatus.Good;
 					} else {
 					}
-
-					// 按压声音
-					if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-						updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true);
-					}
 				}
 
 				if (timeD < -timerPeriod * 15 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
 					// HOLD体
 					showingNotes[i].touchedTime = currentTime;
 					showingNotes[i].isTouching = true;
+				}
+
+				// 按压声音
+				if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
+					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, true);
 				}
 			}
 		} else if (noteIns.type === NoteType.SlideTrack) {

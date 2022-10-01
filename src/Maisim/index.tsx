@@ -373,12 +373,6 @@ const reader_and_updater = async () => {
 					newNote.tailRho = ((currentTime - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
 
 					if (currentTime >= noteIns.time! + noteIns.remainTime!) {
-						newNote.status = -2;
-					}
-				} else if (newNote.status === -2) {
-					// stop
-
-					if (currentTime >= noteIns.time! + (noteIns.remainTime! ?? 0) + judgeLineRemainTimeTouch) {
 						newNote.status = -1;
 					}
 				}
@@ -794,6 +788,11 @@ const onPressUp = (area: TouchArea) => {
 						// 设置标志位
 						showingNotes[i].isTouching = false;
 						showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
+
+						// 暂停按压声音
+						if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
+							updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
+						}
 					}
 				}
 				break;
