@@ -105,6 +105,11 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
 		// TOUCH (except C)
 		noteRes.type = NoteType.Touch;
 		noteRes.pos = noteData;
+
+		// C1 C2
+		if (noteRes.pos === 'C1' || noteRes.pos === 'C2') {
+			noteRes.pos = 'C';
+		}
 	}
 
 	if (noteData.indexOf('[') !== -1) {
