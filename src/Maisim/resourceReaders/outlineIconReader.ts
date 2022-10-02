@@ -2,19 +2,32 @@
 // これは _codebuilder.py で自動的に生成したファイルです。
 // 这个文件是由 _codebuilder.py 自动生成的。
 
-import outline_icon from '../../resource/maimai_img/outline/outline.png';
+import Outline_00_icon from '../../resource/maimai_img/outline/Outline_00.png';
+import Outline_01_icon from '../../resource/maimai_img/outline/Outline_01.png';
+import Outline_02_icon from '../../resource/maimai_img/outline/Outline_02.png';
 import Outline_03_icon from '../../resource/maimai_img/outline/Outline_03.png';
+import Outline_04_icon from '../../resource/maimai_img/outline/Outline_04.png';
+import Outline_05_icon from '../../resource/maimai_img/outline/Outline_05.png';
+import Outline_06_icon from '../../resource/maimai_img/outline/Outline_06.png';
+import Outline_07_icon from '../../resource/maimai_img/outline/Outline_07.png';
+import Outline_08_icon from '../../resource/maimai_img/outline/Outline_08.png';
+import Outline_09_icon from '../../resource/maimai_img/outline/Outline_09.png';
+import Outline_10_icon from '../../resource/maimai_img/outline/Outline_10.png';
+import Outline_11_icon from '../../resource/maimai_img/outline/Outline_11.png';
+import Outline_12_icon from '../../resource/maimai_img/outline/Outline_12.png';
 
 export const OutlineIcon = {
-    outline: new Image(),
-    Outline_03: new Image(),
-};
-
-export const initoutlineicons = (onload: () => void) => {
-  const amount = 2;
-  let loaded = 0;
-  OutlineIcon.outline.src = outline_icon;
-  OutlineIcon.outline.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  OutlineIcon.Outline_03.src = Outline_03_icon;
-  OutlineIcon.Outline_03.onload = () => { loaded++; if (loaded >= amount) onload(); }
+    Outline_00: Outline_00_icon,
+    Outline_01: Outline_01_icon,
+    Outline_02: Outline_02_icon,
+    Outline_03: Outline_03_icon,
+    Outline_04: Outline_04_icon,
+    Outline_05: Outline_05_icon,
+    Outline_06: Outline_06_icon,
+    Outline_07: Outline_07_icon,
+    Outline_08: Outline_08_icon,
+    Outline_09: Outline_09_icon,
+    Outline_10: Outline_10_icon,
+    Outline_11: Outline_11_icon,
+    Outline_12: Outline_12_icon,
 };

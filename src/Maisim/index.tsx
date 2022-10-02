@@ -48,6 +48,7 @@ import { judge } from './judge';
 import { updateRecord } from './recordUpdater';
 import { NoteSound } from './resourceReaders/noteSoundReader';
 import testsong_taiyoukei from '../resource/sound/track/太陽系デスコ.mp3';
+import testbgi from '../resource/maimai_img/ui/UI_Chara_105810.png';
 import { JudgeLineStyle, RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
 
 const SongTrack = new Audio();
@@ -88,36 +89,6 @@ export const fireworkTrigger = (triggerNote: Note) => {
 			showingNotes[fireworkNoteProps].fireworkTrigged = true;
 		}
 	}
-};
-
-const drawBackground = () => {
-	const el: HTMLCanvasElement = document.getElementsByClassName('canvasMain')[0] as HTMLCanvasElement;
-	const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
-
-	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-	ctx.beginPath();
-	ctx.arc(center[0], center[1], maimaiScreenR, 0, 2 * Math.PI);
-	ctx.fillStyle = '#000';
-	ctx.fill();
-	ctx.strokeStyle = 'gray';
-	ctx.stroke();
-
-	const k = 1.02;
-
-	ctx.drawImage(OutlineIcon.Outline_03, center[0] - maimaiJudgeLineR * k, center[1] - maimaiJudgeLineR * k, maimaiJudgeLineR * k * 2, maimaiJudgeLineR * k * 2);
-
-	// 判定区的线
-	// areas.forEach((area: Area) => {
-	//   if (area.type !== 'C') {
-	//     ctx.beginPath();
-	//     area.points.forEach((p: [number, number], i) => {
-	//       ctx.lineTo(p[0], p[1]);
-	//     });
-	//     ctx.lineTo(area.points[0][0], area.points[0][1]);
-	//     ctx.strokeStyle = 'red';
-	//     ctx.stroke();
-	//   }
-	// });
 };
 
 const drawKeys = () => {
@@ -831,6 +802,21 @@ const onMouseDown = (e: Event) => {
 		});
 	}
 
+	const testdiv = document.getElementsByClassName('uiContainer')[0];
+
+	// @ts-ignore
+	imitateClick(testdiv, e.clientX, e.clientY);
+
+	// @ts-ignore
+	console.log(testdiv, e.clientX, e.clientY);
+
+	function imitateClick(oElement: Element, iClientX: number, iClientY: number) {
+		var oEvent;
+		oEvent = document.createEvent('MouseEvents');
+		oEvent.initMouseEvent('click', true, true, window, 0, 0, 0, iClientX, iClientY, false, false, false, false, 0, null);
+		oElement.dispatchEvent(oEvent);
+	}
+
 	//console.log(currentTouchingArea);
 };
 const onMouseUp = (e: Event) => {
@@ -1023,12 +1009,23 @@ interface Props {
 
 	gameState: GameState;
 	setGameState: (gameState: GameState) => void;
+	/** 谱 */
 	sheet: string;
 	onGameStart: () => void;
 	onGameRecordChange: (gameRecord: object) => void;
 	onGameFinish: () => void;
 
+	/** 是否显示UI */
+	showUIContent: boolean;
+
+	/** UI */
 	uiContent: JSX.Element;
+
+	/** 屏幕/按钮点击事件 */
+	onClick: (area: Area) => void;
+
+	/** 按钮灯光控制 */
+	lightStatus: string[];
 }
 
 let currentTapStyle: TapStyles = TapStyles.Concise;
@@ -1051,7 +1048,6 @@ export default (props: Props) => {
 				initAreas();
 				initEvent();
 
-				drawBackground();
 				drawOver();
 				timer2 = setInterval(drawKeys, timerPeriod);
 
@@ -1073,7 +1069,6 @@ export default (props: Props) => {
 		setTimeout(() => {
 			initAreas();
 			updateVarAfterSizeChanged();
-			drawBackground();
 			drawOver();
 		}, 50);
 	}, [props.w, props.h]);
@@ -1087,10 +1082,50 @@ export default (props: Props) => {
 		updateIcons(currentTapStyle, currentHoldStyle, currentSlideStyle, currentSlideColor);
 	}, [props.tapStyle, props.holdStyle, props.slideColor, props.slideStyle]);
 
+	const judgeLineK = 0.88;
+
 	return (
 		<div className="maisim">
 			<div className="canvasContainer">
-				<canvas className="canvasMain" height={canvasH} width={canvasW} />
+				<div className="bottomContainer" style={{ height: canvasH, width: canvasW }}>
+					{/** 背景图 */}
+					<img
+						alt="background"
+						className="bottomItem bgi"
+						src={testbgi}
+						style={{
+							top: maimaiR - maimaiJudgeLineR / judgeLineK,
+							left: maimaiR - maimaiJudgeLineR / judgeLineK,
+							height: (maimaiJudgeLineR / judgeLineK) * 2,
+							width: (maimaiJudgeLineR / judgeLineK) * 2,
+						}}
+					/>
+					{/** bga */}
+					<video
+						className="bottomItem bga"
+						src=""
+						style={{
+							top: maimaiR - maimaiJudgeLineR / judgeLineK,
+							left: maimaiR - maimaiJudgeLineR / judgeLineK,
+							height: (maimaiJudgeLineR / judgeLineK) * 2,
+							width: (maimaiJudgeLineR / judgeLineK) * 2,
+						}}
+					/>
+					{/** 半透明遮罩 */}
+					<div className="bottomItem transperantDiv" style={{ height: canvasH, width: canvasW, opacity: 0.7 }}></div>
+					{/** 判定线 */}
+					<img
+						alt="judgeline"
+						className="bottomItem judgeLine"
+						src={OutlineIcon.Outline_10}
+						style={{
+							top: maimaiR - maimaiJudgeLineR / judgeLineK,
+							left: maimaiR - maimaiJudgeLineR / judgeLineK,
+							height: (maimaiJudgeLineR / judgeLineK) * 2,
+							width: (maimaiJudgeLineR / judgeLineK) * 2,
+						}}
+					/>
+				</div>
 
 				<canvas className="canvasEffectBack" height={canvasH} width={canvasW} />
 				<canvas className="canvasSlideTrack" height={canvasH} width={canvasW} />
@@ -1098,7 +1133,7 @@ export default (props: Props) => {
 				<canvas className="canvasEffectOver" height={canvasH} width={canvasW} />
 
 				<div className="uiContainer" style={{ height: canvasH, width: canvasW }}>
-					{props.uiContent}
+					{props.showUIContent ? <>{props.uiContent}</> : <></>}
 				</div>
 
 				<canvas className="canvasOver" height={canvasH} width={canvasW} />
@@ -1128,13 +1163,7 @@ export default (props: Props) => {
 				>
 					{props.gameState === GameState.Play ? 'stop' : 'start'}
 				</button>
-				<button
-					onClick={() => {
-						drawBackground();
-					}}
-				>
-					read
-				</button>
+				<button onClick={() => {}}>read</button>
 			</div>
 		</div>
 	);

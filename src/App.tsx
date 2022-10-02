@@ -3,6 +3,7 @@ import './App.css';
 import { GameState } from './utils/gamestate';
 import Maisim from './Maisim';
 import { RegularStyles, SlideColor, TapStyles } from './utils/noteStyles';
+import { Area } from './Maisim/areas';
 
 function App() {
 	const [gameState, setGameState] = useState(GameState.Standby);
@@ -31,7 +32,7 @@ function App() {
 				tapStyle={TapStyles.Concise}
 				holdStyle={RegularStyles.Concise}
 				slideStyle={RegularStyles.Concise}
-				slideColor={SlideColor.Pink}
+				slideColor={SlideColor.Blue}
 				judgeLineStyle={0}
 				showEffect={true}
 				autoMode={true}
@@ -40,16 +41,23 @@ function App() {
 				sheet={''}
 				upDownMirror={false}
 				leftRightMirror={false}
-				onGameStart={function (): void {
-					throw new Error('Function not implemented.');
-				}}
-				onGameRecordChange={function (gameRecord: object): void {
-					throw new Error('Function not implemented.');
-				}}
-				onGameFinish={function (): void {
-					throw new Error('Function not implemented.');
-				}}
-				uiContent={<div><p>114514</p><button>123</button></div>}
+				onGameStart={function (): void {}}
+				onGameRecordChange={function (gameRecord: object): void {}}
+				onGameFinish={function (): void {}}
+				uiContent={
+					<div
+						style={{ left: '300px', top: '200px', position: 'fixed', color: 'white' }}
+						onClick={(e) => {
+							console.log(e);
+						}}
+					>
+						<p>114514</p>
+						<button>123</button>
+					</div>
+				}
+				showUIContent={false}
+				onClick={function (area: Area): void {}}
+        lightStatus = {[]}
 			/>
 		</div>
 	);

@@ -30,20 +30,9 @@ def outlineIcons():
     # object
     fo.write('export const OutlineIcon = {\n')
     for name in iconNames:
-        fo.write("    " + name + ": new Image(),\n")
+        fo.write("    " + name + ": "+name + "_icon,\n")
     fo.write("};\n")
 
-    fo.write('\n')
-
-    # init
-    fo.write('export const initoutlineicons = (onload: () => void) => {\n')
-    fo.write("  const amount = " + str(len(iconNames)) + ";\n")
-    fo.write("  let loaded = 0;\n")
-    for name in iconNames:
-        fo.write("  OutlineIcon." + name + ".src = " + name + "_icon;\n")
-        fo.write("  OutlineIcon." + name +
-                 ".onload = () => { loaded++; if (loaded >= amount) onload(); }\n")
-    fo.write("};\n")
     fo.close()
 
 

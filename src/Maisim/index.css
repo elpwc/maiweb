@@ -1,69 +1,76 @@
-.canvasContainer {
-}
-
-canvas {
-	border: solid 1px black;
-}
-
-.canvasMain {
+.canvasContainer canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
+}
+
+.canvasContainer div {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+canvas {
+	/*border: solid 1px black;*/
+}
+
+.bottomContainer .bottomItem {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.bottomContainer {
+	z-index: -100;
+	background-color: black;
+}
+
+.bottomContainer .bgi {
+	z-index: -90;
+}
+.bottomContainer .bga {
+	z-index: -80;
+}
+.bottomContainer .transperantDiv {
+	z-index: -70;
+  background-color: black;
+}
+.bottomContainer .judgeLine {
+	z-index: -60;
+}
+
+.canvasMain {
 	z-index: 0;
 }
 
 .canvasEffectBack {
-	position: absolute;
-	top: 0;
-	left: 0;
 	z-index: 5;
 }
 
 .canvasSlideTrack {
-	position: absolute;
-	top: 0;
-	left: 0;
 	z-index: 10;
 }
 
 .canvasNotes {
-	position: absolute;
-	top: 0;
-	left: 0;
 	z-index: 20;
 }
 
 .canvasEffectOver {
-	position: absolute;
-	top: 0;
-	left: 0;
 	z-index: 25;
 }
 
 .uiContainer {
-	position: absolute;
-	top: 0;
-	left: 0;
 	z-index: 28;
 }
 
 .canvasOver {
-	position: absolute;
-	top: 0;
-	left: 0;
 	z-index: 30;
 }
 
 .canvasKeys {
-	position: absolute;
-	top: 0;
-	left: 0;
 	z-index: 40;
 }
 
 .canvasEvent {
-	position: absolute;
-	top: 0;
-	left: 0;
 	z-index: 114513;
 }
