@@ -205,7 +205,7 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 						partnotevalue: res.partnotevalue,
 						bpm: res.bpm,
 						emergeTime: -1, // 在index读入时根据触发Touch的emergeTime初始化
-						time: res.time + (res.type === NoteType.TouchHold ? res.remainTime! : 0) + fireworkLength,
+						time: res.time + (res.type === NoteType.TouchHold ? res.remainTime ?? 0 : 0) + fireworkLength,
 						remainTime: 0, // 在index读入时根据触发Touch的emergeTime初始化
 						fireworkTriggerIndex: res.serial,
 					};

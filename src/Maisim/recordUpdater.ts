@@ -8,6 +8,7 @@ import { NoteSound } from './resourceReaders/noteSoundReader';
 
 const dx_score = [3, 2, 1, 0, 0];
 
+/** 控制TOUCH HOLD的储能音效开关 */
 const touchHoldSounds: { sound: HTMLAudioElement; serial: number }[] = [];
 
 export const updateRecord = (

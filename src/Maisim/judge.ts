@@ -97,12 +97,16 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 					} else {
 					}
 
-					// 按压声音
-					if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-						updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true);
+					if (noteIns.isShortHold) {
+						//SHORT的话就直接判定了喵
+						updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+					} else {
+						// 按压声音
+						if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
+							updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true);
+						}
 					}
 				}
-				console.log(timeD, timerPeriod * 6, noteIns.remainTime! - 12 * timerPeriod);
 				if (timeD < -timerPeriod * 6 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
 					// HOLD体
 					console.log(timeD);
@@ -205,15 +209,18 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 					}
 				}
 
+				if (noteIns.isShortHold) {
+					//SHORT的话就直接判定了喵
+					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+				} else {
+					// 按压声音
+					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, true);
+				}
+
 				if (timeD < -timerPeriod * 15 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
 					// HOLD体
 					showingNotes[i].touchedTime = currentTime;
 					showingNotes[i].isTouching = true;
-				}
-
-				// 按压声音
-				if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, true);
 				}
 			}
 		} else if (noteIns.type === NoteType.SlideTrack) {

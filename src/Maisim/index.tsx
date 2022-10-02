@@ -187,9 +187,9 @@ const calculate_emerge_move_time_of_notes = (notesOri: Note[]) => {
 			if (trigger) {
 				notes[i].emergeTime = trigger.emergeTime;
 				// 开始描画时间
-				notes[i].moveTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime! : 0);
+				notes[i].moveTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime ?? 0 : 0);
 				// 整体存续时间
-				notes[i].remainTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime! : 0) - trigger.emergeTime! + fireworkLength;
+				notes[i].remainTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime ?? 0 : 0) - trigger.emergeTime! + fireworkLength;
 			}
 		} else {
 			const emergingTime = maimaiTapR / ((tapEmergeSpeed * speed) / timerPeriod);
@@ -792,12 +792,10 @@ const onPressUp = (area: TouchArea) => {
 						// 设置标志位
 						showingNotes[i].isTouching = false;
 						showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
-
-						// 暂停按压声音
-						if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-							updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
-						}
 					}
+
+					// 暂停按压声音
+					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
 				}
 				break;
 		}
