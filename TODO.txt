@@ -45,7 +45,7 @@ TOUCH GROUP√
 
 10.1:
 5. 优化Hanabi的图像【不急】
-6. SHORT TOUCH HOLD接触时 外框【简单】
+6. SHORT TOUCH HOLD接触时 外框【简单】【算了】x
 6.5. TOUCH HOLD松开时停止声音√
 6.6. SHORT TOUCH HOLD FIREWORK不显示草【急】√
 7. 应对C1 C2後接f的写法【急急急】√
@@ -53,3 +53,4 @@ TOUCH GROUP√
 9. 图片分步载入【重要】
 10. 判定反馈effect
 11. 速度放慢後判定不能对齐
+12. TOUCH HOLD Miss判定下结束後播放声音【急】

@@ -1,35 +1,63 @@
 import { π } from '../math';
 
-export const canvasWidth = 800;
-export const canvasHeight = 800;
+export let canvasWidth = 800;
+export let canvasHeight = 800;
+export const setCanvasSize = (w: number, h: number) => {
+	canvasWidth = w;
+	canvasHeight = h;
+	center = [canvasWidth / 2, canvasHeight / 2];
+	maimaiR = canvasWidth / 2;
+	maimaiScreenR = maimaiR * 0.78;
+	maimaiJudgeLineR = maimaiScreenR * 0.885;
+	maimaiSummonLineR = maimaiScreenR * 0.22;
+	maimaiTapR = (maimaiScreenR / 9) * 0.8;
+	maimaiBR = maimaiScreenR * 0.418;
+	maimaiER = maimaiScreenR * 0.574;
+	touchMaxDistance = maimaiTapR * 0.8;
 
-export const center = [canvasWidth / 2, canvasHeight / 2];
+	maimaiADTouchR = maimaiJudgeLineR * 0.875;
+
+	fireworkInnerCircleR = maimaiJudgeLineR * 0.4138;
+
+	trackItemGap = (25 * maimaiR) / 350;
+	trackItemWidth = maimaiTapR * 1.5;
+	trackItemHeight = maimaiTapR * 2;
+
+	keyOuterR = maimaiR;
+	keyInnerR = maimaiR * 0.8;
+	keyPressOffset = maimaiR * 0.02;
+	keySideDotR = maimaiR * 0.005;
+
+	keySideDotRtoCenter = (maimaiR + maimaiScreenR) / 2;
+};
+
+export let center = [canvasWidth / 2, canvasHeight / 2];
 
 // 屏幕
-export const maimaiR = 350;
-export const maimaiScreenR = maimaiR * 0.78;
-export const maimaiJudgeLineR = maimaiScreenR * 0.885;
-export const maimaiSummonLineR = maimaiScreenR * 0.22;
-export const maimaiTapR = (maimaiScreenR / 9) * 0.8;
-export const maimaiBR = maimaiScreenR * 0.418;
-export const maimaiER = maimaiScreenR * 0.574;
+export let maimaiR = canvasWidth / 2;
+export let maimaiScreenR = maimaiR * 0.78;
+export let maimaiJudgeLineR = maimaiScreenR * 0.885;
+export let maimaiSummonLineR = maimaiScreenR * 0.22;
+export let maimaiTapR = (maimaiScreenR / 9) * 0.8;
+export let maimaiBR = maimaiScreenR * 0.418;
+export let maimaiER = maimaiScreenR * 0.574;
 
-export const touchMaxDistance = maimaiTapR * 0.8;
+export let touchMaxDistance = maimaiTapR * 0.8;
 
 /** AD区的TOUCH的位置 */
-export const maimaiADTouchR = maimaiJudgeLineR * 0.875;
+export let maimaiADTouchR = maimaiJudgeLineR * 0.875;
 
 // 帧
 export const timerPeriod: number = 16.6666666666667;
 
 /** Firework持续时长 */
 export const fireworkLength: number = 1000;
-export const fireworkInnerCircleR: number = maimaiJudgeLineR * 0.4138;
+export let fireworkInnerCircleR: number = maimaiJudgeLineR * 0.4138;
 
 // 轨迹
-export const trackItemGap: number = 25;
-export const trackItemWidth: number = maimaiTapR * 1.5;
-export const trackItemHeight: number = maimaiTapR * 2;
+export let trackItemGap: number = (25 * maimaiR) / 350;
+export let trackItemWidth: number = maimaiTapR * 1.5;
+export let trackItemHeight: number = maimaiTapR * 2;
 
 // HOLD头部高度
 // 准确地说是头像顶端到头部中心点(?)的距离
@@ -43,15 +71,15 @@ export const judgeLineRemainTimeTouch: number = timerPeriod * 18;
 
 // 外键
 export const keyWidth: number = 1 / 20;
-export const keyOuterR: number = maimaiR;
-export const keyInnerR: number = maimaiR * 0.8;
-export const keyPressOffset: number = maimaiR * 0.02;
+export let keyOuterR: number = maimaiR;
+export let keyInnerR: number = maimaiR * 0.8;
+export let keyPressOffset: number = maimaiR * 0.02;
 export const keySideLineDistance: number = (keyWidth / 8) * π;
 /** 螺丝孔与按钮侧面的差度 */
 export const keySideDotDistance: number = ((keyWidth * 2) / 5) * π;
 /** 螺丝孔半径 */
-export const keySideDotR: number = maimaiR * 0.005;
+export let keySideDotR: number = maimaiR * 0.005;
 /** 螺丝孔距离屏幕中心距离 */
-export const keySideDotRtoCenter: number = (maimaiR + maimaiScreenR) / 2;
+export let keySideDotRtoCenter: number = (maimaiR + maimaiScreenR) / 2;
 /** 灯占高度比 */
 export const keyLightWidth: number = 0.2;

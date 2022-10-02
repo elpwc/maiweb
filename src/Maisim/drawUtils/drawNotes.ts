@@ -16,6 +16,8 @@ import {
 	maimaiADTouchR,
 	maimaiJudgeLineR,
 	fireworkInnerCircleR,
+	canvasHeight,
+	maimaiR,
 } from '../const';
 import { getTrackProps } from '../slideTracks/tracks';
 import { APositions, trackLength } from '../slideTracks/_global';
@@ -25,6 +27,130 @@ import { Note } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
 import { section } from '../slideTracks/section';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
+import { RegularStyles, SlideColor, TapStyles } from '../../utils/noteStyles';
+
+let tapIcon: HTMLImageElement;
+let tapEachIcon: HTMLImageElement;
+let tapBreakIcon: HTMLImageElement;
+let tapExIcon: HTMLImageElement;
+
+let holdIcon: HTMLImageElement;
+let holdEachIcon: HTMLImageElement;
+let holdBreakIcon: HTMLImageElement;
+let holdExIcon: HTMLImageElement;
+let holdMissIcon: HTMLImageElement;
+
+let starIcon: HTMLImageElement;
+let starEachIcon: HTMLImageElement;
+let starBreakIcon: HTMLImageElement;
+let starExIcon: HTMLImageElement;
+
+let starDoubleIcon: HTMLImageElement;
+let starDoubleEachIcon: HTMLImageElement;
+let starDoubleBreakIcon: HTMLImageElement;
+let starDoubleExIcon: HTMLImageElement;
+
+let slideIcon: HTMLImageElement;
+let slideEachIcon: HTMLImageElement;
+let slideBreakIcon: HTMLImageElement;
+
+export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slideStyle: RegularStyles, slideColor: SlideColor) => {
+	switch (tapStyle) {
+		case TapStyles.Concise:
+			tapIcon = NoteIcon.Tap_00;
+			tapEachIcon = NoteIcon.Tap_Each_00;
+			tapBreakIcon = NoteIcon.Break_00;
+			tapExIcon = NoteIcon.Tap_Ex_00;
+			break;
+		case TapStyles.Classic:
+			tapIcon = NoteIcon.Tap_01;
+			tapEachIcon = NoteIcon.Tap_Each_01;
+			tapBreakIcon = NoteIcon.Break_01;
+			tapExIcon = NoteIcon.Tap_Ex_01;
+			break;
+		case TapStyles.DX:
+			tapIcon = NoteIcon.Tap_02;
+			tapEachIcon = NoteIcon.Tap_Each_02;
+			tapBreakIcon = NoteIcon.Break_02;
+			tapExIcon = NoteIcon.Tap_Ex_02;
+			break;
+		case TapStyles.Strip:
+			tapIcon = NoteIcon.Tap_03;
+			tapEachIcon = NoteIcon.Tap_Each_03;
+			tapBreakIcon = NoteIcon.Break_03;
+			tapExIcon = NoteIcon.Tap_Ex_03;
+			break;
+		case TapStyles.TAPKun:
+			tapIcon = NoteIcon.Tap_04;
+			tapEachIcon = NoteIcon.Tap_Each_04;
+			tapBreakIcon = NoteIcon.Break_04;
+			tapExIcon = NoteIcon.Tap_Ex_04;
+			break;
+	}
+
+	switch (holdStyle) {
+		case RegularStyles.Concise:
+			holdIcon = NoteIcon.Hold_00;
+			holdEachIcon = NoteIcon.Hold_Each_00;
+			holdBreakIcon = NoteIcon.Hold_Break_00;
+			holdExIcon = NoteIcon.Hold_Ex_00;
+			holdMissIcon = NoteIcon.Miss_00;
+			break;
+		case RegularStyles.Classic:
+			holdIcon = NoteIcon.Hold_01;
+			holdEachIcon = NoteIcon.Hold_Each_01;
+			holdBreakIcon = NoteIcon.Hold_Break_01;
+			holdExIcon = NoteIcon.Hold_Ex_01;
+			holdMissIcon = NoteIcon.Miss_01;
+			break;
+	}
+
+	switch (slideStyle) {
+		case RegularStyles.Concise:
+			slideIcon = NoteIcon.Slide_00;
+			slideEachIcon = NoteIcon.Slide_Each_00;
+			slideBreakIcon = NoteIcon.Slide_Break_00;
+			starBreakIcon = NoteIcon.BreakStar_00;
+			starDoubleBreakIcon = NoteIcon.BreakStar_Double_00;
+			starDoubleExIcon = NoteIcon.Star_Ex_00;
+			starExIcon = NoteIcon.Star_Ex_00;
+			starEachIcon = NoteIcon.Star_Each_00;
+			starDoubleEachIcon = NoteIcon.Star_Each_00;
+			switch (slideColor) {
+				case SlideColor.Blue:
+					starIcon = NoteIcon.Star_00;
+					starDoubleIcon = NoteIcon.Star_00;
+					break;
+				case SlideColor.Pink:
+					starIcon = NoteIcon.Star_Pink_00;
+					starDoubleIcon = NoteIcon.Star_Pink_Double_00;
+					break;
+			}
+
+			break;
+		case RegularStyles.Classic:
+			slideIcon = NoteIcon.Slide_01;
+			slideEachIcon = NoteIcon.Slide_Each_01;
+			slideBreakIcon = NoteIcon.Slide_Break_01;
+			starDoubleBreakIcon = NoteIcon.BreakStar_Double_01;
+			starDoubleExIcon = NoteIcon.Star_Ex_01;
+			starExIcon = NoteIcon.Star_Ex_01;
+			starEachIcon = NoteIcon.Star_Each_01;
+			starDoubleEachIcon = NoteIcon.Star_Each_01;
+			switch (slideColor) {
+				case SlideColor.Blue:
+					starIcon = NoteIcon.Star_01;
+					starDoubleIcon = NoteIcon.Star_Double_01;
+					break;
+				case SlideColor.Pink:
+					starIcon = NoteIcon.Star_Pink_01;
+					starDoubleIcon = NoteIcon.Star_Pink_Double_01;
+					break;
+			}
+
+			break;
+	}
+};
 
 /**
  * 绘制一个Note
@@ -45,7 +171,11 @@ export const drawNote = (
 	props: ShowingNoteProps,
 	effect: boolean = true,
 	effectBackCtx: CanvasRenderingContext2D,
-	effectOverCtx: CanvasRenderingContext2D
+	effectOverCtx: CanvasRenderingContext2D,
+	tapStyle: TapStyles,
+	holdStyle: RegularStyles,
+	slideStyle: RegularStyles,
+	slideColor: SlideColor
 ) => {
 	if (/* hidden状态 (-2) 不显示 只等待判定 */ props.status !== -2) {
 		let θ = 0,
@@ -116,7 +246,10 @@ export const drawNote = (
 		// ctx.beginPath();
 		// ctx.arc(x, y, maimaiTapR, 0, 2 * Math.PI);
 
-		let k = 0.8;
+		/** tapR修正 */
+		let k = 0.542;
+		/** holdR修正 */
+		let kh = 0.8;
 		/** effect circle */
 		let k2 = 0.89;
 		/** effect back line */
@@ -239,10 +372,10 @@ export const drawNote = (
 				drawRotationImage(
 					ctx,
 					image,
-					x - props.radius / k,
-					y - (props.radius * 1.1547) / k,
-					(props.radius * 2) / k,
-					(props.radius * 1.1547) / k,
+					x - props.radius / kh,
+					y - (props.radius * 1.1547) / kh,
+					(props.radius * 2) / kh,
+					(props.radius * 1.1547) / kh,
 					centerx,
 					centery,
 					-22.5 + Number(note.pos) * 45,
@@ -255,10 +388,10 @@ export const drawNote = (
 				drawRotationImage(
 					ctx,
 					image,
-					x - props.radius / k,
-					y - (props.radius * 1.1547) / k,
-					(props.radius * 2) / k,
-					(props.radius * 1.1547) / k,
+					x - props.radius / kh,
+					y - (props.radius * 1.1547) / kh,
+					(props.radius * 2) / kh,
+					(props.radius * 1.1547) / kh,
 					centerx,
 					centery,
 					157.5 + Number(note.pos) * 45,
@@ -273,10 +406,10 @@ export const drawNote = (
 				drawRotationImage(
 					ctx,
 					image,
-					x - props.radius / k,
-					y - (props.radius * 1.1547) / k,
-					(props.radius * 2) / k,
-					(props.radius * 1.1547) / k,
+					x - props.radius / kh,
+					y - (props.radius * 1.1547) / kh,
+					(props.radius * 2) / kh,
+					(props.radius * 1.1547) / kh,
 					centerx,
 					centery,
 					-22.5 + Number(note.pos) * 45,
@@ -289,9 +422,9 @@ export const drawNote = (
 				drawRotationImage(
 					ctx,
 					image,
-					x - props.radius / k,
+					x - props.radius / kh,
 					y,
-					(props.radius * 2) / k,
+					(props.radius * 2) / kh,
 					props.rho - props.tailRho,
 					centerx,
 					centery,
@@ -305,10 +438,10 @@ export const drawNote = (
 				drawRotationImage(
 					ctx,
 					image,
-					tx - props.radius / k,
-					ty - (props.radius * 1.1547) / k,
-					(props.radius * 2) / k,
-					(props.radius * 1.1547) / k,
+					tx - props.radius / kh,
+					ty - (props.radius * 1.1547) / kh,
+					(props.radius * 2) / kh,
+					(props.radius * 1.1547) / kh,
 					tx,
 					ty,
 					157.5 + Number(note.pos) * 45,
@@ -324,8 +457,8 @@ export const drawNote = (
 		const drawTouchImage = (image: HTMLImageElement, imageCenter: HTMLImageElement, imageTouchTwo: HTMLImageElement, imageTouchThree: HTMLImageElement) => {
 			const centerx = x,
 				centery = y;
-			const k = 0.5,
-				centerk = 0.6;
+			let k = (0.5 * maimaiR) / 350,
+				centerk = (0.6 * maimaiR) / 350;
 
 			// 多重TOUCH线
 			if (note.touchCount ?? 0 >= 1) {
@@ -343,17 +476,31 @@ export const drawNote = (
 			}
 
 			for (let i = 0; i < 4; i++) {
-				drawRotationImage(ctx, image, x - (image.width * k) / 2, y + touchMaxDistance - 6 - props.rho, image.width * k, image.height * k, x, y, 90 * i, props.radius / maimaiTapR);
+				drawRotationImage(
+					ctx,
+					image,
+					x - (image.width * k) / 2,
+					y + touchMaxDistance - (6 * maimaiR) / 350 - props.rho,
+					image.width * k,
+					image.height * k,
+					x,
+					y,
+					90 * i,
+					props.radius / maimaiTapR
+				);
 			}
 			drawRotationImage(ctx, imageCenter, x - (imageCenter.width * centerk) / 2, y - (imageCenter.height * centerk) / 2, imageCenter.width * centerk, imageCenter.height * centerk);
+			// if (props.touched) {
+			// 	drawRotationImage(ctx, NoteIcon.touch_just, x - (NoteIcon.touch_just.width ) / 2, y - (NoteIcon.touch_just.height ) / 2, NoteIcon.touch_just.width , NoteIcon.touch_just.height );
+			// }
 		};
 
 		const drawTouchHoldImage = (is_miss: boolean, isShortHold: boolean = false, imageTouchTwo: HTMLImageElement, imageTouchThree: HTMLImageElement) => {
 			const centerx = x,
 				centery = y;
 
-			const k = 0.5,
-				centerk = 0.6;
+			let k = (0.5 * maimaiR) / 350,
+				centerk = (0.6 * maimaiR) / 350;
 
 			const touchHoldPieces = is_miss
 				? [NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss]
@@ -382,7 +529,7 @@ export const drawNote = (
 						ctx,
 						touchHoldPieces[i],
 						x - (touchHoldPieces[i].width * k) / 2,
-						y + touchMaxDistance - 6 - props.rho,
+						y + touchMaxDistance - (6 * maimaiR) / 350 - props.rho,
 						touchHoldPieces[i].width * k,
 						touchHoldPieces[i].height * k,
 						x,
@@ -406,7 +553,7 @@ export const drawNote = (
 							ctx,
 							touchHoldPieces[i],
 							x - (touchHoldPieces[i].width * k) / 2,
-							y + touchMaxDistance - 6 - props.rho,
+							y + touchMaxDistance - (6 * maimaiR) / 350 - props.rho,
 							touchHoldPieces[i].width * k,
 							touchHoldPieces[i].height * k,
 							x,
@@ -429,7 +576,7 @@ export const drawNote = (
 							ctx,
 							touchHoldPieces[i],
 							x - (touchHoldPieces[i].width * k) / 2,
-							y + touchMaxDistance - 6 - props.rho,
+							y + touchMaxDistance - (6 * maimaiR) / 350 - props.rho,
 							touchHoldPieces[i].width * k,
 							touchHoldPieces[i].height * k,
 							x,
@@ -976,42 +1123,42 @@ export const drawNote = (
 			case NoteType.Tap:
 				if (isEach) {
 					if (note.isBreak) {
-						drawTapImage(NoteIcon.tap_break);
+						drawTapImage(tapBreakIcon);
 					} else {
-						drawTapImage(NoteIcon.tap_each);
+						drawTapImage(tapEachIcon);
 					}
 				} else {
 					if (note.isBreak) {
-						drawTapImage(NoteIcon.tap_break);
+						drawTapImage(tapBreakIcon);
 					} else {
-						drawTapImage(NoteIcon.tap);
+						drawTapImage(tapIcon);
 					}
 				}
 				if (note.isEx) {
-					drawTapImage(NoteIcon.tap_ex);
+					drawTapImage(tapExIcon);
 				}
 				break;
 			case NoteType.Hold:
 				if (props.isTouching || (!props.isTouching && props.rho < maimaiJudgeLineR - maimaiSummonLineR)) {
 					if (isEach) {
 						if (note.isBreak) {
-							drawHoldImage(NoteIcon.hold_break, note.isShortHold);
+							drawHoldImage(holdBreakIcon, note.isShortHold);
 						} else {
-							drawHoldImage(NoteIcon.hold_each, note.isShortHold);
+							drawHoldImage(holdEachIcon, note.isShortHold);
 						}
 					} else {
 						if (note.isBreak) {
-							drawHoldImage(NoteIcon.hold_break, note.isShortHold);
+							drawHoldImage(holdBreakIcon, note.isShortHold);
 						} else {
-							drawHoldImage(NoteIcon.hold, note.isShortHold);
+							drawHoldImage(holdIcon, note.isShortHold);
 						}
 					}
 				} else {
-					drawHoldImage(NoteIcon.hold_miss, note.isShortHold);
+					drawHoldImage(holdMissIcon, note.isShortHold);
 				}
 
 				if (note.isEx) {
-					drawHoldImage(NoteIcon.hold_ex, note.isShortHold);
+					drawHoldImage(holdExIcon, note.isShortHold);
 				}
 				break;
 			case NoteType.Slide:
@@ -1020,37 +1167,37 @@ export const drawNote = (
 					// DOUBLE TRACK
 					if (isEach) {
 						if (note.isBreak) {
-							drawTapImage(NoteIcon.star_break_double);
+							drawTapImage(starDoubleBreakIcon);
 						} else {
-							drawTapImage(NoteIcon.star_each_double);
+							drawTapImage(starDoubleEachIcon);
 						}
 					} else {
 						if (note.isBreak) {
-							drawSlideTapImage(NoteIcon.star_break_double);
+							drawSlideTapImage(starDoubleBreakIcon);
 						} else {
-							drawSlideTapImage(NoteIcon.star_double);
+							drawSlideTapImage(starDoubleIcon);
 						}
 					}
 					if (note.isEx) {
-						drawSlideTapImage(NoteIcon.star_ex_double);
+						drawSlideTapImage(starDoubleExIcon);
 					}
 				} else {
 					// SINGLE
 					if (isEach) {
 						if (note.isBreak) {
-							drawSlideTapImage(NoteIcon.star_break);
+							drawSlideTapImage(starBreakIcon);
 						} else {
-							drawSlideTapImage(NoteIcon.star_each);
+							drawSlideTapImage(starEachIcon);
 						}
 					} else {
 						if (note.isBreak) {
-							drawSlideTapImage(NoteIcon.star_break);
+							drawSlideTapImage(starBreakIcon);
 						} else {
-							drawSlideTapImage(NoteIcon.star);
+							drawSlideTapImage(starIcon);
 						}
 					}
 					if (note.isEx) {
-						drawSlideTapImage(NoteIcon.star_ex);
+						drawSlideTapImage(starExIcon);
 					}
 				}
 				break;
@@ -1071,7 +1218,7 @@ export const drawNote = (
 			case NoteType.SlideTrack:
 				if (isEach) {
 					if (note.isBreak) {
-						drawSlideTrackImage(NoteIcon.slide_break, NoteIcon.star_break, [
+						drawSlideTrackImage(slideBreakIcon, starBreakIcon, [
 							NoteIcon.wifi_break_0,
 							NoteIcon.wifi_break_1,
 							NoteIcon.wifi_break_2,
@@ -1085,7 +1232,7 @@ export const drawNote = (
 							NoteIcon.wifi_break_10,
 						]);
 					} else {
-						drawSlideTrackImage(NoteIcon.slide_each, NoteIcon.star_each, [
+						drawSlideTrackImage(slideEachIcon, starEachIcon, [
 							NoteIcon.wifi_each_0,
 							NoteIcon.wifi_each_1,
 							NoteIcon.wifi_each_2,
@@ -1101,7 +1248,7 @@ export const drawNote = (
 					}
 				} else {
 					if (note.isBreak) {
-						drawSlideTrackImage(NoteIcon.slide_break, NoteIcon.star_break, [
+						drawSlideTrackImage(slideBreakIcon, starBreakIcon, [
 							NoteIcon.wifi_break_0,
 							NoteIcon.wifi_break_1,
 							NoteIcon.wifi_break_2,
@@ -1115,7 +1262,7 @@ export const drawNote = (
 							NoteIcon.wifi_break_10,
 						]);
 					} else {
-						drawSlideTrackImage(NoteIcon.slide, NoteIcon.star, [
+						drawSlideTrackImage(slideIcon, starIcon, [
 							NoteIcon.wifi_0,
 							NoteIcon.wifi_1,
 							NoteIcon.wifi_2,

@@ -2,26 +2,62 @@
 // これは _codebuilder.py で自動的に生成したファイルです。
 // 这个文件是由 _codebuilder.py 自动生成的。
 
-import hold_icon from '../../resource/maimai_img/notes/hold.png';
-import hold_break_icon from '../../resource/maimai_img/notes/hold_break.png';
-import hold_each_icon from '../../resource/maimai_img/notes/hold_each.png';
-import hold_ex_icon from '../../resource/maimai_img/notes/hold_ex.png';
-import hold_miss_icon from '../../resource/maimai_img/notes/hold_miss.png';
-import slide_icon from '../../resource/maimai_img/notes/slide.png';
-import slide_break_icon from '../../resource/maimai_img/notes/slide_break.png';
-import slide_each_icon from '../../resource/maimai_img/notes/slide_each.png';
-import star_icon from '../../resource/maimai_img/notes/star.png';
-import star_break_icon from '../../resource/maimai_img/notes/star_break.png';
-import star_break_double_icon from '../../resource/maimai_img/notes/star_break_double.png';
-import star_double_icon from '../../resource/maimai_img/notes/star_double.png';
-import star_each_icon from '../../resource/maimai_img/notes/star_each.png';
-import star_each_double_icon from '../../resource/maimai_img/notes/star_each_double.png';
-import star_ex_icon from '../../resource/maimai_img/notes/star_ex.png';
-import star_ex_double_icon from '../../resource/maimai_img/notes/star_ex_double.png';
-import tap_icon from '../../resource/maimai_img/notes/tap.png';
-import tap_break_icon from '../../resource/maimai_img/notes/tap_break.png';
-import tap_each_icon from '../../resource/maimai_img/notes/tap_each.png';
-import tap_ex_icon from '../../resource/maimai_img/notes/tap_ex.png';
+import BreakStar_00_icon from '../../resource/maimai_img/notes/BreakStar_00.png';
+import BreakStar_01_icon from '../../resource/maimai_img/notes/BreakStar_01.png';
+import BreakStar_Double_00_icon from '../../resource/maimai_img/notes/BreakStar_Double_00.png';
+import BreakStar_Double_01_icon from '../../resource/maimai_img/notes/BreakStar_Double_01.png';
+import Break_00_icon from '../../resource/maimai_img/notes/Break_00.png';
+import Break_01_icon from '../../resource/maimai_img/notes/Break_01.png';
+import Break_02_icon from '../../resource/maimai_img/notes/Break_02.png';
+import Break_03_icon from '../../resource/maimai_img/notes/Break_03.png';
+import Break_04_icon from '../../resource/maimai_img/notes/Break_04.png';
+import Hold_00_icon from '../../resource/maimai_img/notes/Hold_00.png';
+import Hold_01_icon from '../../resource/maimai_img/notes/Hold_01.png';
+import Hold_Break_00_icon from '../../resource/maimai_img/notes/Hold_Break_00.png';
+import Hold_Break_01_icon from '../../resource/maimai_img/notes/Hold_Break_01.png';
+import Hold_Each_00_icon from '../../resource/maimai_img/notes/Hold_Each_00.png';
+import Hold_Each_01_icon from '../../resource/maimai_img/notes/Hold_Each_01.png';
+import Hold_Ex_00_icon from '../../resource/maimai_img/notes/Hold_Ex_00.png';
+import Hold_Ex_01_icon from '../../resource/maimai_img/notes/Hold_Ex_01.png';
+import Miss_00_icon from '../../resource/maimai_img/notes/Miss_00.png';
+import Miss_01_icon from '../../resource/maimai_img/notes/Miss_01.png';
+import Slide_00_icon from '../../resource/maimai_img/notes/Slide_00.png';
+import Slide_01_icon from '../../resource/maimai_img/notes/Slide_01.png';
+import Slide_Break_00_icon from '../../resource/maimai_img/notes/Slide_Break_00.png';
+import Slide_Break_01_icon from '../../resource/maimai_img/notes/Slide_Break_01.png';
+import Slide_Each_00_icon from '../../resource/maimai_img/notes/Slide_Each_00.png';
+import Slide_Each_01_icon from '../../resource/maimai_img/notes/Slide_Each_01.png';
+import Star_00_icon from '../../resource/maimai_img/notes/Star_00.png';
+import Star_01_icon from '../../resource/maimai_img/notes/Star_01.png';
+import Star_Double_00_icon from '../../resource/maimai_img/notes/Star_Double_00.png';
+import Star_Double_01_icon from '../../resource/maimai_img/notes/Star_Double_01.png';
+import Star_Each_00_icon from '../../resource/maimai_img/notes/Star_Each_00.png';
+import Star_Each_01_icon from '../../resource/maimai_img/notes/Star_Each_01.png';
+import Star_Each_Double_00_icon from '../../resource/maimai_img/notes/Star_Each_Double_00.png';
+import Star_Each_Double_01_icon from '../../resource/maimai_img/notes/Star_Each_Double_01.png';
+import Star_Ex_00_icon from '../../resource/maimai_img/notes/Star_Ex_00.png';
+import Star_Ex_01_icon from '../../resource/maimai_img/notes/Star_Ex_01.png';
+import Star_Ex_Double_00_icon from '../../resource/maimai_img/notes/Star_Ex_Double_00.png';
+import Star_Ex_Double_01_icon from '../../resource/maimai_img/notes/Star_Ex_Double_01.png';
+import Star_Pink_00_icon from '../../resource/maimai_img/notes/Star_Pink_00.png';
+import Star_Pink_01_icon from '../../resource/maimai_img/notes/Star_Pink_01.png';
+import Star_Pink_Double_00_icon from '../../resource/maimai_img/notes/Star_Pink_Double_00.png';
+import Star_Pink_Double_01_icon from '../../resource/maimai_img/notes/Star_Pink_Double_01.png';
+import Tap_00_icon from '../../resource/maimai_img/notes/Tap_00.png';
+import Tap_01_icon from '../../resource/maimai_img/notes/Tap_01.png';
+import Tap_02_icon from '../../resource/maimai_img/notes/Tap_02.png';
+import Tap_03_icon from '../../resource/maimai_img/notes/Tap_03.png';
+import Tap_04_icon from '../../resource/maimai_img/notes/Tap_04.png';
+import Tap_Each_00_icon from '../../resource/maimai_img/notes/Tap_Each_00.png';
+import Tap_Each_01_icon from '../../resource/maimai_img/notes/Tap_Each_01.png';
+import Tap_Each_02_icon from '../../resource/maimai_img/notes/Tap_Each_02.png';
+import Tap_Each_03_icon from '../../resource/maimai_img/notes/Tap_Each_03.png';
+import Tap_Each_04_icon from '../../resource/maimai_img/notes/Tap_Each_04.png';
+import Tap_Ex_00_icon from '../../resource/maimai_img/notes/Tap_Ex_00.png';
+import Tap_Ex_01_icon from '../../resource/maimai_img/notes/Tap_Ex_01.png';
+import Tap_Ex_02_icon from '../../resource/maimai_img/notes/Tap_Ex_02.png';
+import Tap_Ex_03_icon from '../../resource/maimai_img/notes/Tap_Ex_03.png';
+import Tap_Ex_04_icon from '../../resource/maimai_img/notes/Tap_Ex_04.png';
 import touch_icon from '../../resource/maimai_img/notes/touch.png';
 import touch_center_icon from '../../resource/maimai_img/notes/touch_center.png';
 import touch_each_icon from '../../resource/maimai_img/notes/touch_each.png';
@@ -76,26 +112,62 @@ import wifi_each_8_icon from '../../resource/maimai_img/notes/wifi_each_8.png';
 import wifi_each_9_icon from '../../resource/maimai_img/notes/wifi_each_9.png';
 
 export const NoteIcon = {
-    hold: new Image(),
-    hold_break: new Image(),
-    hold_each: new Image(),
-    hold_ex: new Image(),
-    hold_miss: new Image(),
-    slide: new Image(),
-    slide_break: new Image(),
-    slide_each: new Image(),
-    star: new Image(),
-    star_break: new Image(),
-    star_break_double: new Image(),
-    star_double: new Image(),
-    star_each: new Image(),
-    star_each_double: new Image(),
-    star_ex: new Image(),
-    star_ex_double: new Image(),
-    tap: new Image(),
-    tap_break: new Image(),
-    tap_each: new Image(),
-    tap_ex: new Image(),
+    BreakStar_00: new Image(),
+    BreakStar_01: new Image(),
+    BreakStar_Double_00: new Image(),
+    BreakStar_Double_01: new Image(),
+    Break_00: new Image(),
+    Break_01: new Image(),
+    Break_02: new Image(),
+    Break_03: new Image(),
+    Break_04: new Image(),
+    Hold_00: new Image(),
+    Hold_01: new Image(),
+    Hold_Break_00: new Image(),
+    Hold_Break_01: new Image(),
+    Hold_Each_00: new Image(),
+    Hold_Each_01: new Image(),
+    Hold_Ex_00: new Image(),
+    Hold_Ex_01: new Image(),
+    Miss_00: new Image(),
+    Miss_01: new Image(),
+    Slide_00: new Image(),
+    Slide_01: new Image(),
+    Slide_Break_00: new Image(),
+    Slide_Break_01: new Image(),
+    Slide_Each_00: new Image(),
+    Slide_Each_01: new Image(),
+    Star_00: new Image(),
+    Star_01: new Image(),
+    Star_Double_00: new Image(),
+    Star_Double_01: new Image(),
+    Star_Each_00: new Image(),
+    Star_Each_01: new Image(),
+    Star_Each_Double_00: new Image(),
+    Star_Each_Double_01: new Image(),
+    Star_Ex_00: new Image(),
+    Star_Ex_01: new Image(),
+    Star_Ex_Double_00: new Image(),
+    Star_Ex_Double_01: new Image(),
+    Star_Pink_00: new Image(),
+    Star_Pink_01: new Image(),
+    Star_Pink_Double_00: new Image(),
+    Star_Pink_Double_01: new Image(),
+    Tap_00: new Image(),
+    Tap_01: new Image(),
+    Tap_02: new Image(),
+    Tap_03: new Image(),
+    Tap_04: new Image(),
+    Tap_Each_00: new Image(),
+    Tap_Each_01: new Image(),
+    Tap_Each_02: new Image(),
+    Tap_Each_03: new Image(),
+    Tap_Each_04: new Image(),
+    Tap_Ex_00: new Image(),
+    Tap_Ex_01: new Image(),
+    Tap_Ex_02: new Image(),
+    Tap_Ex_03: new Image(),
+    Tap_Ex_04: new Image(),
     touch: new Image(),
     touch_center: new Image(),
     touch_each: new Image(),
@@ -151,48 +223,120 @@ export const NoteIcon = {
 };
 
 export const initnotesicons = (onload: () => void) => {
-  const amount = 72;
+  const amount = 108;
   let loaded = 0;
-  NoteIcon.hold.src = hold_icon;
-  NoteIcon.hold.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.hold_break.src = hold_break_icon;
-  NoteIcon.hold_break.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.hold_each.src = hold_each_icon;
-  NoteIcon.hold_each.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.hold_ex.src = hold_ex_icon;
-  NoteIcon.hold_ex.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.hold_miss.src = hold_miss_icon;
-  NoteIcon.hold_miss.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.slide.src = slide_icon;
-  NoteIcon.slide.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.slide_break.src = slide_break_icon;
-  NoteIcon.slide_break.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.slide_each.src = slide_each_icon;
-  NoteIcon.slide_each.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.star.src = star_icon;
-  NoteIcon.star.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.star_break.src = star_break_icon;
-  NoteIcon.star_break.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.star_break_double.src = star_break_double_icon;
-  NoteIcon.star_break_double.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.star_double.src = star_double_icon;
-  NoteIcon.star_double.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.star_each.src = star_each_icon;
-  NoteIcon.star_each.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.star_each_double.src = star_each_double_icon;
-  NoteIcon.star_each_double.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.star_ex.src = star_ex_icon;
-  NoteIcon.star_ex.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.star_ex_double.src = star_ex_double_icon;
-  NoteIcon.star_ex_double.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.tap.src = tap_icon;
-  NoteIcon.tap.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.tap_break.src = tap_break_icon;
-  NoteIcon.tap_break.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.tap_each.src = tap_each_icon;
-  NoteIcon.tap_each.onload = () => { loaded++; if (loaded >= amount) onload(); }
-  NoteIcon.tap_ex.src = tap_ex_icon;
-  NoteIcon.tap_ex.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.BreakStar_00.src = BreakStar_00_icon;
+  NoteIcon.BreakStar_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.BreakStar_01.src = BreakStar_01_icon;
+  NoteIcon.BreakStar_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.BreakStar_Double_00.src = BreakStar_Double_00_icon;
+  NoteIcon.BreakStar_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.BreakStar_Double_01.src = BreakStar_Double_01_icon;
+  NoteIcon.BreakStar_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Break_00.src = Break_00_icon;
+  NoteIcon.Break_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Break_01.src = Break_01_icon;
+  NoteIcon.Break_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Break_02.src = Break_02_icon;
+  NoteIcon.Break_02.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Break_03.src = Break_03_icon;
+  NoteIcon.Break_03.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Break_04.src = Break_04_icon;
+  NoteIcon.Break_04.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Hold_00.src = Hold_00_icon;
+  NoteIcon.Hold_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Hold_01.src = Hold_01_icon;
+  NoteIcon.Hold_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Hold_Break_00.src = Hold_Break_00_icon;
+  NoteIcon.Hold_Break_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Hold_Break_01.src = Hold_Break_01_icon;
+  NoteIcon.Hold_Break_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Hold_Each_00.src = Hold_Each_00_icon;
+  NoteIcon.Hold_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Hold_Each_01.src = Hold_Each_01_icon;
+  NoteIcon.Hold_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Hold_Ex_00.src = Hold_Ex_00_icon;
+  NoteIcon.Hold_Ex_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Hold_Ex_01.src = Hold_Ex_01_icon;
+  NoteIcon.Hold_Ex_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Miss_00.src = Miss_00_icon;
+  NoteIcon.Miss_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Miss_01.src = Miss_01_icon;
+  NoteIcon.Miss_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Slide_00.src = Slide_00_icon;
+  NoteIcon.Slide_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Slide_01.src = Slide_01_icon;
+  NoteIcon.Slide_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Slide_Break_00.src = Slide_Break_00_icon;
+  NoteIcon.Slide_Break_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Slide_Break_01.src = Slide_Break_01_icon;
+  NoteIcon.Slide_Break_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Slide_Each_00.src = Slide_Each_00_icon;
+  NoteIcon.Slide_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Slide_Each_01.src = Slide_Each_01_icon;
+  NoteIcon.Slide_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_00.src = Star_00_icon;
+  NoteIcon.Star_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_01.src = Star_01_icon;
+  NoteIcon.Star_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Double_00.src = Star_Double_00_icon;
+  NoteIcon.Star_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Double_01.src = Star_Double_01_icon;
+  NoteIcon.Star_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Each_00.src = Star_Each_00_icon;
+  NoteIcon.Star_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Each_01.src = Star_Each_01_icon;
+  NoteIcon.Star_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Each_Double_00.src = Star_Each_Double_00_icon;
+  NoteIcon.Star_Each_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Each_Double_01.src = Star_Each_Double_01_icon;
+  NoteIcon.Star_Each_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Ex_00.src = Star_Ex_00_icon;
+  NoteIcon.Star_Ex_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Ex_01.src = Star_Ex_01_icon;
+  NoteIcon.Star_Ex_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Ex_Double_00.src = Star_Ex_Double_00_icon;
+  NoteIcon.Star_Ex_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Ex_Double_01.src = Star_Ex_Double_01_icon;
+  NoteIcon.Star_Ex_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Pink_00.src = Star_Pink_00_icon;
+  NoteIcon.Star_Pink_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Pink_01.src = Star_Pink_01_icon;
+  NoteIcon.Star_Pink_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Pink_Double_00.src = Star_Pink_Double_00_icon;
+  NoteIcon.Star_Pink_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Star_Pink_Double_01.src = Star_Pink_Double_01_icon;
+  NoteIcon.Star_Pink_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_00.src = Tap_00_icon;
+  NoteIcon.Tap_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_01.src = Tap_01_icon;
+  NoteIcon.Tap_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_02.src = Tap_02_icon;
+  NoteIcon.Tap_02.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_03.src = Tap_03_icon;
+  NoteIcon.Tap_03.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_04.src = Tap_04_icon;
+  NoteIcon.Tap_04.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_Each_00.src = Tap_Each_00_icon;
+  NoteIcon.Tap_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_Each_01.src = Tap_Each_01_icon;
+  NoteIcon.Tap_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_Each_02.src = Tap_Each_02_icon;
+  NoteIcon.Tap_Each_02.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_Each_03.src = Tap_Each_03_icon;
+  NoteIcon.Tap_Each_03.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_Each_04.src = Tap_Each_04_icon;
+  NoteIcon.Tap_Each_04.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_Ex_00.src = Tap_Ex_00_icon;
+  NoteIcon.Tap_Ex_00.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_Ex_01.src = Tap_Ex_01_icon;
+  NoteIcon.Tap_Ex_01.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_Ex_02.src = Tap_Ex_02_icon;
+  NoteIcon.Tap_Ex_02.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_Ex_03.src = Tap_Ex_03_icon;
+  NoteIcon.Tap_Ex_03.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  NoteIcon.Tap_Ex_04.src = Tap_Ex_04_icon;
+  NoteIcon.Tap_Ex_04.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.touch.src = touch_icon;
   NoteIcon.touch.onload = () => { loaded++; if (loaded >= amount) onload(); }
   NoteIcon.touch_center.src = touch_center_icon;

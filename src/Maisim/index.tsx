@@ -19,6 +19,7 @@ import {
 	judgeLineRemainTimeTap,
 	judgeLineRemainTimeTouch,
 	fireworkLength,
+	setCanvasSize,
 } from './const';
 import { ReadMaimaiData } from './maiReader/maiReaderMain';
 
@@ -27,14 +28,14 @@ import { GameState } from '../utils/gamestate';
 import { sheetdata } from './_notesInDev';
 import { TouchArea } from '../utils/touchArea';
 import { ShowingNoteProps } from '../utils/showingNoteProps';
-import { drawNote } from './drawUtils/drawNotes';
+import { drawNote, updateIcons } from './drawUtils/drawNotes';
 import { Area, areas, initAreas, whichArea } from './areas';
 import { drawAllKeys, drawAllTouchingAreas } from './drawUtils/drawTouchingAreas';
 import { KeyState } from '../utils/keyState';
 import { drawOutRing } from './drawUtils/drawOutRing';
 import { initResources } from './resourceReaders/_init';
 import { OutlineIcon } from './resourceReaders/outlineIconReader';
-import { ppqqAnglCalc, pqTrackJudgeCalc } from './slideTracks/_global';
+import { ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged } from './slideTracks/_global';
 import { abs } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
 import { Note } from '../utils/note';
@@ -47,6 +48,7 @@ import { judge } from './judge';
 import { updateRecord } from './recordUpdater';
 import { NoteSound } from './resourceReaders/noteSoundReader';
 import testsong_taiyoukei from '../resource/sound/track/太陽系デスコ.mp3';
+import { JudgeLineStyle, RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
 
 const SongTrack = new Audio();
 SongTrack.volume = 0.1;
@@ -93,7 +95,6 @@ const drawBackground = () => {
 	const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
 	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
 	ctx.beginPath();
 	ctx.arc(center[0], center[1], maimaiScreenR, 0, 2 * Math.PI);
 	ctx.fillStyle = '#000';
@@ -750,7 +751,20 @@ const drawer = async () => {
 	// 不用foreach是为了从里往外，这样外侧的才会绘制在内侧Note之上
 	for (let i = showingNotes.length - 1; i >= 0; i--) {
 		const note = showingNotes[i];
-		drawNote(ctx_notes, ctx_slideTrack, currentSheet.notes[note.noteIndex]!, note.isEach, note, true, ctx_effect_back, ctx_effect_over);
+		drawNote(
+			ctx_notes,
+			ctx_slideTrack,
+			currentSheet.notes[note.noteIndex]!,
+			note.isEach,
+			note,
+			true,
+			ctx_effect_back,
+			ctx_effect_over,
+			currentTapStyle,
+			currentHoldStyle,
+			currentSlideStyle,
+			currentSlideColor
+		);
 	}
 };
 
@@ -981,15 +995,48 @@ function initEvent() {
 }
 
 interface Props {
+	w: number;
+	h: number;
+
+	tapStyle: TapStyles;
+	holdStyle: RegularStyles;
+	slideStyle: RegularStyles;
+	slideColor: SlideColor;
+	judgeLineStyle: JudgeLineStyle;
+
+	/** 显示特效 */
+	showEffect: boolean;
+
+	/** 自动 */
+	autoMode: boolean;
+
+	/** 外键 */
+	showKeys: boolean;
+
+	/** 中央显示 */
+	centerText: number;
+
 	gameState: GameState;
 	setGameState: (gameState: GameState) => void;
+	sheet: string;
+	onGameStart: () => void;
+	onGameRecordChange: (gameRecord: object) => void;
+	onGameFinish: () => void;
 }
+
+let currentTapStyle: TapStyles = TapStyles.Concise;
+let currentHoldStyle: RegularStyles = RegularStyles.Concise;
+let currentSlideStyle: RegularStyles = RegularStyles.Concise;
+let currentSlideColor: SlideColor = SlideColor.Blue;
 
 // React18生产环境useEffect运行两次 https://juejin.cn/post/7137654077743169573
 let hasinit = false;
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (props: Props) => {
+	const [canvasW, setCanvasW] = useState(800);
+	const [canvasH, setCanvasH] = useState(800);
+
 	useEffect(() => {
 		if (!hasinit) {
 			initResources(() => {
@@ -1011,20 +1058,41 @@ export default (props: Props) => {
 		return () => {};
 	}, []);
 
+	useEffect(() => {
+		setCanvasSize(props.w, props.h);
+		setCanvasH(props.h);
+		setCanvasW(props.w);
+
+		setTimeout(() => {
+			updateVarAfterSizeChanged();
+			drawBackground();
+			drawOver();
+		}, 50);
+	}, [props.w, props.h]);
+
+	useEffect(() => {
+		currentTapStyle = props.tapStyle;
+		currentHoldStyle = props.holdStyle;
+		currentSlideStyle = props.slideStyle;
+		currentSlideColor = props.slideColor;
+
+		updateIcons(currentTapStyle, currentHoldStyle, currentSlideStyle, currentSlideColor);
+	}, [props.tapStyle, props.holdStyle, props.slideColor, props.slideStyle]);
+
 	return (
 		<div className="maisim">
 			<div className="canvasContainer">
-				<canvas className="canvasMain" height={canvasHeight} width={canvasWidth} />
+				<canvas className="canvasMain" height={canvasH} width={canvasW} />
 
-				<canvas className="canvasEffectBack" height={canvasHeight} width={canvasWidth} />
-				<canvas className="canvasSlideTrack" height={canvasHeight} width={canvasWidth} />
-				<canvas className="canvasNotes" height={canvasHeight} width={canvasWidth} />
-				<canvas className="canvasEffectOver" height={canvasHeight} width={canvasWidth} />
+				<canvas className="canvasEffectBack" height={canvasH} width={canvasW} />
+				<canvas className="canvasSlideTrack" height={canvasH} width={canvasW} />
+				<canvas className="canvasNotes" height={canvasH} width={canvasW} />
+				<canvas className="canvasEffectOver" height={canvasH} width={canvasW} />
 
-				<canvas className="canvasOver" height={canvasHeight} width={canvasWidth} />
-				<canvas className="canvasKeys" height={canvasHeight} width={canvasWidth} />
+				<canvas className="canvasOver" height={canvasH} width={canvasW} />
+				<canvas className="canvasKeys" height={canvasH} width={canvasW} />
 
-				<canvas className="canvasEvent" height={canvasHeight} width={canvasWidth} />
+				<canvas className="canvasEvent" height={canvasH} width={canvasW} />
 			</div>
 			<div style={{ position: 'absolute', zIndex: 114514 }}>
 				<button
@@ -1048,7 +1116,13 @@ export default (props: Props) => {
 				>
 					{props.gameState === GameState.Play ? 'stop' : 'start'}
 				</button>
-				<button onClick={() => {}}>read</button>
+				<button
+					onClick={() => {
+						drawBackground();
+					}}
+				>
+					read
+				</button>
 			</div>
 		</div>
 	);
