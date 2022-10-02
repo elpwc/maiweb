@@ -34,7 +34,6 @@ import { drawAllKeys, drawAllTouchingAreas } from './drawUtils/drawTouchingAreas
 import { KeyState } from '../utils/keyState';
 import { drawOutRing } from './drawUtils/drawOutRing';
 import { initResources } from './resourceReaders/_init';
-import { OutlineIcon } from './resourceReaders/outlineIconReader';
 import { ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged } from './slideTracks/_global';
 import { abs } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
@@ -50,6 +49,7 @@ import { NoteSound } from './resourceReaders/noteSoundReader';
 import testsong_taiyoukei from '../resource/sound/track/太陽系デスコ.mp3';
 import testbgi from '../resource/maimai_img/ui/UI_Chara_105810.png';
 import { JudgeLineStyle, RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
+import { uiIcon } from './resourceReaders/uiIconReader';
 
 const SongTrack = new Audio();
 SongTrack.volume = 0.1;
@@ -1117,7 +1117,7 @@ export default (props: Props) => {
 					<img
 						alt="judgeline"
 						className="bottomItem judgeLine"
-						src={OutlineIcon.Outline_10}
+						src={uiIcon.Outline_03}
 						style={{
 							top: maimaiR - maimaiJudgeLineR / judgeLineK,
 							left: maimaiR - maimaiJudgeLineR / judgeLineK,
@@ -1132,7 +1132,15 @@ export default (props: Props) => {
 				<canvas className="canvasNotes" height={canvasH} width={canvasW} />
 				<canvas className="canvasEffectOver" height={canvasH} width={canvasW} />
 
-				<div className="uiContainer" style={{ height: canvasH, width: canvasW }}>
+				<div
+					className="uiContainer"
+					style={{
+						top: maimaiR - maimaiJudgeLineR / judgeLineK,
+						left: maimaiR - maimaiJudgeLineR / judgeLineK,
+						height: (maimaiJudgeLineR / judgeLineK) * 2,
+						width: (maimaiJudgeLineR / judgeLineK) * 2,
+					}}
+				>
 					{props.showUIContent ? <>{props.uiContent}</> : <></>}
 				</div>
 
@@ -1145,14 +1153,14 @@ export default (props: Props) => {
 				<button
 					onClick={() => {
 						//testmusic.play();
-						if (props.gameState === GameState.Standby) {
+						if (props.gameState === GameState.Begin) {
 							starttimer();
 							props.setGameState(GameState.Play);
 						} else if (props.gameState === GameState.Play) {
 							clearInterval(timer1);
 							clearInterval(timer3);
-							props.setGameState(GameState.Stop);
-						} else if (props.gameState === GameState.Stop) {
+							props.setGameState(GameState.Pause);
+						} else if (props.gameState === GameState.Pause) {
 							timer1 = setInterval(reader_and_updater, timerPeriod);
 							//timer2 = setInterval(updater, timerPeriod);
 							timer3 = setInterval(drawer, timerPeriod);

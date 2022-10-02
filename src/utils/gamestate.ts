@@ -1,6 +1,11 @@
 export enum GameState {
-  Standby,
-  Play,
-  Stop,
-  Finish,
+	Begin,
+	Select,
+	Difficulty,
+  Confirm,
+  Setting,
+	Enter,
+	Play,
+	Pause,
+	Finish,
 }

@@ -1,10 +1,10 @@
-.canvasContainer canvas {
+.canvasContainer>canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
 }
 
-.canvasContainer div {
+.canvasContainer>div {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -14,7 +14,7 @@ canvas {
 	/*border: solid 1px black;*/
 }
 
-.bottomContainer .bottomItem {
+.bottomContainer>.bottomItem {
 	position: absolute;
 	top: 0;
 	left: 0;
