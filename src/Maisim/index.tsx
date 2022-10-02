@@ -650,6 +650,10 @@ const reader_and_updater = async () => {
 					}
 				}
 
+				// 停掉可能的TOUCH HOLD声音
+				if (noteIns.type === NoteType.TouchHold) {
+					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
+				}
 				updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
 			}
 			return note.status !== -1;
