@@ -1004,6 +1004,11 @@ interface Props {
 	slideColor: SlideColor;
 	judgeLineStyle: JudgeLineStyle;
 
+	/** 左右镜像 */
+	leftRightMirror: boolean;
+	/** 上下镜像 */
+	upDownMirror: boolean;
+
 	/** 显示特效 */
 	showEffect: boolean;
 
@@ -1022,6 +1027,8 @@ interface Props {
 	onGameStart: () => void;
 	onGameRecordChange: (gameRecord: object) => void;
 	onGameFinish: () => void;
+
+	uiContent: JSX.Element;
 }
 
 let currentTapStyle: TapStyles = TapStyles.Concise;
@@ -1064,6 +1071,7 @@ export default (props: Props) => {
 		setCanvasW(props.w);
 
 		setTimeout(() => {
+			initAreas();
 			updateVarAfterSizeChanged();
 			drawBackground();
 			drawOver();
@@ -1088,6 +1096,10 @@ export default (props: Props) => {
 				<canvas className="canvasSlideTrack" height={canvasH} width={canvasW} />
 				<canvas className="canvasNotes" height={canvasH} width={canvasW} />
 				<canvas className="canvasEffectOver" height={canvasH} width={canvasW} />
+
+				<div className="uiContainer" style={{ height: canvasH, width: canvasW }}>
+					{props.uiContent}
+				</div>
 
 				<canvas className="canvasOver" height={canvasH} width={canvasW} />
 				<canvas className="canvasKeys" height={canvasH} width={canvasW} />

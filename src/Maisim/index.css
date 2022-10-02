@@ -2,61 +2,68 @@
 }
 
 canvas {
-  border: solid 1px black;
+	border: solid 1px black;
 }
 
 .canvasMain {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 0;
 }
 
 .canvasEffectBack {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 5;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 5;
 }
 
 .canvasSlideTrack {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10;
 }
 
 .canvasNotes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 20;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 20;
 }
 
 .canvasEffectOver {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 25;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 25;
+}
+
+.uiContainer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 28;
 }
 
 .canvasOver {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 30;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 30;
 }
 
 .canvasKeys {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 40;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 40;
 }
 
 .canvasEvent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 114513;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 114513;
 }

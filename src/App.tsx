@@ -38,6 +38,8 @@ function App() {
 				showKeys={true}
 				centerText={0}
 				sheet={''}
+				upDownMirror={false}
+				leftRightMirror={false}
 				onGameStart={function (): void {
 					throw new Error('Function not implemented.');
 				}}
@@ -47,6 +49,7 @@ function App() {
 				onGameFinish={function (): void {
 					throw new Error('Function not implemented.');
 				}}
+				uiContent={<div><p>114514</p><button>123</button></div>}
 			/>
 		</div>
 	);
