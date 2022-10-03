@@ -55,3 +55,6 @@ TOUCH GROUP√
 11. 速度放慢後判定不能对齐
 12. TOUCH HOLD Miss判定下结束後播放声音【急】
 13. maimai只会处理判定区间内的第一个note，但这边全部会判定上草【急急急】【算了先不急】
+
+10.3:
+1. Maisim onClick接受按键数据√

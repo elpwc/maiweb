@@ -10,6 +10,7 @@ function App() {
 	const [gameState, setGameState] = useState(GameState.Begin);
 	const [winWidth, setwinWidth] = useState(0);
 	const [winHeight, setwinHeight] = useState(0);
+	const [key, setkey]:[string, any] = useState('');
 
 	useEffect(() => {
 		window.addEventListener('resize', (e) => {
@@ -48,7 +49,10 @@ function App() {
 				uiContent={(() => {
 					switch (gameState) {
 						case GameState.Begin:
-							return <Begin onPress={(area) => {}}/>;
+							return <Begin press={key} onPress={(key) => {
+								console.log(12)
+								setGameState(GameState.Play)
+							}}/>;
 						case GameState.Select:
 						case GameState.Difficulty:
 						case GameState.Confirm:
@@ -62,7 +66,9 @@ function App() {
 					}
 				})()}
 				showUIContent={true}
-				onClick={function (area: Area): void {}}
+				onClick={function (key: string): void {
+					setkey(key);
+				}}
 				lightStatus={[]}
 			/>
 		</div>

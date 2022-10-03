@@ -788,198 +788,6 @@ const onPressUp = (area: TouchArea) => {
 	console.log('up', gameRecord, showingNotes);
 };
 
-const onMouseDown = (e: Event) => {
-	// @ts-ignore
-	const area = whichArea(e.clientX, e.clientY);
-	if (area) {
-		currentTouchingArea.push({
-			area,
-			pressTime: currentTime,
-		});
-		onPressDown({
-			area,
-			pressTime: currentTime,
-		});
-	}
-
-	const testdiv = document.getElementsByClassName('uiContainer')[0];
-
-	// @ts-ignore
-	imitateClick(testdiv, e.clientX, e.clientY);
-
-	// @ts-ignore
-	console.log(testdiv, e.clientX, e.clientY);
-
-	function imitateClick(oElement: Element, iClientX: number, iClientY: number) {
-		var oEvent;
-		oEvent = document.createEvent('MouseEvents');
-		oEvent.initMouseEvent('click', true, true, window, 0, 0, 0, iClientX, iClientY, false, false, false, false, 0, null);
-		oElement.dispatchEvent(oEvent);
-	}
-
-	//console.log(currentTouchingArea);
-};
-const onMouseUp = (e: Event) => {
-	// @ts-ignore
-	const area = whichArea(e.clientX, e.clientY);
-	if (area) {
-		currentTouchingArea = currentTouchingArea.filter((ta) => {
-			return ta.area.name !== area.name;
-		});
-		onPressUp({
-			area,
-			pressTime: currentTime,
-		});
-	}
-	//console.log(currentTouchingArea);
-};
-
-const onTouchStart = (ev: Event) => {
-	ev.preventDefault(); //阻止事件的默认行为
-	const e = ev as TouchEvent;
-	const touches: TouchList = e.targetTouches;
-
-	for (let i = 0; i < touches.length; i++) {
-		const area = whichArea(touches[i].clientX, touches[i].clientY);
-		if (area) {
-			if (
-				currentTouchingArea.find((ta) => {
-					return ta.area.name === area.name;
-				}) === undefined
-			) {
-				currentTouchingArea.push({
-					area,
-					pressTime: currentTime,
-				});
-				onPressDown({
-					area,
-					pressTime: currentTime,
-				});
-			}
-		}
-	}
-	console.log(currentTouchingArea);
-};
-const onTouchEnd = (ev: Event) => {
-	ev.preventDefault(); //阻止事件的默认行为
-	const e = ev as TouchEvent;
-	const touches: TouchList = e.changedTouches;
-
-	for (let i = 0; i < touches.length; i++) {
-		const area = whichArea(touches[i].clientX, touches[i].clientY);
-		if (area) {
-			currentTouchingArea = currentTouchingArea.filter((ta) => {
-				return ta.area.name !== area.name;
-			});
-			onPressUp({
-				area,
-				pressTime: currentTime,
-			});
-		}
-	}
-	console.log(e);
-};
-const onTouchCancel = (ev: Event) => {
-	ev.preventDefault(); //阻止事件的默认行为
-	const e = ev as TouchEvent;
-	const touches: TouchList = e.changedTouches;
-
-	for (let i = 0; i < touches.length; i++) {
-		const area = whichArea(touches[i].clientX, touches[i].clientY);
-		if (area) {
-			currentTouchingArea = currentTouchingArea.filter((ta) => {
-				return ta.area.name !== area.name;
-			});
-			onPressUp({
-				area,
-				pressTime: currentTime,
-			});
-		}
-	}
-};
-const onTouchLeave = (ev: Event) => {
-	ev.preventDefault(); //阻止事件的默认行为
-	const e = ev as TouchEvent;
-	const touches: TouchList = e.changedTouches;
-
-	for (let i = 0; i < touches.length; i++) {
-		const area = whichArea(touches[i].clientX, touches[i].clientY);
-		if (area) {
-			currentTouchingArea = currentTouchingArea.filter((ta) => {
-				return ta.area.name !== area.name;
-			});
-			onPressUp({
-				area,
-				pressTime: currentTime,
-			});
-		}
-	}
-};
-const onTouchMove = (ev: Event) => {
-	ev.preventDefault(); //阻止事件的默认行为
-	const e = ev as TouchEvent;
-	const touches: TouchList = e.targetTouches;
-
-	let tempTouchingArea: TouchArea[] = [];
-
-	for (let i = 0; i < touches.length; i++) {
-		const area = whichArea(touches[i].clientX, touches[i].clientY);
-		if (area) {
-			if (
-				tempTouchingArea.find((ta) => {
-					return ta.area.name === area.name;
-				}) === undefined
-			) {
-				tempTouchingArea.push({
-					area,
-					pressTime: currentTime,
-				});
-			}
-		}
-		// 新增的
-		for (let i = 0; i < tempTouchingArea.length; i++) {
-			if (
-				currentTouchingArea.find((ta) => {
-					return ta.area.name === tempTouchingArea[i].area.name;
-				}) === undefined
-			) {
-				currentTouchingArea.push(tempTouchingArea[i]);
-				onPressDown(tempTouchingArea[i]);
-			}
-		}
-		// 离开的
-		for (let i = 0; i < currentTouchingArea.length; i++) {
-			if (
-				// eslint-disable-next-line no-loop-func
-				tempTouchingArea.find((ta) => {
-					return ta.area.name === currentTouchingArea[i].area.name;
-				}) === undefined
-			) {
-				onPressUp(
-					currentTouchingArea.find((ta, j) => {
-						return j === i;
-					}) as TouchArea
-				);
-				currentTouchingArea = currentTouchingArea.filter((ta, j) => {
-					return j !== i;
-				});
-			}
-		}
-	}
-};
-
-//设置事件处理程序
-function initEvent() {
-	const el = document.getElementsByClassName('canvasEvent')[0];
-	el.addEventListener('mousedown', onMouseDown, false);
-	el.addEventListener('mouseup', onMouseUp, false);
-	el.addEventListener('touchstart', onTouchStart, false);
-	el.addEventListener('touchend', onTouchEnd, false);
-	el.addEventListener('touchcancel', onTouchCancel, false);
-	el.addEventListener('touchleave', onTouchLeave, false);
-	el.addEventListener('touchmove', onTouchMove, false);
-}
-
 interface Props {
 	w: number;
 	h: number;
@@ -1022,7 +830,7 @@ interface Props {
 	uiContent: JSX.Element;
 
 	/** 屏幕/按钮点击事件 */
-	onClick: (area: Area) => void;
+	onClick: (key: string) => void;
 
 	/** 按钮灯光控制 */
 	lightStatus: string[];
@@ -1038,6 +846,207 @@ let hasinit = false;
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (props: Props) => {
+	const onMouseDown = (e: Event) => {
+		// @ts-ignore
+		const area = whichArea(e.clientX, e.clientY);
+		if (area) {
+			currentTouchingArea.push({
+				area,
+				pressTime: currentTime,
+			});
+			onPressDown({
+				area,
+				pressTime: currentTime,
+			});
+		}
+
+		const testdiv = document.getElementsByClassName('uiContainer')[0];
+
+		// @ts-ignore
+		imitateClick(testdiv, e.clientX, e.clientY);
+
+		// @ts-ignore
+		console.log(testdiv, e.clientX, e.clientY);
+
+		function imitateClick(oElement: Element, iClientX: number, iClientY: number) {
+			var oEvent;
+			oEvent = document.createEvent('MouseEvents');
+			oEvent.initMouseEvent('click', true, true, window, 0, 0, 0, iClientX, iClientY, false, false, false, false, 0, null);
+			oElement.dispatchEvent(oEvent);
+		}
+
+		//console.log(currentTouchingArea);
+	};
+	const onMouseUp = (e: Event) => {
+		// @ts-ignore
+		const area = whichArea(e.clientX, e.clientY);
+		if (area) {
+			currentTouchingArea = currentTouchingArea.filter((ta) => {
+				return ta.area.name !== area.name;
+			});
+			onPressUp({
+				area,
+				pressTime: currentTime,
+			});
+		}
+		//console.log(currentTouchingArea);
+	};
+
+	const onTouchStart = (ev: Event) => {
+		ev.preventDefault(); //阻止事件的默认行为
+		const e = ev as TouchEvent;
+		const touches: TouchList = e.targetTouches;
+
+		for (let i = 0; i < touches.length; i++) {
+			const area = whichArea(touches[i].clientX, touches[i].clientY);
+			if (area) {
+				if (
+					currentTouchingArea.find((ta) => {
+						return ta.area.name === area.name;
+					}) === undefined
+				) {
+					currentTouchingArea.push({
+						area,
+						pressTime: currentTime,
+					});
+					onPressDown({
+						area,
+						pressTime: currentTime,
+					});
+				}
+			}
+		}
+		console.log(currentTouchingArea);
+	};
+	const onTouchEnd = (ev: Event) => {
+		ev.preventDefault(); //阻止事件的默认行为
+		const e = ev as TouchEvent;
+		const touches: TouchList = e.changedTouches;
+
+		for (let i = 0; i < touches.length; i++) {
+			const area = whichArea(touches[i].clientX, touches[i].clientY);
+			if (area) {
+				currentTouchingArea = currentTouchingArea.filter((ta) => {
+					return ta.area.name !== area.name;
+				});
+				onPressUp({
+					area,
+					pressTime: currentTime,
+				});
+			}
+		}
+		console.log(e);
+	};
+	const onTouchCancel = (ev: Event) => {
+		ev.preventDefault(); //阻止事件的默认行为
+		const e = ev as TouchEvent;
+		const touches: TouchList = e.changedTouches;
+
+		for (let i = 0; i < touches.length; i++) {
+			const area = whichArea(touches[i].clientX, touches[i].clientY);
+			if (area) {
+				currentTouchingArea = currentTouchingArea.filter((ta) => {
+					return ta.area.name !== area.name;
+				});
+				onPressUp({
+					area,
+					pressTime: currentTime,
+				});
+			}
+		}
+	};
+	const onTouchLeave = (ev: Event) => {
+		ev.preventDefault(); //阻止事件的默认行为
+		const e = ev as TouchEvent;
+		const touches: TouchList = e.changedTouches;
+
+		for (let i = 0; i < touches.length; i++) {
+			const area = whichArea(touches[i].clientX, touches[i].clientY);
+			if (area) {
+				currentTouchingArea = currentTouchingArea.filter((ta) => {
+					return ta.area.name !== area.name;
+				});
+				onPressUp({
+					area,
+					pressTime: currentTime,
+				});
+			}
+		}
+	};
+	const onTouchMove = (ev: Event) => {
+		ev.preventDefault(); //阻止事件的默认行为
+		const e = ev as TouchEvent;
+		const touches: TouchList = e.targetTouches;
+
+		let tempTouchingArea: TouchArea[] = [];
+
+		for (let i = 0; i < touches.length; i++) {
+			const area = whichArea(touches[i].clientX, touches[i].clientY);
+			if (area) {
+				if (
+					tempTouchingArea.find((ta) => {
+						return ta.area.name === area.name;
+					}) === undefined
+				) {
+					tempTouchingArea.push({
+						area,
+						pressTime: currentTime,
+					});
+				}
+			}
+			// 新增的
+			for (let i = 0; i < tempTouchingArea.length; i++) {
+				if (
+					currentTouchingArea.find((ta) => {
+						return ta.area.name === tempTouchingArea[i].area.name;
+					}) === undefined
+				) {
+					currentTouchingArea.push(tempTouchingArea[i]);
+					onPressDown(tempTouchingArea[i]);
+				}
+			}
+			// 离开的
+			for (let i = 0; i < currentTouchingArea.length; i++) {
+				if (
+					// eslint-disable-next-line no-loop-func
+					tempTouchingArea.find((ta) => {
+						return ta.area.name === currentTouchingArea[i].area.name;
+					}) === undefined
+				) {
+					onPressUp(
+						currentTouchingArea.find((ta, j) => {
+							return j === i;
+						}) as TouchArea
+					);
+					currentTouchingArea = currentTouchingArea.filter((ta, j) => {
+						return j !== i;
+					});
+				}
+			}
+		}
+	};
+
+	const onClick = (e: Event) => {
+		const area = whichArea((e as PointerEvent).x, (e as PointerEvent).y);
+		props.onClick(area?.name ?? '');
+	};
+
+	const onTouch = () => {};
+
+	//设置事件处理程序
+	function initEvent() {
+		const el = document.getElementsByClassName('canvasEvent')[0];
+		el.addEventListener('mousedown', onMouseDown, false);
+		el.addEventListener('mouseup', onMouseUp, false);
+		el.addEventListener('touchstart', onTouchStart, false);
+		el.addEventListener('touchend', onTouchEnd, false);
+		el.addEventListener('touchcancel', onTouchCancel, false);
+		el.addEventListener('touchleave', onTouchLeave, false);
+		el.addEventListener('touchmove', onTouchMove, false);
+		//el.addEventListener('touch', ontouch, false);
+		el.addEventListener('click', onClick, false);
+	}
+
 	const [canvasW, setCanvasW] = useState(800);
 	const [canvasH, setCanvasH] = useState(800);
 

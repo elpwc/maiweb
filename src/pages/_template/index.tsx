@@ -3,7 +3,8 @@ import { useEffect } from 'react';
 import { Area } from '../../Maisim/areas';
 
 interface Props {
-	onPress: (area: Area) => void;
+	press: string;
+	onPress: (key: string) => void
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
