@@ -5,24 +5,33 @@ import { Sheet } from '../utils/sheet';
 import { ShowingNoteProps } from '../utils/showingNoteProps';
 import { TouchArea } from '../utils/touchArea';
 import { timerPeriod } from './const';
-import { gameRecord } from './global';
 import { updateRecord } from './recordUpdater';
 import { section_wifi, section } from './slideTracks/section';
 
 export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, currentTime: number, area: TouchArea, currentTouchingArea: TouchArea[]) => {
-	showingNotes.forEach((note, i) => {
+	/** 是否已经判定过一个TAP/TOUCH/BREAK了，避免一次触摸重复判定距离过近的Note */
+	let judged = false;
+
+	for (let i = 0; i < showingNotes.length; i++) {
+		const note = showingNotes[i];
 		const noteIns = currentSheet.notes[note.noteIndex];
+
 		console.log(noteIns.type);
 		let timeD = noteIns.time - currentTime;
 
 		if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
 			console.log(area.area.id, Number(noteIns.pos));
 
+			// 已经判定过一个NOTE就不再判定了
+			if (judged) break;
+
 			if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos) && abs(timeD) <= timerPeriod * 9) {
 				// 设置标志位
 				showingNotes[i].touched = true;
 				showingNotes[i].touchedTime = currentTime;
 				showingNotes[i].isTouching = true;
+
+				judged = true;
 
 				console.log('timeD: ', timeD);
 
@@ -63,6 +72,9 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 				}
 			}
 		} else if (noteIns.type === NoteType.Hold) {
+			// 已经判定过一个NOTE就不再判定了
+			if (judged) break;
+
 			if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos)) {
 				if (abs(timeD) <= timerPeriod * 9) {
 					// 头部
@@ -70,6 +82,8 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 					showingNotes[i].touched = true;
 					showingNotes[i].touchedTime = currentTime;
 					showingNotes[i].isTouching = true;
+
+					judged = true;
 
 					console.log('timeD: ', timeD);
 
@@ -115,11 +129,16 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 				}
 			}
 		} else if (noteIns.type === NoteType.Touch || (timeD >= timerPeriod * 9 && timeD <= timerPeriod * 18)) {
+			// 已经判定过一个NOTE就不再判定了
+			if (judged) break;
+
 			if (area.area.name === noteIns.pos) {
 				// 设置标志位
 				showingNotes[i].touched = true;
 				showingNotes[i].touchedTime = currentTime;
 				showingNotes[i].isTouching = true;
+
+				judged = true;
 
 				let timeD = noteIns.time - currentTime;
 
@@ -175,6 +194,9 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 				}
 			}
 		} else if (noteIns.type === NoteType.TouchHold) {
+			// 已经判定过一个NOTE就不再判定了
+			if (judged) break;
+
 			if (area.area.name === noteIns.pos) {
 				if (abs(timeD) <= timerPeriod * 18) {
 					// 头部
@@ -182,6 +204,8 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 					showingNotes[i].touched = true;
 					showingNotes[i].touchedTime = currentTime;
 					showingNotes[i].isTouching = true;
+
+					judged = true;
 
 					console.log('timeD: ', timeD);
 
@@ -677,5 +701,5 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 				}
 			}
 		}
-	});
+	}
 };

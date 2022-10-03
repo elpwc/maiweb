@@ -749,7 +749,7 @@ const drawer = async () => {
 const drawGameRecord = (ctx: CanvasRenderingContext2D) => {
 	ctx.strokeStyle = 'red';
 	ctx.font = '20px Arial';
-	ctx.strokeText(`Critical: ${gameRecord.criticalPerfect}, Perfect: ${gameRecord.perfect}, Great: ${gameRecord.great}, Good: ${gameRecord.good}, Miss: ${gameRecord.miss}`, 0, 50);
+	ctx.strokeText(`Critical: ${gameRecord.criticalPerfect}, Perfect: ${gameRecord.perfect}, Great: ${gameRecord.great}, Good: ${gameRecord.good}, Miss: ${gameRecord.miss}`, 50, 250);
 	ctx.strokeStyle = 'white';
 	ctx.font = '30px Arial';
 	ctx.strokeText(`COMBO ${gameRecord.combo}`, center[0] - 50, center[1] - 30);

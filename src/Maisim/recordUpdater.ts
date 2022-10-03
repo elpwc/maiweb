@@ -483,7 +483,7 @@ export const updateRecord = (
 					const touchHoldSoundIndex = touchHoldSounds.findIndex((s) => {
 						return s.serial === note.serial;
 					});
-          console.log(touchHoldSounds,touchHoldSoundIndex)
+					console.log(touchHoldSounds, touchHoldSoundIndex);
 					switch (props.judgeStatus) {
 						case JudgeStatus.CriticalPerfect:
 						case JudgeStatus.Perfect:
@@ -519,18 +519,6 @@ export const updateRecord = (
 								}
 							} else {
 								touchHoldSounds.push({ sound: NoteSound.touchhold_good.cloneNode() as HTMLAudioElement, serial: note.serial });
-								touchHoldSounds[touchHoldSounds.length - 1].sound.play();
-							}
-							break;
-						case JudgeStatus.Miss:
-							if (touchHoldSoundIndex !== -1) {
-								if (soundControl) {
-									touchHoldSounds[touchHoldSoundIndex].sound.play();
-								} else {
-									touchHoldSounds[touchHoldSoundIndex].sound.pause();
-								}
-							} else {
-								touchHoldSounds.push({ sound: NoteSound.touchhold_miss.cloneNode() as HTMLAudioElement, serial: note.serial });
 								touchHoldSounds[touchHoldSounds.length - 1].sound.play();
 							}
 							break;
