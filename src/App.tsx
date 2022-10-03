@@ -5,12 +5,13 @@ import Maisim from './Maisim';
 import { RegularStyles, SlideColor, TapStyles } from './utils/noteStyles';
 import { Area } from './Maisim/areas';
 import Begin from './pages/Begin';
+import Select from './pages/Select';
 
 function App() {
 	const [gameState, setGameState] = useState(GameState.Begin);
 	const [winWidth, setwinWidth] = useState(0);
 	const [winHeight, setwinHeight] = useState(0);
-	const [key, setkey]:[string, any] = useState('');
+	const [key, setkey]: [string, any] = useState('');
 
 	useEffect(() => {
 		window.addEventListener('resize', (e) => {
@@ -49,14 +50,24 @@ function App() {
 				uiContent={(() => {
 					switch (gameState) {
 						case GameState.Begin:
-							return <Begin press={key} onPress={(key) => {
-								console.log(12)
-								setGameState(GameState.Play)
-							}}/>;
+							return (
+								<Begin
+									press={key}
+									onPress={(key) => {
+										setGameState(GameState.Select);
+									}}
+								/>
+							);
 						case GameState.Select:
-						case GameState.Difficulty:
-						case GameState.Confirm:
-						case GameState.Setting:
+							return (
+								<Select
+									press={key}
+									onPress={(key) => {
+										setGameState(GameState.Select);
+									}}
+									w={winHeight > winWidth ? winWidth : winHeight}
+								/>
+							);
 						case GameState.Enter:
 						case GameState.Play:
 						case GameState.Pause:

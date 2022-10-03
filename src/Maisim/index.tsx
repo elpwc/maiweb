@@ -99,7 +99,6 @@ const drawKeys = () => {
 	drawAllKeys(ctx, currentTouchingArea, keyStates);
 
 	drawFrame(ctx, canvasWidth - 100, 30);
-	drawGameRecord(ctx);
 };
 
 const drawOver = () => {
@@ -679,6 +678,8 @@ let ctx_effect_back: CanvasRenderingContext2D;
 
 let ctx_effect_over: CanvasRenderingContext2D;
 
+let ctx_game_record: CanvasRenderingContext2D;
+
 /** 初始化CTX */
 const initCtx = () => {
 	ctx_notes = (document.getElementsByClassName('canvasNotes')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
@@ -688,6 +689,8 @@ const initCtx = () => {
 	ctx_effect_back = (document.getElementsByClassName('canvasEffectBack')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
 
 	ctx_effect_over = (document.getElementsByClassName('canvasEffectOver')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
+
+	ctx_game_record = (document.getElementsByClassName('canvasGameRecord')[0] as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D;
 };
 
 /** 上一帧开始的时间 */
@@ -737,6 +740,10 @@ const drawer = async () => {
 			currentSlideColor
 		);
 	}
+
+	// game record
+	ctx_game_record.clearRect(0, 0, canvasWidth, canvasHeight);
+	drawGameRecord(ctx_game_record);
 };
 
 const drawGameRecord = (ctx: CanvasRenderingContext2D) => {
@@ -1136,6 +1143,7 @@ export default (props: Props) => {
 					/>
 				</div>
 
+				<canvas className="canvasGameRecord" height={canvasH} width={canvasW} />
 				<canvas className="canvasEffectBack" height={canvasH} width={canvasW} />
 				<canvas className="canvasSlideTrack" height={canvasH} width={canvasW} />
 				<canvas className="canvasNotes" height={canvasH} width={canvasW} />
