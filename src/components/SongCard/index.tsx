@@ -1,4 +1,5 @@
 import { Sheet } from "../../utils/sheet";
+import { uiIcon } from '../../Maisim/resourceReaders/uiIconReader';
 
 interface Props{
 	// 谱面信息
