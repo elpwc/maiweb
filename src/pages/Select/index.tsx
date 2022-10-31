@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { Area } from '../../Maisim/areas';
 import { uiIcon } from '../../Maisim/resourceReaders/uiIconReader';
 import { π } from '../../math';
+import { createSong } from '../../services/api/Song';
+import { createNotes } from '../../services/api/Notes';
 
 interface Props {
 	press: string;
@@ -166,8 +168,33 @@ export default (props: Props) => {
 		r = props.w / 2;
 	}, [props.w]);
 
+	useEffect(() => {
+		if (props.press !== '') {
+			console.log(props);
+			if (props.press === 'K1') {
+				createSong({ name: 'test', artist: 'test', copyright: 'test', genre: 0, version: 0, is_private: false })
+					.then((e: any) => {
+						console.log(e);
+					})
+					.catch((e: any) => {
+						console.log(e);
+					});
+				props.onPress(props.press);
+			} else if (props.press === 'K2') {
+				createNotes({ lv: '12+', designer: 'yajuu', is_official: false, lv_base: 12.1, notes: '{180}(4),1,E', difficulty: 0, is_dx: false, utage_genre: 0, songId: 0, is_private: false })
+					.then((e: any) => {
+						console.log(e);
+					})
+					.catch((e: any) => {
+						console.log(e);
+					});
+				props.onPress(props.press);
+			}
+		}
+	}, [props.press]);
+
 	return (
-		<div className="container">
+		<div className="selectcontainer">
 			<img src={uiIcon.UI_LIB_Window_BG} className="bgi" alt="logo" style={{ rotate: currentDegree * 0.5 + 'deg' }} />
 			<canvas className="selectBgCanvas" width={props.w} height={props.w}></canvas>
 		</div>

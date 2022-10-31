@@ -1,10 +1,14 @@
-.canvasContainer>canvas {
+.maisim {
+	position: absolute;
+}
+
+.canvasContainer > canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
 }
 
-.canvasContainer>div {
+.canvasContainer > div {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -14,7 +18,7 @@ canvas {
 	/*border: solid 1px black;*/
 }
 
-.bottomContainer>.bottomItem {
+.bottomContainer > .bottomItem {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -33,7 +37,7 @@ canvas {
 }
 .bottomContainer .transperantDiv {
 	z-index: -70;
-  background-color: black;
+	background-color: black;
 }
 .bottomContainer .judgeLine {
 	z-index: -60;

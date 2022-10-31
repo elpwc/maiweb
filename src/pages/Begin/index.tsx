@@ -32,7 +32,7 @@ export default (props: Props) => {
 	}, [props.press]);
 
 	return (
-		<div className="container">
+		<div className="begincontainer">
 			<img src={uiIcon.UI_LIB_Window_BG} className="bgi" alt="logo" style={{ rotate: currentDegree * 0.5 + 'deg' }} />
 			<img src={uiIcon.mamaDX} className="logoimg" alt="logo" />
 			<img src={uiIcon.UI_ADV_Img_PromoChara} className="dxkuma" alt="logo" />

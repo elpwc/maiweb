@@ -837,7 +837,8 @@ interface Props {
 	uiContent: JSX.Element;
 
 	/** 屏幕/按钮点击事件 */
-	onClick: (key: string) => void;
+	onPressDown: (key: string) => void;
+	onPressUp: (key: string) => void;
 
 	/** 按钮灯光控制 */
 	lightStatus: string[];
@@ -1033,9 +1034,19 @@ export default (props: Props) => {
 		}
 	};
 
-	const onClick = (e: Event) => {
+	// const onClick = (e: Event) => {
+	// 	const area = whichArea((e as PointerEvent).x, (e as PointerEvent).y);
+	// 	props.onClick(area?.name ?? '');
+	// };
+
+	const onMouseDown1 = (e: Event) => {
 		const area = whichArea((e as PointerEvent).x, (e as PointerEvent).y);
-		props.onClick(area?.name ?? '');
+		props.onPressDown(area?.name ?? '');
+	};
+
+	const onMouseUp1 = (e: Event) => {
+		const area = whichArea((e as PointerEvent).x, (e as PointerEvent).y);
+		props.onPressUp(area?.name ?? '');
 	};
 
 	const onTouch = () => {};
@@ -1051,7 +1062,9 @@ export default (props: Props) => {
 		el.addEventListener('touchleave', onTouchLeave, false);
 		el.addEventListener('touchmove', onTouchMove, false);
 		//el.addEventListener('touch', ontouch, false);
-		el.addEventListener('click', onClick, false);
+		//el.addEventListener('click', onClick, false);
+		el.addEventListener('mousedown', onMouseDown1, false);
+		el.addEventListener('mouseup', onMouseUp1, false);
 	}
 
 	const [canvasW, setCanvasW] = useState(800);
@@ -1101,7 +1114,12 @@ export default (props: Props) => {
 	const judgeLineK = 0.88;
 
 	return (
-		<div className="maisim">
+		<div
+			className="maisim"
+			style={{
+				left: `${props.h * 0.78 * 0.3 + 50}px`,
+			}}
+		>
 			<div className="canvasContainer">
 				<div className="bottomContainer" style={{ height: canvasH, width: canvasW }}>
 					{/** 背景图 */}
@@ -1166,7 +1184,7 @@ export default (props: Props) => {
 
 				<canvas className="canvasEvent" height={canvasH} width={canvasW} />
 			</div>
-			<div style={{ position: 'absolute', zIndex: 114514 }}>
+			<div style={{ position: 'relative', zIndex: 114514 }}>
 				<button
 					onClick={() => {
 						//testmusic.play();
