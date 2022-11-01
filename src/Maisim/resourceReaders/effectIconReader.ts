@@ -2,25 +2,25 @@
 // これは _codebuilder.py で自動的に生成したファイルです。
 // 这个文件是由 _codebuilder.py 自动生成的。
 
-import BreakLine_icon from '../../resource/maimai_img/effect/BreakLine.png';
-import Circle_icon from '../../resource/maimai_img/effect/Circle.png';
-import EachLine_icon from '../../resource/maimai_img/effect/EachLine.png';
-import EachLine1_icon from '../../resource/maimai_img/effect/EachLine1.png';
-import EachLine2_icon from '../../resource/maimai_img/effect/EachLine2.png';
-import EachLine3_icon from '../../resource/maimai_img/effect/EachLine3.png';
-import EachLine4_icon from '../../resource/maimai_img/effect/EachLine4.png';
-import Firework_icon from '../../resource/maimai_img/effect/Firework.png';
-import FireworkCenter_icon from '../../resource/maimai_img/effect/FireworkCenter.png';
-import FireworkInnerCircle_icon from '../../resource/maimai_img/effect/FireworkInnerCircle.png';
-import Hex_icon from '../../resource/maimai_img/effect/Hex.png';
-import mask_icon from '../../resource/maimai_img/effect/mask.png';
-import NormalLine_icon from '../../resource/maimai_img/effect/NormalLine.png';
-import SlideLine_icon from '../../resource/maimai_img/effect/SlideLine.png';
-import StarWhite_icon from '../../resource/maimai_img/effect/StarWhite.png';
-import StarYellow_icon from '../../resource/maimai_img/effect/StarYellow.png';
-import TouchEff_icon from '../../resource/maimai_img/effect/TouchEff.png';
-import UI_GAM_Eff_Effparts_02_icon from '../../resource/maimai_img/effect/UI_GAM_Eff_Effparts_02.png';
-import UI_GAM_Eff_Effparts_02_white_icon from '../../resource/maimai_img/effect/UI_GAM_Eff_Effparts_02_white.png';
+import BreakLine_icon from '../resource/maimai_img/effect/BreakLine.png';
+import Circle_icon from '../resource/maimai_img/effect/Circle.png';
+import EachLine_icon from '../resource/maimai_img/effect/EachLine.png';
+import EachLine1_icon from '../resource/maimai_img/effect/EachLine1.png';
+import EachLine2_icon from '../resource/maimai_img/effect/EachLine2.png';
+import EachLine3_icon from '../resource/maimai_img/effect/EachLine3.png';
+import EachLine4_icon from '../resource/maimai_img/effect/EachLine4.png';
+import Firework_icon from '../resource/maimai_img/effect/Firework.png';
+import FireworkCenter_icon from '../resource/maimai_img/effect/FireworkCenter.png';
+import FireworkInnerCircle_icon from '../resource/maimai_img/effect/FireworkInnerCircle.png';
+import Hex_icon from '../resource/maimai_img/effect/Hex.png';
+import mask_icon from '../resource/maimai_img/effect/mask.png';
+import NormalLine_icon from '../resource/maimai_img/effect/NormalLine.png';
+import SlideLine_icon from '../resource/maimai_img/effect/SlideLine.png';
+import StarWhite_icon from '../resource/maimai_img/effect/StarWhite.png';
+import StarYellow_icon from '../resource/maimai_img/effect/StarYellow.png';
+import TouchEff_icon from '../resource/maimai_img/effect/TouchEff.png';
+import UI_GAM_Eff_Effparts_02_icon from '../resource/maimai_img/effect/UI_GAM_Eff_Effparts_02.png';
+import UI_GAM_Eff_Effparts_02_white_icon from '../resource/maimai_img/effect/UI_GAM_Eff_Effparts_02_white.png';
 
 export const EffectIcon = {
     BreakLine: new Image(),
@@ -44,45 +44,45 @@ export const EffectIcon = {
     UI_GAM_Eff_Effparts_02_white: new Image(),
 };
 
-export const initeffecticons = (onload: () => void) => {
+export const initeffecticons = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {
   const amount = 19;
   let loaded = 0;
   EffectIcon.BreakLine.src = BreakLine_icon;
-  EffectIcon.BreakLine.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.BreakLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakLine'); }
   EffectIcon.Circle.src = Circle_icon;
-  EffectIcon.Circle.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.Circle.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Circle'); }
   EffectIcon.EachLine.src = EachLine_icon;
-  EffectIcon.EachLine.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.EachLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine'); }
   EffectIcon.EachLine1.src = EachLine1_icon;
-  EffectIcon.EachLine1.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.EachLine1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine1'); }
   EffectIcon.EachLine2.src = EachLine2_icon;
-  EffectIcon.EachLine2.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.EachLine2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine2'); }
   EffectIcon.EachLine3.src = EachLine3_icon;
-  EffectIcon.EachLine3.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.EachLine3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine3'); }
   EffectIcon.EachLine4.src = EachLine4_icon;
-  EffectIcon.EachLine4.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.EachLine4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine4'); }
   EffectIcon.Firework.src = Firework_icon;
-  EffectIcon.Firework.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.Firework.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Firework'); }
   EffectIcon.FireworkCenter.src = FireworkCenter_icon;
-  EffectIcon.FireworkCenter.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.FireworkCenter.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'FireworkCenter'); }
   EffectIcon.FireworkInnerCircle.src = FireworkInnerCircle_icon;
-  EffectIcon.FireworkInnerCircle.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.FireworkInnerCircle.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'FireworkInnerCircle'); }
   EffectIcon.Hex.src = Hex_icon;
-  EffectIcon.Hex.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.Hex.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hex'); }
   EffectIcon.mask.src = mask_icon;
-  EffectIcon.mask.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.mask.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'mask'); }
   EffectIcon.NormalLine.src = NormalLine_icon;
-  EffectIcon.NormalLine.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.NormalLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'NormalLine'); }
   EffectIcon.SlideLine.src = SlideLine_icon;
-  EffectIcon.SlideLine.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.SlideLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'SlideLine'); }
   EffectIcon.StarWhite.src = StarWhite_icon;
-  EffectIcon.StarWhite.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.StarWhite.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'StarWhite'); }
   EffectIcon.StarYellow.src = StarYellow_icon;
-  EffectIcon.StarYellow.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.StarYellow.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'StarYellow'); }
   EffectIcon.TouchEff.src = TouchEff_icon;
-  EffectIcon.TouchEff.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.TouchEff.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEff'); }
   EffectIcon.UI_GAM_Eff_Effparts_02.src = UI_GAM_Eff_Effparts_02_icon;
-  EffectIcon.UI_GAM_Eff_Effparts_02.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.UI_GAM_Eff_Effparts_02.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'UI_GAM_Eff_Effparts_02'); }
   EffectIcon.UI_GAM_Eff_Effparts_02_white.src = UI_GAM_Eff_Effparts_02_white_icon;
-  EffectIcon.UI_GAM_Eff_Effparts_02_white.onload = () => { loaded++; if (loaded >= amount) onload(); }
+  EffectIcon.UI_GAM_Eff_Effparts_02_white.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'UI_GAM_Eff_Effparts_02_white'); }
 };

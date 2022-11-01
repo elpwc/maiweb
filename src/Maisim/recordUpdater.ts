@@ -506,7 +506,7 @@ export const updateRecord = (
 									touchHoldSounds[touchHoldSoundIndex].sound.pause();
 								}
 							} else {
-								touchHoldSounds.push({ sound: NoteSound.touchhold_great.cloneNode() as HTMLAudioElement, serial: note.serial });
+								touchHoldSounds.push({ sound: NoteSound.touchhold_perfect.cloneNode() as HTMLAudioElement, serial: note.serial });
 								touchHoldSounds[touchHoldSounds.length - 1].sound.play();
 							}
 							break;
@@ -518,7 +518,7 @@ export const updateRecord = (
 									touchHoldSounds[touchHoldSoundIndex].sound.pause();
 								}
 							} else {
-								touchHoldSounds.push({ sound: NoteSound.touchhold_good.cloneNode() as HTMLAudioElement, serial: note.serial });
+								touchHoldSounds.push({ sound: NoteSound.touchhold_perfect.cloneNode() as HTMLAudioElement, serial: note.serial });
 								touchHoldSounds[touchHoldSounds.length - 1].sound.play();
 							}
 							break;

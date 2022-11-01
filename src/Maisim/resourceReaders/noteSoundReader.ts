@@ -2,20 +2,17 @@
 // これは _codebuilder.py で自動的に生成したファイルです。
 // 这个文件是由 _codebuilder.py 自动生成的。
 
-import break1_sound from '../../resource/sound/note/break1.wav';
-import break2_sound from '../../resource/sound/note/break2.wav';
-import ex_sound from '../../resource/sound/note/ex.wav';
-import firework_sound from '../../resource/sound/note/firework.wav';
-import good_sound from '../../resource/sound/note/good.wav';
-import great_sound from '../../resource/sound/note/great.wav';
-import perfect_sound from '../../resource/sound/note/perfect.wav';
-import slide_track_sound from '../../resource/sound/note/slide_track.wav';
-import tap_sound from '../../resource/sound/note/tap.wav';
-import touch_sound from '../../resource/sound/note/touch.wav';
-import touchhold_good_sound from '../../resource/sound/note/touchhold_good.wav';
-import touchhold_great_sound from '../../resource/sound/note/touchhold_great.wav';
-import touchhold_miss_sound from '../../resource/sound/note/touchhold_miss.wav';
-import touchhold_perfect_sound from '../../resource/sound/note/touchhold_perfect.wav';
+import break1_sound from '../resource/sound/note/break1.wav';
+import break2_sound from '../resource/sound/note/break2.wav';
+import ex_sound from '../resource/sound/note/ex.wav';
+import firework_sound from '../resource/sound/note/firework.wav';
+import good_sound from '../resource/sound/note/good.wav';
+import great_sound from '../resource/sound/note/great.wav';
+import perfect_sound from '../resource/sound/note/perfect.wav';
+import slide_track_sound from '../resource/sound/note/slide_track.wav';
+import tap_sound from '../resource/sound/note/tap.wav';
+import touch_sound from '../resource/sound/note/touch.wav';
+import touchhold_perfect_sound from '../resource/sound/note/touchhold_perfect.wav';
 
 export const NoteSound = {
     break1: new Audio(),
@@ -28,28 +25,45 @@ export const NoteSound = {
     slide_track: new Audio(),
     tap: new Audio(),
     touch: new Audio(),
-    touchhold_good: new Audio(),
-    touchhold_great: new Audio(),
-    touchhold_miss: new Audio(),
     touchhold_perfect: new Audio(),
 };
 
-export const initnotesounds = (onload: () => void) => {
-  const amount = 14;
+export const initnotesounds = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {
+  const amount = 11;
   let loaded = 0;
+  let volume = 0.05;
   NoteSound.break1.src = break1_sound;
+  NoteSound.break1.volume = volume;
+  NoteSound.break1.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'break1'); }
   NoteSound.break2.src = break2_sound;
+  NoteSound.break2.volume = volume;
+  NoteSound.break2.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'break2'); }
   NoteSound.ex.src = ex_sound;
+  NoteSound.ex.volume = volume;
+  NoteSound.ex.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'ex'); }
   NoteSound.firework.src = firework_sound;
+  NoteSound.firework.volume = volume;
+  NoteSound.firework.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'firework'); }
   NoteSound.good.src = good_sound;
+  NoteSound.good.volume = volume;
+  NoteSound.good.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'good'); }
   NoteSound.great.src = great_sound;
+  NoteSound.great.volume = volume;
+  NoteSound.great.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'great'); }
   NoteSound.perfect.src = perfect_sound;
+  NoteSound.perfect.volume = volume;
+  NoteSound.perfect.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'perfect'); }
   NoteSound.slide_track.src = slide_track_sound;
+  NoteSound.slide_track.volume = volume;
+  NoteSound.slide_track.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'slide_track'); }
   NoteSound.tap.src = tap_sound;
+  NoteSound.tap.volume = volume;
+  NoteSound.tap.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'tap'); }
   NoteSound.touch.src = touch_sound;
-  NoteSound.touchhold_good.src = touchhold_good_sound;
-  NoteSound.touchhold_great.src = touchhold_great_sound;
-  NoteSound.touchhold_miss.src = touchhold_miss_sound;
+  NoteSound.touch.volume = volume;
+  NoteSound.touch.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch'); }
   NoteSound.touchhold_perfect.src = touchhold_perfect_sound;
+  NoteSound.touchhold_perfect.volume = volume;
+  NoteSound.touchhold_perfect.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touchhold_perfect'); }
   onload();
 };

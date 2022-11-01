@@ -46,14 +46,18 @@ import { section, section_wifi } from './slideTracks/section';
 import { judge } from './judge';
 import { updateRecord } from './recordUpdater';
 import { NoteSound } from './resourceReaders/noteSoundReader';
-import testsong_taiyoukei from '../resource/sound/track/太陽系デスコ.mp3';
-import testbgi from '../resource/maimai_img/ui/UI_Chara_105810.png';
+import testsong_taiyoukei from './resource/sound/track/太陽系デスコ.mp3';
+import testbgi from './resource/maimai_img/ui/UI_Chara_105810.png';
 import { JudgeLineStyle, RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
 import { uiIcon } from './resourceReaders/uiIconReader';
 
 const SongTrack = new Audio();
-SongTrack.volume = 0.1;
+SongTrack.volume = 0.5;
 SongTrack.src = testsong_taiyoukei;
+SongTrack!.oncanplaythrough = (e) => {
+	console.log(e);
+	//alert('rua!');
+}
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
@@ -1075,22 +1079,28 @@ export default (props: Props) => {
 
 	const [canvasW, setCanvasW] = useState(800);
 	const [canvasH, setCanvasH] = useState(800);
+	const [loadMsg, setloadMsg] = useState('Loading');
 
 	useEffect(() => {
 		if (!hasinit) {
+			initResources(
+				(type: string, amount: number, loaded: number, name: string) => {
+					setloadMsg(`Loading:${type} ${loaded}/${amount} ${name}`);
+				},
+				() => {
+					setloadMsg('');
+					initCtx();
+					initAreas();
+					initEvent();
 
-			initResources(() => {
-				initCtx();
-				initAreas();
-				initEvent();
+					drawOver();
+					timer2 = setInterval(drawKeys, timerPeriod);
 
-				drawOver();
-				timer2 = setInterval(drawKeys, timerPeriod);
-
-				// 计算用
-				//ppqqAnglCalc();
-				//pqTrackJudgeCalc();
-			});
+					// 计算用
+					//ppqqAnglCalc();
+					//pqTrackJudgeCalc();
+				}
+			);
 			hasinit = true;
 		}
 
@@ -1194,6 +1204,13 @@ export default (props: Props) => {
 				<canvas className="canvasKeys" height={canvasH} width={canvasW} />
 
 				<canvas className="canvasEvent" height={canvasH} width={canvasW} />
+				{loadMsg !== '' ? (
+					<p className="maisimLoadMsg" style={{ height: canvasH, width: canvasW }}>
+						{loadMsg}
+					</p>
+				) : (
+					<></>
+				)}
 			</div>
 			<div style={{ position: 'relative', zIndex: 114514 }}>
 				<button

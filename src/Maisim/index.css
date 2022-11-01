@@ -78,3 +78,10 @@ canvas {
 .canvasEvent {
 	z-index: 114513;
 }
+
+.maisimLoadMsg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 114514;
+}

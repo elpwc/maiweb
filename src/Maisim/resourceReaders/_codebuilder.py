@@ -1,8 +1,8 @@
 # file importing code builder
 import os
 
-pyRootRoute = './src/resource/'
-rootRoute = '../../resource/'
+pyRootRoute = './src/Maisim/resource/'
+rootRoute = '../resource/'
 saveRootRoute = './src/Maisim/resourceReaders/'
 
 
@@ -63,13 +63,14 @@ def effectsIcons():
     fo.write('\n')
 
     # init
-    fo.write('export const initeffecticons = (onload: () => void) => {\n')
+    fo.write(
+        'export const initeffecticons = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {\n')
     fo.write("  const amount = " + str(len(iconNames)) + ";\n")
     fo.write("  let loaded = 0;\n")
     for name in iconNames:
         fo.write("  EffectIcon." + name + ".src = " + name + "_icon;\n")
         fo.write("  EffectIcon." + name +
-                 ".onload = () => { loaded++; if (loaded >= amount) onload(); }\n")
+                 ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
     fo.write("};\n")
     fo.close()
 
@@ -101,13 +102,53 @@ def notesIcons():
     fo.write('\n')
 
     # init
-    fo.write('export const initnotesicons = (onload: () => void) => {\n')
+    fo.write(
+        'export const initnotesicons = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {\n')
     fo.write("  const amount = " + str(len(iconNames)) + ";\n")
     fo.write("  let loaded = 0;\n")
     for name in iconNames:
         fo.write("  NoteIcon." + name + ".src = " + name + "_icon;\n")
         fo.write("  NoteIcon." + name +
-                 ".onload = () => { loaded++; if (loaded >= amount) onload(); }\n")
+                 ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
+    fo.write("};\n")
+    fo.close()
+
+
+def judgeIcons():
+    dictName = 'maimai_img/judge'
+    root = rootRoute + dictName + '/'
+    iconNames = [f.split('.')[0] for f in os.listdir(
+        pyRootRoute + dictName) if f.endswith('.png')]
+
+    fo = open(saveRootRoute + "judgeIconReader.ts", "w", encoding="utf-8")
+    fo.seek(0)
+    tip(fo)
+
+    # import list
+    for name in iconNames:
+        fo.write("import " + name + "_icon from '" +
+                 root + name + ".png';\n")
+
+    fo.write('\n')
+
+    # object
+    fo.write('export const JudgeIcon = {\n')
+    for name in iconNames:
+        fo.write("    " + name + ": new Image(),\n")
+
+    fo.write("};\n")
+
+    fo.write('\n')
+
+    # init
+    fo.write(
+        'export const initjudgeicons = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {\n')
+    fo.write("  const amount = " + str(len(iconNames)) + ";\n")
+    fo.write("  let loaded = 0;\n")
+    for name in iconNames:
+        fo.write("  JudgeIcon." + name + ".src = " + name + "_icon;\n")
+        fo.write("  JudgeIcon." + name +
+                 ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
     fo.write("};\n")
     fo.close()
 
@@ -139,14 +180,17 @@ def notesSounds():
     fo.write('\n')
 
     # init
-    fo.write('export const initnotesounds = (onload: () => void) => {\n')
+    fo.write(
+        'export const initnotesounds = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {\n')
     fo.write("  const amount = " + str(len(soundNames)) + ";\n")
     fo.write("  let loaded = 0;\n")
+    fo.write("  let volume = 0.05;\n")
     for name in soundNames:
         fo.write("  NoteSound." + name + ".src = " + name + "_sound;\n")
-        #fo.write("  NoteSound." + name +
-        #         ".onload = () => { loaded++; if (loaded >= amount) onload(); }\n")
-        
+        fo.write("  NoteSound." + name + ".volume = volume;\n")
+        fo.write("  NoteSound." + name +
+                 ".oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
+
     fo.write("  onload();\n")
     fo.write("};\n")
     fo.close()
@@ -156,6 +200,7 @@ def main():
     notesIcons()
     uiIcons()
     effectsIcons()
+    judgeIcons()
     notesSounds()
 
 
