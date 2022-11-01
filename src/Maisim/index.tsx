@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './index.css';
 import {
 	canvasWidth,
@@ -799,6 +799,10 @@ interface Props {
 	w: number;
 	h: number;
 
+	/** 以下两个是为了计算按下的偏移 */
+	t: number;
+	l: number;
+
 	tapStyle: TapStyles;
 	holdStyle: RegularStyles;
 	slideStyle: RegularStyles;
@@ -856,7 +860,7 @@ let hasinit = false;
 export default (props: Props) => {
 	const onMouseDown = (e: Event) => {
 		// @ts-ignore
-		const area = whichArea(e.clientX, e.clientY);
+		const area = whichArea(e.offsetX, e.offsetY);
 		if (area) {
 			currentTouchingArea.push({
 				area,
@@ -871,10 +875,7 @@ export default (props: Props) => {
 		const testdiv = document.getElementsByClassName('uiContainer')[0];
 
 		// @ts-ignore
-		imitateClick(testdiv, e.clientX, e.clientY);
-
-		// @ts-ignore
-		console.log(testdiv, e.clientX, e.clientY);
+		imitateClick(testdiv, e.offsetX, e.offsetY);
 
 		function imitateClick(oElement: Element, iClientX: number, iClientY: number) {
 			var oEvent;
@@ -887,7 +888,7 @@ export default (props: Props) => {
 	};
 	const onMouseUp = (e: Event) => {
 		// @ts-ignore
-		const area = whichArea(e.clientX, e.clientY);
+		const area = whichArea(e.offsetX, e.offsetY);
 		if (area) {
 			currentTouchingArea = currentTouchingArea.filter((ta) => {
 				return ta.area.name !== area.name;
@@ -906,7 +907,8 @@ export default (props: Props) => {
 		const touches: TouchList = e.targetTouches;
 
 		for (let i = 0; i < touches.length; i++) {
-			const area = whichArea(touches[i].clientX, touches[i].clientY);
+			// @ts-ignore
+			const area = whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
 			if (area) {
 				if (
 					currentTouchingArea.find((ta) => {
@@ -932,7 +934,8 @@ export default (props: Props) => {
 		const touches: TouchList = e.changedTouches;
 
 		for (let i = 0; i < touches.length; i++) {
-			const area = whichArea(touches[i].clientX, touches[i].clientY);
+			// @ts-ignore
+			const area = whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
 			if (area) {
 				currentTouchingArea = currentTouchingArea.filter((ta) => {
 					return ta.area.name !== area.name;
@@ -951,7 +954,8 @@ export default (props: Props) => {
 		const touches: TouchList = e.changedTouches;
 
 		for (let i = 0; i < touches.length; i++) {
-			const area = whichArea(touches[i].clientX, touches[i].clientY);
+			// @ts-ignore
+			const area = whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
 			if (area) {
 				currentTouchingArea = currentTouchingArea.filter((ta) => {
 					return ta.area.name !== area.name;
@@ -969,7 +973,8 @@ export default (props: Props) => {
 		const touches: TouchList = e.changedTouches;
 
 		for (let i = 0; i < touches.length; i++) {
-			const area = whichArea(touches[i].clientX, touches[i].clientY);
+			// @ts-ignore
+			const area = whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
 			if (area) {
 				currentTouchingArea = currentTouchingArea.filter((ta) => {
 					return ta.area.name !== area.name;
@@ -989,7 +994,8 @@ export default (props: Props) => {
 		let tempTouchingArea: TouchArea[] = [];
 
 		for (let i = 0; i < touches.length; i++) {
-			const area = whichArea(touches[i].clientX, touches[i].clientY);
+			// @ts-ignore
+			const area = whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
 			if (area) {
 				if (
 					tempTouchingArea.find((ta) => {
@@ -1040,12 +1046,12 @@ export default (props: Props) => {
 	// };
 
 	const onMouseDown1 = (e: Event) => {
-		const area = whichArea((e as PointerEvent).x, (e as PointerEvent).y);
+		const area = whichArea((e as PointerEvent).offsetX, (e as PointerEvent).offsetY);
 		props.onPressDown(area?.name ?? '');
 	};
 
 	const onMouseUp1 = (e: Event) => {
-		const area = whichArea((e as PointerEvent).x, (e as PointerEvent).y);
+		const area = whichArea((e as PointerEvent).offsetX, (e as PointerEvent).offsetY);
 		props.onPressUp(area?.name ?? '');
 	};
 
@@ -1072,6 +1078,7 @@ export default (props: Props) => {
 
 	useEffect(() => {
 		if (!hasinit) {
+
 			initResources(() => {
 				initCtx();
 				initAreas();
@@ -1090,7 +1097,10 @@ export default (props: Props) => {
 		return () => {};
 	}, []);
 
+	const containerDivRef = useRef(null);
+
 	useEffect(() => {
+		console.log(props.w, props.h);
 		setCanvasSize(props.w, props.h);
 		setCanvasH(props.h);
 		setCanvasW(props.w);
@@ -1117,8 +1127,9 @@ export default (props: Props) => {
 		<div
 			className="maisim"
 			style={{
-				left: `${props.h * 0.78 * 0.3 + 50}px`,
+				left: `${props.l}px`,
 			}}
+			ref={containerDivRef}
 		>
 			<div className="canvasContainer">
 				<div className="bottomContainer" style={{ height: canvasH, width: canvasW }}>

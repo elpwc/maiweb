@@ -1,10 +1,9 @@
 import './index.css';
-import { useEffect, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { uiIcon } from '../../Maisim/resourceReaders/uiIconReader';
 import { Area } from '../../Maisim/areas';
 
 interface Props {
-	press: string;
 	onPress: (key: string) => void;
 }
 
@@ -12,8 +11,15 @@ let timer;
 let hasinit = false;
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default (props: Props) => {
+export default forwardRef((props: Props, ref) => {
 	const [currentDegree, setcurrentDegree] = useState(0);
+
+	useImperativeHandle(ref, () => ({
+		onPress: (key: string) => {
+			onPress(key);
+			props.onPress(key);
+		},
+	}));
 
 	useEffect(() => {
 		if (!hasinit) {
@@ -25,11 +31,11 @@ export default (props: Props) => {
 		}
 	}, []);
 
-	useEffect(() => {
-		if (props.press !== '') {
-			props.onPress(props.press);
-		}
-	}, [props.press]);
+	const onPress = (key: string) => {
+		alert(key);
+		
+		alert(123123);
+	};
 
 	return (
 		<div className="begincontainer">
@@ -45,4 +51,4 @@ export default (props: Props) => {
 			<p className="tip2">某洗衣机的网页模拟器</p>
 		</div>
 	);
-};
+});

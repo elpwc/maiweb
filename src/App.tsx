@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { GameState } from './utils/gamestate';
 import Maisim from './Maisim';
@@ -16,6 +16,9 @@ function App() {
 	const [key, setkey]: [string, any] = useState('');
 	const [showEditor, setshowEditor]: [boolean, any] = useState(false);
 	const [currentnotes, setcurrentnotes]: [string, any] = useState('');
+
+	const beginRef = useRef(null);
+	const selectRef = useRef(null);
 
 	useEffect(() => {
 		window.addEventListener('resize', (e) => {
@@ -46,6 +49,8 @@ function App() {
 						}}
 						w={winHeight > winWidth ? winWidth : winHeight}
 						h={winHeight > winWidth ? winWidth : winHeight}
+						l={(winHeight > winWidth ? winWidth : winHeight) * 0.78 * 0.3 + 50}
+						t={0}
 						tapStyle={TapStyles.Concise}
 						holdStyle={RegularStyles.Concise}
 						slideStyle={RegularStyles.Concise}
@@ -66,17 +71,17 @@ function App() {
 								case GameState.Begin:
 									return (
 										<Begin
-											press={key}
+											ref={beginRef}
 											onPress={(key) => {
-												setGameState(GameState.Select);
 												alert(123);
+												setGameState(GameState.Select);
 											}}
 										/>
 									);
 								case GameState.Select:
 									return (
 										<Select
-											press={key}
+											ref={selectRef}
 											onPress={(key) => {
 												//setGameState(GameState.Select);
 											}}
@@ -97,6 +102,10 @@ function App() {
 						}}
 						onPressUp={function (key: string): void {
 							setkey('');
+							// @ts-ignore
+							beginRef.current?.onPress(key);
+							// @ts-ignore
+							selectRef.current?.onPress(key);
 						}}
 						lightStatus={[]}
 					/>
