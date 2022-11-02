@@ -82,6 +82,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 					showingNotes[i].touched = true;
 					showingNotes[i].touchedTime = currentTime;
 					showingNotes[i].isTouching = true;
+					showingNotes[i].holdPress = true;
 
 					judged = true;
 
@@ -124,8 +125,10 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 				if (timeD < -timerPeriod * 6 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
 					// HOLD体
 					console.log(timeD);
+					showingNotes[i].touched = true;
 					showingNotes[i].touchedTime = currentTime;
 					showingNotes[i].isTouching = true;
+					showingNotes[i].holdPress = true;
 				}
 			}
 		} else if (noteIns.type === NoteType.Touch || (timeD >= timerPeriod * 9 && timeD <= timerPeriod * 18)) {

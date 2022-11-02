@@ -29,6 +29,8 @@ export const setCanvasSize = (w: number, h: number) => {
 	keySideDotR = maimaiR * 0.005;
 
 	keySideDotRtoCenter = (maimaiR + maimaiScreenR) / 2;
+
+	judgeDistance = maimaiTapR * 1.5;
 };
 
 export let center = [canvasWidth / 2, canvasHeight / 2];
@@ -68,6 +70,11 @@ export const holdHeadHeight: number = 70;
 export const judgeLineRemainTimeTap: number = timerPeriod * 10;
 /** TOUCH 在判定後停留的时间 ms */
 export const judgeLineRemainTimeTouch: number = timerPeriod * 18;
+
+/** 判定结果显示的时间 */
+export const judgeResultShowTime: number = timerPeriod * 30;
+/** 判定显示标准距离 */
+export let judgeDistance: number = maimaiTapR * 1.5;
 
 // 外键
 export const keyWidth: number = 1 / 20;

@@ -20,6 +20,7 @@ import {
 	judgeLineRemainTimeTouch,
 	fireworkLength,
 	setCanvasSize,
+	judgeResultShowTime,
 } from './const';
 import { ReadMaimaiData } from './maiReader/maiReaderMain';
 
@@ -57,7 +58,7 @@ SongTrack.src = testsong_taiyoukei;
 SongTrack!.oncanplaythrough = (e) => {
 	console.log(e);
 	//alert('rua!');
-}
+};
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
@@ -253,6 +254,12 @@ const reader_and_updater = async () => {
 					// stop
 
 					if (currentTime >= noteIns.time! + judgeLineRemainTimeTap) {
+						newNote.status = -4;
+					}
+				} else if (newNote.status === -3) {
+					// judge
+
+					if (currentTime >= noteIns.time! + judgeResultShowTime) {
 						newNote.status = -1;
 					}
 				}
@@ -303,17 +310,23 @@ const reader_and_updater = async () => {
 						}
 					}
 				} else if (newNote.status === 3) {
-					// die
+					// disappear
 
 					newNote.tailRho = ((currentTime - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
 					if (currentTime >= noteIns.time! + noteIns.remainTime!) {
-						newNote.status = -1;
+						newNote.status = -2;
 					}
 				} else if (newNote.status === -2) {
 					// stop
 
-					if (currentTime >= noteIns.time! + judgeLineRemainTimeTap) {
+					if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeTap) {
+						newNote.status = -4;
+					}
+				} else if (newNote.status === -3) {
+					// judge
+
+					if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeResultShowTime) {
 						newNote.status = -1;
 					}
 				}
@@ -348,6 +361,12 @@ const reader_and_updater = async () => {
 					newNote.tailRho = ((currentTime - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
 
 					if (currentTime >= noteIns.time! + noteIns.remainTime!) {
+						newNote.status = -4;
+					}
+				} else if (newNote.status === -3) {
+					// judge
+
+					if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeResultShowTime) {
 						newNote.status = -1;
 					}
 				}
@@ -377,6 +396,12 @@ const reader_and_updater = async () => {
 
 					newNote.rho = touchMaxDistance;
 					if (currentTime >= noteIns.time! + judgeLineRemainTimeTouch) {
+						newNote.status = -3;
+					}
+				} else if (newNote.status === -3) {
+					// judge
+
+					if (currentTime >= noteIns.time! + judgeResultShowTime) {
 						newNote.status = -1;
 					}
 				}
@@ -487,6 +512,12 @@ const reader_and_updater = async () => {
 					// stop
 					newNote.rho = noteIns.time;
 					if (currentTime >= noteIns.time! + judgeLineRemainTimeTap) {
+						newNote.status = -3;
+					}
+				} else if (newNote.status === -3) {
+					// judge
+
+					if (currentTime >= noteIns.time! + judgeResultShowTime) {
 						newNote.status = -1;
 					}
 				}
@@ -513,6 +544,12 @@ const reader_and_updater = async () => {
 					// stop
 
 					if (currentTime >= noteIns.time! + judgeLineRemainTimeTap) {
+						newNote.status = -4;
+					}
+				} else if (newNote.status === -3) {
+					// judge
+
+					if (currentTime >= noteIns.time! + judgeResultShowTime) {
 						newNote.status = -1;
 					}
 				}
@@ -557,6 +594,12 @@ const reader_and_updater = async () => {
 					// stop
 
 					if (currentTime >= noteIns.time! + judgeLineRemainTimeTap) {
+						newNote.status = -3;
+					}
+				} else if (newNote.status === -3) {
+					// judge
+
+					if (currentTime >= noteIns.time! + judgeResultShowTime) {
 						newNote.status = -1;
 					}
 				}
@@ -594,13 +637,24 @@ const reader_and_updater = async () => {
 				updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
 			}
 		}
+		// 按过的，return的是filt出的还没按的
 		if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.SlideTrack) {
-			return note.touched === false && note.status !== -1;
+			if (note.status === -4) {
+				if (noteIns.isEx) {
+					if (note.judgeStatus !== JudgeStatus.Miss) note.judgeStatus = JudgeStatus.CriticalPerfect;
+				}
+				note.status = -3;
+			}
+			return note.status !== -1;
 		} else if (noteIns.type === NoteType.Touch) {
 			return note.status !== -1;
 		} else if (noteIns.type === NoteType.Hold || noteIns.type === NoteType.TouchHold) {
-			if (note.status === -1) {
-				if (note.touched) {
+			if (note.status === -4) {
+				if (noteIns.isEx) {
+					if (note.judgeStatus !== JudgeStatus.Miss) note.judgeStatus = JudgeStatus.CriticalPerfect;
+				}
+
+				if (note.touched && note.holdPress) {
 					note.holdingTime += currentTime - (note.touchedTime ?? 0);
 				}
 				const holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
@@ -611,6 +665,7 @@ const reader_and_updater = async () => {
 						note.judgeStatus = JudgeStatus.Good;
 					}
 				} else {
+					console.log(holdingPercent);
 					if (holdingPercent >= 1) {
 					} else if (holdingPercent >= 0.67 && holdingPercent < 1) {
 						if (note.judgeStatus === JudgeStatus.CriticalPerfect) {
@@ -624,6 +679,8 @@ const reader_and_updater = async () => {
 						note.judgeStatus = JudgeStatus.Good;
 					}
 				}
+
+				note.status = -3;
 
 				// 停掉可能的TOUCH HOLD声音
 				if (noteIns.type === NoteType.TouchHold) {
@@ -778,6 +835,7 @@ const onPressUp = (area: TouchArea) => {
 					if (timeD < -timerPeriod * 6 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
 						// 设置标志位
 						showingNotes[i].isTouching = false;
+						showingNotes[i].holdPress = false;
 						showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
 					}
 				}
@@ -787,6 +845,7 @@ const onPressUp = (area: TouchArea) => {
 					if (timeD < -timerPeriod * 15 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
 						// 设置标志位
 						showingNotes[i].isTouching = false;
+						showingNotes[i].holdPress = false;
 						showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
 					}
 

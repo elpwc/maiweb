@@ -18,6 +18,7 @@ import {
 	fireworkInnerCircleR,
 	canvasHeight,
 	maimaiR,
+	judgeDistance,
 } from '../const';
 import { getTrackProps } from '../slideTracks/tracks';
 import { APositions, trackLength } from '../slideTracks/_global';
@@ -28,6 +29,8 @@ import { NoteType } from '../../utils/noteType';
 import { section } from '../slideTracks/section';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { RegularStyles, SlideColor, TapStyles } from '../../utils/noteStyles';
+import { JudgeStatus, JudgeTimeStatus } from '../../utils/judgeStatus';
+import { JudgeIcon } from '../resourceReaders/judgeIconReader';
 
 let tapIcon: HTMLImageElement;
 let tapEachIcon: HTMLImageElement;
@@ -175,9 +178,10 @@ export const drawNote = (
 	tapStyle: TapStyles,
 	holdStyle: RegularStyles,
 	slideStyle: RegularStyles,
-	slideColor: SlideColor
+	slideColor: SlideColor,
+	drawFastLast: boolean = true
 ) => {
-	if (/* hidden状态 (-2) 不显示 只等待判定 */ props.status !== -2) {
+	if (/* hidden状态 (-2) 不显示 只等待判定 */ props.status !== -2 && props.status !== -3) {
 		let θ = 0,
 			// Note所在的坐标
 			x = 0,
@@ -190,6 +194,7 @@ export const drawNote = (
 		if (!isNaN(Number(firstWord))) {
 			// 数字开头的位置
 			θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
+			//console.log(note.pos, θ*180)
 			x = center[0] + (props.rho + maimaiSummonLineR) * Math.cos(θ);
 			y = center[1] + (props.rho + maimaiSummonLineR) * Math.sin(θ);
 		} else {
@@ -1286,6 +1291,111 @@ export const drawNote = (
 			case NoteType.EndMark:
 				//finish();
 				break;
+		}
+	} else if (props.status === -3) {
+		console.log(note.pos);
+		// 显示判定
+		let θ = 0,
+			// Note所在的坐标
+			x = 0,
+			y = 0;
+
+		let judgeImage: HTMLImageElement;
+		let fastlateImage: HTMLImageElement;
+
+		switch (props.judgeStatus) {
+			case JudgeStatus.CriticalPerfect:
+				judgeImage = note.isBreak ? JudgeIcon.UI_GAM_Critical_Break : JudgeIcon.UI_GAM_Critical;
+				break;
+			case JudgeStatus.Perfect:
+				judgeImage = note.isBreak ? JudgeIcon.UI_GAM_Perfect_Break : JudgeIcon.UI_GAM_Perfect;
+				break;
+			case JudgeStatus.Great:
+				judgeImage = JudgeIcon.UI_GAM_Great;
+				break;
+			case JudgeStatus.Good:
+				judgeImage = JudgeIcon.UI_GAM_Good;
+				break;
+			case JudgeStatus.Miss:
+				judgeImage = JudgeIcon.UI_GAM_Miss;
+				break;
+		}
+
+		const k = 1.5;
+		const judgeIconHeight = maimaiTapR * 1 * k;
+		const judgeIconWidth = ((maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
+
+		const firstWord = note.pos.substring(0, 1);
+		if (!isNaN(Number(firstWord))) {
+			// 数字开头的位置
+			θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
+			x = center[0] - judgeIconWidth / 2;
+			y = center[1] - (maimaiJudgeLineR - judgeDistance + judgeIconHeight / 2);
+		} else {
+			// 字母开头的位置（TOUCH）
+			const touchPos = note.pos.substring(1, 2);
+			switch (firstWord) {
+				case 'C':
+					x = center[0];
+					y = center[1];
+					break;
+				case 'A':
+					θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+					if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
+						x = center[0] + maimaiADTouchR * Math.cos(θ);
+						y = center[1] + maimaiADTouchR * Math.sin(θ);
+					} else {
+						x = center[0] + maimaiScreenR * Math.cos(θ);
+						y = center[1] + maimaiScreenR * Math.sin(θ);
+					}
+					break;
+				case 'B':
+					θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+					x = center[0] + maimaiBR * Math.cos(θ);
+					y = center[1] + maimaiBR * Math.sin(θ);
+					break;
+				case 'D':
+					θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+					if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
+						x = center[0] + maimaiADTouchR * Math.cos(θ);
+						y = center[1] + maimaiADTouchR * Math.sin(θ);
+					} else {
+						x = center[0] + maimaiScreenR * Math.cos(θ);
+						y = center[1] + maimaiScreenR * Math.sin(θ);
+					}
+					break;
+				case 'E':
+					θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+					x = center[0] + maimaiER * Math.cos(θ);
+					y = center[1] + maimaiER * Math.sin(θ);
+					break;
+				default:
+					break;
+			}
+		}
+
+		drawRotationImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
+
+		if (drawFastLast && props.judgeStatus !== JudgeStatus.CriticalPerfect && props.judgeStatus !== JudgeStatus.Miss) {
+			if (props.judgeTime === JudgeTimeStatus.Fast) {
+				fastlateImage = JudgeIcon.UI_GAM_Fast;
+			} else {
+				fastlateImage = JudgeIcon.UI_GAM_Late;
+			}
+
+			const k = 1.5;
+			const fastlateIconHeight = maimaiTapR * 1 * k;
+			const fastlateIconWidth = ((maimaiTapR * 1) / fastlateImage.height) * fastlateImage.width * k;
+
+			const firstWord = note.pos.substring(0, 1);
+			if (!isNaN(Number(firstWord))) {
+				// 数字开头的位置
+				θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
+				x = center[0] - fastlateIconWidth / 2;
+				y = center[1] - (maimaiJudgeLineR - judgeDistance * 2 + fastlateIconHeight / 2);
+			}
+
+			drawRotationImage(effectOverCtx, fastlateImage, x, y, fastlateIconWidth, fastlateIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
 		}
 	}
 };

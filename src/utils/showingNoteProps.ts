@@ -9,11 +9,11 @@ export interface ShowingNoteProps {
 
 	/**
 	 * TAP:
-	 * -2: stop at judge line but doesn't appear -1: die 0: emerge 1:move
+	 * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1:move
 	 * HOLD:
-	 * -2: stop at judge line but doesn't appear -1: die 0: emerge 1: grow 2: move 3: disappear 4: fill(充满 长度暂时不改变)
+	 * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1: grow 2: move 3: disappear 4: fill(充满 长度暂时不改变)
 	 * SLIDE TRACK:
-	 * -2: stop at judge line but doesn't appear -1: die 0: emerge 1: hangup 2: move
+	 * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1: hangup 2: move
 	 * FIREWORK:
 	 * -1: die 0: wait for trig 1: change
 	 */
@@ -27,7 +27,9 @@ export interface ShowingNoteProps {
 	// 从生成到消亡的不间断变化量
 	timer: number;
 
+	// 尾部位置
 	tailRho: number;
+	// 开始绘制的时刻
 	placeTime: number;
 
 	isEach: boolean;
@@ -63,4 +65,7 @@ export interface ShowingNoteProps {
 
 	/** firework是否已经被触发了 */
 	fireworkTrigged?: boolean;
+
+	/** HOLD TOUCH HOLD: 尾判前是否没松手 */
+	holdPress?: boolean;
 }
