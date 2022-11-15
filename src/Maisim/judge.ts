@@ -31,6 +31,8 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 				showingNotes[i].touchedTime = currentTime;
 				showingNotes[i].isTouching = true;
 
+				showingNotes[i].status = -4;
+
 				judged = true;
 
 				console.log('timeD: ', timeD);
@@ -115,6 +117,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 					if (noteIns.isShortHold) {
 						//SHORT的话就直接判定了喵
 						updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+						showingNotes[i].status = -4;
 					} else {
 						// 按压声音
 						if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
@@ -140,6 +143,8 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 				showingNotes[i].touched = true;
 				showingNotes[i].touchedTime = currentTime;
 				showingNotes[i].isTouching = true;
+
+				showingNotes[i].status = -4;
 
 				judged = true;
 
@@ -239,6 +244,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 				if (noteIns.isShortHold) {
 					//SHORT的话就直接判定了喵
 					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+					showingNotes[i].status = -4;
 				} else {
 					// 按压声音
 					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, true);
@@ -288,6 +294,8 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 										showingNotes[i].touched = true;
 										showingNotes[i].touchedTime = currentTime;
 										showingNotes[i].isTouching = true;
+
+										showingNotes[i].status = -4;
 
 										/** 走完最後一段的时间ms */
 										const finalSectionTime = currentLine.remainTime! * (1 - sectionInfoWifi![j][4].start);
@@ -399,6 +407,8 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 								showingNotes[i].touched = true;
 								showingNotes[i].touchedTime = currentTime;
 								showingNotes[i].isTouching = true;
+
+								showingNotes[i].status = -4;
 
 								/** 走完最後一段的时间ms */
 								const finalSectionTime = currentLine.remainTime! * (1 - sectionInfo![sectionInfo?.length! - 1].start);
@@ -520,6 +530,8 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 									showingNotes[i].touchedTime = currentTime;
 									showingNotes[i].isTouching = true;
 
+									showingNotes[i].status = -4;
+
 									/** 走完最後一段的时间ms */
 									const finalSectionTime = noteIns.remainTime! * (1 - sectionInfoWifi![j][4].start);
 
@@ -619,6 +631,8 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 							showingNotes[i].touched = true;
 							showingNotes[i].touchedTime = currentTime;
 							showingNotes[i].isTouching = true;
+
+							showingNotes[i].status = -4;
 
 							/** 走完最後一段的时间ms */
 							const finalSectionTime = noteIns.remainTime! * (1 - sectionInfo![sectionInfo?.length! - 1].start);

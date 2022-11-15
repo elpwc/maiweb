@@ -66,13 +66,13 @@ export let trackItemHeight: number = maimaiTapR * 2;
 export const holdHeadHeight: number = 70;
 
 // 判定相关
-/** TAP 在判定线停留的时间 ms */
-export const judgeLineRemainTimeTap: number = timerPeriod * 10;
-/** TOUCH 在判定後停留的时间 ms */
+/** HOLD 在判定等待判定的最大时间 ms */
+export const judgeLineRemainTimeHold: number = timerPeriod * 10;
+/** TOUCH 在判定等待判定的最大时间 ms */
 export const judgeLineRemainTimeTouch: number = timerPeriod * 18;
 
 /** 判定结果显示的时间 */
-export const judgeResultShowTime: number = timerPeriod * 30;
+export const judgeResultShowTime: number = timerPeriod * 25;
 /** 判定显示标准距离 */
 export let judgeDistance: number = maimaiTapR * 1.5;
 

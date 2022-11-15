@@ -16,11 +16,11 @@ import {
 	trackItemWidth,
 	trackItemHeight,
 	trackItemGap,
-	judgeLineRemainTimeTap,
 	judgeLineRemainTimeTouch,
 	fireworkLength,
 	setCanvasSize,
 	judgeResultShowTime,
+	judgeLineRemainTimeHold,
 } from './const';
 import { ReadMaimaiData } from './maiReader/maiReaderMain';
 
@@ -248,12 +248,6 @@ const reader_and_updater = async () => {
 					newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
 					if (newNote.rho > maimaiScreenR + maimaiTapR) {
-						newNote.status = -2;
-					}
-				} else if (newNote.status === -2) {
-					// stop
-
-					if (currentTime >= noteIns.time! + judgeLineRemainTimeTap) {
 						newNote.status = -4;
 					}
 				} else if (newNote.status === -3) {
@@ -303,7 +297,7 @@ const reader_and_updater = async () => {
 						if (currentTime >= noteIns.time!) {
 							newNote.rho = ((noteIns.time! - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 							if (noteIns.isShortHold) {
-								newNote.status = -2;
+								newNote.status = -4;
 							} else {
 								newNote.status = 3;
 							}
@@ -314,13 +308,7 @@ const reader_and_updater = async () => {
 
 					newNote.tailRho = ((currentTime - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
-					if (currentTime >= noteIns.time! + noteIns.remainTime!) {
-						newNote.status = -2;
-					}
-				} else if (newNote.status === -2) {
-					// stop
-
-					if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeTap) {
+					if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeHold) {
 						newNote.status = -4;
 					}
 				} else if (newNote.status === -3) {
@@ -350,7 +338,7 @@ const reader_and_updater = async () => {
 						// @ts-ignore
 						NoteSound.touch.cloneNode().play();
 						if (noteIns.isShortHold) {
-							newNote.status = -2;
+							newNote.status = -4;
 						} else {
 							newNote.status = 2;
 						}
@@ -360,7 +348,7 @@ const reader_and_updater = async () => {
 
 					newNote.tailRho = ((currentTime - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
 
-					if (currentTime >= noteIns.time! + noteIns.remainTime!) {
+					if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeHold) {
 						newNote.status = -4;
 					}
 				} else if (newNote.status === -3) {
@@ -430,76 +418,78 @@ const reader_and_updater = async () => {
 					newNote.rho = currentTime - noteIns.moveTime!;
 
 					// 自动画线
-					if (noteIns.isChain) {
-						// 人体蜈蚣
-						const currentLine = noteIns.slideLines![note.currentLineIndex];
-						if (currentLine.slideType === 'w') {
-							// SLIDE分段信息
-							const sectionInfoWifi = section_wifi(currentLine.pos!, currentLine.endPos ?? '');
-							sectionInfoWifi.forEach((sectionInfo, j) => {
+					if (false) {
+						if (noteIns.isChain) {
+							// 人体蜈蚣
+							const currentLine = noteIns.slideLines![note.currentLineIndex];
+							if (currentLine.slideType === 'w') {
+								// SLIDE分段信息
+								const sectionInfoWifi = section_wifi(currentLine.pos!, currentLine.endPos ?? '');
+								sectionInfoWifi.forEach((sectionInfo, j) => {
+									for (let i = 0; i < sectionInfo!.length; i++) {
+										const section = sectionInfo![i];
+										if (
+											currentTime - noteIns.moveTime! >= currentLine.beginTime! + section.start * currentLine.remainTime! &&
+											currentTime - noteIns.moveTime! < currentLine.beginTime! + (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * currentLine.remainTime!
+										) {
+											note.currentSectionIndexWifi[j] = i;
+										} else if (currentTime - noteIns.moveTime! >= currentLine.beginTime! + currentLine.remainTime!) {
+											// 一条LINE画完
+											if (j === sectionInfoWifi.length - 1) {
+												note.currentLineIndex++;
+												note.currentSectionIndexWifi = [0, 0, 0];
+												note.currentSectionIndex = 0;
+												break;
+											}
+										}
+									}
+								});
+							} else {
+								// SLIDE分段信息
+								const sectionInfo = section(currentLine.slideType, currentLine.pos!, currentLine.endPos ?? '', currentLine.turnPos);
 								for (let i = 0; i < sectionInfo!.length; i++) {
 									const section = sectionInfo![i];
 									if (
 										currentTime - noteIns.moveTime! >= currentLine.beginTime! + section.start * currentLine.remainTime! &&
 										currentTime - noteIns.moveTime! < currentLine.beginTime! + (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * currentLine.remainTime!
 									) {
-										note.currentSectionIndexWifi[j] = i;
+										note.currentSectionIndex = i;
 									} else if (currentTime - noteIns.moveTime! >= currentLine.beginTime! + currentLine.remainTime!) {
 										// 一条LINE画完
-										if (j === sectionInfoWifi.length - 1) {
-											note.currentLineIndex++;
-											note.currentSectionIndexWifi = [0, 0, 0];
-											note.currentSectionIndex = 0;
-											break;
-										}
+										note.currentLineIndex++;
+										note.currentSectionIndexWifi = [0, 0, 0];
+										note.currentSectionIndex = 0;
+										break;
 									}
 								}
-							});
-						} else {
-							// SLIDE分段信息
-							const sectionInfo = section(currentLine.slideType, currentLine.pos!, currentLine.endPos ?? '', currentLine.turnPos);
-							for (let i = 0; i < sectionInfo!.length; i++) {
-								const section = sectionInfo![i];
-								if (
-									currentTime - noteIns.moveTime! >= currentLine.beginTime! + section.start * currentLine.remainTime! &&
-									currentTime - noteIns.moveTime! < currentLine.beginTime! + (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * currentLine.remainTime!
-								) {
-									note.currentSectionIndex = i;
-								} else if (currentTime - noteIns.moveTime! >= currentLine.beginTime! + currentLine.remainTime!) {
-									// 一条LINE画完
-									note.currentLineIndex++;
-									note.currentSectionIndexWifi = [0, 0, 0];
-									note.currentSectionIndex = 0;
-									break;
-								}
 							}
-						}
-					} else {
-						// 不是人体蜈蚣
-						if (noteIns.slideType === 'w') {
-							// SLIDE分段信息
-							const sectionInfoWifi = section_wifi(noteIns.pos, noteIns.endPos ?? '');
-							sectionInfoWifi.forEach((sectionInfo, j) => {
+						} else {
+							// 不是人体蜈蚣
+							if (noteIns.slideType === 'w') {
+								// SLIDE分段信息
+								const sectionInfoWifi = section_wifi(noteIns.pos, noteIns.endPos ?? '');
+								sectionInfoWifi.forEach((sectionInfo, j) => {
+									for (let i = 0; i < sectionInfo!.length; i++) {
+										const section = sectionInfo![i];
+										if (
+											currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
+											currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
+										) {
+											note.currentSectionIndexWifi[j] = i;
+										}
+									}
+								});
+							} else {
+								// SLIDE分段信息
+								const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
 								for (let i = 0; i < sectionInfo!.length; i++) {
 									const section = sectionInfo![i];
 									if (
 										currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
 										currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
 									) {
-										note.currentSectionIndexWifi[j] = i;
+										note.currentSectionIndex = i;
 									}
-								}
-							});
-						} else {
-							// SLIDE分段信息
-							const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
-							for (let i = 0; i < sectionInfo!.length; i++) {
-								const section = sectionInfo![i];
-								if (
-									currentTime - noteIns.moveTime! >= section.start * noteIns.remainTime! &&
-									currentTime - noteIns.moveTime! < (i === sectionInfo!.length - 1 ? 1 : sectionInfo![i + 1].start) * noteIns.remainTime!
-								) {
-									note.currentSectionIndex = i;
 								}
 							}
 						}
@@ -511,7 +501,7 @@ const reader_and_updater = async () => {
 				} else if (newNote.status === -2) {
 					// stop
 					newNote.rho = noteIns.time;
-					if (currentTime >= noteIns.time! + judgeLineRemainTimeTap) {
+					if (currentTime >= noteIns.time! + judgeLineRemainTimeHold) {
 						newNote.status = -3;
 					}
 				} else if (newNote.status === -3) {
@@ -538,12 +528,6 @@ const reader_and_updater = async () => {
 					newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
 					if (currentTime >= noteIns.time!) {
-						newNote.status = -2;
-					}
-				} else if (newNote.status === -2) {
-					// stop
-
-					if (currentTime >= noteIns.time! + judgeLineRemainTimeTap) {
 						newNote.status = -4;
 					}
 				} else if (newNote.status === -3) {
@@ -588,13 +572,7 @@ const reader_and_updater = async () => {
 					newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
 					if (currentTime >= noteIns.time!) {
-						newNote.status = -2;
-					}
-				} else if (newNote.status === -2) {
-					// stop
-
-					if (currentTime >= noteIns.time! + judgeLineRemainTimeTap) {
-						newNote.status = -3;
+						newNote.status = -4;
 					}
 				} else if (newNote.status === -3) {
 					// judge
@@ -647,6 +625,9 @@ const reader_and_updater = async () => {
 			}
 			return note.status !== -1;
 		} else if (noteIns.type === NoteType.Touch) {
+			if (note.status === -4) {
+				note.status = -3;
+			}
 			return note.status !== -1;
 		} else if (noteIns.type === NoteType.Hold || noteIns.type === NoteType.TouchHold) {
 			if (note.status === -4) {
