@@ -72,7 +72,7 @@ export const judgeLineRemainTimeHold: number = timerPeriod * 10;
 export const judgeLineRemainTimeTouch: number = timerPeriod * 18;
 
 /** 判定结果显示的时间 */
-export const judgeResultShowTime: number = timerPeriod * 25;
+export const judgeResultShowTime: number = timerPeriod * 35;
 /** 判定显示标准距离 */
 export let judgeDistance: number = maimaiTapR * 1.5;
 

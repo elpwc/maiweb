@@ -128,6 +128,9 @@ export interface Note {
 
 	/** 仅用于谱面读取时 */
 	isSlideTrackBreak?: boolean;
+
+	/** 最後SlideLine的角度，用来确定判定图像的角度 */
+	slideLineDirection?: number;
 	//////////////////////////////////////////////////////////////////
 
 	/** 伪SLIDE TAP(TAP、BREAKを強制的に☆型にする) */

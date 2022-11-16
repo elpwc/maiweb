@@ -24,7 +24,7 @@ export const section = (
   });
 };
 
-/** SLIDE TRACK分段(适用于A1) */
+/** SLIDE TRACK分段(仅适用于A1开头的SLIDE TRACK) */
 const section_A1 = (
   type: string | undefined,
   endPos: number,

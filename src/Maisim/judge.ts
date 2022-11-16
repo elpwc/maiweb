@@ -720,3 +720,37 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 		}
 	}
 };
+
+/** 抬起时的判定 */
+export const judge_up = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, currentTime: number, area: TouchArea) => {
+	showingNotes.forEach((note, i) => {
+		const noteIns = currentSheet.notes[note.noteIndex];
+
+		let timeD = noteIns.time - currentTime;
+		switch (noteIns.type) {
+			case NoteType.Hold:
+				if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos)) {
+					if (timeD < -timerPeriod * 6 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
+						// 设置标志位
+						showingNotes[i].isTouching = false;
+						showingNotes[i].holdPress = false;
+						showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
+					}
+				}
+				break;
+			case NoteType.TouchHold:
+				if (area.area.name === 'C') {
+					if (timeD < -timerPeriod * 15 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
+						// 设置标志位
+						showingNotes[i].isTouching = false;
+						showingNotes[i].holdPress = false;
+						showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
+					}
+
+					// 暂停按压声音
+					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
+				}
+				break;
+		}
+	});
+};

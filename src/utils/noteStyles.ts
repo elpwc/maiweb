@@ -18,11 +18,11 @@ export enum RegularStyles {
 	Classic,
 }
 
-export enum SlideColor{
+export enum SlideColor {
 	Blue,
 	Pink,
 }
 
-export enum JudgeLineStyle{
+export enum JudgeLineStyle {
 	
 }

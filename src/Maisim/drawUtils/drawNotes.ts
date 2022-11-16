@@ -24,7 +24,7 @@ import { getTrackProps } from '../slideTracks/tracks';
 import { APositions, trackLength } from '../slideTracks/_global';
 import { drawRotationImage, lineLen } from './_base';
 import { NoteIcon } from '../resourceReaders/noteIconReader';
-import { Note } from '../../utils/note';
+import { Note, SlideLine } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
 import { section } from '../slideTracks/section';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
@@ -1293,7 +1293,6 @@ export const drawNote = (
 				break;
 		}
 	} else if (props.status === -3) {
-		console.log(note.pos);
 		// 显示判定
 		let θ = 0,
 			// Note所在的坐标
@@ -1303,99 +1302,387 @@ export const drawNote = (
 		let judgeImage: HTMLImageElement;
 		let fastlateImage: HTMLImageElement;
 
-		switch (props.judgeStatus) {
-			case JudgeStatus.CriticalPerfect:
-				judgeImage = note.isBreak ? JudgeIcon.UI_GAM_Critical_Break : JudgeIcon.UI_GAM_Critical;
-				break;
-			case JudgeStatus.Perfect:
-				judgeImage = note.isBreak ? JudgeIcon.UI_GAM_Perfect_Break : JudgeIcon.UI_GAM_Perfect;
-				break;
-			case JudgeStatus.Great:
-				judgeImage = JudgeIcon.UI_GAM_Great;
-				break;
-			case JudgeStatus.Good:
-				judgeImage = JudgeIcon.UI_GAM_Good;
-				break;
-			case JudgeStatus.Miss:
-				judgeImage = JudgeIcon.UI_GAM_Miss;
-				break;
-		}
+		if (note.type === NoteType.SlideTrack) {
+			// SLIDE TRACK的环形判定显示
 
-		const k = 1.5;
-		const judgeIconHeight = maimaiTapR * 1 * k;
-		const judgeIconWidth = ((maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
-
-		const firstWord = note.pos.substring(0, 1);
-		if (!isNaN(Number(firstWord))) {
-			// 数字开头的位置
-			θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
-			x = center[0] - judgeIconWidth / 2;
-			y = center[1] - (maimaiJudgeLineR - judgeDistance + judgeIconHeight / 2);
-		} else {
-			// 字母开头的位置（TOUCH）
-			const touchPos = note.pos.substring(1, 2);
-			switch (firstWord) {
-				case 'C':
-					x = center[0];
-					y = center[1];
-					break;
-				case 'A':
-					θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-					if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
-						x = center[0] + maimaiADTouchR * Math.cos(θ);
-						y = center[1] + maimaiADTouchR * Math.sin(θ);
-					} else {
-						x = center[0] + maimaiScreenR * Math.cos(θ);
-						y = center[1] + maimaiScreenR * Math.sin(θ);
-					}
-					break;
-				case 'B':
-					θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-					x = center[0] + maimaiBR * Math.cos(θ);
-					y = center[1] + maimaiBR * Math.sin(θ);
-					break;
-				case 'D':
-					θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-					if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
-						x = center[0] + maimaiADTouchR * Math.cos(θ);
-						y = center[1] + maimaiADTouchR * Math.sin(θ);
-					} else {
-						x = center[0] + maimaiScreenR * Math.cos(θ);
-						y = center[1] + maimaiScreenR * Math.sin(θ);
-					}
-					break;
-				case 'E':
-					θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-					x = center[0] + maimaiER * Math.cos(θ);
-					y = center[1] + maimaiER * Math.sin(θ);
-					break;
-				default:
-					break;
-			}
-		}
-
-		drawRotationImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
-
-		if (drawFastLast && props.judgeStatus !== JudgeStatus.CriticalPerfect && props.judgeStatus !== JudgeStatus.Miss) {
-			if (props.judgeTime === JudgeTimeStatus.Fast) {
-				fastlateImage = JudgeIcon.UI_GAM_Fast;
+			// 拿到SLIDE TRACK的结束点
+			let lastLine: SlideLine;
+			if (note.isChain) {
+				lastLine = note.slideLines![note.slideLines?.length! - 1];
 			} else {
-				fastlateImage = JudgeIcon.UI_GAM_Late;
+				lastLine = note;
+			}
+
+			let lastLineDirection = 0;
+			let lastLineEndPos = Number(lastLine.endPos);
+			let lastLineStartPos = Number(lastLine.pos);
+			// 确定左右上下方向
+			if (lastLine.slideType === 'w') {
+				// w
+				if (lastLineEndPos > 2 && lastLineEndPos < 7) {
+					switch (props.judgeStatus) {
+						case JudgeStatus.CriticalPerfect:
+							judgeImage = JudgeIcon.UI_GAM_SlideFan_D_Critical;
+							break;
+						case JudgeStatus.Perfect:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_D_FastPerfect_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_D_LatePerfect_01;
+							}
+							break;
+						case JudgeStatus.Great:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_D_FastGreat_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_D_LateGreat_01;
+							}
+							break;
+						case JudgeStatus.Good:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_FastGood_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_D_LateGood_01;
+							}
+							break;
+						case JudgeStatus.Miss:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_D_Fast;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_D_Late;
+							}
+							break;
+					}
+					lastLineDirection = 1;
+				} else {
+					switch (props.judgeStatus) {
+						case JudgeStatus.CriticalPerfect:
+							judgeImage = JudgeIcon.UI_GAM_SlideFan_U_Critical;
+							break;
+						case JudgeStatus.Perfect:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_U_FastPerfect_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_U_LatePerfect_01;
+							}
+							break;
+						case JudgeStatus.Great:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_U_FastGreat_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_U_LateGreat_01;
+							}
+							break;
+						case JudgeStatus.Good:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_FastGood_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_U_LateGood_01;
+							}
+							break;
+						case JudgeStatus.Miss:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_U_Fast;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideFan_U_Late;
+							}
+							break;
+					}
+					lastLineDirection = 0;
+				}
+			} else if (lastLine.slideType === '<' || lastLine.slideType === '>' || lastLine.slideType === '^') {
+				// 弧线
+				let endPos = lastLineEndPos - lastLineStartPos + 1;
+				if (endPos < 1) endPos += 8;
+
+				// 确定该用左向的弧形判定还是右向的
+				// 好麻烦
+				let useLeft = false;
+				if (lastLine.slideType === '^') {
+					// 半圆弧
+					if (endPos > 1 && endPos < 5) {
+						useLeft = false;
+						lastLineDirection = 0;
+					} else if (endPos > 5 && endPos <= 8) {
+						useLeft = true;
+						lastLineDirection = 1;
+					}
+				} else if (lastLine.slideType === '<') {
+					// <
+					if (lastLineStartPos <= 2 || lastLineStartPos >= 7) {
+						useLeft = true;
+						lastLineDirection = 1;
+					} else if (lastLineStartPos >= 3 && lastLineStartPos <= 6) {
+						useLeft = false;
+						lastLineDirection = 0;
+					}
+				} else if (lastLine.slideType === '>') {
+					// <
+					if (lastLineStartPos <= 2 || lastLineStartPos >= 7) {
+						useLeft = false;
+						lastLineDirection = 0;
+					} else if (lastLineStartPos >= 3 && lastLineStartPos <= 6) {
+						useLeft = true;
+						lastLineDirection = 1;
+					}
+				}
+
+				if (useLeft) {
+					switch (props.judgeStatus) {
+						case JudgeStatus.CriticalPerfect:
+							judgeImage = JudgeIcon.UI_GAM_SlideCircle_L_Critical;
+							break;
+						case JudgeStatus.Perfect:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_L_FastPerfect_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_L_LatePerfect_01;
+							}
+							break;
+						case JudgeStatus.Great:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_L_FastGreat_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_L_LateGreat_01;
+							}
+							break;
+						case JudgeStatus.Good:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_FastGood_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_L_LateGood_01;
+							}
+							break;
+						case JudgeStatus.Miss:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_L_Fast;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_L_Late;
+							}
+							break;
+					}
+				} else {
+					switch (props.judgeStatus) {
+						case JudgeStatus.CriticalPerfect:
+							judgeImage = JudgeIcon.UI_GAM_SlideCircle_R_Critical;
+							break;
+						case JudgeStatus.Perfect:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_R_FastPerfect_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_R_LatePerfect_01;
+							}
+							break;
+						case JudgeStatus.Great:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_R_FastGreat_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_R_LateGreat_01;
+							}
+							break;
+						case JudgeStatus.Good:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_R_FastGood_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_R_LateGood_01;
+							}
+							break;
+						case JudgeStatus.Miss:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_R_Fast;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_SlideCircle_R_Late;
+							}
+							break;
+					}
+				}
+			} else {
+				// 直线
+				if (lastLineEndPos > 4) {
+					switch (props.judgeStatus) {
+						case JudgeStatus.CriticalPerfect:
+							judgeImage = JudgeIcon.UI_GAM_Slide_L_Critical;
+							break;
+						case JudgeStatus.Perfect:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_FastPerfect_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_LatePerfect_01;
+							}
+							break;
+						case JudgeStatus.Great:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_FastGreat_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_LateGreat_01;
+							}
+							break;
+						case JudgeStatus.Good:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_FastGood_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_LateGood_01;
+							}
+							break;
+						case JudgeStatus.Miss:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_Fast;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_Slide_L_Late;
+							}
+							break;
+					}
+					lastLineDirection = 1;
+				} else {
+					switch (props.judgeStatus) {
+						case JudgeStatus.CriticalPerfect:
+							judgeImage = JudgeIcon.UI_GAM_Slide_R_Critical;
+							break;
+						case JudgeStatus.Perfect:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_R_FastPerfect_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_Slide_R_LatePerfect_01;
+							}
+							break;
+						case JudgeStatus.Great:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_R_FastGreat_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_Slide_R_LateGreat_01;
+							}
+							break;
+						case JudgeStatus.Good:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_R_FastGood_01;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_Slide_R_LateGood_01;
+							}
+							break;
+						case JudgeStatus.Miss:
+							if (props.judgeTime === JudgeTimeStatus.Fast) {
+								judgeImage = JudgeIcon.UI_GAM_Slide_R_Fast;
+							} else {
+								judgeImage = JudgeIcon.UI_GAM_Slide_R_Late;
+							}
+							break;
+					}
+					lastLineDirection = 0;
+				}
+			}
+
+			const k = 2.5;
+			const judgeIconHeight = maimaiTapR * 1 * k;
+			const judgeIconWidth = ((maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
+
+			x = APositions[lastLineEndPos - 1][0]; // center[0] - judgeIconWidth / 2;
+			y = APositions[lastLineEndPos - 1][1]; //center[1] - (maimaiJudgeLineR - judgeDistance + judgeIconHeight / 2);
+
+			if (lastLineDirection === 0) {
+				let a = note.slideLineDirection ?? 0;
+				if (a === -90) {
+					a += 180;
+				}
+				drawRotationImage(effectOverCtx, judgeImage, x - judgeIconWidth, y, judgeIconWidth, judgeIconHeight, x, y, a);
+			} else {
+				drawRotationImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, x, y, note.slideLineDirection ?? 0);
+			}
+		} else {
+			// 一般的Note的判定显示
+			switch (props.judgeStatus) {
+				case JudgeStatus.CriticalPerfect:
+					judgeImage = note.isBreak ? JudgeIcon.UI_GAM_Critical_Break : JudgeIcon.UI_GAM_Critical;
+					break;
+				case JudgeStatus.Perfect:
+					judgeImage = note.isBreak ? JudgeIcon.UI_GAM_Perfect_Break : JudgeIcon.UI_GAM_Perfect;
+					break;
+				case JudgeStatus.Great:
+					judgeImage = JudgeIcon.UI_GAM_Great;
+					break;
+				case JudgeStatus.Good:
+					judgeImage = JudgeIcon.UI_GAM_Good;
+					break;
+				case JudgeStatus.Miss:
+					judgeImage = JudgeIcon.UI_GAM_Miss;
+					break;
 			}
 
 			const k = 1.5;
-			const fastlateIconHeight = maimaiTapR * 1 * k;
-			const fastlateIconWidth = ((maimaiTapR * 1) / fastlateImage.height) * fastlateImage.width * k;
+			const judgeIconHeight = maimaiTapR * 1 * k;
+			const judgeIconWidth = ((maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
 
 			const firstWord = note.pos.substring(0, 1);
 			if (!isNaN(Number(firstWord))) {
 				// 数字开头的位置
 				θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
-				x = center[0] - fastlateIconWidth / 2;
-				y = center[1] - (maimaiJudgeLineR - judgeDistance * 2 + fastlateIconHeight / 2);
+				x = center[0] - judgeIconWidth / 2;
+				y = center[1] - (maimaiJudgeLineR - judgeDistance + judgeIconHeight / 2);
+			} else {
+				// 字母开头的位置（TOUCH）
+				const touchPos = note.pos.substring(1, 2);
+				switch (firstWord) {
+					case 'C':
+						x = center[0];
+						y = center[1];
+						break;
+					case 'A':
+						θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+						if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
+							x = center[0] + maimaiADTouchR * Math.cos(θ);
+							y = center[1] + maimaiADTouchR * Math.sin(θ);
+						} else {
+							x = center[0] + maimaiScreenR * Math.cos(θ);
+							y = center[1] + maimaiScreenR * Math.sin(θ);
+						}
+						break;
+					case 'B':
+						θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+						x = center[0] + maimaiBR * Math.cos(θ);
+						y = center[1] + maimaiBR * Math.sin(θ);
+						break;
+					case 'D':
+						θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+						if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
+							x = center[0] + maimaiADTouchR * Math.cos(θ);
+							y = center[1] + maimaiADTouchR * Math.sin(θ);
+						} else {
+							x = center[0] + maimaiScreenR * Math.cos(θ);
+							y = center[1] + maimaiScreenR * Math.sin(θ);
+						}
+						break;
+					case 'E':
+						θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+						x = center[0] + maimaiER * Math.cos(θ);
+						y = center[1] + maimaiER * Math.sin(θ);
+						break;
+					default:
+						break;
+				}
 			}
 
-			drawRotationImage(effectOverCtx, fastlateImage, x, y, fastlateIconWidth, fastlateIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
+			drawRotationImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
+
+			if (drawFastLast && props.judgeStatus !== JudgeStatus.CriticalPerfect && props.judgeStatus !== JudgeStatus.Miss) {
+				if (props.judgeTime === JudgeTimeStatus.Fast) {
+					fastlateImage = JudgeIcon.UI_GAM_Fast;
+				} else {
+					fastlateImage = JudgeIcon.UI_GAM_Late;
+				}
+
+				const k = 1.5;
+				const fastlateIconHeight = maimaiTapR * 1 * k;
+				const fastlateIconWidth = ((maimaiTapR * 1) / fastlateImage.height) * fastlateImage.width * k;
+
+				const firstWord = note.pos.substring(0, 1);
+				if (!isNaN(Number(firstWord))) {
+					// 数字开头的位置
+					θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
+					x = center[0] - fastlateIconWidth / 2;
+					y = center[1] - (maimaiJudgeLineR - judgeDistance * 2 + fastlateIconHeight / 2);
+				}
+
+				drawRotationImage(effectOverCtx, fastlateImage, x, y, fastlateIconWidth, fastlateIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
+			}
 		}
 	}
 };

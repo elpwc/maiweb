@@ -35,7 +35,7 @@ import { drawAllKeys, drawAllTouchingAreas } from './drawUtils/drawTouchingAreas
 import { KeyState } from '../utils/keyState';
 import { drawOutRing } from './drawUtils/drawOutRing';
 import { initResources } from './resourceReaders/_init';
-import { ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged } from './slideTracks/_global';
+import { APositions, ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged } from './slideTracks/_global';
 import { abs } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
 import { Note } from '../utils/note';
@@ -44,7 +44,7 @@ import { Sheet } from '../utils/sheet';
 import { Song } from '../utils/song';
 import { gameRecord } from './global';
 import { section, section_wifi } from './slideTracks/section';
-import { judge } from './judge';
+import { judge, judge_up } from './judge';
 import { updateRecord } from './recordUpdater';
 import { NoteSound } from './resourceReaders/noteSoundReader';
 import testsong_taiyoukei from './resource/sound/track/太陽系デスコ.mp3';
@@ -59,6 +59,8 @@ SongTrack!.oncanplaythrough = (e) => {
 	console.log(e);
 	//alert('rua!');
 };
+
+let auto = true;
 
 let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
 
@@ -247,6 +249,18 @@ const reader_and_updater = async () => {
 					// move
 					newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
+					if (auto) {
+						if (newNote.rho >= maimaiJudgeLineR * 0.8) {
+							judge(
+								showingNotes,
+								currentSheet,
+								currentTime,
+								{ area: whichArea(APositions[Number(noteIns.pos) - 1][0], APositions[Number(noteIns.pos) - 1][1])!, pressTime: currentTime },
+								currentTouchingArea
+							);
+						}
+					}
+
 					if (newNote.rho > maimaiScreenR + maimaiTapR) {
 						newNote.status = -4;
 					}
@@ -417,8 +431,8 @@ const reader_and_updater = async () => {
 					// move
 					newNote.rho = currentTime - noteIns.moveTime!;
 
-					// 自动画线
-					if (false) {
+					// auto 自动画线
+					if (auto) {
 						if (noteIns.isChain) {
 							// 人体蜈蚣
 							const currentLine = noteIns.slideLines![note.currentLineIndex];
@@ -806,36 +820,7 @@ const onPressDown = (area: TouchArea) => {
 };
 
 const onPressUp = (area: TouchArea) => {
-	showingNotes.forEach((note, i) => {
-		const noteIns = currentSheet.notes[note.noteIndex];
-
-		let timeD = noteIns.time - currentTime;
-		switch (noteIns.type) {
-			case NoteType.Hold:
-				if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos)) {
-					if (timeD < -timerPeriod * 6 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
-						// 设置标志位
-						showingNotes[i].isTouching = false;
-						showingNotes[i].holdPress = false;
-						showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
-					}
-				}
-				break;
-			case NoteType.TouchHold:
-				if (area.area.name === 'C') {
-					if (timeD < -timerPeriod * 15 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
-						// 设置标志位
-						showingNotes[i].isTouching = false;
-						showingNotes[i].holdPress = false;
-						showingNotes[i].holdingTime += currentTime - (showingNotes[i].touchedTime ?? 0);
-					}
-
-					// 暂停按压声音
-					updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
-				}
-				break;
-		}
-	});
+	judge_up(showingNotes, currentSheet, currentTime, area);
 	console.log('up', gameRecord, showingNotes);
 };
 

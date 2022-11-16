@@ -12,7 +12,7 @@ export interface Area {
 	/** 围住的多边形的所有顶点 */
 	points: [number, number][];
 
-	// 适用于key
+	// 适用于key(外键)
 	leftAngle?: number;
 	rightAngle?: number;
 }
