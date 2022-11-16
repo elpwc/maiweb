@@ -50,8 +50,8 @@ TOUCH GROUP√
 6.6. SHORT TOUCH HOLD FIREWORK不显示草【急】√
 7. 应对C1 C2後接f的写法【急急急】√
 8. 音频加载 onload测试【重要】
-9. 图片分步载入【重要】
-10. 判定反馈effect
+9. 图片分步载入【重要】√
+10. 判定反馈effect√
 11. 速度放慢後判定不能对齐
 12. TOUCH HOLD Miss判定下结束後播放声音【急】√
 13. maimai只会处理判定区间内的第一个note，但这边全部会判定上草【急急急】【算了先不急】√
@@ -65,3 +65,7 @@ TOUCH GROUP√
 
 11.1:
 1. 先做完Maisim选择的页面，再做外面的写谱器
+
+11.17:
+1. auto SLIDE TRACK 总是绿，HOLD经常MISS
+2. 人体蜈蚣提前划完其中一段的话，星星会消失【bug】
