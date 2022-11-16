@@ -250,12 +250,17 @@ const reader_and_updater = async () => {
 					newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
 					if (auto) {
-						if (newNote.rho >= maimaiJudgeLineR * 0.8) {
+						if (newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
 							judge(
 								showingNotes,
 								currentSheet,
 								currentTime,
-								{ area: whichArea(APositions[Number(noteIns.pos) - 1][0], APositions[Number(noteIns.pos) - 1][1])!, pressTime: currentTime },
+								{
+									area: areas.filter((a) => {
+										return a.name === 'A' + noteIns.pos;
+									})[0],
+									pressTime: currentTime,
+								},
 								currentTouchingArea
 							);
 						}
@@ -285,14 +290,34 @@ const reader_and_updater = async () => {
 					// grow
 					newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
+					// HOLD长度大于maimaiJudgeLine-maimaiSummonLine
 					if (currentTime >= noteIns.time!) {
 						newNote.status = 2;
 					}
+
+					// HOLD长度小于maimaiJudgeLine-maimaiSummonLine
 					if (currentTime >= noteIns.remainTime! + noteIns.moveTime!) {
 						newNote.status = 2;
 					}
 				} else if (newNote.status === 2) {
 					// move
+
+					if (auto) {
+						if (newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
+							judge(
+								showingNotes,
+								currentSheet,
+								currentTime,
+								{
+									area: areas.filter((a) => {
+										return a.name === 'A' + noteIns.pos;
+									})[0],
+									pressTime: currentTime,
+								},
+								currentTouchingArea
+							);
+						}
+					}
 
 					if (noteIns.time! < noteIns.moveTime! + noteIns.remainTime!) {
 						// HOLD长度大于maimaiJudgeLine-maimaiSummonLine
@@ -348,6 +373,23 @@ const reader_and_updater = async () => {
 
 					newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
 
+					if (auto) {
+						if (currentTime >= noteIns.time!) {
+							judge(
+								showingNotes,
+								currentSheet,
+								currentTime,
+								{
+									area: areas.filter((a) => {
+										return a.name === noteIns.pos;
+									})[0],
+									pressTime: currentTime,
+								},
+								currentTouchingArea
+							);
+						}
+					}
+
 					if (currentTime >= noteIns.time!) {
 						// @ts-ignore
 						NoteSound.touch.cloneNode().play();
@@ -387,6 +429,23 @@ const reader_and_updater = async () => {
 					// converge
 
 					newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
+
+					if (auto) {
+						if (currentTime >= noteIns.time!) {
+							judge(
+								showingNotes,
+								currentSheet,
+								currentTime,
+								{
+									area: areas.filter((a) => {
+										return a.name === noteIns.pos;
+									})[0],
+									pressTime: currentTime,
+								},
+								currentTouchingArea
+							);
+						}
+					}
 
 					if (currentTime >= noteIns.time!) {
 						// @ts-ignore
@@ -540,6 +599,23 @@ const reader_and_updater = async () => {
 					// move
 
 					newNote.rho = ((currentTime - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+
+					if (auto) {
+						if (newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
+							judge(
+								showingNotes,
+								currentSheet,
+								currentTime,
+								{
+									area: areas.filter((a) => {
+										return a.name === 'A' + noteIns.pos;
+									})[0],
+									pressTime: currentTime,
+								},
+								currentTouchingArea
+							);
+						}
+					}
 
 					if (currentTime >= noteIns.time!) {
 						newNote.status = -4;
