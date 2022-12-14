@@ -33,7 +33,7 @@ export const setCanvasSize = (w: number, h: number) => {
 	judgeDistance = maimaiTapR * 1.5;
 };
 
-export let center = [canvasWidth / 2, canvasHeight / 2];
+export let center: [number, number] = [canvasWidth / 2, canvasHeight / 2];
 
 // 屏幕
 export let maimaiR = canvasWidth / 2;

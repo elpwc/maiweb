@@ -1313,6 +1313,17 @@ export const drawNote = (
 				lastLine = note;
 			}
 
+			/** 位置在哪一竖列上，从右往左数 */
+			const whichLine = (pos: number) =>
+				[
+					[2, 3],
+					[1, 4],
+					[8, 5],
+					[7, 6],
+				].findIndex((line) => {
+					return line.includes(pos);
+				});
+
 			let lastLineDirection = 0;
 			let lastLineEndPos = Number(lastLine.endPos);
 			let lastLineStartPos = Number(lastLine.pos);
@@ -1498,7 +1509,9 @@ export const drawNote = (
 				}
 			} else {
 				// 直线
-				if (lastLineEndPos > 4) {
+				const startLine = whichLine(lastLineStartPos);
+				const endLine = whichLine(lastLineEndPos);
+				if (endLine > startLine) {
 					switch (props.judgeStatus) {
 						case JudgeStatus.CriticalPerfect:
 							judgeImage = JudgeIcon.UI_GAM_Slide_L_Critical;
@@ -1580,9 +1593,9 @@ export const drawNote = (
 
 			if (lastLineDirection === 0) {
 				let a = note.slideLineDirection ?? 0;
-				if (a === -90) {
-					a += 180;
-				}
+				// if (a === -90) {
+				// 	a += 180;
+				// }
 				drawRotationImage(effectOverCtx, judgeImage, x - judgeIconWidth, y, judgeIconWidth, judgeIconHeight, x, y, a);
 			} else {
 				drawRotationImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, x, y, note.slideLineDirection ?? 0);

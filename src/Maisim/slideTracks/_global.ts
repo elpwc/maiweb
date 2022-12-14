@@ -72,6 +72,35 @@ export interface Segment {
 	a: string[];
 }
 
+/** 返回坐标绕中点旋转r度的结果 */
+export const rotateCoordination = (x: number, y: number, cx: number, cy: number, rad: number): [number, number] => {
+	const a = x - cx,
+		b = y - cy;
+
+	const θ = (atan(b / a) / π) * 180;
+	const r = lineLen(0, 0, a, b);
+
+	const rx = r * cos(θ + rad) + cx;
+	const ry = r * sin(θ + rad) + cy;
+
+	return [rx, ry];
+};
+
+/** 返回坐标绕中点旋转r度的结果 */
+export const rotateCoordination2 = (p: [number, number], c: [number, number], rad: number): [number, number] => {
+	const a = p[0] - c[0],
+		b = p[1] - c[1];
+
+	const θ = (atan(b / a) / π) * 180;
+	const r = lineLen(0, 0, a, b);
+
+	const rx = r * cos(θ + rad) + c[0];
+	const ry = r * sin(θ + rad) + c[1];
+
+	return [rx, ry];
+};
+
+/** 一条SLIDE轨迹的长度 */
 export const trackLength = (type: string, startPos: number, endPosOri: number, turnPosOri?: number): number => {
 	let endPos = endPosOri - startPos + 1;
 	if (endPos < 1) endPos += 8;
