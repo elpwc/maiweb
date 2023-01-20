@@ -19,20 +19,21 @@ import {
  * @param slideLine
  * @returns 角度喵
  */
-export const getJudgeDirection = (endPosOri: string, startPosOri: string, turnPosOri: string, type: string) => {
-	// let endPos = Number(endPosOri) - Number(startPosOri) + 1;
-	// let turnPos = Number(turnPosOri) - Number(startPosOri) + 1;
-	// if (endPos < 1) endPos += 8;
-	// if (turnPos < 1) turnPos += 8;
+export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string, turnPosOri_: string, type: string) => {
+	let startPos = Number(startPosOri_);
+	let endPosOri = Number(endPosOri_);
+	let turnPosOri = Number(turnPosOri_);
 
-	let angle = ((Number(startPosOri) - 1) * 360) / 8;
+	let endPos = endPosOri - startPos + 1;
+	let turnPos = turnPosOri - startPos + 1;
+	if (endPos < 1) endPos += 8;
+	if (turnPos < 1) turnPos += 8;
+
+	let angle = ((startPos - 1) * 360) / 8;
 
 	// let startPosX = APositions[0][0],
 	// 	startPosY = APositions[0][1];
 
-	let startPos = Number(startPosOri);
-	let endPos = Number(endPosOri);
-	let turnPos = Number(turnPosOri);
 	let startPosX = APositions[startPos - 1][0],
 		startPosY = APositions[startPos - 1][1];
 
@@ -40,20 +41,19 @@ export const getJudgeDirection = (endPosOri: string, startPosOri: string, turnPo
 		case '<':
 		case '>':
 		case '^':
-			break;
 		case '-':
 		case 'w':
 			break;
 		case 's':
 			{
-				const startPosPx = rotateCoordination2(szLeftPoint, center, angle);
+				const startPosPx = rotateCoordination2(szRightPoint, center, angle);
 				startPosX = startPosPx[0];
 				startPosY = startPosPx[1];
 			}
 			break;
 		case 'z':
 			{
-				const startPosPx = rotateCoordination2(szRightPoint, center, angle);
+				const startPosPx = rotateCoordination2(szLeftPoint, center, angle);
 				startPosX = startPosPx[0];
 				startPosY = startPosPx[1];
 			}
@@ -64,7 +64,7 @@ export const getJudgeDirection = (endPosOri: string, startPosOri: string, turnPo
 			break;
 		case 'V':
 			{
-				const startPosPx = rotateCoordination2(APositions[turnPos - 1], center, angle);
+				const startPosPx = rotateCoordination2(APositions[turnPosOri - 1], center, angle);
 				startPosX = startPosPx[0];
 				startPosY = startPosPx[1];
 			}
@@ -74,7 +74,7 @@ export const getJudgeDirection = (endPosOri: string, startPosOri: string, turnPo
 				/** 圆弧开始画的角度 */
 				const startAngle = -0.75;
 				/** 圆弧的角度 */
-				const angle = 0.25 * (endPos >= 6 ? 14 - endPos : 6 - endPos);
+				const angle = 0.25 * (endPosOri >= 6 ? 14 - endPosOri : 6 - endPosOri);
 				/** 圆弧终止的点 */
 				const startPosPx = rotateCoordination(
 					center[0] + qpCenterCircleR * cos((startAngle - angle) * π),
@@ -92,7 +92,7 @@ export const getJudgeDirection = (endPosOri: string, startPosOri: string, turnPo
 				/** 圆弧开始画的角度 */
 				const startAngle = 0;
 				/** 圆弧的角度 */
-				const angle = 0.25 * (endPos <= 4 ? endPos + 4 : endPos - 4);
+				const angle = 0.25 * (endPosOri <= 4 ? endPosOri + 4 : endPosOri - 4);
 
 				const startPosPx = rotateCoordination(
 					center[0] + qpCenterCircleR * cos((startAngle + angle) * π),
@@ -108,7 +108,7 @@ export const getJudgeDirection = (endPosOri: string, startPosOri: string, turnPo
 		case 'pp':
 			{
 				const startAngle = ppPoints[0];
-				const angle = endPos === 4 ? 1 - ppPoints[endPos] + 1 + startAngle + 2 : 1 - ppPoints[endPos] + 1 + startAngle;
+				const angle = endPosOri === 4 ? 1 - ppPoints[endPosOri] + 1 + startAngle + 2 : 1 - ppPoints[endPosOri] + 1 + startAngle;
 
 				const startPosPx = rotateCoordination(
 					qpRightCircleCenter[0] + qpLeftRighCircleR * cos((startAngle - angle) * π),
@@ -124,7 +124,7 @@ export const getJudgeDirection = (endPosOri: string, startPosOri: string, turnPo
 		case 'qq':
 			{
 				const startAngle = qqPoints[0];
-				const angle = endPos === 7 ? qqPoints[endPos] - startAngle : 1 + qqPoints[endPos] + 1 - startAngle;
+				const angle = endPosOri === 7 ? qqPoints[endPosOri] - startAngle : 1 + qqPoints[endPosOri] + 1 - startAngle;
 
 				const startPosPx = rotateCoordination(
 					qpLeftCircleCenter[0] + qpLeftRighCircleR * cos((startAngle + angle) * π),
@@ -141,21 +141,149 @@ export const getJudgeDirection = (endPosOri: string, startPosOri: string, turnPo
 			break;
 	}
 
-	if (type === '<' || type === '>' || type === '^') {
-		let a = ((Number(endPos) - Number(startPosOri)) * 360) / 8;
+	if (type === '<' || type === '>' || type === '^' || type === 'w') {
+		const direction = getJudgeDirection(startPos, endPosOri, turnPosOri, type);
 
-		return a;
+		let angle = 0;
+
+		if (type === '^') {
+			// 半圆弧
+			if (endPos > 1 && endPos < 5) {
+				angle = ((endPos - 1 + startPos - 1) * 360) / 8;
+			} else if (endPos > 5 && endPos <= 8) {
+				angle = ((endPos - 8 + startPos - 1) * 360) / 8;
+			}
+		} else if (type === '<') {
+			// <
+			if (startPos > 2 && startPos < 7) {
+				angle = ((endPos - 1 + startPos - 1) * 360) / 8;
+			} else if (startPos < 3 || startPos > 6) {
+				angle = ((endPos - 8 + startPos - 1) * 360) / 8;
+			}
+		} else if (type === '>') {
+			// >
+			if (startPos > 2 && startPos < 7) {
+				angle = ((endPos - 8 + startPos - 1) * 360) / 8;
+			} else if (startPos < 3 || startPos > 6) {
+				angle = ((endPos - 1 + startPos - 1) * 360) / 8;
+			}
+		} else if (type === 'w') {
+			// w
+			if (direction === 0) {
+				angle = ((endPosOri - 1 + 0.5) * 360) / 8;
+			} else {
+				angle = ((endPosOri - 8 + 0.5) * 360) / 8;
+			}
+		}
+
+		return {
+			image: type === 'w' ? 2 : 1,
+			direction,
+			angle,
+		};
 	} else {
-		// let a = abs((atan((startPosY - APositions[endPos - 1][1]) / (startPosX - APositions[endPos - 1][0])) / π) * 180);
-		// if (Number(endPosOri) > 4) {
-		// 	a = -a;
-		// }
-		// if ((Number(endPosOri) > 6 || Number(endPosOri) < 3) && type === 'v') {
-		// 	a = -a;
-		// }
-		// return a + angle;
-		let a = (atan((APositions[endPos - 1][1] - startPosY) / (APositions[endPos - 1][0] - startPosX)) / π) * 180;
+		const direction = getJudgeDirection(startPos, endPosOri, turnPosOri, type);
+		let angle = 0;
+		if (direction === 0) {
+			angle = (atan((APositions[endPosOri - 1][1] - startPosY) / (APositions[endPosOri - 1][0] - startPosX)) / π) * 180;
+		} else {
+			angle = (atan((APositions[endPosOri - 1][1] - startPosY) / (APositions[endPosOri - 1][0] - startPosX)) / π) * 180 - 180;
+		}
 
-		return a;
+		return {
+			image: 0,
+			direction,
+			angle,
+		};
 	}
+};
+
+const getJudgeDirection = (startPos: number, endPosOri: number, turnPosOri: number, slideType: string) => {
+	/** 位置在哪一竖列上，从右往左数 */
+	const whichLine = (pos: number) =>
+		[
+			[2, 3],
+			[1, 4],
+			[8, 5],
+			[7, 6],
+		].findIndex((line) => {
+			return line.includes(pos);
+		});
+
+	let lastLineDirection = 0;
+	// 确定左右上下方向
+	if (slideType === 'w') {
+		// w
+		if (endPosOri > 2 && startPos < 7) {
+			lastLineDirection = 1;
+		} else {
+			lastLineDirection = 0;
+		}
+	} else if (slideType === '<' || slideType === '>' || slideType === '^') {
+		// 弧线
+		let endPos = endPosOri - startPos + 1;
+		if (endPos < 1) endPos += 8;
+		// 好麻烦
+		if (slideType === '^') {
+			// 半圆弧
+			if (endPos > 1 && endPos < 5) {
+				lastLineDirection = 1;
+			} else if (endPos > 5 && endPos <= 8) {
+				lastLineDirection = 0;
+			}
+		} else if (slideType === '<') {
+			// <
+			if (startPos > 2 && startPos < 7) {
+				lastLineDirection = 1;
+			} else if (startPos < 3 || startPos > 6) {
+				lastLineDirection = 0;
+			}
+		} else if (slideType === '>') {
+			// >
+			if (startPos > 2 && startPos < 7) {
+				lastLineDirection = 0;
+			} else if (startPos < 3 || startPos > 6) {
+				lastLineDirection = 1;
+			}
+		}
+	} else {
+		if (slideType === '-' || slideType === 's' || slideType === 'z') {
+			// 直线
+			const startLine = whichLine(startPos);
+			const endLine = whichLine(endPosOri);
+			if (endLine > startLine) {
+				lastLineDirection = 0;
+			} else {
+				lastLineDirection = 1;
+			}
+		} else if (slideType === 'v') {
+			// v
+			const endLine = whichLine(endPosOri);
+			if (endLine > 1) {
+				// 朝左
+				lastLineDirection = 0;
+			} else {
+				// 朝右
+				lastLineDirection = 1;
+			}
+		} else if (slideType === 'V') {
+			// V
+			const startLine = whichLine(turnPosOri);
+			const endLine = whichLine(endPosOri);
+			if (endLine > startLine) {
+				lastLineDirection = 0;
+			} else {
+				lastLineDirection = 1;
+			}
+		} else {
+			// pqppqq
+			const endLine = whichLine(endPosOri);
+			if (endLine > 1) {
+				lastLineDirection = 0;
+			} else {
+				lastLineDirection = 1;
+			}
+		}
+	}
+	return lastLineDirection;
 };

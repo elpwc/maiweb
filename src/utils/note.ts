@@ -1,3 +1,5 @@
+import { SlideTrackJudgementParams } from "./slideTrackJudgementParams";
+
 /** 一拍（可能是空白的，代表空拍） */
 export interface Beat {
 	// notes: Note[];
@@ -130,7 +132,7 @@ export interface Note {
 	isSlideTrackBreak?: boolean;
 
 	/** 最後SlideLine的角度，用来确定判定图像的角度 */
-	slideLineDirection?: number;
+	slideLineDirectionParams?: SlideTrackJudgementParams;
 	//////////////////////////////////////////////////////////////////
 
 	/** 伪SLIDE TAP(TAP、BREAKを強制的に☆型にする) */

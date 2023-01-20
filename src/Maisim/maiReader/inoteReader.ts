@@ -2,7 +2,7 @@ import { abs } from '../../math';
 import { Note, Beat, SlideTrack } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
 import { fireworkLength } from '../const';
-import { getJudgeDirection } from '../slideTracks/judgeDirection';
+import { getJudgeDirectionParams } from '../slideTracks/judgeDirection';
 // 仅仅用来计算分段数量
 import { section } from '../slideTracks/section';
 import { analyse_note_original_data } from './noteStrAnalyser';
@@ -189,14 +189,14 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 							sectionCount: slideTrack.slideType === 'w' ? 5 : section(slideTrack.slideType, res.pos, slideTrack.endPos!, slideTrack.turnPos)?.length,
 							isChain: slideTrack.isChain,
 							slideLines: slideTrack.slideLines,
-							slideLineDirection: slideTrack.isChain
-								? getJudgeDirection(
+							slideLineDirectionParams: slideTrack.isChain
+								? getJudgeDirectionParams(
 										slideTrack.slideLines![slideTrack.slideLines?.length! - 1].endPos ?? '',
 										slideTrack.slideLines![slideTrack.slideLines?.length! - 1].pos ?? '',
 										slideTrack.slideLines![slideTrack.slideLines?.length! - 1].turnPos ?? '',
 										slideTrack.slideLines![slideTrack.slideLines?.length! - 1].slideType ?? ''
 								  )
-								: getJudgeDirection(slideTrack.endPos ?? '', res.pos, slideTrack.turnPos ?? '', slideTrack.slideType ?? ''),
+								: getJudgeDirectionParams(slideTrack.endPos ?? '', res.pos, slideTrack.turnPos ?? '', slideTrack.slideType ?? ''),
 						};
 
 						notesRes.push(tempSlideTrackNote);
