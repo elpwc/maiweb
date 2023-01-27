@@ -36,22 +36,31 @@ let tapIcon: HTMLImageElement;
 let tapEachIcon: HTMLImageElement;
 let tapBreakIcon: HTMLImageElement;
 let tapExIcon: HTMLImageElement;
+let tapExEachIcon: HTMLImageElement;
+let tapExBreakIcon: HTMLImageElement;
 
 let holdIcon: HTMLImageElement;
 let holdEachIcon: HTMLImageElement;
 let holdBreakIcon: HTMLImageElement;
 let holdExIcon: HTMLImageElement;
+let holdExEachIcon: HTMLImageElement;
+let holdExBreakIcon: HTMLImageElement;
+let holdExMissIcon: HTMLImageElement;
 let holdMissIcon: HTMLImageElement;
 
 let starIcon: HTMLImageElement;
 let starEachIcon: HTMLImageElement;
 let starBreakIcon: HTMLImageElement;
 let starExIcon: HTMLImageElement;
+let starExEachIcon: HTMLImageElement;
+let starExBreakIcon: HTMLImageElement;
 
 let starDoubleIcon: HTMLImageElement;
 let starDoubleEachIcon: HTMLImageElement;
 let starDoubleBreakIcon: HTMLImageElement;
 let starDoubleExIcon: HTMLImageElement;
+let starDoubleExEachIcon: HTMLImageElement;
+let starDoubleExBreakIcon: HTMLImageElement;
 
 let slideIcon: HTMLImageElement;
 let slideEachIcon: HTMLImageElement;
@@ -63,31 +72,41 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
 			tapIcon = NoteIcon.Tap_00;
 			tapEachIcon = NoteIcon.Tap_Each_00;
 			tapBreakIcon = NoteIcon.Break_00;
-			tapExIcon = NoteIcon.Tap_Ex_00;
+			tapExIcon = NoteIcon.Tap_Ex_00_pink;
+			tapExEachIcon = NoteIcon.Tap_Ex_00_each;
+			tapExBreakIcon = NoteIcon.Tap_Ex_00_break;
 			break;
 		case TapStyles.Classic:
 			tapIcon = NoteIcon.Tap_01;
 			tapEachIcon = NoteIcon.Tap_Each_01;
 			tapBreakIcon = NoteIcon.Break_01;
-			tapExIcon = NoteIcon.Tap_Ex_01;
+			tapExIcon = NoteIcon.Tap_Ex_01_pink;
+			tapExEachIcon = NoteIcon.Tap_Ex_01_each;
+			tapExBreakIcon = NoteIcon.Tap_Ex_01_break;
 			break;
 		case TapStyles.DX:
 			tapIcon = NoteIcon.Tap_02;
 			tapEachIcon = NoteIcon.Tap_Each_02;
 			tapBreakIcon = NoteIcon.Break_02;
-			tapExIcon = NoteIcon.Tap_Ex_02;
+			tapExIcon = NoteIcon.Tap_Ex_02_pink;
+			tapExEachIcon = NoteIcon.Tap_Ex_02_each;
+			tapExBreakIcon = NoteIcon.Tap_Ex_02_break;
 			break;
 		case TapStyles.Strip:
 			tapIcon = NoteIcon.Tap_03;
 			tapEachIcon = NoteIcon.Tap_Each_03;
 			tapBreakIcon = NoteIcon.Break_03;
-			tapExIcon = NoteIcon.Tap_Ex_03;
+			tapExIcon = NoteIcon.Tap_Ex_03_pink;
+			tapExEachIcon = NoteIcon.Tap_Ex_03_each;
+			tapExBreakIcon = NoteIcon.Tap_Ex_03_break;
 			break;
 		case TapStyles.TAPKun:
 			tapIcon = NoteIcon.Tap_04;
 			tapEachIcon = NoteIcon.Tap_Each_04;
 			tapBreakIcon = NoteIcon.Break_04;
-			tapExIcon = NoteIcon.Tap_Ex_04;
+			tapExIcon = NoteIcon.Tap_Ex_04_pink;
+			tapExEachIcon = NoteIcon.Tap_Ex_04_each;
+			tapExBreakIcon = NoteIcon.Tap_Ex_04_break;
 			break;
 	}
 
@@ -96,14 +115,20 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
 			holdIcon = NoteIcon.Hold_00;
 			holdEachIcon = NoteIcon.Hold_Each_00;
 			holdBreakIcon = NoteIcon.Hold_Break_00;
-			holdExIcon = NoteIcon.Hold_Ex_00;
+			holdExIcon = NoteIcon.Hold_Ex_00_pink;
+			holdExEachIcon = NoteIcon.Hold_Ex_00_each;
+			holdExBreakIcon = NoteIcon.Hold_Ex_00_break;
+			holdExMissIcon = NoteIcon.Hold_Ex_00;
 			holdMissIcon = NoteIcon.Miss_00;
 			break;
 		case RegularStyles.Classic:
 			holdIcon = NoteIcon.Hold_01;
 			holdEachIcon = NoteIcon.Hold_Each_01;
 			holdBreakIcon = NoteIcon.Hold_Break_01;
-			holdExIcon = NoteIcon.Hold_Ex_01;
+			holdExIcon = NoteIcon.Hold_Ex_01_pink;
+			holdExEachIcon = NoteIcon.Hold_Ex_01_each;
+			holdExBreakIcon = NoteIcon.Hold_Ex_01_break;
+			holdExMissIcon = NoteIcon.Hold_Ex_01;
 			holdMissIcon = NoteIcon.Miss_01;
 			break;
 	}
@@ -113,20 +138,30 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
 			slideIcon = NoteIcon.Slide_00;
 			slideEachIcon = NoteIcon.Slide_Each_00;
 			slideBreakIcon = NoteIcon.Slide_Break_00;
+
 			starBreakIcon = NoteIcon.BreakStar_00;
 			starDoubleBreakIcon = NoteIcon.BreakStar_Double_00;
-			starDoubleExIcon = NoteIcon.Star_Ex_00;
-			starExIcon = NoteIcon.Star_Ex_00;
+
+			starDoubleExEachIcon = NoteIcon.Star_Ex_Double_00_each;
+			starDoubleExBreakIcon = NoteIcon.Star_Ex_Double_00_break;
+
+			starExEachIcon = NoteIcon.Star_Ex_00_each;
+			starExBreakIcon = NoteIcon.Star_Ex_00_break;
+
 			starEachIcon = NoteIcon.Star_Each_00;
 			starDoubleEachIcon = NoteIcon.Star_Each_00;
 			switch (slideColor) {
 				case SlideColor.Blue:
 					starIcon = NoteIcon.Star_00;
 					starDoubleIcon = NoteIcon.Star_00;
+					starExIcon = NoteIcon.Star_Ex_00_blue;
+					starDoubleExIcon = NoteIcon.Star_Ex_Double_00_blue;
 					break;
 				case SlideColor.Pink:
 					starIcon = NoteIcon.Star_Pink_00;
 					starDoubleIcon = NoteIcon.Star_Pink_Double_00;
+					starExIcon = NoteIcon.Star_Ex_00_pink;
+					starDoubleExIcon = NoteIcon.Star_Ex_Double_00_pink;
 					break;
 			}
 
@@ -135,19 +170,30 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
 			slideIcon = NoteIcon.Slide_01;
 			slideEachIcon = NoteIcon.Slide_Each_01;
 			slideBreakIcon = NoteIcon.Slide_Break_01;
+
+			starBreakIcon = NoteIcon.BreakStar_01;
 			starDoubleBreakIcon = NoteIcon.BreakStar_Double_01;
-			starDoubleExIcon = NoteIcon.Star_Ex_01;
-			starExIcon = NoteIcon.Star_Ex_01;
+
+			starDoubleExEachIcon = NoteIcon.Star_Ex_Double_01_each;
+			starDoubleExBreakIcon = NoteIcon.Star_Ex_Double_01_break;
+
+			starExEachIcon = NoteIcon.Star_Ex_01_each;
+			starExBreakIcon = NoteIcon.Star_Ex_01_break;
+
 			starEachIcon = NoteIcon.Star_Each_01;
 			starDoubleEachIcon = NoteIcon.Star_Each_01;
 			switch (slideColor) {
 				case SlideColor.Blue:
 					starIcon = NoteIcon.Star_01;
 					starDoubleIcon = NoteIcon.Star_Double_01;
+					starExIcon = NoteIcon.Star_Ex_01_blue;
+					starDoubleExIcon = NoteIcon.Star_Ex_Double_01_blue;
 					break;
 				case SlideColor.Pink:
 					starIcon = NoteIcon.Star_Pink_01;
 					starDoubleIcon = NoteIcon.Star_Pink_Double_01;
+					starExIcon = NoteIcon.Star_Ex_01_pink;
+					starDoubleExIcon = NoteIcon.Star_Ex_Double_01_pink;
 					break;
 			}
 
@@ -1129,42 +1175,64 @@ export const drawNote = (
 				if (isEach) {
 					if (note.isBreak) {
 						drawTapImage(tapBreakIcon);
+						if (note.isEx) {
+							drawTapImage(tapExBreakIcon);
+						}
 					} else {
 						drawTapImage(tapEachIcon);
+						if (note.isEx) {
+							drawTapImage(tapExEachIcon);
+						}
 					}
 				} else {
 					if (note.isBreak) {
 						drawTapImage(tapBreakIcon);
+						if (note.isEx) {
+							drawTapImage(tapExBreakIcon);
+						}
 					} else {
 						drawTapImage(tapIcon);
+						if (note.isEx) {
+							drawTapImage(tapExIcon);
+						}
 					}
 				}
-				if (note.isEx) {
-					drawTapImage(tapExIcon);
-				}
+
 				break;
 			case NoteType.Hold:
 				if (props.isTouching || (!props.isTouching && props.rho < maimaiJudgeLineR - maimaiSummonLineR)) {
 					if (isEach) {
 						if (note.isBreak) {
 							drawHoldImage(holdBreakIcon, note.isShortHold);
+							if (note.isEx) {
+								drawHoldImage(holdExBreakIcon, note.isShortHold);
+							}
 						} else {
 							drawHoldImage(holdEachIcon, note.isShortHold);
+							if (note.isEx) {
+								drawHoldImage(holdExEachIcon, note.isShortHold);
+							}
 						}
 					} else {
 						if (note.isBreak) {
 							drawHoldImage(holdBreakIcon, note.isShortHold);
+							if (note.isEx) {
+								drawHoldImage(holdExBreakIcon, note.isShortHold);
+							}
 						} else {
 							drawHoldImage(holdIcon, note.isShortHold);
+							if (note.isEx) {
+								drawHoldImage(holdExIcon, note.isShortHold);
+							}
 						}
 					}
 				} else {
 					drawHoldImage(holdMissIcon, note.isShortHold);
+					if (note.isEx) {
+						drawHoldImage(holdExMissIcon, note.isShortHold);
+					}
 				}
 
-				if (note.isEx) {
-					drawHoldImage(holdExIcon, note.isShortHold);
-				}
 				break;
 			case NoteType.Slide:
 				// console.log(note, note.slideTracks)
@@ -1172,37 +1240,55 @@ export const drawNote = (
 					// DOUBLE TRACK
 					if (isEach) {
 						if (note.isBreak) {
-							drawTapImage(starDoubleBreakIcon);
+							drawSlideTapImage(starDoubleBreakIcon);
+							if (note.isEx) {
+								drawSlideTapImage(starDoubleExBreakIcon);
+							}
 						} else {
-							drawTapImage(starDoubleEachIcon);
+							drawSlideTapImage(starDoubleEachIcon);
+							if (note.isEx) {
+								drawSlideTapImage(starDoubleExEachIcon);
+							}
 						}
 					} else {
 						if (note.isBreak) {
 							drawSlideTapImage(starDoubleBreakIcon);
+							if (note.isEx) {
+								drawSlideTapImage(starDoubleExBreakIcon);
+							}
 						} else {
 							drawSlideTapImage(starDoubleIcon);
+							if (note.isEx) {
+								drawSlideTapImage(starDoubleExIcon);
+							}
 						}
-					}
-					if (note.isEx) {
-						drawSlideTapImage(starDoubleExIcon);
 					}
 				} else {
 					// SINGLE
 					if (isEach) {
 						if (note.isBreak) {
 							drawSlideTapImage(starBreakIcon);
+							if (note.isEx) {
+								drawSlideTapImage(starExBreakIcon);
+							}
 						} else {
 							drawSlideTapImage(starEachIcon);
+							if (note.isEx) {
+								drawSlideTapImage(starExEachIcon);
+							}
 						}
 					} else {
 						if (note.isBreak) {
 							drawSlideTapImage(starBreakIcon);
+							if (note.isEx) {
+								drawSlideTapImage(starExBreakIcon);
+							}
 						} else {
 							drawSlideTapImage(starIcon);
+							if (note.isEx) {
+								drawSlideTapImage(starExIcon);
+							}
 						}
-					}
-					if (note.isEx) {
-						drawSlideTapImage(starExIcon);
 					}
 				}
 				break;
