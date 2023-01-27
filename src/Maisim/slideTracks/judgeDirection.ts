@@ -49,7 +49,6 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 				const startPosPx = rotateCoordination2(szRightPoint, center, angle);
 				startPosX = startPosPx[0];
 				startPosY = startPosPx[1];
-				console.log(startPosX, startPosY, szRightPoint, angle, (angle / π) * 180);
 			}
 			break;
 		case 'z':
@@ -186,14 +185,10 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 		let angle = 0;
 
 		if (direction === 0) {
-
-				angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180 - 180;
-			
+			angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180 - 180;
 		} else {
 			angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180;
 		}
-
-		console.log(direction, type, startPosX, startPosY, angle);
 
 		return {
 			image: 0,

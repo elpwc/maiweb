@@ -18,7 +18,11 @@ import Hold_Break_01_icon from '../resource/maimai_img/notes/Hold_Break_01.png';
 import Hold_Each_00_icon from '../resource/maimai_img/notes/Hold_Each_00.png';
 import Hold_Each_01_icon from '../resource/maimai_img/notes/Hold_Each_01.png';
 import Hold_Ex_00_icon from '../resource/maimai_img/notes/Hold_Ex_00.png';
+import Hold_Ex_00_break_icon from '../resource/maimai_img/notes/Hold_Ex_00_break.png';
+import Hold_Ex_00_each_icon from '../resource/maimai_img/notes/Hold_Ex_00_each.png';
 import Hold_Ex_01_icon from '../resource/maimai_img/notes/Hold_Ex_01.png';
+import Hold_Ex_01_break_icon from '../resource/maimai_img/notes/Hold_Ex_01_break.png';
+import Hold_Ex_01_each_icon from '../resource/maimai_img/notes/Hold_Ex_01_each.png';
 import Miss_00_icon from '../resource/maimai_img/notes/Miss_00.png';
 import Miss_01_icon from '../resource/maimai_img/notes/Miss_01.png';
 import Slide_00_icon from '../resource/maimai_img/notes/Slide_00.png';
@@ -36,9 +40,25 @@ import Star_Each_01_icon from '../resource/maimai_img/notes/Star_Each_01.png';
 import Star_Each_Double_00_icon from '../resource/maimai_img/notes/Star_Each_Double_00.png';
 import Star_Each_Double_01_icon from '../resource/maimai_img/notes/Star_Each_Double_01.png';
 import Star_Ex_00_icon from '../resource/maimai_img/notes/Star_Ex_00.png';
+import Star_Ex_00_blue_icon from '../resource/maimai_img/notes/Star_Ex_00_blue.png';
+import Star_Ex_00_break_icon from '../resource/maimai_img/notes/Star_Ex_00_break.png';
+import Star_Ex_00_each_icon from '../resource/maimai_img/notes/Star_Ex_00_each.png';
+import Star_Ex_00_pink_icon from '../resource/maimai_img/notes/Star_Ex_00_pink.png';
 import Star_Ex_01_icon from '../resource/maimai_img/notes/Star_Ex_01.png';
+import Star_Ex_01_blue_icon from '../resource/maimai_img/notes/Star_Ex_01_blue.png';
+import Star_Ex_01_break_icon from '../resource/maimai_img/notes/Star_Ex_01_break.png';
+import Star_Ex_01_each_icon from '../resource/maimai_img/notes/Star_Ex_01_each.png';
+import Star_Ex_01_pink_icon from '../resource/maimai_img/notes/Star_Ex_01_pink.png';
 import Star_Ex_Double_00_icon from '../resource/maimai_img/notes/Star_Ex_Double_00.png';
+import Star_Ex_Double_00_blue_icon from '../resource/maimai_img/notes/Star_Ex_Double_00_blue.png';
+import Star_Ex_Double_00_break_icon from '../resource/maimai_img/notes/Star_Ex_Double_00_break.png';
+import Star_Ex_Double_00_each_icon from '../resource/maimai_img/notes/Star_Ex_Double_00_each.png';
+import Star_Ex_Double_00_pink_icon from '../resource/maimai_img/notes/Star_Ex_Double_00_pink.png';
 import Star_Ex_Double_01_icon from '../resource/maimai_img/notes/Star_Ex_Double_01.png';
+import Star_Ex_Double_01_blue_icon from '../resource/maimai_img/notes/Star_Ex_Double_01_blue.png';
+import Star_Ex_Double_01_break_icon from '../resource/maimai_img/notes/Star_Ex_Double_01_break.png';
+import Star_Ex_Double_01_each_icon from '../resource/maimai_img/notes/Star_Ex_Double_01_each.png';
+import Star_Ex_Double_01_pink_icon from '../resource/maimai_img/notes/Star_Ex_Double_01_pink.png';
 import Star_Pink_00_icon from '../resource/maimai_img/notes/Star_Pink_00.png';
 import Star_Pink_01_icon from '../resource/maimai_img/notes/Star_Pink_01.png';
 import Star_Pink_Double_00_icon from '../resource/maimai_img/notes/Star_Pink_Double_00.png';
@@ -54,10 +74,25 @@ import Tap_Each_02_icon from '../resource/maimai_img/notes/Tap_Each_02.png';
 import Tap_Each_03_icon from '../resource/maimai_img/notes/Tap_Each_03.png';
 import Tap_Each_04_icon from '../resource/maimai_img/notes/Tap_Each_04.png';
 import Tap_Ex_00_icon from '../resource/maimai_img/notes/Tap_Ex_00.png';
+import Tap_Ex_00_break_icon from '../resource/maimai_img/notes/Tap_Ex_00_break.png';
+import Tap_Ex_00_each_icon from '../resource/maimai_img/notes/Tap_Ex_00_each.png';
+import Tap_Ex_00_pink_icon from '../resource/maimai_img/notes/Tap_Ex_00_pink.png';
 import Tap_Ex_01_icon from '../resource/maimai_img/notes/Tap_Ex_01.png';
+import Tap_Ex_01_break_icon from '../resource/maimai_img/notes/Tap_Ex_01_break.png';
+import Tap_Ex_01_each_icon from '../resource/maimai_img/notes/Tap_Ex_01_each.png';
+import Tap_Ex_01_pink_icon from '../resource/maimai_img/notes/Tap_Ex_01_pink.png';
 import Tap_Ex_02_icon from '../resource/maimai_img/notes/Tap_Ex_02.png';
+import Tap_Ex_02_break_icon from '../resource/maimai_img/notes/Tap_Ex_02_break.png';
+import Tap_Ex_02_each_icon from '../resource/maimai_img/notes/Tap_Ex_02_each.png';
+import Tap_Ex_02_pink_icon from '../resource/maimai_img/notes/Tap_Ex_02_pink.png';
 import Tap_Ex_03_icon from '../resource/maimai_img/notes/Tap_Ex_03.png';
+import Tap_Ex_03_break_icon from '../resource/maimai_img/notes/Tap_Ex_03_break.png';
+import Tap_Ex_03_each_icon from '../resource/maimai_img/notes/Tap_Ex_03_each.png';
+import Tap_Ex_03_pink_icon from '../resource/maimai_img/notes/Tap_Ex_03_pink.png';
 import Tap_Ex_04_icon from '../resource/maimai_img/notes/Tap_Ex_04.png';
+import Tap_Ex_04_break_icon from '../resource/maimai_img/notes/Tap_Ex_04_break.png';
+import Tap_Ex_04_each_icon from '../resource/maimai_img/notes/Tap_Ex_04_each.png';
+import Tap_Ex_04_pink_icon from '../resource/maimai_img/notes/Tap_Ex_04_pink.png';
 import touch_icon from '../resource/maimai_img/notes/touch.png';
 import touch_center_icon from '../resource/maimai_img/notes/touch_center.png';
 import touch_each_icon from '../resource/maimai_img/notes/touch_each.png';
@@ -128,7 +163,11 @@ export const NoteIcon = {
     Hold_Each_00: new Image(),
     Hold_Each_01: new Image(),
     Hold_Ex_00: new Image(),
+    Hold_Ex_00_break: new Image(),
+    Hold_Ex_00_each: new Image(),
     Hold_Ex_01: new Image(),
+    Hold_Ex_01_break: new Image(),
+    Hold_Ex_01_each: new Image(),
     Miss_00: new Image(),
     Miss_01: new Image(),
     Slide_00: new Image(),
@@ -146,9 +185,25 @@ export const NoteIcon = {
     Star_Each_Double_00: new Image(),
     Star_Each_Double_01: new Image(),
     Star_Ex_00: new Image(),
+    Star_Ex_00_blue: new Image(),
+    Star_Ex_00_break: new Image(),
+    Star_Ex_00_each: new Image(),
+    Star_Ex_00_pink: new Image(),
     Star_Ex_01: new Image(),
+    Star_Ex_01_blue: new Image(),
+    Star_Ex_01_break: new Image(),
+    Star_Ex_01_each: new Image(),
+    Star_Ex_01_pink: new Image(),
     Star_Ex_Double_00: new Image(),
+    Star_Ex_Double_00_blue: new Image(),
+    Star_Ex_Double_00_break: new Image(),
+    Star_Ex_Double_00_each: new Image(),
+    Star_Ex_Double_00_pink: new Image(),
     Star_Ex_Double_01: new Image(),
+    Star_Ex_Double_01_blue: new Image(),
+    Star_Ex_Double_01_break: new Image(),
+    Star_Ex_Double_01_each: new Image(),
+    Star_Ex_Double_01_pink: new Image(),
     Star_Pink_00: new Image(),
     Star_Pink_01: new Image(),
     Star_Pink_Double_00: new Image(),
@@ -164,10 +219,25 @@ export const NoteIcon = {
     Tap_Each_03: new Image(),
     Tap_Each_04: new Image(),
     Tap_Ex_00: new Image(),
+    Tap_Ex_00_break: new Image(),
+    Tap_Ex_00_each: new Image(),
+    Tap_Ex_00_pink: new Image(),
     Tap_Ex_01: new Image(),
+    Tap_Ex_01_break: new Image(),
+    Tap_Ex_01_each: new Image(),
+    Tap_Ex_01_pink: new Image(),
     Tap_Ex_02: new Image(),
+    Tap_Ex_02_break: new Image(),
+    Tap_Ex_02_each: new Image(),
+    Tap_Ex_02_pink: new Image(),
     Tap_Ex_03: new Image(),
+    Tap_Ex_03_break: new Image(),
+    Tap_Ex_03_each: new Image(),
+    Tap_Ex_03_pink: new Image(),
     Tap_Ex_04: new Image(),
+    Tap_Ex_04_break: new Image(),
+    Tap_Ex_04_each: new Image(),
+    Tap_Ex_04_pink: new Image(),
     touch: new Image(),
     touch_center: new Image(),
     touch_each: new Image(),
@@ -223,7 +293,7 @@ export const NoteIcon = {
 };
 
 export const initnotesicons = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {
-  const amount = 108;
+  const amount = 143;
   let loaded = 0;
   NoteIcon.BreakStar_00.src = BreakStar_00_icon;
   NoteIcon.BreakStar_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_00'); }
@@ -257,8 +327,16 @@ export const initnotesicons = (onProgress: (amount: number, loaded: number, name
   NoteIcon.Hold_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Each_01'); }
   NoteIcon.Hold_Ex_00.src = Hold_Ex_00_icon;
   NoteIcon.Hold_Ex_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00'); }
+  NoteIcon.Hold_Ex_00_break.src = Hold_Ex_00_break_icon;
+  NoteIcon.Hold_Ex_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_break'); }
+  NoteIcon.Hold_Ex_00_each.src = Hold_Ex_00_each_icon;
+  NoteIcon.Hold_Ex_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_each'); }
   NoteIcon.Hold_Ex_01.src = Hold_Ex_01_icon;
   NoteIcon.Hold_Ex_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01'); }
+  NoteIcon.Hold_Ex_01_break.src = Hold_Ex_01_break_icon;
+  NoteIcon.Hold_Ex_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_break'); }
+  NoteIcon.Hold_Ex_01_each.src = Hold_Ex_01_each_icon;
+  NoteIcon.Hold_Ex_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_each'); }
   NoteIcon.Miss_00.src = Miss_00_icon;
   NoteIcon.Miss_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Miss_00'); }
   NoteIcon.Miss_01.src = Miss_01_icon;
@@ -293,12 +371,44 @@ export const initnotesicons = (onProgress: (amount: number, loaded: number, name
   NoteIcon.Star_Each_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_Double_01'); }
   NoteIcon.Star_Ex_00.src = Star_Ex_00_icon;
   NoteIcon.Star_Ex_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00'); }
+  NoteIcon.Star_Ex_00_blue.src = Star_Ex_00_blue_icon;
+  NoteIcon.Star_Ex_00_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_blue'); }
+  NoteIcon.Star_Ex_00_break.src = Star_Ex_00_break_icon;
+  NoteIcon.Star_Ex_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_break'); }
+  NoteIcon.Star_Ex_00_each.src = Star_Ex_00_each_icon;
+  NoteIcon.Star_Ex_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_each'); }
+  NoteIcon.Star_Ex_00_pink.src = Star_Ex_00_pink_icon;
+  NoteIcon.Star_Ex_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_pink'); }
   NoteIcon.Star_Ex_01.src = Star_Ex_01_icon;
   NoteIcon.Star_Ex_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01'); }
+  NoteIcon.Star_Ex_01_blue.src = Star_Ex_01_blue_icon;
+  NoteIcon.Star_Ex_01_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_blue'); }
+  NoteIcon.Star_Ex_01_break.src = Star_Ex_01_break_icon;
+  NoteIcon.Star_Ex_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_break'); }
+  NoteIcon.Star_Ex_01_each.src = Star_Ex_01_each_icon;
+  NoteIcon.Star_Ex_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_each'); }
+  NoteIcon.Star_Ex_01_pink.src = Star_Ex_01_pink_icon;
+  NoteIcon.Star_Ex_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_pink'); }
   NoteIcon.Star_Ex_Double_00.src = Star_Ex_Double_00_icon;
   NoteIcon.Star_Ex_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00'); }
+  NoteIcon.Star_Ex_Double_00_blue.src = Star_Ex_Double_00_blue_icon;
+  NoteIcon.Star_Ex_Double_00_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_blue'); }
+  NoteIcon.Star_Ex_Double_00_break.src = Star_Ex_Double_00_break_icon;
+  NoteIcon.Star_Ex_Double_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_break'); }
+  NoteIcon.Star_Ex_Double_00_each.src = Star_Ex_Double_00_each_icon;
+  NoteIcon.Star_Ex_Double_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_each'); }
+  NoteIcon.Star_Ex_Double_00_pink.src = Star_Ex_Double_00_pink_icon;
+  NoteIcon.Star_Ex_Double_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_pink'); }
   NoteIcon.Star_Ex_Double_01.src = Star_Ex_Double_01_icon;
   NoteIcon.Star_Ex_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01'); }
+  NoteIcon.Star_Ex_Double_01_blue.src = Star_Ex_Double_01_blue_icon;
+  NoteIcon.Star_Ex_Double_01_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_blue'); }
+  NoteIcon.Star_Ex_Double_01_break.src = Star_Ex_Double_01_break_icon;
+  NoteIcon.Star_Ex_Double_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_break'); }
+  NoteIcon.Star_Ex_Double_01_each.src = Star_Ex_Double_01_each_icon;
+  NoteIcon.Star_Ex_Double_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_each'); }
+  NoteIcon.Star_Ex_Double_01_pink.src = Star_Ex_Double_01_pink_icon;
+  NoteIcon.Star_Ex_Double_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_pink'); }
   NoteIcon.Star_Pink_00.src = Star_Pink_00_icon;
   NoteIcon.Star_Pink_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_00'); }
   NoteIcon.Star_Pink_01.src = Star_Pink_01_icon;
@@ -329,14 +439,44 @@ export const initnotesicons = (onProgress: (amount: number, loaded: number, name
   NoteIcon.Tap_Each_04.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_04'); }
   NoteIcon.Tap_Ex_00.src = Tap_Ex_00_icon;
   NoteIcon.Tap_Ex_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00'); }
+  NoteIcon.Tap_Ex_00_break.src = Tap_Ex_00_break_icon;
+  NoteIcon.Tap_Ex_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_break'); }
+  NoteIcon.Tap_Ex_00_each.src = Tap_Ex_00_each_icon;
+  NoteIcon.Tap_Ex_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_each'); }
+  NoteIcon.Tap_Ex_00_pink.src = Tap_Ex_00_pink_icon;
+  NoteIcon.Tap_Ex_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_pink'); }
   NoteIcon.Tap_Ex_01.src = Tap_Ex_01_icon;
   NoteIcon.Tap_Ex_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01'); }
+  NoteIcon.Tap_Ex_01_break.src = Tap_Ex_01_break_icon;
+  NoteIcon.Tap_Ex_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_break'); }
+  NoteIcon.Tap_Ex_01_each.src = Tap_Ex_01_each_icon;
+  NoteIcon.Tap_Ex_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_each'); }
+  NoteIcon.Tap_Ex_01_pink.src = Tap_Ex_01_pink_icon;
+  NoteIcon.Tap_Ex_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_pink'); }
   NoteIcon.Tap_Ex_02.src = Tap_Ex_02_icon;
   NoteIcon.Tap_Ex_02.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02'); }
+  NoteIcon.Tap_Ex_02_break.src = Tap_Ex_02_break_icon;
+  NoteIcon.Tap_Ex_02_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_break'); }
+  NoteIcon.Tap_Ex_02_each.src = Tap_Ex_02_each_icon;
+  NoteIcon.Tap_Ex_02_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_each'); }
+  NoteIcon.Tap_Ex_02_pink.src = Tap_Ex_02_pink_icon;
+  NoteIcon.Tap_Ex_02_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_pink'); }
   NoteIcon.Tap_Ex_03.src = Tap_Ex_03_icon;
   NoteIcon.Tap_Ex_03.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03'); }
+  NoteIcon.Tap_Ex_03_break.src = Tap_Ex_03_break_icon;
+  NoteIcon.Tap_Ex_03_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_break'); }
+  NoteIcon.Tap_Ex_03_each.src = Tap_Ex_03_each_icon;
+  NoteIcon.Tap_Ex_03_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_each'); }
+  NoteIcon.Tap_Ex_03_pink.src = Tap_Ex_03_pink_icon;
+  NoteIcon.Tap_Ex_03_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_pink'); }
   NoteIcon.Tap_Ex_04.src = Tap_Ex_04_icon;
   NoteIcon.Tap_Ex_04.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04'); }
+  NoteIcon.Tap_Ex_04_break.src = Tap_Ex_04_break_icon;
+  NoteIcon.Tap_Ex_04_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_break'); }
+  NoteIcon.Tap_Ex_04_each.src = Tap_Ex_04_each_icon;
+  NoteIcon.Tap_Ex_04_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_each'); }
+  NoteIcon.Tap_Ex_04_pink.src = Tap_Ex_04_pink_icon;
+  NoteIcon.Tap_Ex_04_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_pink'); }
   NoteIcon.touch.src = touch_icon;
   NoteIcon.touch.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch'); }
   NoteIcon.touch_center.src = touch_center_icon;

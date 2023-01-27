@@ -1,4 +1,5 @@
 # file importing code builder
+# 请在每次添加新资源文件後运行此脚本
 import os
 
 pyRootRoute = './src/Maisim/resource/'
