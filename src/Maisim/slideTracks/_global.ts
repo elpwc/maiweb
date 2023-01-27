@@ -74,7 +74,6 @@ export interface Segment {
 
 /** 返回坐标绕中点旋转r度的结果 */
 export const rotateCoordination = (x: number, y: number, cx: number, cy: number, rad: number): [number, number] => {
-	// 这里计算180-360的度数的结果有问题
 	return [(x - cx) * cos(rad) - (y - cy) * sin(rad) + cx, (x - cx) * sin(rad) + (y - cy) * cos(rad) + cy];
 };
 
@@ -276,7 +275,7 @@ export const ppqqAnglCalc = () => {
 				break;
 		}
 
-		const result_after_1_hours = [
+		const result_after_1_hour = [
 			0.10164449440315693, -0.552436948092833, -0.39014152523502166, -0.22749149358001142, -0.055055750007723836, 0.141273030630514, 0.3983555055968429, -1.1772852860246634, -0.7420126650074674,
 		];
 	});

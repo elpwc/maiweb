@@ -72,11 +72,11 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 				/** 圆弧开始画的角度 */
 				const startAngle = -0.75;
 				/** 圆弧的角度 */
-				const angle = 0.25 * (endPosOri >= 6 ? 14 - endPosOri : 6 - endPosOri);
-				/** 圆弧终止的点 */
+				const pqAngle = 0.25 * (endPos >= 6 ? 14 - endPos : 6 - endPos);
+				/** 圆弧终止的点（作为切点） */
 				const startPosPx = rotateCoordination(
-					center[0] + qpCenterCircleR * cos((startAngle - angle) * π),
-					center[1] + qpCenterCircleR * sin((startAngle - angle) * π),
+					center[0] + qpCenterCircleR * cos((startAngle - pqAngle) * π),
+					center[1] + qpCenterCircleR * sin((startAngle - pqAngle) * π),
 					center[0],
 					center[1],
 					angle
@@ -90,11 +90,11 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 				/** 圆弧开始画的角度 */
 				const startAngle = 0;
 				/** 圆弧的角度 */
-				const angle = 0.25 * (endPosOri <= 4 ? endPosOri + 4 : endPosOri - 4);
+				const pqAngle = 0.25 * (endPos <= 4 ? endPos + 4 : endPos - 4);
 
 				const startPosPx = rotateCoordination(
-					center[0] + qpCenterCircleR * cos((startAngle + angle) * π),
-					center[1] + qpCenterCircleR * sin((startAngle + angle) * π),
+					center[0] + qpCenterCircleR * cos((startAngle + pqAngle) * π),
+					center[1] + qpCenterCircleR * sin((startAngle + pqAngle) * π),
 					center[0],
 					center[1],
 					angle
@@ -106,11 +106,11 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 		case 'pp':
 			{
 				const startAngle = ppPoints[0];
-				const angle = endPosOri === 4 ? 1 - ppPoints[endPosOri] + 1 + startAngle + 2 : 1 - ppPoints[endPosOri] + 1 + startAngle;
+				const pqAngle = endPos === 4 ? 1 - ppPoints[endPos] + 1 + startAngle + 2 : 1 - ppPoints[endPos] + 1 + startAngle;
 
 				const startPosPx = rotateCoordination(
-					qpRightCircleCenter[0] + qpLeftRighCircleR * cos((startAngle - angle) * π),
-					qpRightCircleCenter[1] + qpLeftRighCircleR * sin((startAngle - angle) * π),
+					qpRightCircleCenter[0] + qpLeftRighCircleR * cos((startAngle - pqAngle) * π),
+					qpRightCircleCenter[1] + qpLeftRighCircleR * sin((startAngle - pqAngle) * π),
 					center[0],
 					center[1],
 					angle
@@ -122,11 +122,11 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 		case 'qq':
 			{
 				const startAngle = qqPoints[0];
-				const angle = endPosOri === 7 ? qqPoints[endPosOri] - startAngle : 1 + qqPoints[endPosOri] + 1 - startAngle;
+				const pqAngle = endPos === 7 ? qqPoints[endPos] - startAngle : 1 + qqPoints[endPos] + 1 - startAngle;
 
 				const startPosPx = rotateCoordination(
-					qpLeftCircleCenter[0] + qpLeftRighCircleR * cos((startAngle + angle) * π),
-					qpLeftCircleCenter[1] + qpLeftRighCircleR * sin((startAngle + angle) * π),
+					qpLeftCircleCenter[0] + qpLeftRighCircleR * cos((startAngle + pqAngle) * π),
+					qpLeftCircleCenter[1] + qpLeftRighCircleR * sin((startAngle + pqAngle) * π),
 					center[0],
 					center[1],
 					angle
@@ -184,11 +184,16 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 	} else {
 		const direction = getJudgeDirection(startPos, endPosOri, turnPosOri, type);
 		let angle = 0;
+
 		if (direction === 0) {
-			angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180 - 180;
+
+				angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180 - 180;
+			
 		} else {
 			angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180;
 		}
+
+		console.log(direction, type, startPosX, startPosY, angle);
 
 		return {
 			image: 0,
