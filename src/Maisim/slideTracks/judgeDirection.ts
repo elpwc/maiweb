@@ -1,4 +1,4 @@
-import { abs, atan, cos, sin, π } from '../../math';
+import { atan2, cos, sin, π } from '../../math';
 import { center } from '../const';
 import {
 	APositions,
@@ -49,7 +49,7 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 				const startPosPx = rotateCoordination2(szRightPoint, center, angle);
 				startPosX = startPosPx[0];
 				startPosY = startPosPx[1];
-				console.log(startPosX, startPosY, szRightPoint, angle, angle / π * 180);
+				console.log(startPosX, startPosY, szRightPoint, angle, (angle / π) * 180);
 			}
 			break;
 		case 'z':
@@ -64,11 +64,8 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 			startPosY = center[1];
 			break;
 		case 'V':
-			{
-				const startPosPx = rotateCoordination2(APositions[turnPosOri - 1], center, angle);
-				startPosX = startPosPx[0];
-				startPosY = startPosPx[1];
-			}
+			startPosX = APositions[turnPosOri - 1][0];
+			startPosY = APositions[turnPosOri - 1][1];
 			break;
 		case 'p':
 			{
@@ -187,10 +184,12 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 		let angle = 0;
 		if (direction === 0) {
 			console.log(0, type, startPosX, startPosY, endPosOri, center);
-			angle = (atan((APositions[endPosOri - 1][1] - startPosY) / (APositions[endPosOri - 1][0] - startPosX)) / π) * 180;
+			//angle = (atan((APositions[endPosOri - 1][1] - startPosY) / (APositions[endPosOri - 1][0] - startPosX)) / π) * 180;
+			angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180 - 180;
 		} else {
 			console.log(1, type, startPosX, startPosY, endPosOri, center);
-			angle = (atan((APositions[endPosOri - 1][1] - startPosY) / (APositions[endPosOri - 1][0] - startPosX)) / π) * 180 - 180;
+			//angle = (atan((APositions[endPosOri - 1][1] - startPosY) / (APositions[endPosOri - 1][0] - startPosX)) / π) * 180 - 180;
+			angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180;
 		}
 
 		return {
