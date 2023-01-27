@@ -168,9 +168,11 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 		} else if (type === 'w') {
 			// w
 			if (direction === 0) {
+				// 向上
 				angle = ((endPosOri - 1 + 0.5) * 360) / 8;
 			} else {
-				angle = ((endPosOri - 8 + 0.5) * 360) / 8;
+				// 向下
+				angle = ((endPosOri - 5 + 0.5) * 360) / 8;
 			}
 		}
 
@@ -183,12 +185,8 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 		const direction = getJudgeDirection(startPos, endPosOri, turnPosOri, type);
 		let angle = 0;
 		if (direction === 0) {
-			console.log(0, type, startPosX, startPosY, endPosOri, center);
-			//angle = (atan((APositions[endPosOri - 1][1] - startPosY) / (APositions[endPosOri - 1][0] - startPosX)) / π) * 180;
 			angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180 - 180;
 		} else {
-			console.log(1, type, startPosX, startPosY, endPosOri, center);
-			//angle = (atan((APositions[endPosOri - 1][1] - startPosY) / (APositions[endPosOri - 1][0] - startPosX)) / π) * 180 - 180;
 			angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180;
 		}
 
@@ -216,9 +214,11 @@ const getJudgeDirection = (startPos: number, endPosOri: number, turnPosOri: numb
 	// 确定左右上下方向
 	if (slideType === 'w') {
 		// w
-		if (endPosOri > 2 && startPos < 7) {
+		if (endPosOri > 2 && endPosOri < 7) {
+			// 向下
 			lastLineDirection = 1;
 		} else {
+			// 向上
 			lastLineDirection = 0;
 		}
 	} else if (slideType === '<' || slideType === '>' || slideType === '^') {

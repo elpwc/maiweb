@@ -1571,7 +1571,13 @@ export const drawNote = (
 
 			let angle = note.slideLineDirectionParams?.angle;
 			if (lastLine.slideType === 'w') {
-				drawRotationImage(effectOverCtx, judgeImage, x - (judgeIconWidth * wifiK) / 2, y, judgeIconWidth * wifiK, judgeIconHeight * wifiK, x, y, angle);
+				if (lastLineDirection === 1) {
+					// 向下
+					drawRotationImage(effectOverCtx, judgeImage, x - (judgeIconWidth * wifiK) / 2, y * 0.99 - judgeIconHeight, judgeIconWidth * wifiK, judgeIconHeight * wifiK, x, y, angle);
+				} else {
+					// 向上
+					drawRotationImage(effectOverCtx, judgeImage, x - (judgeIconWidth * wifiK) / 2, y * 0.9, judgeIconWidth * wifiK, judgeIconHeight * wifiK, x, y, angle);
+				}
 			} else {
 				if (lastLineDirection === 1) {
 					drawRotationImage(effectOverCtx, judgeImage, x - judgeIconWidth, y, judgeIconWidth, judgeIconHeight, x, y, angle);
