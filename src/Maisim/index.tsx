@@ -30,7 +30,7 @@ import { sheetdata } from './_notesInDev';
 import { TouchArea } from '../utils/touchArea';
 import { ShowingNoteProps } from '../utils/showingNoteProps';
 import { drawNote, updateIcons } from './drawUtils/drawNotes';
-import { Area, areas, initAreas, whichArea } from './areas';
+import { Area, areas, getArea, initAreas, whichArea } from './areas';
 import { drawAllKeys, drawAllTouchingAreas } from './drawUtils/drawTouchingAreas';
 import { KeyState } from '../utils/keyState';
 import { drawOutRing } from './drawUtils/drawOutRing';
@@ -122,8 +122,8 @@ const starttimer = () => {
 	readSheet();
 	advancedTime = (currentSheet.notes[0].emergeTime ?? 0) < 0 ? -(currentSheet.notes[0].emergeTime ?? 0) : 0;
 	starttime = performance.now();
-	pausedTotalTime = 0
-	lastPauseTime = 0
+	pausedTotalTime = 0;
+	lastPauseTime = 0;
 
 	//console.log(sheet.beats5?.beat);
 	timer1 = setInterval(reader_and_updater, timerPeriod);
@@ -259,9 +259,7 @@ const reader_and_updater = async () => {
 								currentSheet,
 								currentTime,
 								{
-									area: areas.filter((a) => {
-										return a.name === 'A' + noteIns.pos;
-									})[0],
+									area: getArea('K' + noteIns.pos)!,
 									pressTime: currentTime,
 								},
 								currentTouchingArea
@@ -312,9 +310,7 @@ const reader_and_updater = async () => {
 								currentSheet,
 								currentTime,
 								{
-									area: areas.filter((a) => {
-										return a.name === 'A' + noteIns.pos;
-									})[0],
+									area: getArea('K' + noteIns.pos)!,
 									pressTime: currentTime,
 								},
 								currentTouchingArea
@@ -1324,7 +1320,7 @@ export default (props: Props) => {
 							SongTrack.pause();
 							props.setGameState(GameState.Pause);
 						} else if (props.gameState === GameState.Pause) {
-							pausedTotalTime = (pausedTotalTime + (performance.now() - lastPauseTime));
+							pausedTotalTime = pausedTotalTime + (performance.now() - lastPauseTime);
 							timer1 = setInterval(reader_and_updater, timerPeriod);
 							//timer2 = setInterval(updater, timerPeriod);
 							timer3 = setInterval(drawer, timerPeriod);

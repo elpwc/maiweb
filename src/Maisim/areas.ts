@@ -17,8 +17,10 @@ export interface Area {
 	rightAngle?: number;
 }
 
+/** 内屏各个判定区 A B C D E */
 export let areas: Area[] = [];
 
+/** 各个外键 K */
 export let keys: Area[] = [];
 
 let ar1 = 0.735294 * maimaiJudgeLineR,
@@ -30,6 +32,24 @@ let ar1 = 0.735294 * maimaiJudgeLineR,
 	er1 = (13.5 / 17) * maimaiJudgeLineR, // dr1
 	er2 = (11.3 / 17) * maimaiJudgeLineR,
 	er3 = (8.4 / 17) * maimaiJudgeLineR;
+
+export const getArea = (name: string): Area | undefined => {
+	if (!name) return;
+	const first_char = name.substring(0, 1);
+	if (first_char === 'C') {
+		return keys.find((area: Area) => {
+			return area.type === 'C';
+		});
+	} else if (first_char === 'K') {
+		return keys.find((key: Area) => {
+			return key.type === 'K' && key.id === Number(name.substring(1, 2));
+		});
+	} else {
+		return areas.find((area: Area) => {
+			return area.type === first_char && area.id === Number(name.substring(1, 2));
+		});
+	}
+};
 
 /** 点在哪个区 */
 export const whichArea = (x: number, y: number): Area | undefined => {

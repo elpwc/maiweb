@@ -33,7 +33,7 @@ TOUCH GROUP√
 2. BREAK WIFI√
 2.5. BREAK SLIDE TRACK√
 3. BREAK HOLD √
-4. 相应的判定
+4. 相应的判定（忘了做没做了）
 
 9.29:
 4. 相应的判定【麻烦】
@@ -67,5 +67,16 @@ TOUCH GROUP√
 1. 先做完Maisim选择的页面，再做外面的写谱器
 
 11.17:
-1. auto SLIDE TRACK 总是绿，HOLD经常MISS
+1. auto SLIDE TRACK 总是绿，(较短的?)HOLD经常MISS
 2. 人体蜈蚣提前划完其中一段的话，星星会消失【bug】
+
+2.1:
+1. 判定特效显示
+2. 两个时间上非常接近的TOUCH中，第二个无理（按不上
+3. TOUCH初始位置似乎张得有些开（？，合在一起的速度也有些慢(?)
+4. 判定显示淡出
+5. 自动播放应该优先按外键√
+6. 两个时间上离得近的HANABI会导致HANABI动画卡住
+7. SLIDE判定的位置还沒微调（
+8. 自动播放连续TAP，靠後的会Good
+9. HOLD按下的声音很怪，似乎是播放了很多次
