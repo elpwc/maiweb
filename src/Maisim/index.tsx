@@ -72,6 +72,9 @@ let speed: number = 10;
 let starttime: number = 0;
 let currentTime: number = 0;
 
+let lastPauseTime: number = 0;
+let pausedTotalTime: number = 0;
+
 let currentDifficulty = 5;
 
 let currentTouchingArea: TouchArea[] = [];
@@ -119,6 +122,8 @@ const starttimer = () => {
 	readSheet();
 	advancedTime = (currentSheet.notes[0].emergeTime ?? 0) < 0 ? -(currentSheet.notes[0].emergeTime ?? 0) : 0;
 	starttime = performance.now();
+	pausedTotalTime = 0
+	lastPauseTime = 0
 
 	//console.log(sheet.beats5?.beat);
 	timer1 = setInterval(reader_and_updater, timerPeriod);
@@ -209,8 +214,6 @@ const touchConvergeCurrentRho = (c: number, m: number, t: number) => {
 	return (touchMaxDistance * c * (c - m)) / (t * (t - m));
 };
 
-let songPlaying = false;
-
 /*
 　いちおう此処にてちょっと解説したげるにゃ！
 
@@ -225,7 +228,7 @@ let songPlaying = false;
 　ここは便利のためreaderとupdaterを1つのtimerにしたんにゃ
  */
 const reader_and_updater = async () => {
-	currentTime = performance.now() - starttime - advancedTime;
+	currentTime = performance.now() - starttime - pausedTotalTime - advancedTime;
 
 	//updater
 
@@ -767,13 +770,6 @@ const reader_and_updater = async () => {
 	});
 
 	// reader
-
-	//播放
-	if (currentTime >= advancedTime && !songPlaying) {
-		songPlaying = true;
-		SongTrack.play();
-	}
-
 	while (currentTime >= currentSheet.notes[nextNoteIndex].emergeTime!) {
 		showingNotes.push({
 			beatIndex: currentSheet.notes[nextNoteIndex].beatIndex,
@@ -1319,15 +1315,20 @@ export default (props: Props) => {
 						//testmusic.play();
 						if (props.gameState === GameState.Begin) {
 							starttimer();
+							SongTrack.play();
 							props.setGameState(GameState.Play);
 						} else if (props.gameState === GameState.Play) {
+							lastPauseTime = performance.now();
 							clearInterval(timer1);
 							clearInterval(timer3);
+							SongTrack.pause();
 							props.setGameState(GameState.Pause);
 						} else if (props.gameState === GameState.Pause) {
+							pausedTotalTime = (pausedTotalTime + (performance.now() - lastPauseTime));
 							timer1 = setInterval(reader_and_updater, timerPeriod);
 							//timer2 = setInterval(updater, timerPeriod);
 							timer3 = setInterval(drawer, timerPeriod);
+							SongTrack.play();
 							props.setGameState(GameState.Play);
 						} else {
 						}
