@@ -1,21 +1,21 @@
 .selectcontainer {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }
 
 .bgi {
-	position: absolute;
-	z-index: -1000;
-	width: 100%;
-	height: 100%;
+  position: absolute;
+  z-index: -1000;
+  width: 100%;
+  height: 100%;
 }
 
 .selectBgCanvas {
-	position: absolute;
-	z-index: -999;
-	width: 100%;
-	height: 100%;
+  position: absolute;
+  z-index: -999;
+  width: 100%;
+  height: 100%;
 }

@@ -8,30 +8,33 @@ import { initnotesounds } from './noteSoundReader';
  * @param onload 初始化完成的回调
  */
 export const initResources = (onProgress: (type: string, amount: number, loaded: number, name: string) => void, onload: (info?: any) => void) => {
-	initeffecticons(
-		(amount: number, loaded: number, name: string) => {
-			onProgress('effect', amount, loaded, name);
-		},
-		() => {
-			initnotesicons(
-				(amount: number, loaded: number, name: string) => {
-					onProgress('note', amount, loaded, name);
-				},
-				() => {
-					initjudgeicons(
-						(amount: number, loaded: number, name: string) => {
-							onProgress('judge', amount, loaded, name);
-						},
-						() => {
-							initnotesounds((amount: number, loaded: number, name: string) => {
-								onProgress('sounds', amount, loaded, name);
-							},() => {
-								onload();
-							});
-						}
-					);
-				}
-			);
-		}
-	);
+  initeffecticons(
+    (amount: number, loaded: number, name: string) => {
+      onProgress('effect', amount, loaded, name);
+    },
+    () => {
+      initnotesicons(
+        (amount: number, loaded: number, name: string) => {
+          onProgress('note', amount, loaded, name);
+        },
+        () => {
+          initjudgeicons(
+            (amount: number, loaded: number, name: string) => {
+              onProgress('judge', amount, loaded, name);
+            },
+            () => {
+              initnotesounds(
+                (amount: number, loaded: number, name: string) => {
+                  onProgress('sounds', amount, loaded, name);
+                },
+                () => {
+                  onload();
+                }
+              );
+            }
+          );
+        }
+      );
+    }
+  );
 };

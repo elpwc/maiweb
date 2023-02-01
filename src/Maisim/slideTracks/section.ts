@@ -1,19 +1,14 @@
 import { trackLength } from './_global';
 
 /** SLIDE TRACK分段 */
-export const section = (
-  type: string | undefined,
-  startPos: string,
-  endPosOri: string,
-  turnPosOri?: string
-): { start: number; areas: string[] }[] | undefined => {
+export const section = (type: string | undefined, startPos: string, endPosOri: string, turnPosOri?: string): { start: number; areas: string[] }[] | undefined => {
   let endPos = Number(endPosOri) - Number(startPos) + 1;
   let turnPos = (Number(turnPosOri) ?? 0) - Number(startPos) + 1;
   if (endPos < 1) endPos += 8;
   if (turnPos < 1) turnPos += 8;
 
-  return section_A1(type, endPos, turnPos, Number(startPos))?.map((section) => {
-    const resAreas = section.areas.map((area) => {
+  return section_A1(type, endPos, turnPos, Number(startPos))?.map(section => {
+    const resAreas = section.areas.map(area => {
       if (area !== 'C') {
         let newPos = Number(area.substring(1, 2)) + Number(startPos) - 1;
         if (newPos > 8) newPos -= 8;
@@ -25,12 +20,7 @@ export const section = (
 };
 
 /** SLIDE TRACK分段(仅适用于A1开头的SLIDE TRACK) */
-const section_A1 = (
-  type: string | undefined,
-  endPos: number,
-  turnPos: number,
-  startPos: number
-): { start: number; areas: string[] }[] | undefined => {
+const section_A1 = (type: string | undefined, endPos: number, turnPos: number, startPos: number): { start: number; areas: string[] }[] | undefined => {
   switch (type) {
     case '-':
       switch (endPos) {
@@ -562,7 +552,7 @@ const section_A1 = (
       }
       resV.push({
         start: (part1![part1?.length! - 1].start * length1) / (length1 + length2),
-        areas: part2![0].areas.concat(part1![part1!.length! - 1].areas.filter((v) => !part2![0].areas.includes(v))),
+        areas: part2![0].areas.concat(part1![part1!.length! - 1].areas.filter(v => !part2![0].areas.includes(v))),
       });
       for (let i = 1; i < part2?.length!; i++) {
         resV.push({ start: (part2![i].start * length2 + length1) / (length1 + length2), areas: part2![i].areas });
@@ -603,9 +593,9 @@ export const section_wifi = (startPos: string, endPosOri: string): { start: numb
     ],
   ];
 
-  return wifiSections.map((wifisection) => {
-    return wifisection.map((section) => {
-      const resAreas = section.areas.map((area) => {
+  return wifiSections.map(wifisection => {
+    return wifisection.map(section => {
+      const resAreas = section.areas.map(area => {
         if (area !== 'C') {
           let newPos = Number(area.substring(1, 2)) + Number(startPos) - 1;
           if (newPos > 8) newPos -= 8;

@@ -3,34 +3,34 @@ import { π } from '../math';
 export let canvasWidth = 800;
 export let canvasHeight = 800;
 export const setCanvasSize = (w: number, h: number) => {
-	canvasWidth = w;
-	canvasHeight = h;
-	center = [canvasWidth / 2, canvasHeight / 2];
-	maimaiR = canvasWidth / 2;
-	maimaiScreenR = maimaiR * 0.78;
-	maimaiJudgeLineR = maimaiScreenR * 0.885;
-	maimaiSummonLineR = maimaiScreenR * 0.22;
-	maimaiTapR = (maimaiScreenR / 9) * 0.8;
-	maimaiBR = maimaiScreenR * 0.418;
-	maimaiER = maimaiScreenR * 0.574;
-	touchMaxDistance = maimaiTapR * 0.8;
+  canvasWidth = w;
+  canvasHeight = h;
+  center = [canvasWidth / 2, canvasHeight / 2];
+  maimaiR = canvasWidth / 2;
+  maimaiScreenR = maimaiR * 0.78;
+  maimaiJudgeLineR = maimaiScreenR * 0.885;
+  maimaiSummonLineR = maimaiScreenR * 0.22;
+  maimaiTapR = (maimaiScreenR / 9) * 0.8;
+  maimaiBR = maimaiScreenR * 0.418;
+  maimaiER = maimaiScreenR * 0.574;
+  touchMaxDistance = maimaiTapR * 0.8;
 
-	maimaiADTouchR = maimaiJudgeLineR * 0.875;
+  maimaiADTouchR = maimaiJudgeLineR * 0.875;
 
-	fireworkInnerCircleR = maimaiJudgeLineR * 0.4138;
+  fireworkInnerCircleR = maimaiJudgeLineR * 0.4138;
 
-	trackItemGap = (25 * maimaiR) / 350;
-	trackItemWidth = maimaiTapR * 1.5;
-	trackItemHeight = maimaiTapR * 2;
+  trackItemGap = (25 * maimaiR) / 350;
+  trackItemWidth = maimaiTapR * 1.5;
+  trackItemHeight = maimaiTapR * 2;
 
-	keyOuterR = maimaiR;
-	keyInnerR = maimaiR * 0.8;
-	keyPressOffset = maimaiR * 0.02;
-	keySideDotR = maimaiR * 0.005;
+  keyOuterR = maimaiR;
+  keyInnerR = maimaiR * 0.8;
+  keyPressOffset = maimaiR * 0.02;
+  keySideDotR = maimaiR * 0.005;
 
-	keySideDotRtoCenter = (maimaiR + maimaiScreenR) / 2;
+  keySideDotRtoCenter = (maimaiR + maimaiScreenR) / 2;
 
-	judgeDistance = maimaiTapR * 1.5;
+  judgeDistance = maimaiTapR * 1.5;
 };
 
 export let center: [number, number] = [canvasWidth / 2, canvasHeight / 2];

@@ -1,4 +1,4 @@
-import { Sheet } from "./sheet";
+import { Sheet } from './sheet';
 
 /** 一整首收录的乐曲信息 */
 export interface Song {

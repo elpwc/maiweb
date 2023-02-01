@@ -1,4 +1,4 @@
-interface Props{
+interface Props {
   text: string;
   position: number;
   type: string;
@@ -7,5 +7,5 @@ interface Props{
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => {
-	return <></>;
+  return <></>;
 };

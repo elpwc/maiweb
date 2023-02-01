@@ -51,9 +51,9 @@ const drawKey = (ctx: CanvasRenderingContext2D, key: Area, pressed: boolean = fa
 };
 
 export const drawAllKeys = (ctx: CanvasRenderingContext2D, currentTouchingArea: TouchArea[], keyStates: KeyState[]) => {
-  keys.forEach((key) => {
+  keys.forEach(key => {
     if (
-      currentTouchingArea.find((ta) => {
+      currentTouchingArea.find(ta => {
         return ta.area.name === key.name;
       }) === undefined
     ) {
@@ -97,7 +97,7 @@ export const drawArea = (ctx: CanvasRenderingContext2D, area: Area, alpha: numbe
 };
 
 export const drawAllTouchingAreas = (ctx: CanvasRenderingContext2D, currentTouchingArea: TouchArea[]) => {
-  currentTouchingArea.forEach((ta) => {
+  currentTouchingArea.forEach(ta => {
     drawArea(ctx, ta.area);
   });
 };

@@ -1,15 +1,15 @@
 export enum NoteType {
-	Empty,
+  Empty,
 
-	Tap,
-	Hold,
-	Slide,
-	SlideTrack,
+  Tap,
+  Hold,
+  Slide,
+  SlideTrack,
 
-	Touch,
-	TouchHold,
+  Touch,
+  TouchHold,
 
-	FireWork,
+  FireWork,
 
-	EndMark,
+  EndMark,
 }

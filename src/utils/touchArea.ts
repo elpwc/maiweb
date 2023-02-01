@@ -1,4 +1,4 @@
-import { Area } from "../Maisim/areas";
+import { Area } from '../Maisim/areas';
 
 export interface TouchArea {
   area: Area;
