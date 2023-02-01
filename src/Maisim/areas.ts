@@ -33,6 +33,7 @@ let ar1 = 0.735294 * maimaiJudgeLineR,
 	er2 = (11.3 / 17) * maimaiJudgeLineR,
 	er3 = (8.4 / 17) * maimaiJudgeLineR;
 
+/** 根据区域名 A1,C,E2,K3 获取指定的区域实例，接受C1,C2和K1-K8的输入 */
 export const getArea = (name: string): Area | undefined => {
 	if (!name) return;
 	const first_char = name.substring(0, 1);
