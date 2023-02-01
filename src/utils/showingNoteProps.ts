@@ -8,13 +8,13 @@ export interface ShowingNoteProps {
 	noteIndex: number;
 
 	/**
-	 * TAP:
+	 *  ● TAP:
 	 * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1:move
-	 * HOLD:
+	 *  ● HOLD:
 	 * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1: grow 2: move 3: disappear 4: fill(充满 长度暂时不改变)
-	 * SLIDE TRACK:
+	 *  ● SLIDE TRACK:
 	 * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1: hangup 2: move
-	 * FIREWORK:
+	 *  ● FIREWORK:
 	 * -1: die 0: wait for trig 1: change
 	 */
 	status: number;

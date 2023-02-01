@@ -51,6 +51,9 @@ import testsong_taiyoukei from './resource/sound/track/太陽系デスコ.mp3';
 import testbgi from './resource/maimai_img/ui/UI_Chara_105810.png';
 import { JudgeLineStyle, RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
 import { uiIcon } from './resourceReaders/uiIconReader';
+import { drawRotationImage } from './drawUtils/_base';
+import { EffectIcon } from './resourceReaders/effectIconReader';
+import { animation, drawAnimations } from './drawUtils/animation';
 
 const SongTrack = new Audio();
 SongTrack.volume = 0.5;
@@ -710,6 +713,20 @@ const reader_and_updater = async () => {
 				if (noteIns.isEx) {
 					if (note.judgeStatus !== JudgeStatus.Miss) note.judgeStatus = JudgeStatus.CriticalPerfect;
 				}
+
+				if (noteIns.type === NoteType.Tap) {
+					animation(150, (t: number) => {
+						const effectR = ((3 * maimaiTapR - maimaiTapR) * t) / 150 + maimaiTapR;
+						drawRotationImage(
+							ctx_effect_over,
+							EffectIcon.Hex,
+							APositions[Number(noteIns.pos) - 1][0] - effectR,
+							APositions[Number(noteIns.pos) - 1][1] - effectR,
+							effectR * 2,
+							effectR * 2
+						);
+					});
+				}
 				note.status = -3;
 			}
 			return note.status !== -1;
@@ -864,6 +881,8 @@ const drawer = async () => {
 			currentSlideColor
 		);
 	}
+
+	drawAnimations();
 
 	// game record
 	ctx_game_record.clearRect(0, 0, canvasWidth, canvasHeight);

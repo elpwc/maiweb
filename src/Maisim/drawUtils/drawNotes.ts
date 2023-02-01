@@ -66,6 +66,7 @@ let slideIcon: HTMLImageElement;
 let slideEachIcon: HTMLImageElement;
 let slideBreakIcon: HTMLImageElement;
 
+/** 根据样式设定将Note图片更新为指定样式 */
 export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slideStyle: RegularStyles, slideColor: SlideColor) => {
 	switch (tapStyle) {
 		case TapStyles.Concise:
@@ -1673,6 +1674,7 @@ export const drawNote = (
 			}
 		} else {
 			// 一般的Note的判定显示
+
 			switch (props.judgeStatus) {
 				case JudgeStatus.CriticalPerfect:
 					judgeImage = note.isBreak ? JudgeIcon.UI_GAM_Critical_Break : JudgeIcon.UI_GAM_Critical;
@@ -1768,5 +1770,13 @@ export const drawNote = (
 				drawRotationImage(effectOverCtx, fastlateImage, x, y, fastlateIconWidth, fastlateIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
 			}
 		}
+
+		// // 特效
+		// if(note.type === NoteType.Tap){
+		// 	if(props.judgeStatus !== JudgeStatus.Miss){
+		// 		const effectWidth = maimaiTapR * 2 * ()
+		// 		drawRotationImage(effectOverCtx, EffectIcon.Hex, x, y, )
+		// 	}
+		// }
 	}
 };
