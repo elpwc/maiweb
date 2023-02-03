@@ -16,12 +16,9 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
     const note = showingNotes[i];
     const noteIns = currentSheet.notes[note.noteIndex];
 
-    console.log(noteIns.type);
     let timeD = noteIns.time - currentTime;
 
     if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
-      console.log(area.area.id, Number(noteIns.pos));
-
       // 已经判定过一个NOTE就不再判定了
       if (judged) break;
 
@@ -259,238 +256,241 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
     } else if (noteIns.type === NoteType.SlideTrack) {
       if (noteIns.isChain) {
         // 人体蜈蚣
-        const currentLine = noteIns.slideLines![note.currentLineIndex];
-        if (currentLine.slideType === 'w') {
-          // 如果是WIFI
-          // SLIDE分段信息
-          const sectionInfoWifi = section_wifi(currentLine.pos!, currentLine.endPos ?? '');
-          console.log(sectionInfoWifi);
-          // 可供点击的下一个段的区域
-          const nextPositionsWifi = sectionInfoWifi.map((sec, j) => {
-            console.log(123123, note.currentSectionIndexWifi, j);
-            if (note.currentSectionIndexWifi[j] === -1) {
-              return [];
-            } else {
-              return sec[note.currentSectionIndexWifi[j]].areas;
-            }
-          });
-          console.log(nextPositionsWifi);
+        if (note.currentLineIndex > (noteIns.slideLines?.length ?? 0)) {
+          const currentLine = noteIns.slideLines![note.currentLineIndex];
+          //console.log(note, noteIns, note.currentLineIndex, currentLine);
+          if (currentLine.slideType === 'w') {
+            // 如果是WIFI
+            // SLIDE分段信息
+            const sectionInfoWifi = section_wifi(currentLine.pos!, currentLine.endPos ?? '');
+            console.log(sectionInfoWifi);
+            // 可供点击的下一个段的区域
+            const nextPositionsWifi = sectionInfoWifi.map((sec, j) => {
+              console.log(123123, note.currentSectionIndexWifi, j);
+              if (note.currentSectionIndexWifi[j] === -1) {
+                return [];
+              } else {
+                return sec[note.currentSectionIndexWifi[j]].areas;
+              }
+            });
+            console.log(nextPositionsWifi);
 
-          // 三条TRACK分别处理喵
-          nextPositionsWifi.forEach((nextPositions, j) => {
-            // 如果点了任意一个区域
-            if (nextPositions.includes(area.area.name)) {
-              if (note.currentSectionIndexWifi[j] === 4) {
-                // 如果是最後一个区域，那就设为-1，然後判断其他的是不是也都-1
+            // 三条TRACK分别处理喵
+            nextPositionsWifi.forEach((nextPositions, j) => {
+              // 如果点了任意一个区域
+              if (nextPositions.includes(area.area.name)) {
+                if (note.currentSectionIndexWifi[j] === 4) {
+                  // 如果是最後一个区域，那就设为-1，然後判断其他的是不是也都-1
 
-                if (note.currentLineIndex === noteIns.slideLines?.length! - 1) {
-                  // 如果是最後一个LINE
+                  if (note.currentLineIndex === noteIns.slideLines?.length! - 1) {
+                    // 如果是最後一个LINE
 
-                  note.currentSectionIndexWifi[j] = -1;
+                    note.currentSectionIndexWifi[j] = -1;
 
-                  // 如果三个全是最后一个区域（-1），那么结束
-                  if (note.currentSectionIndexWifi[0] === -1 && note.currentSectionIndexWifi[1] === -1 && note.currentSectionIndexWifi[2] === -1) {
-                    // 设置标志位
-                    showingNotes[i].touched = true;
-                    showingNotes[i].touchedTime = currentTime;
-                    showingNotes[i].isTouching = true;
+                    // 如果三个全是最后一个区域（-1），那么结束
+                    if (note.currentSectionIndexWifi[0] === -1 && note.currentSectionIndexWifi[1] === -1 && note.currentSectionIndexWifi[2] === -1) {
+                      // 设置标志位
+                      showingNotes[i].touched = true;
+                      showingNotes[i].touchedTime = currentTime;
+                      showingNotes[i].isTouching = true;
 
-                    showingNotes[i].status = -4;
+                      showingNotes[i].status = -4;
 
-                    /** 走完最後一段的时间ms */
-                    const finalSectionTime = currentLine.remainTime! * (1 - sectionInfoWifi![j][4].start);
+                      /** 走完最後一段的时间ms */
+                      const finalSectionTime = currentLine.remainTime! * (1 - sectionInfoWifi![j][4].start);
 
-                    let timeD = noteIns.time - finalSectionTime - currentTime;
+                      let timeD = noteIns.time - finalSectionTime - currentTime;
 
-                    // FAST LATE
-                    if (timeD >= 0) {
-                      showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
-                    } else {
-                      showingNotes[i].judgeTime = JudgeTimeStatus.Late;
-                    }
+                      // FAST LATE
+                      if (timeD >= 0) {
+                        showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+                      } else {
+                        showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+                      }
 
-                    // TOO FAST GOOD (提前划完)
-                    if (timeD > finalSectionTime) {
-                      showingNotes[i].judgeStatus = JudgeStatus.Good;
-                      showingNotes[i].tooFast = true;
-                    } else {
-                      // 正常判断
-                      // SLIDE TRACK的Perfect判定时间
-                      const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
+                      // TOO FAST GOOD (提前划完)
+                      if (timeD > finalSectionTime) {
+                        showingNotes[i].judgeStatus = JudgeStatus.Good;
+                        showingNotes[i].tooFast = true;
+                      } else {
+                        // 正常判断
+                        // SLIDE TRACK的Perfect判定时间
+                        const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
 
-                      timeD = abs(timeD);
+                        timeD = abs(timeD);
 
-                      if (perfectJudgeTime < 26) {
-                        // PERFECT GOOD GREAT
-                        if (timeD <= timerPeriod * perfectJudgeTime) {
-                          // CRITICAL PERFECT
-                          showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                        } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
-                          // GREAT
-                          showingNotes[i].judgeStatus = JudgeStatus.Great;
-                        } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
-                          // GOOD
-                          showingNotes[i].judgeStatus = JudgeStatus.Good;
-                        } else {
-                        }
-                      } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
-                        // PERFECT GOOD GREAT
-                        if (timeD <= timerPeriod * perfectJudgeTime) {
-                          // CRITICAL PERFECT
-                          showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                        } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
-                          // GOOD
-                          showingNotes[i].judgeStatus = JudgeStatus.Good;
-                        } else {
-                        }
-                      } else if (perfectJudgeTime >= 36) {
-                        // PERFECT GOOD GREAT
-                        if (timeD <= timerPeriod * perfectJudgeTime) {
-                          // CRITICAL PERFECT
-                          showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                        } else {
+                        if (perfectJudgeTime < 26) {
+                          // PERFECT GOOD GREAT
+                          if (timeD <= timerPeriod * perfectJudgeTime) {
+                            // CRITICAL PERFECT
+                            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                          } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
+                            // GREAT
+                            showingNotes[i].judgeStatus = JudgeStatus.Great;
+                          } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
+                            // GOOD
+                            showingNotes[i].judgeStatus = JudgeStatus.Good;
+                          } else {
+                          }
+                        } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
+                          // PERFECT GOOD GREAT
+                          if (timeD <= timerPeriod * perfectJudgeTime) {
+                            // CRITICAL PERFECT
+                            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                          } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
+                            // GOOD
+                            showingNotes[i].judgeStatus = JudgeStatus.Good;
+                          } else {
+                          }
+                        } else if (perfectJudgeTime >= 36) {
+                          // PERFECT GOOD GREAT
+                          if (timeD <= timerPeriod * perfectJudgeTime) {
+                            // CRITICAL PERFECT
+                            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                          } else {
+                          }
                         }
                       }
+                      // game record
+                      if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
+                        updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
+                      }
                     }
-                    // game record
-                    if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-                      updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
+                  } else {
+                    // 还不是最後一个区域，进入下一个
+                    note.currentSectionIndexWifi[j] = 0;
+                    note.currentSectionIndex = 0;
+                    note.currentSectionIndexWifi = [0, 0, 0];
+                    note.currentLineIndex++;
+                  }
+                } else {
+                  // 当前分段位追加
+                  note.currentSectionIndexWifi[j]++;
+
+                  // 跳区机制
+                  if (note.currentSectionIndexWifi[j] <= sectionInfoWifi![j].length - 2) {
+                    // 下一个分段信息
+                    const nextNextPositions = sectionInfoWifi![j][note.currentSectionIndexWifi[j] + 1].areas;
+                    // 如果已经按住了下个分段的任意一个区域
+                    for (let i = 0; i < currentTouchingArea.length; i++) {
+                      if (nextNextPositions.includes(currentTouchingArea[i].area.name)) {
+                        // 跳区激活
+                        note.currentSectionIndexWifi[j]++;
+                        break;
+                      }
                     }
+                  }
+                }
+              }
+            });
+            console.log(note.currentSectionIndexWifi);
+          } else {
+            // 正常SLIDE TRACK,除了WIFI以外的
+
+            // SLIDE分段信息
+            const sectionInfo = section(currentLine.slideType, currentLine.pos!, currentLine.endPos ?? '', currentLine.turnPos);
+            console.log(sectionInfo);
+            // 可供点击的下一个段的区域
+            const nextPositions = sectionInfo![note.currentSectionIndex].areas;
+            // 如果点了任意一个区域
+            if (nextPositions.includes(area.area.name)) {
+              if (note.currentSectionIndex === sectionInfo?.length! - 1) {
+                // 如果是当前LINE里的最後一个区域
+                if (note.currentLineIndex === noteIns.slideLines?.length! - 1) {
+                  // 如果是人体蜈蚣里的最後一条LINE
+
+                  note.currentSectionIndex = -1;
+                  note.currentLineIndex = -1;
+
+                  // 设置标志位
+                  showingNotes[i].touched = true;
+                  showingNotes[i].touchedTime = currentTime;
+                  showingNotes[i].isTouching = true;
+
+                  showingNotes[i].status = -4;
+
+                  /** 走完最後一段的时间ms */
+                  const finalSectionTime = currentLine.remainTime! * (1 - sectionInfo![sectionInfo?.length! - 1].start);
+
+                  let timeD = noteIns.time - finalSectionTime - currentTime;
+
+                  console.log('timeD: ', timeD);
+
+                  // FAST LATE
+                  if (timeD >= 0) {
+                    showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+                  } else {
+                    showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+                  }
+
+                  // TOO FAST GOOD (提前划完)
+                  if (timeD > finalSectionTime) {
+                    showingNotes[i].judgeStatus = JudgeStatus.Good;
+                    showingNotes[i].tooFast = true;
+                  } else {
+                    // 正常判断
+                    // SLIDE TRACK的Perfect判定时间
+                    const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
+                    console.log(timeD, perfectJudgeTime);
+                    timeD = abs(timeD);
+
+                    if (perfectJudgeTime < 26) {
+                      // PERFECT GOOD GREAT
+                      if (timeD <= timerPeriod * perfectJudgeTime) {
+                        // CRITICAL PERFECT
+                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                      } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
+                        // GREAT
+                        showingNotes[i].judgeStatus = JudgeStatus.Great;
+                      } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
+                        // GOOD
+                        showingNotes[i].judgeStatus = JudgeStatus.Good;
+                      } else {
+                      }
+                    } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
+                      // PERFECT GOOD GREAT
+                      if (timeD <= timerPeriod * perfectJudgeTime) {
+                        // CRITICAL PERFECT
+                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                      } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
+                        // GOOD
+                        showingNotes[i].judgeStatus = JudgeStatus.Good;
+                      } else {
+                      }
+                    } else if (perfectJudgeTime >= 36) {
+                      // PERFECT GOOD GREAT
+                      if (timeD <= timerPeriod * perfectJudgeTime) {
+                        // CRITICAL PERFECT
+                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                      } else {
+                      }
+                    }
+                  }
+
+                  // game record
+                  if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
+                    updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
                   }
                 } else {
                   // 还不是最後一个区域，进入下一个
-                  note.currentSectionIndexWifi[j] = 0;
                   note.currentSectionIndex = 0;
-                  note.currentSectionIndexWifi = [0, 0, 0];
                   note.currentLineIndex++;
                 }
               } else {
                 // 当前分段位追加
-                note.currentSectionIndexWifi[j]++;
+                note.currentSectionIndex++;
 
                 // 跳区机制
-                if (note.currentSectionIndexWifi[j] <= sectionInfoWifi![j].length - 2) {
+                if (note.currentSectionIndex <= sectionInfo!.length - 2) {
                   // 下一个分段信息
-                  const nextNextPositions = sectionInfoWifi![j][note.currentSectionIndexWifi[j] + 1].areas;
+                  const nextNextPositions = sectionInfo![note.currentSectionIndex + 1].areas;
                   // 如果已经按住了下个分段的任意一个区域
                   for (let i = 0; i < currentTouchingArea.length; i++) {
                     if (nextNextPositions.includes(currentTouchingArea[i].area.name)) {
                       // 跳区激活
-                      note.currentSectionIndexWifi[j]++;
+                      note.currentSectionIndex++;
                       break;
                     }
-                  }
-                }
-              }
-            }
-          });
-          console.log(note.currentSectionIndexWifi);
-        } else {
-          // 正常SLIDE TRACK,除了WIFI以外的
-
-          // SLIDE分段信息
-          const sectionInfo = section(currentLine.slideType, currentLine.pos!, currentLine.endPos ?? '', currentLine.turnPos);
-          console.log(sectionInfo);
-          // 可供点击的下一个段的区域
-          const nextPositions = sectionInfo![note.currentSectionIndex].areas;
-          // 如果点了任意一个区域
-          if (nextPositions.includes(area.area.name)) {
-            if (note.currentSectionIndex === sectionInfo?.length! - 1) {
-              // 如果是最後一个区域
-              if (note.currentLineIndex === noteIns.slideLines?.length! - 1) {
-                // 如果是最後一个LINE
-
-                note.currentSectionIndex = -1;
-                note.currentLineIndex = -1;
-
-                // 设置标志位
-                showingNotes[i].touched = true;
-                showingNotes[i].touchedTime = currentTime;
-                showingNotes[i].isTouching = true;
-
-                showingNotes[i].status = -4;
-
-                /** 走完最後一段的时间ms */
-                const finalSectionTime = currentLine.remainTime! * (1 - sectionInfo![sectionInfo?.length! - 1].start);
-
-                let timeD = noteIns.time - finalSectionTime - currentTime;
-
-                console.log('timeD: ', timeD);
-
-                // FAST LATE
-                if (timeD >= 0) {
-                  showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
-                } else {
-                  showingNotes[i].judgeTime = JudgeTimeStatus.Late;
-                }
-
-                // TOO FAST GOOD (提前划完)
-                if (timeD > finalSectionTime) {
-                  showingNotes[i].judgeStatus = JudgeStatus.Good;
-                  showingNotes[i].tooFast = true;
-                } else {
-                  // 正常判断
-                  // SLIDE TRACK的Perfect判定时间
-                  const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
-                  console.log(timeD, perfectJudgeTime);
-                  timeD = abs(timeD);
-
-                  if (perfectJudgeTime < 26) {
-                    // PERFECT GOOD GREAT
-                    if (timeD <= timerPeriod * perfectJudgeTime) {
-                      // CRITICAL PERFECT
-                      showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                    } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
-                      // GREAT
-                      showingNotes[i].judgeStatus = JudgeStatus.Great;
-                    } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
-                      // GOOD
-                      showingNotes[i].judgeStatus = JudgeStatus.Good;
-                    } else {
-                    }
-                  } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
-                    // PERFECT GOOD GREAT
-                    if (timeD <= timerPeriod * perfectJudgeTime) {
-                      // CRITICAL PERFECT
-                      showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                    } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
-                      // GOOD
-                      showingNotes[i].judgeStatus = JudgeStatus.Good;
-                    } else {
-                    }
-                  } else if (perfectJudgeTime >= 36) {
-                    // PERFECT GOOD GREAT
-                    if (timeD <= timerPeriod * perfectJudgeTime) {
-                      // CRITICAL PERFECT
-                      showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                    } else {
-                    }
-                  }
-                }
-
-                // game record
-                if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-                  updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
-                }
-              } else {
-                // 还不是最後一个区域，进入下一个
-                note.currentSectionIndex = 0;
-                note.currentLineIndex++;
-              }
-            } else {
-              // 当前分段位追加
-              note.currentSectionIndex++;
-
-              // 跳区机制
-              if (note.currentSectionIndex <= sectionInfo!.length - 2) {
-                // 下一个分段信息
-                const nextNextPositions = sectionInfo![note.currentSectionIndex + 1].areas;
-                // 如果已经按住了下个分段的任意一个区域
-                for (let i = 0; i < currentTouchingArea.length; i++) {
-                  if (nextNextPositions.includes(currentTouchingArea[i].area.name)) {
-                    // 跳区激活
-                    note.currentSectionIndex++;
-                    break;
                   }
                 }
               }
