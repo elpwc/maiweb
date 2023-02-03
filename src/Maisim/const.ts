@@ -73,6 +73,8 @@ export const judgeLineRemainTimeTouch: number = timerPeriod * 18;
 
 /** 判定结果显示的时间 */
 export const judgeResultShowTime: number = timerPeriod * 35;
+/** 判定结果淡出动画的时长 */
+export const judgeResultFadeOutDuration: number = timerPeriod * 12;
 /** 判定显示标准距离 */
 export let judgeDistance: number = maimaiTapR * 1.5;
 

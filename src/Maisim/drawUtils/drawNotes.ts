@@ -19,6 +19,8 @@ import {
   canvasHeight,
   maimaiR,
   judgeDistance,
+  judgeResultShowTime,
+  judgeResultFadeOutDuration,
 } from '../const';
 import { getTrackProps } from '../slideTracks/tracks';
 import { APositions, trackLength } from '../slideTracks/_global';
@@ -31,6 +33,7 @@ import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { RegularStyles, SlideColor, TapStyles } from '../../utils/noteStyles';
 import { JudgeStatus, JudgeTimeStatus } from '../../utils/judgeStatus';
 import { JudgeIcon } from '../resourceReaders/judgeIconReader';
+import { animation } from './animation';
 
 let tapIcon: HTMLImageElement;
 let tapEachIcon: HTMLImageElement;
@@ -1337,6 +1340,30 @@ export const drawNote = (
     }
   } else if (props.status === -3) {
     // 显示判定
+    const drawJudgeImage = (ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, w: number, h: number, centerX: number, centerY: number, r?: number) => {
+      const key = ('judge' + note.serial);
+      const total = (judgeResultShowTime + judgeResultFadeOutDuration);
+      animation(key, total, (t: number) => {
+        let alpha = 1;
+        let scale = 1;
+        if (t < judgeResultShowTime) {
+          // 出现时的缩小效果（暂定为持续 1/3 倍的显示时间并且仅用于 TAP 音符）
+          const shrinkDuration = (judgeResultShowTime / 3);
+          if (note.type == NoteType.Tap) {
+            if (t < shrinkDuration) {
+              scale = (1 + (0.2 * (1 - (t / shrinkDuration))));
+            } else {
+              scale = 1;
+            }
+          }
+        } else {
+          // 消失时的淡出效果
+          alpha = (1 - ((t - judgeResultShowTime) / judgeResultFadeOutDuration));
+        }
+        drawRotationImage(ctx, image, (x + w*((1-scale)/2)), (y + h*((1-scale)/2)), w*scale, h*scale, centerX, centerY, r, alpha);
+      });
+    };
+
     let θ = 0,
       // Note所在的坐标
       x = 0,
@@ -1616,16 +1643,16 @@ export const drawNote = (
       if (lastLine.slideType === 'w') {
         if (lastLineDirection === 1) {
           // 向下
-          drawRotationImage(effectOverCtx, judgeImage, x - (judgeIconWidth * wifiK) / 2, y * 0.99 - judgeIconHeight, judgeIconWidth * wifiK, judgeIconHeight * wifiK, x, y, angle);
+          drawJudgeImage(effectOverCtx, judgeImage, x - (judgeIconWidth * wifiK) / 2, y * 0.99 - judgeIconHeight, judgeIconWidth * wifiK, judgeIconHeight * wifiK, x, y, angle);
         } else {
           // 向上
-          drawRotationImage(effectOverCtx, judgeImage, x - (judgeIconWidth * wifiK) / 2, y * 0.9, judgeIconWidth * wifiK, judgeIconHeight * wifiK, x, y, angle);
+          drawJudgeImage(effectOverCtx, judgeImage, x - (judgeIconWidth * wifiK) / 2, y * 0.9, judgeIconWidth * wifiK, judgeIconHeight * wifiK, x, y, angle);
         }
       } else {
         if (lastLineDirection === 1) {
-          drawRotationImage(effectOverCtx, judgeImage, x - judgeIconWidth, y, judgeIconWidth, judgeIconHeight, x, y, angle);
+          drawJudgeImage(effectOverCtx, judgeImage, x - judgeIconWidth, y, judgeIconWidth, judgeIconHeight, x, y, angle);
         } else {
-          drawRotationImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, x, y, angle);
+          drawJudgeImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, x, y, angle);
         }
       }
     } else {
@@ -1702,7 +1729,7 @@ export const drawNote = (
         }
       }
 
-      drawRotationImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
+      drawJudgeImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
 
       if (drawFastLast && props.judgeStatus !== JudgeStatus.CriticalPerfect && props.judgeStatus !== JudgeStatus.Miss) {
         if (props.judgeTime === JudgeTimeStatus.Fast) {
@@ -1723,7 +1750,7 @@ export const drawNote = (
           y = center[1] - (maimaiJudgeLineR - judgeDistance * 2 + fastlateIconHeight / 2);
         }
 
-        drawRotationImage(effectOverCtx, fastlateImage, x, y, fastlateIconWidth, fastlateIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
+        drawJudgeImage(effectOverCtx, fastlateImage, x, y, fastlateIconWidth, fastlateIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
       }
     }
 

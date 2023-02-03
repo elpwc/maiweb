@@ -715,7 +715,7 @@ const reader_and_updater = async () => {
         }
 
         if (noteIns.type === NoteType.Tap) {
-          animation(150, (t: number) => {
+          animation(null, 150, (t: number) => {
             const effectR = ((3 * maimaiTapR - maimaiTapR) * t) / 150 + maimaiTapR;
             drawRotationImage(ctx_effect_over, EffectIcon.Hex, APositions[Number(noteIns.pos) - 1][0] - effectR, APositions[Number(noteIns.pos) - 1][1] - effectR, effectR * 2, effectR * 2);
           });
