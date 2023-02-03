@@ -83,3 +83,4 @@ TOUCH GROUP√
 10. 对E（结束）的处理还没做
 11. 用animation重写判定结果显示√
 12. 自动播放，SLIDE经常LATE（甚至TOO LATE
+13. HOLD尾移动到终点後会重叠

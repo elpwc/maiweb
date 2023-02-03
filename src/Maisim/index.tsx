@@ -21,6 +21,7 @@ import {
   setCanvasSize,
   judgeResultShowTime,
   judgeLineRemainTimeHold,
+  judgeEffectDuration,
 } from './const';
 import { ReadMaimaiData } from './maiReader/maiReaderMain';
 
@@ -36,7 +37,7 @@ import { KeyState } from '../utils/keyState';
 import { drawOutRing } from './drawUtils/drawOutRing';
 import { initResources } from './resourceReaders/_init';
 import { APositions, ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged } from './slideTracks/_global';
-import { abs } from '../math';
+import { abs, cos, sin, π } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
 import { Note } from '../utils/note';
 import { NoteType } from '../utils/noteType';
@@ -114,6 +115,7 @@ const drawKeys = () => {
   drawFrame(ctx, canvasWidth - 100, 30);
 };
 
+/** 画最上层 */
 const drawOver = () => {
   const el: HTMLCanvasElement = document.getElementsByClassName('canvasOver')[0] as HTMLCanvasElement;
   const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
@@ -307,7 +309,7 @@ const reader_and_updater = async () => {
           // move
 
           if (auto) {
-            if (!(note.touched) && newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
+            if (!note.touched && newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
               judge(
                 showingNotes,
                 currentSheet,
@@ -714,12 +716,46 @@ const reader_and_updater = async () => {
           if (note.judgeStatus !== JudgeStatus.Miss) note.judgeStatus = JudgeStatus.CriticalPerfect;
         }
 
-        if (noteIns.type === NoteType.Tap) {
-          animation(null, pausedTotalTime, 150, (t: number) => {
-            const effectR = ((3 * maimaiTapR - maimaiTapR) * t) / 150 + maimaiTapR;
-            drawRotationImage(ctx_effect_over, EffectIcon.Hex, APositions[Number(noteIns.pos) - 1][0] - effectR, APositions[Number(noteIns.pos) - 1][1] - effectR, effectR * 2, effectR * 2);
+        // 判定特效
+        if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
+          // 特效图像
+          let effectImage: HTMLImageElement;
+          if (noteIns.type === NoteType.Tap) {
+            effectImage = EffectIcon.Hex;
+          } else if (noteIns.type === NoteType.Slide) {
+            effectImage = EffectIcon.StarYellow;
+          }
+          // 特效动画
+          /*
+            说明
+            特效由中心图案和周围的四个图案组成
+           */
+
+          /** 外部图案轨道半径 */
+          const effectOuterOrbitR = maimaiTapR;
+          animation(null, pausedTotalTime, judgeEffectDuration, (t: number) => {
+            const k = t / judgeEffectDuration;
+            // 中心图案
+            const effectR = (3 * maimaiTapR - maimaiTapR) * k + maimaiTapR;
+            const effectX = center[0] - effectR;
+            const effectY = center[1] - maimaiJudgeLineR - effectR;
+            // 外部图案
+            const effectOuterR = 3 * maimaiTapR * k;
+
+            const effectOuterX12 = center[0] - effectOuterOrbitR + effectOuterOrbitR * cos(k * 2 * π) - effectOuterR;
+            const effectOuterX34 = center[0] + effectOuterOrbitR - effectOuterOrbitR * cos(k * 2 * π) - effectOuterR;
+
+            const effectOuterY13 = center[1] - maimaiJudgeLineR + effectOuterOrbitR * sin(k * 2 * π) - effectOuterR;
+            const effectOuterY24 = center[1] - maimaiJudgeLineR + effectOuterOrbitR * sin(k * 2 * -π) - effectOuterR;
+
+            drawRotationImage(ctx_effect_over, effectImage, effectX, effectY, effectR * 2, effectR * 2, center[0], center[1], -22.5 + Number(noteIns.pos) * 45);
+            drawRotationImage(ctx_effect_over, effectImage, effectOuterX12, effectOuterY13, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(noteIns.pos) * 45);
+            drawRotationImage(ctx_effect_over, effectImage, effectOuterX12, effectOuterY24, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(noteIns.pos) * 45);
+            drawRotationImage(ctx_effect_over, effectImage, effectOuterX34, effectOuterY13, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(noteIns.pos) * 45);
+            drawRotationImage(ctx_effect_over, effectImage, effectOuterX34, effectOuterY24, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(noteIns.pos) * 45);
           });
         }
+
         note.status = -3;
       }
       return note.status !== -1;

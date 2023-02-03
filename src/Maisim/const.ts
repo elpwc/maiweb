@@ -77,6 +77,8 @@ export const judgeResultShowTime: number = timerPeriod * 35;
 export const judgeResultFadeOutDuration: number = timerPeriod * 12;
 /** 判定显示标准距离 */
 export let judgeDistance: number = maimaiTapR * 1.5;
+/** 判定特效显示时长 */
+export const judgeEffectDuration: number = timerPeriod * 15;
 
 // 外键
 export const keyWidth: number = 1 / 20;
