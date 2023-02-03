@@ -20,7 +20,7 @@ interface Animation {
 export let animationList: Animation[] = [];
 
 /** 绘制所有动画 */
-export const drawAnimations = () => {
+export const drawAnimations = (pausedTotalTime: number) => {
   if (animationList.length > 0) {
     //console.log(animationList);
     for (let i = 0; i < animationList.length; i++) {
@@ -28,7 +28,7 @@ export const drawAnimations = () => {
       // 绘制
       currentAnimation.draw(currentAnimation.currrentTick);
       // 更新时刻
-      currentAnimation.currrentTick = performance.now() - currentAnimation.startTime;
+      currentAnimation.currrentTick = performance.now() - pausedTotalTime - currentAnimation.startTime;
     }
 
     // 清理过期动画
@@ -44,13 +44,13 @@ export const drawAnimations = () => {
  * @param draw 动画绘制函数
  * @param wait 播放延迟，必须大于等于0，默认为0
  */
-export const animation = (key: string|null, length: number, draw: (t: number) => void, wait: number = 0) => {
+export const animation = (key: string|null, pausedTotalTime: number, length: number, draw: (t: number) => void, wait: number = 0) => {
   const fun = () => {
     const existing = (key === null)? null: animationList.find(a => a.key === key);
     if (existing) {
       // 不重复加入同一个动画
     } else {
-      animationList.push({ key, length, draw, currrentTick: 0, startTime: performance.now() });
+      animationList.push({ key, length, draw, currrentTick: 0, startTime: performance.now() - pausedTotalTime });
     }
   };
 

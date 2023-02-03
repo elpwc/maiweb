@@ -219,6 +219,7 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
 export const drawNote = (
   ctx: CanvasRenderingContext2D,
   ctx_slideTrack: CanvasRenderingContext2D,
+  pausedTotalTime: number,
   note: Note,
   isEach: boolean = false,
   props: ShowingNoteProps,
@@ -1343,7 +1344,7 @@ export const drawNote = (
     const drawJudgeImage = (ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, w: number, h: number, centerX: number, centerY: number, r?: number) => {
       const key = ('judge' + note.serial);
       const total = (judgeResultShowTime + judgeResultFadeOutDuration);
-      animation(key, total, (t: number) => {
+      animation(key, pausedTotalTime, total, (t: number) => {
         let alpha = 1;
         let scale = 1;
         if (t < judgeResultShowTime) {
