@@ -307,7 +307,7 @@ const reader_and_updater = async () => {
           // move
 
           if (auto) {
-            if (newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
+            if (!(note.touched) && newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
               judge(
                 showingNotes,
                 currentSheet,
