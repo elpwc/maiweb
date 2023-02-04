@@ -47,7 +47,7 @@ export interface ShowingNoteProps {
   // 实时判定显示相关
   /** 判定结果 */
   judgeStatus: JudgeStatus;
-  /** 判定FAST LAST */
+  /** 判定FAST LATE */
   judgeTime: JudgeTimeStatus;
   /** BREAK结果细分 */
   judgeLevel: number;

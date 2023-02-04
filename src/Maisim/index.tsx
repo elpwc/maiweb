@@ -50,7 +50,7 @@ import { updateRecord } from './recordUpdater';
 import { NoteSound } from './resourceReaders/noteSoundReader';
 import testsong_taiyoukei from './resource/sound/track/太陽系デスコ.mp3';
 import testbgi from './resource/maimai_img/ui/UI_Chara_105810.png';
-import { JudgeLineStyle, RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
+import { RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
 import { uiIcon } from './resourceReaders/uiIconReader';
 import { drawRotationImage } from './drawUtils/_base';
 import { EffectIcon } from './resourceReaders/effectIconReader';
@@ -64,30 +64,46 @@ SongTrack!.oncanplaythrough = e => {
   //alert('rua!');
 };
 
+/** 临时 自动播放 */
 let auto = true;
 
-let timer1: string | number | NodeJS.Timer | undefined, timer2: string | number | NodeJS.Timeout | undefined, timer3: string | number | NodeJS.Timer | undefined;
+/** 读入数据和更新绘制信息的Timer */
+let timer1: string | number | NodeJS.Timer | undefined;
+/** 未启用 */
+let timer2: string | number | NodeJS.Timeout | undefined;
+/** 根据绘制信息去绘制的Timer */
+let timer3: string | number | NodeJS.Timer | undefined;
 
+/** NOTE移动速度 */
 let tapMoveSpeed: number = 0.85; // 0.85
+/** NOTE浮现时的速度 */
 let tapEmergeSpeed: number = 0.2; // 0.2
 
+/** 谱面流速 */
 let speed: number = 10;
 
+/** 谱面开始播放时的时刻 */
 let starttime: number = 0;
+/** 谱面已经经过的时间 */
 let currentTime: number = 0;
 
+/** 暂停谱面时的时刻 */
 let lastPauseTime: number = 0;
+/** 暂停後度过的时间 */
 let pausedTotalTime: number = 0;
 
 let currentDifficulty = 5;
 
+/** 当前被按下的所有判定区 */
 let currentTouchingArea: TouchArea[] = [];
 
+/** 所有外键的状态 */
 let keyStates: KeyState[] = [];
 
-/** 提前绘制了的时间 */
+/** 根据谱面流速，应该提前开始绘制的时间 */
 let advancedTime = 0;
 
+/** 触发一个烟花 */
 export const fireworkTrigger = (triggerNote: Note) => {
   // @ts-ignore
   NoteSound.firework.cloneNode().play();
@@ -105,6 +121,7 @@ export const fireworkTrigger = (triggerNote: Note) => {
   }
 };
 
+/** 绘制外键 */
 const drawKeys = () => {
   const el: HTMLCanvasElement = document.getElementsByClassName('canvasKeys')[0] as HTMLCanvasElement;
   const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
@@ -115,7 +132,7 @@ const drawKeys = () => {
   drawFrame(ctx, canvasWidth - 100, 30);
 };
 
-/** 画最上层 */
+/** 绘制最上遮盖层（外键底层和周围白色） */
 const drawOver = () => {
   const el: HTMLCanvasElement = document.getElementsByClassName('canvasOver')[0] as HTMLCanvasElement;
   const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
@@ -123,6 +140,7 @@ const drawOver = () => {
   drawOutRing(ctx);
 };
 
+/** 启动绘制器 */
 const starttimer = () => {
   readSheet();
   advancedTime = (currentSheet.notes[0].emergeTime ?? 0) < 0 ? -(currentSheet.notes[0].emergeTime ?? 0) : 0;
@@ -149,17 +167,17 @@ const readSheet = () => {
   songdata = ReadMaimaiData(sheetdata);
 
   currentSheet = songdata.sheets[0];
-  currentSheet.notes = calculate_emerge_move_time_of_notes(currentSheet.notes);
+  currentSheet.notes = calculate_speed_related_params_for_notes(currentSheet.notes);
 };
 
-// 三次处理谱面
 /**
+ * 第三次谱面处理，根据当前谱面流速计算各个受流速影响的属性
  * 根据速度计算emergeTime, moveTime, guideStarEmergeTime
  * 判断所有黄色SLIDE TRACK
  * @param notesOri
  * @returns
  */
-const calculate_emerge_move_time_of_notes = (notesOri: Note[]) => {
+const calculate_speed_related_params_for_notes = (notesOri: Note[]) => {
   /** 为Notes计算浮现的时机 */
   const notes = notesOri;
   notes.forEach((note: Note, i: number) => {
@@ -202,14 +220,14 @@ const calculate_emerge_move_time_of_notes = (notesOri: Note[]) => {
   return notes;
 };
 
-/** 当前绘制的所有Notes */
+/** 当前绘制在画布上的所有Notes */
 let showingNotes: ShowingNoteProps[] = [];
 
 /** 下一个note标号 */
 let nextNoteIndex = 0;
 
 /**
- * TOUCH叶片闭合时的当前位置
+ * 计算TOUCH叶片闭合位置的函数
  * @param c currentTime
  * @param m moveTime
  * @param t time
@@ -310,7 +328,7 @@ const reader_and_updater = async () => {
 
           if (auto) {
             // 暂且加一个根据时间的判断，以对付很短的 HOLD
-            if (!note.touched && (newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR || abs(noteIns.time - currentTime) <= 1*timerPeriod)) {
+            if (!note.touched && (newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR || abs(noteIns.time - currentTime) <= 1 * timerPeriod)) {
               judge(
                 showingNotes,
                 currentSheet,
@@ -873,13 +891,14 @@ let lastFrameBeginTime = -1;
 /** 当前帧数 */
 let frame = 0;
 
-// 绘制帧率
+/** 绘制帧率 */
 const drawFrame = (ctx: CanvasRenderingContext2D, x: number = 0, y: number = 0) => {
   ctx.strokeStyle = 'red';
   ctx.font = '20px Arial';
   ctx.strokeText(frame.toFixed(2) + 'fps', x, y);
 };
 
+/** 画一帧！ */
 const drawer = async () => {
   // 计算帧率
   const currentFrameBeginTime = performance.now();
@@ -924,6 +943,7 @@ const drawer = async () => {
   drawGameRecord(ctx_game_record);
 };
 
+/** 临时画出分数 */
 const drawGameRecord = (ctx: CanvasRenderingContext2D) => {
   ctx.strokeStyle = 'red';
   ctx.font = '20px Arial';
@@ -958,7 +978,6 @@ interface Props {
   holdStyle: RegularStyles;
   slideStyle: RegularStyles;
   slideColor: SlideColor;
-  judgeLineStyle: JudgeLineStyle;
 
   /** 左右镜像 */
   leftRightMirror: boolean;

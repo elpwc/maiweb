@@ -6,7 +6,9 @@ export interface Sheet {
   designer?: string;
   difficulty: Difficulty;
   level: number;
+  /** 所有Note */
   notes: Note[];
+  /** 每一拍 */
   beats: Beat[];
 
   /** 宴谱类型 */

@@ -55,7 +55,6 @@ function App() {
             holdStyle={RegularStyles.Concise}
             slideStyle={RegularStyles.Concise}
             slideColor={SlideColor.Blue}
-            judgeLineStyle={0}
             showEffect={true}
             autoMode={true}
             showKeys={true}

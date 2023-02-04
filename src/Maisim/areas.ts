@@ -2,6 +2,7 @@ import { abs, atan, cos, sin, π } from '../math';
 import { isInner, lineLen } from './drawUtils/_base';
 import { center, keyInnerR, keyOuterR, keyWidth, maimaiJudgeLineR, maimaiScreenR, maimaiSummonLineR } from './const';
 
+/** 一块判定区 */
 export interface Area {
   /** A B C.. */
   type: string;
@@ -12,7 +13,7 @@ export interface Area {
   /** 围住的多边形的所有顶点 */
   points: [number, number][];
 
-  // 适用于key(外键)
+  // 适用于key(外键) 绘制外键的时候用
   leftAngle?: number;
   rightAngle?: number;
 }

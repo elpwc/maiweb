@@ -1,3 +1,4 @@
+/** 谱面难度 */
 export enum Difficulty {
   Empty,
   Easy,
@@ -6,6 +7,8 @@ export enum Difficulty {
   Expert,
   Master,
   ReMaster,
+  /** 自制 */
   Original,
+  /** 宴 */
   Utage,
 }
