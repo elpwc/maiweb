@@ -91,6 +91,9 @@ TOUCH GROUP√
 3. 修改连续TOUCH, TOUCH HOLD白框的显示（应当按照谱面流速显示）【不是很急】
 4. 用animation重写FIREWORK?【不急】
 5. auto中SLIDE第一段会被划掉 √
-6. 当TOUCH HOLD是第一个Note时，动画显示不完整（叶片丢失
-7. TOUCH HOLD总是GOOD
-8. 似乎较短的TOUCH HOLD不能被自动播放
+6. 当TOUCH/TOUCH HOLD在第一个节拍里时，动画显示不完整（叶片丢失
+7. 自动播放TOUCH HOLD总是GOOD(?)
+8. 似乎较短的TOUCH HOLD有时不能被自动播放
+9. 一直按着TOUCH HOLD不松开至结束，积蓄音不会停止
+10. TAP在MISS时也播放了判定动画
+11. 完成judge的auto後门

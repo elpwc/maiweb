@@ -52,9 +52,8 @@ import testsong_taiyoukei from './resource/sound/track/太陽系デスコ.mp3';
 import testbgi from './resource/maimai_img/ui/UI_Chara_105810.png';
 import { RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
 import { uiIcon } from './resourceReaders/uiIconReader';
-import { drawRotationImage } from './drawUtils/_base';
-import { EffectIcon } from './resourceReaders/effectIconReader';
-import { animation, drawAnimations } from './drawUtils/animation';
+import { drawAnimations } from './drawUtils/animation';
+import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star } from './drawUtils/judgeEffectAnimations';
 
 const SongTrack = new Audio();
 SongTrack.volume = 0.5;
@@ -330,6 +329,10 @@ const reader_and_updater = async () => {
         } else if (newNote.status === 2) {
           // move
 
+          if (newNote.isTouching) {
+            JudgeEffectAnimation_Circle(ctx_effect_over, pausedTotalTime, noteIns.pos, note.noteIndex);
+          }
+
           if (auto) {
             if (!note.touched && newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
               judge(
@@ -393,6 +396,10 @@ const reader_and_updater = async () => {
 
           newNote.tailRho = ((currentTime - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
+          if (newNote.isTouching) {
+            JudgeEffectAnimation_Circle(ctx_effect_over, pausedTotalTime, noteIns.pos, note.noteIndex);
+          }
+
           if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeHold) {
             newNote.status = -4;
           }
@@ -448,6 +455,10 @@ const reader_and_updater = async () => {
           // save
 
           newNote.tailRho = ((currentTime - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
+
+          if (newNote.isTouching) {
+            JudgeEffectAnimation_Circle(ctx_effect_over, pausedTotalTime, 'C', note.noteIndex);
+          }
 
           if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeHold) {
             newNote.status = -4;
@@ -757,41 +768,7 @@ const reader_and_updater = async () => {
         // 判定特效
         if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
           // 特效图像
-          let effectImage: HTMLImageElement;
-          if (noteIns.type === NoteType.Tap) {
-            effectImage = EffectIcon.Hex;
-          } else if (noteIns.type === NoteType.Slide) {
-            effectImage = EffectIcon.StarYellow;
-          }
-          // 特效动画
-          /*
-            说明
-            特效由中心图案和周围的四个图案组成
-           */
-
-          /** 外部图案轨道半径 */
-          const effectOuterOrbitR = maimaiTapR;
-          animation(null, pausedTotalTime, judgeEffectDuration, (t: number) => {
-            const k = t / judgeEffectDuration;
-            // 中心图案
-            const effectR = (3 * maimaiTapR - maimaiTapR) * k + maimaiTapR;
-            const effectX = center[0] - effectR;
-            const effectY = center[1] - maimaiJudgeLineR - effectR;
-            // 外部图案
-            const effectOuterR = 3 * maimaiTapR * k;
-
-            const effectOuterX12 = center[0] - effectOuterOrbitR + effectOuterOrbitR * cos(k * 2 * π) - effectOuterR;
-            const effectOuterX34 = center[0] + effectOuterOrbitR - effectOuterOrbitR * cos(k * 2 * π) - effectOuterR;
-
-            const effectOuterY13 = center[1] - maimaiJudgeLineR + effectOuterOrbitR * sin(k * 2 * π) - effectOuterR;
-            const effectOuterY24 = center[1] - maimaiJudgeLineR + effectOuterOrbitR * sin(k * 2 * -π) - effectOuterR;
-
-            drawRotationImage(ctx_effect_over, effectImage, effectX, effectY, effectR * 2, effectR * 2, center[0], center[1], -22.5 + Number(noteIns.pos) * 45);
-            drawRotationImage(ctx_effect_over, effectImage, effectOuterX12, effectOuterY13, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(noteIns.pos) * 45);
-            drawRotationImage(ctx_effect_over, effectImage, effectOuterX12, effectOuterY24, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(noteIns.pos) * 45);
-            drawRotationImage(ctx_effect_over, effectImage, effectOuterX34, effectOuterY13, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(noteIns.pos) * 45);
-            drawRotationImage(ctx_effect_over, effectImage, effectOuterX34, effectOuterY24, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(noteIns.pos) * 45);
-          });
+          JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, pausedTotalTime, noteIns.pos, noteIns.type === NoteType.Tap ? 'hex' : 'star');
         }
 
         note.status = -3;
@@ -806,6 +783,11 @@ const reader_and_updater = async () => {
       if (note.status === -4) {
         if (noteIns.isEx) {
           if (note.judgeStatus !== JudgeStatus.Miss) note.judgeStatus = JudgeStatus.CriticalPerfect;
+        }
+
+        // 特效图像
+        if (note.touched) {
+          JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, pausedTotalTime, noteIns.pos, 'hex');
         }
 
         if (noteIns.isShortHold || (noteIns.type === NoteType.Hold && noteIns.remainTime! <= timerPeriod * 18) || (noteIns.type === NoteType.TouchHold && noteIns.remainTime! <= timerPeriod * 27)) {
