@@ -457,7 +457,7 @@ export const drawNote = (
           image.width,
           holdHeadHeight
         );
-      } else {
+      } else if (props.tailRho <= maimaiJudgeLineR - maimaiSummonLineR) {
         // 最外侧的HOLD头部
         drawRotationImage(
           ctx,

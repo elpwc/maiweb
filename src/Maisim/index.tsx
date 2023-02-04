@@ -309,7 +309,8 @@ const reader_and_updater = async () => {
           // move
 
           if (auto) {
-            if (!note.touched && newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
+            // 暂且加一个根据时间的判断，以对付很短的 HOLD
+            if (!note.touched && (newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR || abs(noteIns.time - currentTime) <= 1*timerPeriod)) {
               judge(
                 showingNotes,
                 currentSheet,
@@ -326,7 +327,6 @@ const reader_and_updater = async () => {
           if (noteIns.time! < noteIns.moveTime! + noteIns.remainTime!) {
             // HOLD长度大于maimaiJudgeLine-maimaiSummonLine
             newNote.rho = ((noteIns.time! - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
-
             if (currentTime >= noteIns.moveTime! + noteIns.remainTime!) {
               newNote.status = 3;
             }
@@ -773,7 +773,12 @@ const reader_and_updater = async () => {
         if (note.touched && note.holdPress) {
           note.holdingTime += currentTime - (note.touchedTime ?? 0);
         }
-        const holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
+        let holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
+        if (holdingPercent < 0) {
+          // 从 noteIns.remainTime 中减掉那个 (12+...) 可能会减成负的
+          // 先 workaround 一下
+          holdingPercent = 1;
+        }
 
         if (note.judgeStatus === JudgeStatus.Miss) {
           //MISS修正为GOOD
