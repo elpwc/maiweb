@@ -22,6 +22,9 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
       // 已经判定过一个NOTE就不再判定了
       if (judged) break;
 
+      // 不加的话，会在判定前後的多个帧内连续判定多次，导致出现GOOD
+      if (note.touched) continue;
+      
       if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos) && abs(timeD) <= timerPeriod * 9) {
         // 设置标志位
         showingNotes[i].touched = true;
