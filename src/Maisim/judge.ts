@@ -8,7 +8,16 @@ import { timerPeriod } from './const';
 import { updateRecord } from './recordUpdater';
 import { section_wifi, section } from './slideTracks/section';
 
-export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, currentTime: number, area: TouchArea, currentTouchingArea: TouchArea[]) => {
+/**
+ * 做出一个判定
+ * @param showingNotes 
+ * @param currentSheet 
+ * @param currentTime 谱面当前时刻
+ * @param area 按下的判定区和按下时刻
+ * @param currentTouchingArea 当前所有按下的判定区
+ * @param isAuto 留给auto的後门，暂未使用
+ */
+export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, currentTime: number, area: TouchArea, currentTouchingArea: TouchArea[], isAuto: boolean = false) => {
   /** 是否已经判定过一个TAP/TOUCH/BREAK了，避免一次触摸重复判定距离过近的Note */
   let judged = false;
 
@@ -16,6 +25,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
     const note = showingNotes[i];
     const noteIns = currentSheet.notes[note.noteIndex];
 
+    /** 判定时，距离正解时刻的时间差 */
     let timeD = noteIns.time - currentTime;
 
     if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
@@ -88,7 +98,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 
           judged = true;
 
-          console.log('timeD: ', timeD);
+          console.log('timeD: ', timeD, noteIns.time, showingNotes[i].touchedTime, currentTime);
 
           // FAST LATE
           if (timeD >= 0) {

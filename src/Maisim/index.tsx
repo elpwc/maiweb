@@ -269,6 +269,7 @@ const reader_and_updater = async () => {
           newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
 
           if (currentTime >= noteIns.moveTime!) {
+            newNote.radius = maimaiTapR;
             newNote.status = 1;
           }
         } else if (newNote.status === 1) {
@@ -308,6 +309,7 @@ const reader_and_updater = async () => {
           newNote.radius = ((currentTime - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
 
           if (currentTime >= noteIns.moveTime!) {
+            newNote.radius = maimaiTapR;
             newNote.status = 1;
           }
         } else if (newNote.status === 1) {
@@ -316,19 +318,14 @@ const reader_and_updater = async () => {
 
           // HOLD长度大于maimaiJudgeLine-maimaiSummonLine
           if (currentTime >= noteIns.time!) {
-            newNote.status = 2;
-          }
-
-          // HOLD长度小于maimaiJudgeLine-maimaiSummonLine
-          if (currentTime >= noteIns.remainTime! + noteIns.moveTime!) {
+            newNote.rho = maimaiJudgeLineR - maimaiSummonLineR;
             newNote.status = 2;
           }
         } else if (newNote.status === 2) {
           // move
 
           if (auto) {
-            // 暂且加一个根据时间的判断，以对付很短的 HOLD
-            if (!note.touched && (newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR || abs(noteIns.time - currentTime) <= 1 * timerPeriod)) {
+            if (!note.touched && newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
               judge(
                 showingNotes,
                 currentSheet,
