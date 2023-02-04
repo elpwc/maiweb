@@ -651,9 +651,7 @@ const reader_and_updater = async () => {
                 currentSheet,
                 currentTime,
                 {
-                  area: areas.filter(a => {
-                    return a.name === 'A' + noteIns.pos;
-                  })[0],
+                  area: getArea('K' + noteIns.pos)!,
                   pressTime: currentTime,
                 },
                 currentTouchingArea

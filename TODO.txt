@@ -90,7 +90,7 @@ TOUCH GROUP√
 2. TAP型HOLD判定时没有声音【急】 √
 3. 修改连续TOUCH, TOUCH HOLD白框的显示（应当按照谱面流速显示）【不是很急】
 4. 用animation重写FIREWORK?【不急】
-5. auto中SLIDE第一段会被划掉
+5. auto中SLIDE第一段会被划掉 √
 6. 当TOUCH HOLD是第一个Note时，动画显示不完整（叶片丢失
 7. TOUCH HOLD总是GOOD
 8. 似乎较短的TOUCH HOLD不能被自动播放
