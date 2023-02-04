@@ -18,20 +18,22 @@ export interface ShowingNoteProps {
    * -1: die 0: wait for trig 1: change
    */
   status: number;
+  /** 当前note本身大小的半径 */
   radius: number;
-  // 位置
+  /** note距离屏幕中心的距离比 ρ */
   rho: number;
-  // 仅适用于SLIDE TRACK，GUIDE STAR半径
+  /** GUIDE STAR半径 */
   guideStarRadius?: number;
 
-  // 从生成到消亡的不间断变化量
+  /** 从生成到消亡的不间断变化量 */
   timer: number;
 
-  // 尾部位置
+  /** HOLD / TOUCH HOLD尾部位置 */
   tailRho: number;
-  // 开始绘制的时刻
+  /** 开始绘制的时刻 */
   placeTime: number;
 
+  /** 是否是EACH NOTE */
   isEach: boolean;
 
   // 判定相关
@@ -41,10 +43,11 @@ export interface ShowingNoteProps {
   isTouching: boolean;
   /** 按下时的时间 HOLD */
   touchedTime?: number;
+
   // 实时判定显示相关
   /** 判定结果 */
   judgeStatus: JudgeStatus;
-  /** 判定前後 */
+  /** 判定FAST LAST */
   judgeTime: JudgeTimeStatus;
   /** BREAK结果细分 */
   judgeLevel: number;
