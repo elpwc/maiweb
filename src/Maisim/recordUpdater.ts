@@ -11,6 +11,15 @@ const dx_score = [3, 2, 1, 0, 0];
 /** 控制TOUCH HOLD的储能音效开关 */
 const touchHoldSounds: { sound: HTMLAudioElement; serial: number }[] = [];
 
+/**
+ * 更新计分
+ * @param note
+ * @param props
+ * @param basicEvaluation 基础单位分（单个TAP分）
+ * @param exEvaluation 额外单位分（单个BREAK分）
+ * @param soundOnly 控制HOLD头发声，但不更新计分
+ * @param soundControl 控制TOUCH HOLD积蓄声用
+ */
 export const updateRecord = (
   note: Note,
   props: ShowingNoteProps,

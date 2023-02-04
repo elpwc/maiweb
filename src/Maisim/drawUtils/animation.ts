@@ -1,7 +1,7 @@
 /** 动画 */
 interface Animation {
   /** key 非空的动画，同一个动画不会被重复添加 */
-  key: string|null;
+  key: string | null;
   /** 动画长度 ms */
   length: number;
   /**
@@ -44,9 +44,9 @@ export const drawAnimations = (pausedTotalTime: number) => {
  * @param draw 动画绘制函数
  * @param wait 播放延迟，必须大于等于0，默认为0
  */
-export const animation = (key: string|null, pausedTotalTime: number, length: number, draw: (t: number) => void, wait: number = 0) => {
+export const animation = (key: string | null, pausedTotalTime: number, length: number, draw: (t: number) => void, wait: number = 0) => {
   const fun = () => {
-    const existing = (key === null)? null: animationList.find(a => a.key === key);
+    const existing = key === null ? null : animationList.find(a => a.key === key);
     if (existing) {
       // 不重复加入同一个动画
     } else {

@@ -10,8 +10,8 @@ import { section_wifi, section } from './slideTracks/section';
 
 /**
  * 做出一个判定
- * @param showingNotes 
- * @param currentSheet 
+ * @param showingNotes
+ * @param currentSheet
  * @param currentTime 谱面当前时刻
  * @param area 按下的判定区和按下时刻
  * @param currentTouchingArea 当前所有按下的判定区
@@ -34,7 +34,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 
       // 不加的话，会在判定前後的多个帧内连续判定多次，导致出现GOOD
       if (note.touched) continue;
-      
+
       if ((area.area.type === 'K' || area.area.type === 'A') && area.area.id === Number(noteIns.pos) && abs(timeD) <= timerPeriod * 9) {
         // 设置标志位
         showingNotes[i].touched = true;
@@ -124,8 +124,11 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
           } else {
           }
 
-          if (noteIns.isShortHold) {
+          if (noteIns.isShortHold || noteIns.remainTime! <= timerPeriod * 18) {
             //SHORT的话就直接判定了喵
+            if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
+              updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true);
+            }
             updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
             showingNotes[i].status = -4;
           } else {
@@ -251,7 +254,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
           }
         }
 
-        if (noteIns.isShortHold) {
+        if (noteIns.isShortHold || noteIns.remainTime! <= timerPeriod * 27) {
           //SHORT的话就直接判定了喵
           updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
           showingNotes[i].status = -4;

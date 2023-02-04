@@ -321,6 +321,12 @@ const reader_and_updater = async () => {
             newNote.rho = maimaiJudgeLineR - maimaiSummonLineR;
             newNote.status = 2;
           }
+
+          // HOLD长度小于maimaiJudgeLine-maimaiSummonLine
+          // 也就是刚刚全部冒出来，但头部距离判定线还很远的时刻()
+          if (currentTime >= noteIns.remainTime! + noteIns.moveTime!) {
+            newNote.status = 2;
+          }
         } else if (newNote.status === 2) {
           // move
 
@@ -336,6 +342,9 @@ const reader_and_updater = async () => {
                 },
                 currentTouchingArea
               );
+              if (noteIns.isShortHold) {
+                break;
+              }
             }
           }
 
@@ -354,7 +363,25 @@ const reader_and_updater = async () => {
 
             if (currentTime >= noteIns.time!) {
               newNote.rho = ((noteIns.time! - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
-              if (noteIns.isShortHold) {
+
+              if (auto) {
+                if (!note.touched && newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
+                  judge(
+                    showingNotes,
+                    currentSheet,
+                    currentTime,
+                    {
+                      area: getArea('K' + noteIns.pos)!,
+                      pressTime: currentTime,
+                    },
+                    currentTouchingArea
+                  );
+                  if (noteIns.isShortHold) {
+                    break;
+                  }
+                }
+              }
+              if (noteIns.isShortHold || (noteIns.type === NoteType.Hold && noteIns.remainTime! <= timerPeriod * 18)) {
                 newNote.status = -4;
               } else {
                 newNote.status = 3;
@@ -371,8 +398,7 @@ const reader_and_updater = async () => {
           }
         } else if (newNote.status === -3) {
           // judge
-
-          if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeResultShowTime) {
+          if (currentTime >= (noteIns.time ?? 0) + (noteIns.remainTime ?? 0) + judgeResultShowTime) {
             newNote.status = -1;
           }
         }
@@ -429,7 +455,7 @@ const reader_and_updater = async () => {
         } else if (newNote.status === -3) {
           // judge
 
-          if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeResultShowTime) {
+          if (currentTime >= (noteIns.time ?? 0) + (noteIns.remainTime ?? 0) + judgeResultShowTime) {
             newNote.status = -1;
           }
         }
@@ -448,7 +474,6 @@ const reader_and_updater = async () => {
           // converge
 
           newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
-
           if (auto) {
             if (currentTime >= noteIns.time!) {
               judge(
@@ -785,44 +810,50 @@ const reader_and_updater = async () => {
           if (note.judgeStatus !== JudgeStatus.Miss) note.judgeStatus = JudgeStatus.CriticalPerfect;
         }
 
-        if (note.touched && note.holdPress) {
-          note.holdingTime += currentTime - (note.touchedTime ?? 0);
-        }
-        let holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
-        if (holdingPercent < 0) {
-          // 从 noteIns.remainTime 中减掉那个 (12+...) 可能会减成负的
-          // 先 workaround 一下
-          holdingPercent = 1;
-        }
+        if (noteIns.isShortHold || (noteIns.type === NoteType.Hold && noteIns.remainTime! <= timerPeriod * 18) || (noteIns.type === NoteType.TouchHold && noteIns.remainTime! <= timerPeriod * 27)) {
+          // 超短HOLD, TOUCH HOLD直接判定
 
-        if (note.judgeStatus === JudgeStatus.Miss) {
-          //MISS修正为GOOD
-          if (holdingPercent >= 0.05) {
-            note.judgeStatus = JudgeStatus.Good;
-          }
+          note.status = -3;
         } else {
-          console.log(holdingPercent);
-          if (holdingPercent >= 1) {
-          } else if (holdingPercent >= 0.67 && holdingPercent < 1) {
-            if (note.judgeStatus === JudgeStatus.CriticalPerfect) {
-              note.judgeStatus = JudgeStatus.Perfect;
-            }
-          } else if (holdingPercent >= 0.33 && holdingPercent < 0.67) {
-            if (note.judgeStatus === JudgeStatus.CriticalPerfect || note.judgeStatus === JudgeStatus.Perfect) {
-              note.judgeStatus = JudgeStatus.Great;
+          if (note.touched && note.holdPress) {
+            note.holdingTime += currentTime - (note.touchedTime ?? 0);
+          }
+          let holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
+          if (holdingPercent < 0) {
+            // 从 noteIns.remainTime 中减掉那个 (12+...) 可能会减成负的
+            // 先 workaround 一下
+            holdingPercent = 1;
+          }
+
+          if (note.judgeStatus === JudgeStatus.Miss) {
+            //MISS修正为GOOD
+            if (holdingPercent >= 0.05) {
+              note.judgeStatus = JudgeStatus.Good;
             }
           } else {
-            note.judgeStatus = JudgeStatus.Good;
+            console.log(holdingPercent);
+            if (holdingPercent >= 1) {
+            } else if (holdingPercent >= 0.67 && holdingPercent < 1) {
+              if (note.judgeStatus === JudgeStatus.CriticalPerfect) {
+                note.judgeStatus = JudgeStatus.Perfect;
+              }
+            } else if (holdingPercent >= 0.33 && holdingPercent < 0.67) {
+              if (note.judgeStatus === JudgeStatus.CriticalPerfect || note.judgeStatus === JudgeStatus.Perfect) {
+                note.judgeStatus = JudgeStatus.Great;
+              }
+            } else {
+              note.judgeStatus = JudgeStatus.Good;
+            }
           }
-        }
 
-        note.status = -3;
+          note.status = -3;
 
-        // 停掉可能的TOUCH HOLD声音
-        if (noteIns.type === NoteType.TouchHold) {
-          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
+          // 停掉可能的TOUCH HOLD声音
+          if (noteIns.type === NoteType.TouchHold) {
+            updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
+          }
+          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
         }
-        updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
       }
       return note.status !== -1;
     } else {
