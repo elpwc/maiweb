@@ -1,6 +1,10 @@
 import { NoteType } from './noteType';
 import { SlideTrackJudgementParams } from './slideTrackJudgementParams';
 
+/*
+  注释不使用「时间」，而分别使用「时刻」和「时长」
+ */
+
 /** 一拍（可能是空白的，代表空拍） */
 export interface Beat {
   // notes: Note[];
@@ -8,7 +12,7 @@ export interface Beat {
   notevalue: number;
   /** 这一拍的BPM */
   bpm: number;
-  /** 触发时间 */
+  /** 触发时刻 */
   time: number;
 
   /** 包含的全部notes的索引 */
@@ -31,9 +35,9 @@ export interface SlideLine {
   /** 结束位置 '1'-'8' */
   endPos?: string;
 
-  /**  持续时间/ms*/
+  /**  持续时长/ms*/
   remainTime?: number;
-  /** 开始时的时间 */
+  /** 开始时的时刻 */
   beginTime?: number;
 }
 
@@ -52,9 +56,9 @@ export interface SlideTrack {
   /** HOLD演示节拍[]里内容的後一个数字 */
   notenumber?: number;
 
-  /**  持续时间/ms*/
+  /**  持续时长/ms*/
   remainTime?: number;
-  /**  ため時間 */
+  /**  ため时长 */
   stopTime?: number;
   /** 是否是SLIDE CHAIN（人体蜈蚣） */
   isChain?: boolean;
@@ -100,12 +104,12 @@ export interface Note {
   /** HOLD演示节拍[]里内容的後一个数字 */
   notenumber?: number;
 
-  /** 此Note的持续时间/ms（HOLD）*/
+  /** 此Note的持续时长/ms（对于HOLD：HOLD头开始到HOLD尾出现的时间）*/
   remainTime?: number;
 
   // 以下2个属性（还有下面的guideStarEmergeTime）在生成後由speed之类的决定
   /**
-   * 浮现时间/ms
+   * Note开始浮现的时刻/ms
    *  对于TRACK: 是TRACK的浮现时间（其实就是SLIDE TAP的movetime喵）
    * ⚠注意⚠：
    * 所有Note的emergeTime在maireader中均未被定义
@@ -113,7 +117,7 @@ export interface Note {
    * */
   emergeTime?: number;
   /**
-   * 移动时间/ms
+   * Note开始移动的时刻/ms
    *  对于TRACK: GUIDE STAR开始移动的时间
    */
   moveTime?: number;
