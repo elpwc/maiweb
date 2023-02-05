@@ -1,6 +1,6 @@
 import { abs, atan, cos, sin, π } from '../math';
 import { isInner, lineLen } from './drawUtils/_base';
-import { center, keyInnerR, keyOuterR, keyWidth, maimaiJudgeLineR, maimaiScreenR, maimaiSummonLineR } from './const';
+import { center, keyInnerR, keyOuterR, keyWidth, maimaiADTouchR, maimaiBR, maimaiER, maimaiJudgeLineR, maimaiScreenR, maimaiSummonLineR } from './const';
 
 /** 一块判定区 */
 export interface Area {
@@ -184,4 +184,46 @@ export const initAreas = () => {
       rightAngle: (i * 0.25 - 0.5 + 0.125 + keyWidth) * π,
     });
   }
+};
+
+/**
+ * 指定pos的TOUCH的中心
+ * @param pos
+ */
+export const getTouchCenterCoord = (pos: string): [number, number] => {
+  const firstChar = pos.substring(0, 1);
+  const touchPos = pos.substring(1, 2);
+  let x = 0,
+    y = 0;
+  let θ = 0;
+  switch (firstChar) {
+    case 'C':
+      x = center[0];
+      y = center[1];
+      break;
+    case 'A':
+      θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+      x = center[0] + maimaiADTouchR * Math.cos(θ);
+      y = center[1] + maimaiADTouchR * Math.sin(θ);
+      break;
+    case 'B':
+      θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+      x = center[0] + maimaiBR * Math.cos(θ);
+      y = center[1] + maimaiBR * Math.sin(θ);
+      break;
+    case 'D':
+      θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+      x = center[0] + maimaiADTouchR * Math.cos(θ);
+      y = center[1] + maimaiADTouchR * Math.sin(θ);
+      break;
+    case 'E':
+      θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+      x = center[0] + maimaiER * Math.cos(θ);
+      y = center[1] + maimaiER * Math.sin(θ);
+      break;
+    default:
+      break;
+  }
+
+  return [x, y];
 };

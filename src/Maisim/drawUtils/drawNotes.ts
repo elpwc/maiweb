@@ -34,6 +34,7 @@ import { RegularStyles, SlideColor, TapStyles } from '../../utils/noteStyles';
 import { JudgeStatus, JudgeTimeStatus } from '../../utils/judgeStatus';
 import { JudgeIcon } from '../resourceReaders/judgeIconReader';
 import { animation } from './animation';
+import { getTouchCenterCoord } from '../areas';
 
 let tapIcon: HTMLImageElement;
 let tapEachIcon: HTMLImageElement;
@@ -241,8 +242,9 @@ export const drawNote = (
       tx = 0,
       ty = 0;
 
-    const firstWord = note.pos.substring(0, 1);
-    if (!isNaN(Number(firstWord))) {
+    const firstChar = note.pos.substring(0, 1);
+    const touchPos = note.pos.substring(1, 2);
+    if (!isNaN(Number(firstChar))) {
       // 数字开头的位置
       θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
       //console.log(note.pos, θ*180)
@@ -250,44 +252,18 @@ export const drawNote = (
       y = center[1] + (props.rho + maimaiSummonLineR) * Math.sin(θ);
     } else {
       // 字母开头的位置（TOUCH）
-      const touchPos = note.pos.substring(1, 2);
-      switch (firstWord) {
-        case 'C':
-          x = center[0];
-          y = center[1];
-          break;
-        case 'A':
-          θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-          if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
-            x = center[0] + maimaiADTouchR * Math.cos(θ);
-            y = center[1] + maimaiADTouchR * Math.sin(θ);
-          } else {
-            x = center[0] + maimaiScreenR * Math.cos(θ);
-            y = center[1] + maimaiScreenR * Math.sin(θ);
-          }
-          break;
-        case 'B':
-          θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-          x = center[0] + maimaiBR * Math.cos(θ);
-          y = center[1] + maimaiBR * Math.sin(θ);
-          break;
-        case 'D':
-          θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-          if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
-            x = center[0] + maimaiADTouchR * Math.cos(θ);
-            y = center[1] + maimaiADTouchR * Math.sin(θ);
-          } else {
-            x = center[0] + maimaiScreenR * Math.cos(θ);
-            y = center[1] + maimaiScreenR * Math.sin(θ);
-          }
-          break;
-        case 'E':
-          θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-          x = center[0] + maimaiER * Math.cos(θ);
-          y = center[1] + maimaiER * Math.sin(θ);
-          break;
-        default:
-          break;
+      if (firstChar === 'A' && !(note.type === NoteType.Touch || note.type === NoteType.FireWork)) {
+        θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+        x = center[0] + maimaiScreenR * Math.cos(θ);
+        y = center[1] + maimaiScreenR * Math.sin(θ);
+      } else if (firstChar === 'D' && !(note.type === NoteType.Touch || note.type === NoteType.FireWork)) {
+        θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+        x = center[0] + maimaiScreenR * Math.cos(θ);
+        y = center[1] + maimaiScreenR * Math.sin(θ);
+      } else {
+        const touchCenterCoord = getTouchCenterCoord(note.pos);
+        x = touchCenterCoord[0];
+        y = touchCenterCoord[1];
       }
     }
 
@@ -1342,26 +1318,26 @@ export const drawNote = (
   } else if (props.status === -3) {
     // 显示判定
     const drawJudgeImage = (ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, w: number, h: number, centerX: number, centerY: number, r?: number) => {
-      const key = ('judge' + note.serial);
-      const total = (judgeResultShowTime + judgeResultFadeOutDuration);
+      const key = 'judge' + note.serial;
+      const total = judgeResultShowTime + judgeResultFadeOutDuration;
       animation(key, pausedTotalTime, total, (t: number) => {
         let alpha = 1;
         let scale = 1;
         if (t < judgeResultShowTime) {
           // 出现时的缩小效果（暂定为持续 1/3 倍的显示时间并且仅用于 TAP 音符）
-          const shrinkDuration = (judgeResultShowTime / 3);
+          const shrinkDuration = judgeResultShowTime / 3;
           if (note.type == NoteType.Tap) {
             if (t < shrinkDuration) {
-              scale = (1 + (0.2 * (1 - (t / shrinkDuration))));
+              scale = 1 + 0.2 * (1 - t / shrinkDuration);
             } else {
               scale = 1;
             }
           }
         } else {
           // 消失时的淡出效果
-          alpha = (1 - ((t - judgeResultShowTime) / judgeResultFadeOutDuration));
+          alpha = 1 - (t - judgeResultShowTime) / judgeResultFadeOutDuration;
         }
-        drawRotationImage(ctx, image, (x + w*((1-scale)/2)), (y + h*((1-scale)/2)), w*scale, h*scale, centerX, centerY, r, alpha);
+        drawRotationImage(ctx, image, x + w * ((1 - scale) / 2), y + h * ((1 - scale) / 2), w * scale, h * scale, centerX, centerY, r, alpha);
       });
     };
 
