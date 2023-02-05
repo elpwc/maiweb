@@ -15,7 +15,7 @@ interface Animation {
   /** 开始的时间 */
   startTime: number;
   /** 结束後做的事情，可以由此做出动画链 */
-  onFinish?: (() => void) | null;
+  onFinish?: ((params?: any | null) => void) | null;
 }
 
 /** 显示的动画列表 */
@@ -49,7 +49,7 @@ export const drawAnimations = (pausedTotalTime: number) => {
  * @param draw 动画绘制函数
  * @param wait 播放延迟，必须大于等于0，默认为0
  */
-export const animation = (key: string | null, pausedTotalTime: number, length: number, draw: (t: number) => void, wait: number = 0, onFinish?: () => void) => {
+export const animation = (key: string | null, pausedTotalTime: number, length: number, draw: (t: number) => void, wait: number = 0, onFinish?: (params?: any | null) => void) => {
   const fun = () => {
     const existing = key === null ? null : animationList.find(a => a.key === key);
     if (existing) {
