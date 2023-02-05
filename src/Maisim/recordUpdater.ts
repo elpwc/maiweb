@@ -732,6 +732,8 @@ export const updateRecord = (
             gameRecord.criticalPerfect++;
             gameRecord.achieving_rate += basicEvaluation * 1;
             gameRecord.dx_point += dx_score[0];
+            // @ts-ignore
+            NoteSound.touch.cloneNode().play();
             break;
           case JudgeStatus.Miss:
             gameRecord.touch.miss++;
@@ -757,12 +759,16 @@ export const updateRecord = (
             gameRecord.criticalPerfect++;
             gameRecord.achieving_rate += basicEvaluation * 1;
             gameRecord.dx_point += dx_score[0];
+            // @ts-ignore
+            NoteSound.touch.cloneNode().play();
             break;
           case JudgeStatus.Perfect:
             gameRecord.touch.perfect++;
             gameRecord.perfect++;
             gameRecord.achieving_rate += basicEvaluation * 1;
             gameRecord.dx_point += dx_score[1];
+            // @ts-ignore
+            NoteSound.touch.cloneNode().play();
             break;
           case JudgeStatus.Great:
             gameRecord.touch.great++;
@@ -770,6 +776,8 @@ export const updateRecord = (
             gameRecord.achieving_rate += basicEvaluation * 0.8;
             gameRecord.achieving_rate_lost += basicEvaluation * 0.2;
             gameRecord.dx_point += dx_score[2];
+            // @ts-ignore
+            NoteSound.touch.cloneNode().play();
             break;
           case JudgeStatus.Good:
             gameRecord.touch.good++;
@@ -777,6 +785,8 @@ export const updateRecord = (
             gameRecord.achieving_rate += basicEvaluation * 0.5;
             gameRecord.achieving_rate_lost += basicEvaluation * 0.5;
             gameRecord.dx_point += dx_score[3];
+            // @ts-ignore
+            NoteSound.touch.cloneNode().play();
             break;
           case JudgeStatus.Miss:
             gameRecord.touch.miss++;

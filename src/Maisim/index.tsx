@@ -53,7 +53,7 @@ import testbgi from './resource/maimai_img/ui/UI_Chara_105810.png';
 import { RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
 import { uiIcon } from './resourceReaders/uiIconReader';
 import { drawAnimations } from './drawUtils/animation';
-import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star } from './drawUtils/judgeEffectAnimations';
+import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star, JudgeEffectAnimation_Touch } from './drawUtils/judgeEffectAnimations';
 
 const SongTrack = new Audio();
 SongTrack.volume = 0.5;
@@ -486,7 +486,7 @@ const reader_and_updater = async () => {
 
           newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
           if (auto) {
-            if (currentTime >= noteIns.time!) {
+            if (currentTime >= noteIns.time! - timerPeriod * 5) {
               judge(
                 showingNotes,
                 currentSheet,
@@ -503,8 +503,6 @@ const reader_and_updater = async () => {
           }
 
           if (currentTime >= noteIns.time!) {
-            // @ts-ignore
-            NoteSound.touch.cloneNode().play();
             newNote.status = -2;
           }
         } else if (newNote.status === -2) {
@@ -512,7 +510,7 @@ const reader_and_updater = async () => {
 
           newNote.rho = touchMaxDistance;
           if (currentTime >= noteIns.time! + judgeLineRemainTimeTouch) {
-            newNote.status = -3;
+            newNote.status = -4;
           }
         } else if (newNote.status === -3) {
           // judge
@@ -734,7 +732,7 @@ const reader_and_updater = async () => {
   // 清除die掉的 和 按过的 note
   showingNotes = showingNotes.filter(note => {
     const noteIns = currentSheet.notes[note.noteIndex];
-    // MISS
+    // MISS的
     if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.Touch || noteIns.type === NoteType.SlideTrack) {
       // SLIDE TRACK 划过一半但沒划完修正为GOOD
       if (noteIns.type === NoteType.SlideTrack && note.judgeStatus === JudgeStatus.Miss) {
@@ -776,6 +774,7 @@ const reader_and_updater = async () => {
       return note.status !== -1;
     } else if (noteIns.type === NoteType.Touch) {
       if (note.status === -4) {
+        JudgeEffectAnimation_Touch(ctx_effect_over, pausedTotalTime, noteIns.pos);
         note.status = -3;
       }
       return note.status !== -1;

@@ -1,10 +1,11 @@
 import { cos, sin, π } from '../../math';
-import { NoteType } from '../../utils/noteType';
+import { getTouchCenterCoord } from '../areas';
 import { center, judgeEffectDuration, maimaiJudgeLineR, maimaiTapR } from '../const';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { animation } from './animation';
 import { drawRotationImage } from './_base';
 
+/** TAP STAR HOLD TOUCHHOLD结束後的判定特效 */
 export const JudgeEffectAnimation_Hex_or_Star = (ctx: CanvasRenderingContext2D, pausedTotalTime: number, pos: string, type: 'hex' | 'star') => {
   let effectImage: HTMLImageElement;
   if (type === 'hex') {
@@ -51,6 +52,13 @@ export const JudgeEffectAnimation_Hex_or_Star = (ctx: CanvasRenderingContext2D, 
   });
 };
 
+/**
+ * HOLD TOUCHHOLD按压时的特效
+ * @param ctx
+ * @param pausedTotalTime
+ * @param pos
+ * @param noteid 提供这个note的id，在方法内部用来实现动画间隔
+ */
 export const JudgeEffectAnimation_Circle = (ctx: CanvasRenderingContext2D, pausedTotalTime: number, pos: string, noteid: number) => {
   let effectImage: HTMLImageElement = EffectIcon.Circle;
   // 特效动画
@@ -96,4 +104,121 @@ export const JudgeEffectAnimation_Circle = (ctx: CanvasRenderingContext2D, pause
       }
     }
   });
+};
+
+/** TOUCH结束後的判定特效 */
+export const JudgeEffectAnimation_Touch = (ctx: CanvasRenderingContext2D, pausedTotalTime: number, pos: string) => {
+  let effectImageCircle: HTMLImageElement = EffectIcon.TouchEff;
+  let effectImage1: HTMLImageElement = EffectIcon.TouchEffStar1;
+  let effectImage2: HTMLImageElement = EffectIcon.TouchEffStar2;
+  // 特效动画
+  /*
+  说明
+  特效由中心图案和周围的四个图案组成
+  */
+
+  const coord = getTouchCenterCoord(pos);
+  animation(
+    null,
+    pausedTotalTime,
+    judgeEffectDuration * 0.8,
+    (t: number) => {
+      const k = t / (judgeEffectDuration * 0.8);
+
+      // 中心圆
+      const circleR = maimaiTapR * 2 * k;
+      const circleX = coord[0] - circleR;
+      const circleY = coord[1] - circleR;
+
+      // 内圈星星
+      const innerStarR = maimaiTapR * 0.2;
+      /** 到中心距离 */
+      const innerStarS = maimaiTapR * 0.5;
+
+      // 外圈星星
+      const outerStarR = maimaiTapR * 0.35;
+      /** 到中心距离初始 */
+      const outerStarS1 = maimaiTapR * 0.5;
+      /** 到中心距离最终 */
+      const outerStarS2 = maimaiTapR * 1.5;
+      /** 到中心距离 */
+      const outerStarS = (outerStarS2 - outerStarS1) * k + outerStarS1;
+
+      drawRotationImage(ctx, effectImageCircle, circleX, circleY, circleR * 2, circleR * 2, undefined, undefined, undefined, 1 - k);
+      for (let i = 0; i < 8; i++) {
+        drawRotationImage(
+          ctx,
+          i % 2 === 1 ? effectImage1 : effectImage2,
+          coord[0] - outerStarR,
+          coord[1] - outerStarR - outerStarS,
+          outerStarR * 2,
+          outerStarR * 2,
+          coord[0],
+          coord[1],
+          -22.5 + i * 45
+        );
+        drawRotationImage(
+          ctx,
+          i % 2 === 1 ? effectImage1 : effectImage2,
+          coord[0] - outerStarR,
+          coord[1] - outerStarR - innerStarS,
+          innerStarR * 2,
+          innerStarR * 2,
+          coord[0],
+          coord[1],
+          -22.5 + i * 45
+        );
+      }
+    },
+    0,
+    () => {
+      animation(
+        null,
+        pausedTotalTime,
+        judgeEffectDuration * 2,
+        (t: number) => {
+          const k = t / (judgeEffectDuration * 2);
+
+          // 内圈星星
+          const innerStarR = maimaiTapR * 0.2 * (1 - k);
+          /** 到中心距离 */
+          const innerStarS = maimaiTapR * 0.5;
+
+          // 外圈星星
+          const outerStarR = maimaiTapR * 0.35 * (1 - k);
+          /** 到中心距离最终 */
+          const outerStarS2 = maimaiTapR * 1.5;
+
+          for (let i = 0; i < 8; i++) {
+            drawRotationImage(
+              ctx,
+              i % 2 === 1 ? effectImage1 : effectImage2,
+              coord[0] - outerStarR,
+              coord[1] - outerStarR - outerStarS2,
+              outerStarR * 2,
+              outerStarR * 2,
+              coord[0],
+              coord[1],
+              -22.5 + i * 45
+            );
+            drawRotationImage(
+              ctx,
+              i % 2 === 1 ? effectImage1 : effectImage2,
+              coord[0] - outerStarR,
+              coord[1] - outerStarR - innerStarS,
+              innerStarR * 2,
+              innerStarR * 2,
+              coord[0],
+              coord[1],
+              -22.5 + i * 45
+            );
+          }
+        },
+        0,
+        () => {
+          console.log(114514);
+        }
+      );
+    }
+  );
 };
