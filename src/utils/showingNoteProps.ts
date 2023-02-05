@@ -11,11 +11,13 @@ export interface ShowingNoteProps {
    *  ● TAP:
    * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1:move
    *  ● HOLD:
-   * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1: grow 2: move 3: disappear 4: fill(充满 长度暂时不改变)
+   * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1: grow 2: move(不能充满，移动)/fill(充满 长度暂时不改变) 3: disappear
    *  ● SLIDE TRACK:
    * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1: hangup 2: move
    *  ● FIREWORK:
    * -1: die 0: wait for trig 1: change
+   *  ● TOUCH:
+   * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1:converge
    */
   status: number;
   /** 当前note本身大小的半径 */
