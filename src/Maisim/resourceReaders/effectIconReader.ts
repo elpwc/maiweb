@@ -19,8 +19,8 @@ import SlideLine_icon from '../resource/maimai_img/effect/SlideLine.png';
 import StarWhite_icon from '../resource/maimai_img/effect/StarWhite.png';
 import StarYellow_icon from '../resource/maimai_img/effect/StarYellow.png';
 import TouchEff_icon from '../resource/maimai_img/effect/TouchEff.png';
-import UI_GAM_Eff_Effparts_02_icon from '../resource/maimai_img/effect/UI_GAM_Eff_Effparts_02.png';
-import UI_GAM_Eff_Effparts_02_white_icon from '../resource/maimai_img/effect/UI_GAM_Eff_Effparts_02_white.png';
+import TouchEffStar1_icon from '../resource/maimai_img/effect/TouchEffStar1.png';
+import TouchEffStar2_icon from '../resource/maimai_img/effect/TouchEffStar2.png';
 
 export const EffectIcon = {
     BreakLine: new Image(),
@@ -40,8 +40,8 @@ export const EffectIcon = {
     StarWhite: new Image(),
     StarYellow: new Image(),
     TouchEff: new Image(),
-    UI_GAM_Eff_Effparts_02: new Image(),
-    UI_GAM_Eff_Effparts_02_white: new Image(),
+    TouchEffStar1: new Image(),
+    TouchEffStar2: new Image(),
 };
 
 export const initeffecticons = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {
@@ -81,8 +81,8 @@ export const initeffecticons = (onProgress: (amount: number, loaded: number, nam
   EffectIcon.StarYellow.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'StarYellow'); }
   EffectIcon.TouchEff.src = TouchEff_icon;
   EffectIcon.TouchEff.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEff'); }
-  EffectIcon.UI_GAM_Eff_Effparts_02.src = UI_GAM_Eff_Effparts_02_icon;
-  EffectIcon.UI_GAM_Eff_Effparts_02.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'UI_GAM_Eff_Effparts_02'); }
-  EffectIcon.UI_GAM_Eff_Effparts_02_white.src = UI_GAM_Eff_Effparts_02_white_icon;
-  EffectIcon.UI_GAM_Eff_Effparts_02_white.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'UI_GAM_Eff_Effparts_02_white'); }
+  EffectIcon.TouchEffStar1.src = TouchEffStar1_icon;
+  EffectIcon.TouchEffStar1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEffStar1'); }
+  EffectIcon.TouchEffStar2.src = TouchEffStar2_icon;
+  EffectIcon.TouchEffStar2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEffStar2'); }
 };
