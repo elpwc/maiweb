@@ -14,6 +14,8 @@ interface Animation {
   currrentTick: number;
   /** 开始的时间 */
   startTime: number;
+  /** 结束後做的事情，可以由此做出动画链 */
+  onFinish?: (() => void) | null;
 }
 
 /** 显示的动画列表 */
@@ -29,6 +31,9 @@ export const drawAnimations = (pausedTotalTime: number) => {
       currentAnimation.draw(currentAnimation.currrentTick);
       // 更新时刻
       currentAnimation.currrentTick = performance.now() - pausedTotalTime - currentAnimation.startTime;
+      if (currentAnimation.currrentTick > currentAnimation.length && currentAnimation.onFinish) {
+        currentAnimation.onFinish();
+      }
     }
 
     // 清理过期动画
@@ -44,13 +49,13 @@ export const drawAnimations = (pausedTotalTime: number) => {
  * @param draw 动画绘制函数
  * @param wait 播放延迟，必须大于等于0，默认为0
  */
-export const animation = (key: string | null, pausedTotalTime: number, length: number, draw: (t: number) => void, wait: number = 0) => {
+export const animation = (key: string | null, pausedTotalTime: number, length: number, draw: (t: number) => void, wait: number = 0, onFinish?: () => void) => {
   const fun = () => {
     const existing = key === null ? null : animationList.find(a => a.key === key);
     if (existing) {
       // 不重复加入同一个动画
     } else {
-      animationList.push({ key, length, draw, currrentTick: 0, startTime: performance.now() - pausedTotalTime });
+      animationList.push({ key, length, draw, currrentTick: 0, startTime: performance.now() - pausedTotalTime, onFinish });
     }
   };
 
