@@ -768,7 +768,7 @@ const reader_and_updater = async () => {
         // 判定特效
         if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
           // 特效图像
-          JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, pausedTotalTime, noteIns.pos, noteIns.type === NoteType.Tap ? 'hex' : 'star');
+          JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, pausedTotalTime, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
         }
 
         note.status = -3;
@@ -787,7 +787,7 @@ const reader_and_updater = async () => {
 
         // 特效图像
         if (note.touched) {
-          JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, pausedTotalTime, noteIns.pos, 'hex');
+          JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, pausedTotalTime, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
         }
 
         if (noteIns.isShortHold || (noteIns.type === NoteType.Hold && noteIns.remainTime! <= timerPeriod * 18) || (noteIns.type === NoteType.TouchHold && noteIns.remainTime! <= timerPeriod * 27)) {
