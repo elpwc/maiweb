@@ -508,6 +508,7 @@ export const drawNote = (
       }
 
       for (let i = 0; i < 4; i++) {
+        // 从下方的叶片开始顺时针绘制
         drawRotationImage(ctx, image, x - (image.width * k) / 2, y + touchMaxDistance - (6 * maimaiR) / 350 - props.rho, image.width * k, image.height * k, x, y, 90 * i, props.radius / maimaiTapR);
       }
       drawRotationImage(ctx, imageCenter, x - (imageCenter.width * centerk) / 2, y - (imageCenter.height * centerk) / 2, imageCenter.width * centerk, imageCenter.height * centerk);

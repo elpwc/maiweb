@@ -13,7 +13,7 @@ export const setCanvasSize = (w: number, h: number) => {
   maimaiTapR = (maimaiScreenR / 9) * 0.8;
   maimaiBR = maimaiScreenR * 0.418;
   maimaiER = maimaiScreenR * 0.574;
-  touchMaxDistance = maimaiTapR * 0.8;
+  touchMaxDistance = maimaiTapR * 0.6;
 
   maimaiADTouchR = maimaiJudgeLineR * 0.875;
 
@@ -44,7 +44,7 @@ export let maimaiTapR = (maimaiScreenR / 9) * 0.8;
 export let maimaiBR = maimaiScreenR * 0.418;
 export let maimaiER = maimaiScreenR * 0.574;
 
-export let touchMaxDistance = maimaiTapR * 0.8;
+export let touchMaxDistance = maimaiTapR * 0.6;
 
 /** AD区的TOUCH的位置 */
 export let maimaiADTouchR = maimaiJudgeLineR * 0.875;

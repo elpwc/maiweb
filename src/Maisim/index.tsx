@@ -37,7 +37,7 @@ import { KeyState } from '../utils/keyState';
 import { drawOutRing } from './drawUtils/drawOutRing';
 import { initResources } from './resourceReaders/_init';
 import { APositions, ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged } from './slideTracks/_global';
-import { abs, cos, sin, π } from '../math';
+import { abs, cos, sin, sqrt, π } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
 import { Note } from '../utils/note';
 import { NoteType } from '../utils/noteType';
@@ -233,7 +233,7 @@ let nextNoteIndex = 0;
  * @returns
  */
 const touchConvergeCurrentRho = (c: number, m: number, t: number) => {
-  return (touchMaxDistance * c * (c - m)) / (t * (t - m));
+  return touchMaxDistance * (1 - sqrt(1 - ((c - m) / (t - m)) ** 1.8));
 };
 
 /*
