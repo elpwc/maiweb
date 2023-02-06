@@ -765,17 +765,20 @@ const reader_and_updater = async () => {
         }
 
         // 判定特效
-        if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
-          // 特效图像
-          JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, pausedTotalTime, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
+        if (note.judgeStatus !== JudgeStatus.Miss) {
+          if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
+            // 特效图像
+            JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, pausedTotalTime, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
+          }
         }
-
         note.status = -3;
       }
       return note.status !== -1;
     } else if (noteIns.type === NoteType.Touch) {
       if (note.status === -4) {
-        JudgeEffectAnimation_Touch(ctx_effect_over, pausedTotalTime, noteIns.pos);
+        if (note.judgeStatus !== JudgeStatus.Miss) {
+          JudgeEffectAnimation_Touch(ctx_effect_over, pausedTotalTime, noteIns.pos);
+        }
         note.status = -3;
       }
       return note.status !== -1;
