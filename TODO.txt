@@ -92,15 +92,15 @@ TOUCH GROUP√
 4. 用animation重写FIREWORK?【不急】
 5. auto中SLIDE第一段会被划掉 √
 6. 当TOUCH/TOUCH HOLD在第一个节拍里时，动画显示不完整（叶片丢失
-7. 自动播放TOUCH HOLD总是GOOD(?)
-8. 似乎较短的TOUCH HOLD有时不能被自动播放
+7. 自动播放TOUCH HOLD总是GOOD(?) √
+8. 似乎较短的TOUCH HOLD有时不能被自动播放 √(?)
 9. 一直按着TOUCH HOLD不松开至结束，积蓄音不会停止
-10. TAP在MISS时也播放了判定动画
+10. TAP在MISS时也播放了判定动画 √
 11. 完成judge的auto後门
 
 2.6
 1. 【细节】判定特效有淡出效果，但还没加
 2. 暂停时TOUCH HOLD的积蓄音还会继续播放（该重写一下audio管理了喵
-3. 草关掉auto还是显示判定动画
-4. TOUCH HOLD就算MISS也会显示後面的蓄力条蓄力过程 
+3. 草关掉auto还是显示判定动画 √
+4. TOUCH HOLD就算MISS也会显示後面的蓄力条蓄力过程 【这个本来就这样】×
 5. 不知从哪个提交开始，TOUCH HOLD在蓄力後中间叶片会消失，很申必 √

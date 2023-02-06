@@ -225,6 +225,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
           showingNotes[i].touched = true;
           showingNotes[i].touchedTime = currentTime;
           showingNotes[i].isTouching = true;
+          showingNotes[i].holdPress = true;
 
           judged = true;
 
