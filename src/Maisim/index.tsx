@@ -385,7 +385,7 @@ const reader_and_updater = async () => {
                   }
                 }
               }
-              if (noteIns.isShortHold ) {
+              if (noteIns.isShortHold) {
                 newNote.status = -4;
               } else {
                 newNote.status = 3;
@@ -799,11 +799,6 @@ const reader_and_updater = async () => {
             note.holdingTime += currentTime - (note.touchedTime ?? 0);
           }
           let holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
-          if (holdingPercent < 0) {
-            // 从 noteIns.remainTime 中减掉那个 (12+...) 可能会减成负的
-            // 先 workaround 一下
-            holdingPercent = 1;
-          }
 
           if (note.judgeStatus === JudgeStatus.Miss) {
             //MISS修正为GOOD
