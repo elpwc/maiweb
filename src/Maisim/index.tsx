@@ -233,7 +233,8 @@ let nextNoteIndex = 0;
  * @returns
  */
 const touchConvergeCurrentRho = (c: number, m: number, t: number) => {
-  return touchMaxDistance * (1 - sqrt(1 - ((c - m) / (t - m)) ** 1.8));
+  const a = 1 - ((c - m) / (t - m)) ** 1.8;
+  return touchMaxDistance * (1 - sqrt(a < 0 ? 0 : a)) /* 判断小于0是为了防止出现根-1导致叶片闭合後不被绘制 */;
 };
 
 /*
