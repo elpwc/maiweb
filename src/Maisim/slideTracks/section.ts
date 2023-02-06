@@ -95,8 +95,8 @@ const section_A1 = (type: string | undefined, endPos: number, turnPos: number, s
         const points = [0, 0.0390625, 0.1640625, 0.2890625, 0.4140625, 0.5390625, 0.6640625, 0.7890625, 0.9140625, 1];
         const areas = [['A1'], ['D2', 'A2'], ['D3', 'A3'], ['D4', 'A4'], ['D5', 'A5'], ['D6', 'A6'], ['D7', 'A7'], ['D8', 'A8'], ['D1', 'A1']];
 
-        for (let i = 0; i < endPos; i++) {
-          res2.push({ start: points[i] / ((endPos - 1) / 8), areas: areas[i] });
+        for (let i = 0; i < 10 - endPos; i++) {
+          res2.push({ start: points[i] / ((9 - endPos) / 8), areas: areas[i] });
         }
       } else {
       }

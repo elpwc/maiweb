@@ -798,6 +798,7 @@ const reader_and_updater = async () => {
           if (note.touched && note.holdPress) {
             note.holdingTime += currentTime - (note.touchedTime ?? 0);
           }
+          /** 按下时长占总时长的比例 */
           let holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
 
           if (note.judgeStatus === JudgeStatus.Miss) {
