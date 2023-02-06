@@ -79,7 +79,7 @@ let tapMoveSpeed: number = 0.85; // 0.85
 let tapEmergeSpeed: number = 0.2; // 0.2
 
 /** 谱面流速 */
-let speed: number = 10;
+let speed: number = 12;
 
 /** 谱面开始播放时的时刻 */
 let starttime: number = 0;
