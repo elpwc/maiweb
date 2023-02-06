@@ -36,18 +36,23 @@ export const JudgeEffectAnimation_Hex_or_Star = (ctx: CanvasRenderingContext2D, 
     const effectOuterY13 = center[1] - (pos === 'C' ? 0 : maimaiJudgeLineR) + effectOuterOrbitR * sin(k * 2 * π) - effectOuterR;
     const effectOuterY24 = center[1] - (pos === 'C' ? 0 : maimaiJudgeLineR) + effectOuterOrbitR * sin(k * 2 * -π) - effectOuterR;
 
+    /** 开始缓出的时刻所在比例(?) */
+    const startEasingTick = 0.7;
+    let alpha = 1;
+    if (startEasingTick < 1) alpha = (k - 1) / (startEasingTick - 1);
+
     if (pos === 'C') {
-      drawRotationImage(ctx, effectImage, effectX, effectY, effectR * 2, effectR * 2);
-      drawRotationImage(ctx, effectImage, effectOuterX12, effectOuterY13, effectOuterR * 2, effectOuterR * 2);
-      drawRotationImage(ctx, effectImage, effectOuterX12, effectOuterY24, effectOuterR * 2, effectOuterR * 2);
-      drawRotationImage(ctx, effectImage, effectOuterX34, effectOuterY13, effectOuterR * 2, effectOuterR * 2);
-      drawRotationImage(ctx, effectImage, effectOuterX34, effectOuterY24, effectOuterR * 2, effectOuterR * 2);
+      drawRotationImage(ctx, effectImage, effectX, effectY, effectR * 2, effectR * 2, undefined, undefined, undefined, alpha);
+      drawRotationImage(ctx, effectImage, effectOuterX12, effectOuterY13, effectOuterR * 2, effectOuterR * 2, undefined, undefined, undefined, alpha);
+      drawRotationImage(ctx, effectImage, effectOuterX12, effectOuterY24, effectOuterR * 2, effectOuterR * 2, undefined, undefined, undefined, alpha);
+      drawRotationImage(ctx, effectImage, effectOuterX34, effectOuterY13, effectOuterR * 2, effectOuterR * 2, undefined, undefined, undefined, alpha);
+      drawRotationImage(ctx, effectImage, effectOuterX34, effectOuterY24, effectOuterR * 2, effectOuterR * 2, undefined, undefined, undefined, alpha);
     } else {
-      drawRotationImage(ctx, effectImage, effectX, effectY, effectR * 2, effectR * 2, center[0], center[1], -22.5 + Number(pos) * 45);
-      drawRotationImage(ctx, effectImage, effectOuterX12, effectOuterY13, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(pos) * 45);
-      drawRotationImage(ctx, effectImage, effectOuterX12, effectOuterY24, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(pos) * 45);
-      drawRotationImage(ctx, effectImage, effectOuterX34, effectOuterY13, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(pos) * 45);
-      drawRotationImage(ctx, effectImage, effectOuterX34, effectOuterY24, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(pos) * 45);
+      drawRotationImage(ctx, effectImage, effectX, effectY, effectR * 2, effectR * 2, center[0], center[1], -22.5 + Number(pos) * 45, alpha);
+      drawRotationImage(ctx, effectImage, effectOuterX12, effectOuterY13, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(pos) * 45, alpha);
+      drawRotationImage(ctx, effectImage, effectOuterX12, effectOuterY24, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(pos) * 45, alpha);
+      drawRotationImage(ctx, effectImage, effectOuterX34, effectOuterY13, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(pos) * 45, alpha);
+      drawRotationImage(ctx, effectImage, effectOuterX34, effectOuterY24, effectOuterR * 2, effectOuterR * 2, center[0], center[1], -22.5 + Number(pos) * 45, alpha);
     }
   });
 };
@@ -172,53 +177,44 @@ export const JudgeEffectAnimation_Touch = (ctx: CanvasRenderingContext2D, paused
     },
     0,
     () => {
-      animation(
-        null,
-        pausedTotalTime,
-        judgeEffectDuration * 2,
-        (t: number) => {
-          const k = t / (judgeEffectDuration * 2);
+      animation(null, pausedTotalTime, judgeEffectDuration * 2, (t: number) => {
+        const k = t / (judgeEffectDuration * 2);
 
-          // 内圈星星
-          const innerStarR = maimaiTapR * 0.2 * (1 - k);
-          /** 到中心距离 */
-          const innerStarS = maimaiTapR * 0.5;
+        // 内圈星星
+        const innerStarR = maimaiTapR * 0.2 * (1 - k);
+        /** 到中心距离 */
+        const innerStarS = maimaiTapR * 0.5;
 
-          // 外圈星星
-          const outerStarR = maimaiTapR * 0.35 * (1 - k);
-          /** 到中心距离最终 */
-          const outerStarS2 = maimaiTapR * 1.5;
+        // 外圈星星
+        const outerStarR = maimaiTapR * 0.35 * (1 - k);
+        /** 到中心距离最终 */
+        const outerStarS2 = maimaiTapR * 1.5;
 
-          for (let i = 0; i < 8; i++) {
-            drawRotationImage(
-              ctx,
-              i % 2 === 1 ? effectImage1 : effectImage2,
-              coord[0] - outerStarR,
-              coord[1] - outerStarR - outerStarS2,
-              outerStarR * 2,
-              outerStarR * 2,
-              coord[0],
-              coord[1],
-              -22.5 + i * 45
-            );
-            drawRotationImage(
-              ctx,
-              i % 2 === 1 ? effectImage1 : effectImage2,
-              coord[0] - outerStarR,
-              coord[1] - outerStarR - innerStarS,
-              innerStarR * 2,
-              innerStarR * 2,
-              coord[0],
-              coord[1],
-              -22.5 + i * 45
-            );
-          }
-        },
-        0,
-        () => {
-          console.log(114514);
+        for (let i = 0; i < 8; i++) {
+          drawRotationImage(
+            ctx,
+            i % 2 === 1 ? effectImage1 : effectImage2,
+            coord[0] - outerStarR,
+            coord[1] - outerStarR - outerStarS2,
+            outerStarR * 2,
+            outerStarR * 2,
+            coord[0],
+            coord[1],
+            -22.5 + i * 45
+          );
+          drawRotationImage(
+            ctx,
+            i % 2 === 1 ? effectImage1 : effectImage2,
+            coord[0] - outerStarR,
+            coord[1] - outerStarR - innerStarS,
+            innerStarR * 2,
+            innerStarR * 2,
+            coord[0],
+            coord[1],
+            -22.5 + i * 45
+          );
         }
-      );
+      });
     }
   );
 };

@@ -617,7 +617,7 @@ const reader_and_updater = async () => {
                   ) {
                     note.currentSectionIndex = i;
                   }
-                }
+                }                      
               }
             }
           }
