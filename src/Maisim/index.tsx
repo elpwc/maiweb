@@ -385,7 +385,7 @@ const reader_and_updater = async () => {
                   }
                 }
               }
-              if (noteIns.isShortHold || (noteIns.type === NoteType.Hold && noteIns.remainTime! <= timerPeriod * 18)) {
+              if (noteIns.isShortHold ) {
                 newNote.status = -4;
               } else {
                 newNote.status = 3;
