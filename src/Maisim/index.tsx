@@ -79,7 +79,7 @@ let tapMoveSpeed: number = 0.85; // 0.85
 let tapEmergeSpeed: number = 0.2; // 0.2
 
 /** 谱面流速 */
-let speed: number = 12;
+let speed: number = 0.8;
 
 /** 谱面开始播放时的时刻 */
 let starttime: number = 0;
@@ -143,6 +143,10 @@ const drawOver = () => {
 const starttimer = () => {
   readSheet();
   advancedTime = (currentSheet.notes[0].emergeTime ?? 0) < 0 ? -(currentSheet.notes[0].emergeTime ?? 0) : 0;
+  setTimeout(() => {
+    SongTrack.play();
+  }, advancedTime);
+
   starttime = performance.now();
   pausedTotalTime = 0;
   lastPauseTime = 0;
@@ -181,7 +185,7 @@ const calculate_speed_related_params_for_notes = (notesOri: Note[]) => {
   const notes = notesOri;
   notes.forEach((note: Note, i: number) => {
     if (note.type === NoteType.SlideTrack) {
-      const emergingTime = (maimaiJudgeLineR - maimaiSummonLineR) / ((tapMoveSpeed * speed) / timerPeriod);
+      const emergingTime = (maimaiJudgeLineR - maimaiSummonLineR) / (tapMoveSpeed * speed);
       notes[i].moveTime = note.time - note.remainTime!;
       notes[i].emergeTime = note.time - note.remainTime! - note.stopTime! - emergingTime;
       notes[i].guideStarEmergeTime = note.time - note.remainTime! - note.stopTime!;
@@ -197,8 +201,8 @@ const calculate_speed_related_params_for_notes = (notesOri: Note[]) => {
         notes[i].remainTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime ?? 0 : 0) - trigger.emergeTime! + fireworkLength;
       }
     } else {
-      const emergingTime = maimaiTapR / ((tapEmergeSpeed * speed) / timerPeriod);
-      const movingTime = (maimaiJudgeLineR - maimaiSummonLineR) / ((tapMoveSpeed * speed) / timerPeriod);
+      const emergingTime = maimaiTapR / (tapEmergeSpeed * speed);
+      const movingTime = (maimaiJudgeLineR - maimaiSummonLineR) / (tapMoveSpeed * speed);
       notes[i].moveTime = note.time - movingTime;
       notes[i].emergeTime = note.time - movingTime - emergingTime;
     }
@@ -617,7 +621,7 @@ const reader_and_updater = async () => {
                   ) {
                     note.currentSectionIndex = i;
                   }
-                }                      
+                }
               }
             }
           }
@@ -1391,7 +1395,6 @@ export default (props: Props) => {
             //testmusic.play();
             if (props.gameState === GameState.Begin) {
               starttimer();
-              SongTrack.play();
               props.setGameState(GameState.Play);
             } else if (props.gameState === GameState.Play) {
               lastPauseTime = performance.now();

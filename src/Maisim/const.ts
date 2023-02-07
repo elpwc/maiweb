@@ -49,7 +49,7 @@ export let touchMaxDistance = maimaiTapR * 0.6;
 /** AD区的TOUCH的位置 */
 export let maimaiADTouchR = maimaiJudgeLineR * 0.875;
 
-// 帧
+/** 1帧的时长 ms */ 
 export const timerPeriod: number = 16.6666666666667;
 
 /** Firework持续时长 */
