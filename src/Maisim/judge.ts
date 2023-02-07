@@ -273,7 +273,8 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
     } else if (noteIns.type === NoteType.SlideTrack) {
       if (noteIns.isChain) {
         // 人体蜈蚣
-        if (note.currentLineIndex > (noteIns.slideLines?.length ?? 0)) {
+        console.log(note.currentLineIndex, noteIns.slideLines?.length)
+        if (note.currentLineIndex < (noteIns.slideLines?.length ?? 0)) {
           const currentLine = noteIns.slideLines![note.currentLineIndex];
           //console.log(note, noteIns, note.currentLineIndex, currentLine);
           if (currentLine.slideType === 'w') {

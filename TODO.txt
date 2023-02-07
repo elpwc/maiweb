@@ -106,7 +106,7 @@ TOUCH GROUP√
 5. 不知从哪个提交开始，TOUCH HOLD在蓄力後中间叶片会消失，很申必 √
 
 2.7
-1. 【BUG】人体蜈蚣无auto划不了
+1. 【BUG】人体蜈蚣无auto划不了 √
 2. 【BUG】全MISS竟然7%（）
 3. 【UI】HANABI中间的亮点太魗了吧，其次第二亮区的扩散不是很明显
 4. 【BUG】HOLD头接触判定线时HOLD会消失一帧(?)
@@ -114,3 +114,4 @@ TOUCH GROUP√
 6. 【Feature】x0.5 x0.75变速功能（）
 7. 【Feature】外键变色功能
 8. 【提议】判定区触摸高亮功能改为可选，在Maisim props中设定
+9. 【Feature】可拖动的进度条 
