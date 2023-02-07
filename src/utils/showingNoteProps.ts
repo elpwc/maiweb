@@ -67,6 +67,8 @@ export interface ShowingNoteProps {
 
   /** 适用于人体蜈蚣，当前没画完的第一个Line */
   currentLineIndex: number;
+  /** 适用于人体蜈蚣，当前显示GUIDE STAR的Line */
+  currentGuideStarLineIndex: number;
 
   /** firework是否已经被触发了 */
   fireworkTrigged?: boolean;

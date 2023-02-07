@@ -79,7 +79,7 @@ let tapMoveSpeed: number = 0.85; // 0.85
 let tapEmergeSpeed: number = 0.2; // 0.2
 
 /** 谱面流速 */
-let speed: number = 0.8;
+let speed: number = 0.65;
 
 /** 谱面开始播放时的时刻 */
 let starttime: number = 0;
@@ -548,6 +548,18 @@ const reader_and_updater = async () => {
           // move
           newNote.rho = currentTime - noteIns.moveTime!;
 
+          // 更新人体蜈蚣的GuideStarLineIndex
+          if (noteIns.isChain && newNote.currentGuideStarLineIndex !== -1) {
+            const currentGuideStarLine = noteIns.slideLines![newNote.currentGuideStarLineIndex];
+            const guideStarEndTick = currentGuideStarLine.beginTime! + noteIns.moveTime! + currentGuideStarLine.remainTime!;
+            if (currentTime >= guideStarEndTick) {
+              newNote.currentGuideStarLineIndex++;
+              if (newNote.currentGuideStarLineIndex === noteIns.slideLines?.length) {
+                newNote.currentGuideStarLineIndex = -1;
+              }
+            }
+          }
+
           // auto 自动画线
           if (auto) {
             if (noteIns.isChain) {
@@ -866,6 +878,7 @@ const reader_and_updater = async () => {
       currentSectionIndexWifi: [0, 0, 0],
       judgeLevel: 0,
       currentLineIndex: 0,
+      currentGuideStarLineIndex: 0,
     });
     nextNoteIndex++;
   }
@@ -907,6 +920,7 @@ const drawFrame = (ctx: CanvasRenderingContext2D, x: number = 0, y: number = 0) 
   ctx.strokeStyle = 'red';
   ctx.font = '20px Arial';
   ctx.strokeText(frame.toFixed(2) + 'fps', x, y);
+  ctx.strokeText(currentTime.toString(), x, y + 20);
 };
 
 /** 画一帧！ */

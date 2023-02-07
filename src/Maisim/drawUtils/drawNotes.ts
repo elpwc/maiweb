@@ -709,41 +709,8 @@ export const drawNote = (
                 }
                 ctx_slideTrack.restore();
               }
-
-              // GUIDE STAR
-              if (props.rho >= slideLine.beginTime! && props.rho < slideLine.beginTime! + slideLine.remainTime!) {
-                ctx.save();
-                ctx.translate(center[0], center[1]);
-                ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
-
-                const guideStarData = getTrackProps(
-                  slideLine.slideType!,
-                  Number(slideLine.pos),
-                  Number(slideLine.endPos),
-                  props.rho - slideLine.beginTime!,
-                  slideLine.remainTime!,
-                  slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos)
-                ) as {
-                  x: number;
-                  y: number;
-                  direction: number;
-                };
-                drawRotationImage(
-                  ctx,
-                  imageStar,
-                  guideStarData.x - props.guideStarRadius! * 2 - center[0],
-                  guideStarData.y - props.guideStarRadius! * 2 - center[1],
-                  props.guideStarRadius! * 4,
-                  props.guideStarRadius! * 4,
-                  guideStarData.x - center[0],
-                  guideStarData.y - center[1],
-                  guideStarData.direction,
-                  props.guideStarRadius! / maimaiTapR
-                );
-                ctx.restore();
-              }
             } else {
-              // WIFI 人体蜈蚣（会有吗（
+              // WIFI 人体蜈蚣（会有这种存在吗（
               if (/*如果沒有全部画完（-1表示最後一段也画了）*/ props.currentSectionIndexWifi[0] === -1 && props.currentSectionIndexWifi[1] === -1 && props.currentSectionIndexWifi[2] === -1) {
               } else {
                 /** 目前Wifi中最小的还没画完的index, 也决定了要画的组的数量 (0 最多，6 最少)*/
@@ -824,41 +791,82 @@ export const drawNote = (
                   ctx_slideTrack.restore();
                 }
                 ctx_slideTrack.restore();
-
-                // GUIDE STAR
-                ctx.save();
-                ctx.translate(center[0], center[1]);
-                ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
-
-                const guideStarData = getTrackProps(
-                  slideLine.slideType!,
-                  Number(slideLine.pos),
-                  Number(slideLine.endPos),
-                  props.rho - slideLine.beginTime!,
-                  slideLine.remainTime!,
-                  slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos)
-                ) as {
-                  x: number;
-                  y: number;
-                  direction: number;
-                }[];
-                guideStarData.forEach(wifiguide => {
-                  drawRotationImage(
-                    ctx,
-                    imageStar,
-                    wifiguide.x - props.guideStarRadius! * 2 - center[0],
-                    wifiguide.y - props.guideStarRadius! * 2 - center[1],
-                    props.guideStarRadius! * 4,
-                    props.guideStarRadius! * 4,
-                    wifiguide.x - center[0],
-                    wifiguide.y - center[1],
-                    wifiguide.direction,
-                    props.guideStarRadius! / maimaiTapR
-                  );
-                });
-
-                ctx.restore();
               }
+            }
+          }
+
+          // 人体蜈蚣 GUIDE STAR
+          console.log(note.slideLines, props.currentGuideStarLineIndex);
+          if (props.currentGuideStarLineIndex !== -1) {
+            const slideLine = note.slideLines![props.currentGuideStarLineIndex];
+            if (slideLine.slideType !== 'w') {
+              // 人体蜈蚣 GUIDE STAR
+              console.log(props.currentGuideStarLineIndex, props.currentLineIndex);
+              console.log(0);
+              ctx.save();
+              ctx.translate(center[0], center[1]);
+              ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
+
+              const guideStarData = getTrackProps(
+                slideLine.slideType!,
+                Number(slideLine.pos),
+                Number(slideLine.endPos),
+                props.rho - slideLine.beginTime!,
+                slideLine.remainTime!,
+                slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos)
+              ) as {
+                x: number;
+                y: number;
+                direction: number;
+              };
+
+              drawRotationImage(
+                ctx,
+                imageStar,
+                guideStarData.x - props.guideStarRadius! * 2 - center[0],
+                guideStarData.y - props.guideStarRadius! * 2 - center[1],
+                props.guideStarRadius! * 4,
+                props.guideStarRadius! * 4,
+                guideStarData.x - center[0],
+                guideStarData.y - center[1],
+                guideStarData.direction,
+                props.guideStarRadius! / maimaiTapR
+              );
+              ctx.restore();
+            } else {
+              // 人体蜈蚣 WIFI GUIDE STAR
+              ctx.save();
+              ctx.translate(center[0], center[1]);
+              ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
+
+              const guideStarData = getTrackProps(
+                slideLine.slideType!,
+                Number(slideLine.pos),
+                Number(slideLine.endPos),
+                props.rho - slideLine.beginTime!,
+                slideLine.remainTime!,
+                slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos)
+              ) as {
+                x: number;
+                y: number;
+                direction: number;
+              }[];
+              guideStarData.forEach(wifiguide => {
+                drawRotationImage(
+                  ctx,
+                  imageStar,
+                  wifiguide.x - props.guideStarRadius! * 2 - center[0],
+                  wifiguide.y - props.guideStarRadius! * 2 - center[1],
+                  props.guideStarRadius! * 4,
+                  props.guideStarRadius! * 4,
+                  wifiguide.x - center[0],
+                  wifiguide.y - center[1],
+                  wifiguide.direction,
+                  props.guideStarRadius! / maimaiTapR
+                );
+              });
+
+              ctx.restore();
             }
           }
         } else {

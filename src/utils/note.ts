@@ -37,7 +37,7 @@ export interface SlideLine {
 
   /**  持续时长/ms*/
   remainTime?: number;
-  /** 开始时的时刻 */
+  /** 开始时的时刻，是相对于人体蜈蚣而言的，第一段的beginTime总是从0开始 */
   beginTime?: number;
 }
 
