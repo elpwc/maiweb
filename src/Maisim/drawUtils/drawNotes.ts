@@ -252,11 +252,11 @@ export const drawNote = (
       y = center[1] + (props.rho + maimaiSummonLineR) * Math.sin(θ);
     } else {
       // 字母开头的位置（TOUCH）
-      if (firstChar === 'A' && !(note.type === NoteType.Touch || note.type === NoteType.FireWork)) {
+      if (firstChar === 'A' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold || note.type === NoteType.FireWork)) {
         θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
         x = center[0] + maimaiScreenR * Math.cos(θ);
         y = center[1] + maimaiScreenR * Math.sin(θ);
-      } else if (firstChar === 'D' && !(note.type === NoteType.Touch || note.type === NoteType.FireWork)) {
+      } else if (firstChar === 'D' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold || note.type === NoteType.FireWork)) {
         θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
         x = center[0] + maimaiScreenR * Math.cos(θ);
         y = center[1] + maimaiScreenR * Math.sin(θ);

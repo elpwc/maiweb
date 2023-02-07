@@ -139,11 +139,16 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
       noteData = noteData.substring(0, noteData.indexOf('['));
 
       //console.log(noteRes);
-      if (noteData.substring(0, 1) === 'C') {
+      const firstChar = noteData.substring(0, 1);
+      if (firstChar === 'C' || firstChar === 'A' || firstChar === 'B' || firstChar === 'D' || firstChar === 'E') {
         // TOUCH HOLD
         noteRes.type = NoteType.TouchHold;
         noteRes.isShortHold = false;
-        noteRes.pos = 'C';
+        if (firstChar === 'C') {
+          noteRes.pos = 'C';
+        } else {
+          noteRes.pos = noteData.substring(0, 2);
+        }
       } else {
         // HOLD
         noteRes.type = NoteType.Hold;
@@ -285,10 +290,15 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
   } else {
     if (noteData.indexOf('h') !== -1) {
       // SHORT HOLD, SHORT TOUCH HOLD
-      if (noteData.substring(0, 1) === 'C') {
+      const firstChar = noteData.substring(0, 1);
+      if (firstChar === 'C' || firstChar === 'A' || firstChar === 'B' || firstChar === 'D' || firstChar === 'E') {
         // TOUCH HOLD
         noteRes.type = NoteType.TouchHold;
-        noteRes.pos = 'C';
+        if (firstChar === 'C') {
+          noteRes.pos = 'C';
+        } else {
+          noteRes.pos = noteData.substring(0, 2);
+        }
         noteRes.isShortHold = true;
       } else {
         // HOLD

@@ -462,7 +462,7 @@ const reader_and_updater = async () => {
           newNote.tailRho = ((currentTime - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
 
           if (newNote.isTouching) {
-            JudgeEffectAnimation_Circle(ctx_effect_over, pausedTotalTime, 'C', note.noteIndex);
+            JudgeEffectAnimation_Circle(ctx_effect_over, pausedTotalTime, noteIns.pos, note.noteIndex);
           }
 
           if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeHold) {
