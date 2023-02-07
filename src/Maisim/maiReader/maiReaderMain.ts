@@ -3,6 +3,7 @@ import { Sheet } from '../../utils/sheet';
 import { Song } from '../../utils/song';
 import { read_inote } from './inoteReader';
 
+/** 分析整个谱面文件的内容，转化为对象（不是指读入inote的谱面文本的部分） */
 export const ReadMaimaiData = (sheetData: string) => {
   let res: Song = {
     title: '',

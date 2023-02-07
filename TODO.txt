@@ -88,7 +88,7 @@ TOUCH GROUP√
 2.5
 1. TAP型HOLD（1h,2h,3h），TOUCH型TOUCH HOLD（Ch）总是被判定为GOOD，且GOOD一直闪烁【急】 √
 2. TAP型HOLD判定时没有声音【急】 √
-3. 修改连续TOUCH, TOUCH HOLD白框的显示（应当按照谱面流速显示）【不是很急】
+3. 修改连续TOUCH, TOUCH HOLD白框的显示（应当按照谱面流速显示）【不是很急】 √
 4. 用animation重写FIREWORK?【不急】
 5. auto中SLIDE第一段会被划掉 √
 6. 当TOUCH/TOUCH HOLD在第一个节拍里时，动画显示不完整（叶片丢失（莫名修好了） √
@@ -115,3 +115,6 @@ TOUCH GROUP√
 7. 【Feature】外键变色功能
 8. 【提议】判定区触摸高亮功能改为可选，在Maisim props中设定
 9. 【Feature】可拖动的进度条 
+
+2.8
+1. 【疑问】TOUCH白框在TOUCH与TOUCH HOLD重叠时会出现吗（）

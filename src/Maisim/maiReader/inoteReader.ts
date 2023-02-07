@@ -1,7 +1,8 @@
 import { abs } from '../../math';
 import { Note, Beat, SlideTrack } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
-import { fireworkLength } from '../const';
+import { Sheet } from '../../utils/sheet';
+import { fireworkLength, maimaiJudgeLineR, maimaiSummonLineR, maimaiTapR } from '../const';
 import { getJudgeDirectionParams } from '../slideTracks/judgeDirection';
 // 仅仅用来计算分段数量
 import { section } from '../slideTracks/section';
@@ -35,9 +36,15 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
     .join('');
 
   //所有note
+  /**
+   * 分割後根据节拍排序的所有Note文本。
+   * 结构例：
+   * [[''], ['A1h[4:1]'], ['D5h[4:1]'], ['1b'], ['5'], ['4'], ['6'], [''], ['5', '6'], ['5', '7'], ['5', '8'], ['1', '5'], ['3', '4']]
+   */
   const allNotes: string[][] = inote
     .replaceAll('\n', '')
     .replaceAll('\r', '')
+    .replaceAll('\t', '')
     // 伪EACH
     .replaceAll('`', '`速')
     .split(/,|`/)
@@ -70,10 +77,6 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 
   let currentTime: number = 0;
 
-  /** 上一拍所有TOUCH的位置，用来处理多TOUCH白线 */
-  let lastlastTouch: { index: number; pos: string }[] = [];
-  let lastTouch: { index: number; pos: string }[] = [];
-
   let serial: number = 0;
 
   //处理所有
@@ -87,7 +90,7 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
       noteIndexes: [],
     };
 
-    // (){}
+    // 读入和消除(){}
     const bpmSign = noteGroup[0].indexOf('(');
 
     if (bpmSign > -1) {
@@ -112,8 +115,8 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
 
     let isNiseEach = false;
 
-    //处理一组Note
-    // （二次处理）
+    //处理每一组Note
+    // （第二次谱面处理）
     noteGroup.forEach((noteStr: string) => {
       // 一次处理一拍里的一个
       /** 要加入Notes列表的note */
@@ -242,49 +245,6 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
       });
     }
 
-    // 处理多TOUCH白线
-    const currentTouch = beatT.noteIndexes
-      .map(noteIndex => {
-        if (notesRes[noteIndex].type === NoteType.Touch || notesRes[noteIndex].type === NoteType.TouchHold) {
-          // 下面pos後面还加了type是为了区分TouchHold和Touch，不然同样的位置Touch後面还接了TouchHold就会，嗯！
-          return { index: noteIndex, pos: notesRes[noteIndex].pos + notesRes[noteIndex].type.toString() };
-        } else {
-          return { index: -1, pos: '' };
-        }
-      })
-      .filter(t => {
-        return t.index !== -1;
-      });
-    lastTouch.forEach(touch1 => {
-      currentTouch.forEach(touch2 => {
-        if (touch1.pos === touch2.pos) {
-          notesRes[touch1.index].touchCount = 1;
-        }
-      });
-    });
-    lastlastTouch.forEach(touch0 => {
-      lastTouch.forEach(touch1 => {
-        currentTouch.forEach(touch2 => {
-          if (touch0.pos === touch1.pos && touch1.pos === touch2.pos) {
-            notesRes[touch0.index].touchCount = 2;
-          }
-        });
-      });
-    });
-    // 更新上个节拍的所有TOUCH和上上个节拍的TOUCH位置
-    lastlastTouch = lastTouch;
-    lastTouch = beatT.noteIndexes
-      .map(noteIndex => {
-        if (notesRes[noteIndex].type === NoteType.Touch || notesRes[noteIndex].type === NoteType.TouchHold) {
-          return { index: noteIndex, pos: notesRes[noteIndex].pos + notesRes[noteIndex].type.toString() };
-        } else {
-          return { index: -1, pos: '' };
-        }
-      })
-      .filter(t => {
-        return t.index !== -1;
-      });
-
     // 设置eachPairDistance, isEachPairFirst
     // 画EACH pair的黄线要用
     if (beatT.noteIndexes.length > 1) {
@@ -340,4 +300,88 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
   console.log(beatRes, notesRes);
 
   return { beats: beatRes, notes: notesRes };
+};
+
+/**
+ * 第三次谱面处理，根据当前谱面流速计算各个受流速影响的属性
+ * 根据速度计算emergeTime, moveTime, guideStarEmergeTime
+ * 判断所有黄色SLIDE TRACK
+ * @param notesOri
+ * @returns
+ */
+export const calculate_speed_related_params_for_notes = (notesOri: Note[], tapMoveSpeed: number, tapEmergeSpeed: number, speed: number, currentSheet: Sheet) => {
+  /** 在计算多TOUCH白线时存储和累加每个TOUCH TOUCHHOLD重叠的数量 */
+  interface TouchInfo {
+    /** TOUCH的可唯一标识id */
+    touchId: number;
+    type: NoteType;
+    /** 判定的时刻 */
+    endTick: number;
+    overlapCount: number;
+  }
+
+  /** TOUCH重叠判定库，记录各个TOUCH TOUCHHOLD的重叠数量 */
+  const touchInfos: TouchInfo[] = [];
+
+  /** 为Notes计算浮现的时机 */
+  const notes = notesOri;
+  notes.forEach((note: Note, i: number) => {
+    if (note.type === NoteType.SlideTrack) {
+      const emergingTime = (maimaiJudgeLineR - maimaiSummonLineR) / (tapMoveSpeed * speed);
+      notes[i].moveTime = note.time - note.remainTime!;
+      notes[i].emergeTime = note.time - note.remainTime! - note.stopTime! - emergingTime;
+      notes[i].guideStarEmergeTime = note.time - note.remainTime! - note.stopTime!;
+    } else if (note.type === NoteType.FireWork) {
+      const trigger = currentSheet.notes.find(n => {
+        return n.serial === note.fireworkTriggerIndex;
+      });
+      if (trigger) {
+        notes[i].emergeTime = trigger.emergeTime;
+        // 开始描画时间
+        notes[i].moveTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime ?? 0 : 0);
+        // 整体存续时间
+        notes[i].remainTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime ?? 0 : 0) - trigger.emergeTime! + fireworkLength;
+      }
+    } else {
+      const emergingTime = maimaiTapR / (tapEmergeSpeed * speed);
+      const movingTime = (maimaiJudgeLineR - maimaiSummonLineR) / (tapMoveSpeed * speed);
+      notes[i].moveTime = note.time - movingTime;
+      notes[i].emergeTime = note.time - movingTime - emergingTime;
+
+      // 计算重叠TOUCH白框
+      if (note.type === NoteType.Touch || note.type === NoteType.TouchHold) {
+        // 遍历已经所有TOUCH TOUCHHOLD，判断有几个和note重叠的
+        touchInfos.forEach((touchInfo: TouchInfo, j: number) => {
+          // 判断是否重叠
+          if (touchInfo.type === note.type && touchInfo.endTick > note.emergeTime!) {
+            // 重叠的话，之前重叠的那个TOUCH（touchInfo）的重叠数++
+            touchInfo.overlapCount++;
+            // 为touchInfo的实例设置白框数量
+            notes[touchInfo.touchId].touchCount = touchInfo.overlapCount >= 2 ? 2 : touchInfo.overlapCount;
+          }
+        });
+        // 把现在这个TOUCH推进判定库
+        touchInfos.push({
+          touchId: i,
+          type: note.type,
+          endTick: note.time,
+          overlapCount: 0,
+        });
+      }
+    }
+
+    // isEach for SLIDE TRACK
+    notes.forEach((note2, j) => {
+      if (note.type === NoteType.SlideTrack && note2.type === NoteType.SlideTrack && i !== j && note.emergeTime === note2.emergeTime) {
+        notes[i].isEach = true;
+        notes[j].isEach = true;
+      }
+    });
+  });
+
+  notes.sort((a: Note, b: Note) => {
+    return a.emergeTime! - b.emergeTime!;
+  });
+
+  return notes;
 };

@@ -182,7 +182,7 @@ export interface Note {
   /** 「EACH对」长度，用来画EACH对的黄线 */
   eachPairDistance?: number;
 
-  /** 多TOUCH白框，应当根据谱面流速在开始游戏後算出，该改了 */
+  /** 多TOUCH白框的数量，根据谱面流速在开始游戏後算出 */
   touchCount?: number; // 1 2
 
   /** 适用于TOUCH，此TOUCH是否在一个touch group中 */

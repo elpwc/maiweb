@@ -54,6 +54,7 @@ import { RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
 import { uiIcon } from './resourceReaders/uiIconReader';
 import { drawAnimations } from './drawUtils/animation';
 import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star, JudgeEffectAnimation_Touch } from './drawUtils/judgeEffectAnimations';
+import { calculate_speed_related_params_for_notes } from './maiReader/inoteReader';
 
 const SongTrack = new Audio();
 SongTrack.volume = 0.5;
@@ -170,57 +171,8 @@ const readSheet = () => {
   songdata = ReadMaimaiData(sheetdata);
 
   currentSheet = songdata.sheets[0];
-  currentSheet.notes = calculate_speed_related_params_for_notes(currentSheet.notes);
-};
-
-/**
- * 第三次谱面处理，根据当前谱面流速计算各个受流速影响的属性
- * 根据速度计算emergeTime, moveTime, guideStarEmergeTime
- * 判断所有黄色SLIDE TRACK
- * @param notesOri
- * @returns
- */
-const calculate_speed_related_params_for_notes = (notesOri: Note[]) => {
-  /** 为Notes计算浮现的时机 */
-  const notes = notesOri;
-  notes.forEach((note: Note, i: number) => {
-    if (note.type === NoteType.SlideTrack) {
-      const emergingTime = (maimaiJudgeLineR - maimaiSummonLineR) / (tapMoveSpeed * speed);
-      notes[i].moveTime = note.time - note.remainTime!;
-      notes[i].emergeTime = note.time - note.remainTime! - note.stopTime! - emergingTime;
-      notes[i].guideStarEmergeTime = note.time - note.remainTime! - note.stopTime!;
-    } else if (note.type === NoteType.FireWork) {
-      const trigger = currentSheet.notes.find(n => {
-        return n.serial === note.fireworkTriggerIndex;
-      });
-      if (trigger) {
-        notes[i].emergeTime = trigger.emergeTime;
-        // 开始描画时间
-        notes[i].moveTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime ?? 0 : 0);
-        // 整体存续时间
-        notes[i].remainTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime ?? 0 : 0) - trigger.emergeTime! + fireworkLength;
-      }
-    } else {
-      const emergingTime = maimaiTapR / (tapEmergeSpeed * speed);
-      const movingTime = (maimaiJudgeLineR - maimaiSummonLineR) / (tapMoveSpeed * speed);
-      notes[i].moveTime = note.time - movingTime;
-      notes[i].emergeTime = note.time - movingTime - emergingTime;
-    }
-
-    // isEach for SLIDE TRACK
-    notes.forEach((note2, j) => {
-      if (note.type === NoteType.SlideTrack && note2.type === NoteType.SlideTrack && i !== j && note.emergeTime === note2.emergeTime) {
-        notes[i].isEach = true;
-        notes[j].isEach = true;
-      }
-    });
-  });
-
-  notes.sort((a: Note, b: Note) => {
-    return a.emergeTime! - b.emergeTime!;
-  });
-
-  return notes;
+  // 第三次谱面处理
+  currentSheet.notes = calculate_speed_related_params_for_notes(currentSheet.notes, tapMoveSpeed, tapEmergeSpeed, speed, currentSheet);
 };
 
 /** 当前绘制在画布上的所有Notes */
