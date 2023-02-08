@@ -118,3 +118,4 @@ TOUCH GROUP√
 
 2.8
 1. 【疑问】TOUCH白框在TOUCH与TOUCH HOLD重叠时会出现吗（）
+2. TOUCH会被HOLD覆盖住

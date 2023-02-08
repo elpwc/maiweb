@@ -315,6 +315,7 @@ export const calculate_speed_related_params_for_notes = (notesOri: Note[], tapMo
     /** TOUCH的可唯一标识id */
     touchId: number;
     type: NoteType;
+    pos: string;
     /** 判定的时刻 */
     endTick: number;
     overlapCount: number;
@@ -353,17 +354,35 @@ export const calculate_speed_related_params_for_notes = (notesOri: Note[], tapMo
         // 遍历已经所有TOUCH TOUCHHOLD，判断有几个和note重叠的
         touchInfos.forEach((touchInfo: TouchInfo, j: number) => {
           // 判断是否重叠
-          if (touchInfo.type === note.type && touchInfo.endTick > note.emergeTime!) {
+          if (touchInfo.type === note.type && touchInfo.pos === note.pos && touchInfo.endTick > note.emergeTime!) {
             // 重叠的话，之前重叠的那个TOUCH（touchInfo）的重叠数++
             touchInfo.overlapCount++;
-            // 为touchInfo的实例设置白框数量
-            notes[touchInfo.touchId].touchCount = touchInfo.overlapCount >= 2 ? 2 : touchInfo.overlapCount;
+
+            // 内层
+            if (touchInfo.overlapCount === 1) {
+              if (note.isEach) {
+                notes[touchInfo.touchId].innerTouchOverlap = 2;
+              } else {
+                notes[touchInfo.touchId].innerTouchOverlap = 1;
+              }
+            }
+
+            // 外层
+            if (touchInfo.overlapCount === 2) {
+              if (note.isEach) {
+                notes[touchInfo.touchId].outerTouchOverlap = 2;
+              } else {
+                notes[touchInfo.touchId].outerTouchOverlap = 1;
+              }
+            }
           }
         });
+
         // 把现在这个TOUCH推进判定库
         touchInfos.push({
           touchId: i,
           type: note.type,
+          pos: note.pos,
           endTick: note.time,
           overlapCount: 0,
         });

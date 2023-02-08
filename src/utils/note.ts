@@ -182,8 +182,10 @@ export interface Note {
   /** 「EACH对」长度，用来画EACH对的黄线 */
   eachPairDistance?: number;
 
-  /** 多TOUCH白框的数量，根据谱面流速在开始游戏後算出 */
-  touchCount?: number; // 1 2
+  /** 重叠TOUCH白框内层的颜色 0: 不存在，1：蓝色，2：黄色，根据谱面流速在开始游戏後算出 */
+  innerTouchOverlap?: number;
+  /** 重叠TOUCH白框外层的颜色 0: 不存在，1：蓝色，2：黄色，根据谱面流速在开始游戏後算出 */
+  outerTouchOverlap?: number;
 
   /** 适用于TOUCH，此TOUCH是否在一个touch group中 */
   inTouchGroup?: boolean;

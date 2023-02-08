@@ -486,24 +486,31 @@ export const drawNote = (
       }
     };
 
-    const drawTouchImage = (image: HTMLImageElement, imageCenter: HTMLImageElement, imageTouchTwo: HTMLImageElement, imageTouchThree: HTMLImageElement) => {
+    const drawTouchImage = (image: HTMLImageElement, imageCenter: HTMLImageElement) => {
       const centerx = x,
         centery = y;
       let k = (0.5 * maimaiR) / 350,
         centerk = (0.6 * maimaiR) / 350;
 
       // 多重TOUCH线
-      if (note.touchCount ?? 0 >= 1) {
-        drawRotationImage(ctx, imageTouchTwo, x - (imageTouchTwo.width * centerk) / 2, y - (imageTouchTwo.height * centerk) / 2, imageTouchTwo.width * centerk, imageTouchTwo.height * centerk);
-      }
-      if (note.touchCount === 2) {
+      if ((note.innerTouchOverlap ?? 0) > 0) {
         drawRotationImage(
           ctx,
-          imageTouchThree,
-          x - (imageTouchThree.width * centerk) / 2,
-          y - (imageTouchThree.height * centerk) / 2,
-          imageTouchThree.width * centerk,
-          imageTouchThree.height * centerk
+          note.innerTouchOverlap === 1 ? NoteIcon.touch_two : NoteIcon.touch_each_three,
+          x - (NoteIcon.touch_two.width * centerk) / 2,
+          y - (NoteIcon.touch_two.height * centerk) / 2,
+          NoteIcon.touch_two.width * centerk,
+          NoteIcon.touch_two.height * centerk
+        );
+      }
+      if ((note.outerTouchOverlap ?? 0) > 0) {
+        drawRotationImage(
+          ctx,
+          note.outerTouchOverlap === 1 ? NoteIcon.touch_three : NoteIcon.touch_each_three,
+          x - (NoteIcon.touch_three.width * centerk) / 2,
+          y - (NoteIcon.touch_three.height * centerk) / 2,
+          NoteIcon.touch_three.width * centerk,
+          NoteIcon.touch_three.height * centerk
         );
       }
 
@@ -531,10 +538,10 @@ export const drawNote = (
       const touchHoldGage = is_miss ? NoteIcon.touch_hold_gage_miss : NoteIcon.touch_hold_gage;
 
       // 多重TOUCH线
-      if (note.touchCount ?? 0 >= 1) {
+      if ((note.innerTouchOverlap ?? 0) > 0) {
         drawRotationImage(ctx, imageTouchTwo, x - (imageTouchTwo.width * centerk) / 2, y - (imageTouchTwo.height * centerk) / 2, imageTouchTwo.width * centerk, imageTouchTwo.height * centerk);
       }
-      if (note.touchCount === 2) {
+      if ((note.outerTouchOverlap ?? 0) > 0) {
         drawRotationImage(
           ctx,
           imageTouchThree,
@@ -1240,9 +1247,9 @@ export const drawNote = (
         break;
       case NoteType.Touch:
         if (isEach) {
-          drawTouchImage(NoteIcon.touch_each, NoteIcon.touch_each_center, NoteIcon.touch_each_two, NoteIcon.touch_each_three);
+          drawTouchImage(NoteIcon.touch_each, NoteIcon.touch_each_center);
         } else {
-          drawTouchImage(NoteIcon.touch, NoteIcon.touch_center, NoteIcon.touch_two, NoteIcon.touch_three);
+          drawTouchImage(NoteIcon.touch, NoteIcon.touch_center);
         }
         break;
       case NoteType.TouchHold:
