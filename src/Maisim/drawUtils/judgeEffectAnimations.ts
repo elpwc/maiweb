@@ -3,10 +3,11 @@ import { getTouchCenterCoord } from '../areas';
 import { center, judgeEffectDuration, maimaiJudgeLineR, maimaiTapR } from '../const';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { animation } from './animation';
+import { VirtualTime } from './virtualTime';
 import { drawRotationImage } from './_base';
 
 /** TAP STAR HOLD TOUCHHOLD结束後的判定特效 */
-export const JudgeEffectAnimation_Hex_or_Star = (ctx: CanvasRenderingContext2D, pausedTotalTime: number, pos: string, type: 'hex' | 'star') => {
+export const JudgeEffectAnimation_Hex_or_Star = (ctx: CanvasRenderingContext2D, pos: string, type: 'hex' | 'star') => {
   let effectImage: HTMLImageElement;
   if (type === 'hex') {
     effectImage = EffectIcon.Hex;
@@ -29,7 +30,7 @@ export const JudgeEffectAnimation_Hex_or_Star = (ctx: CanvasRenderingContext2D, 
 
   /** 外部图案轨道半径 */
   const effectOuterOrbitR = maimaiTapR;
-  animation(null, pausedTotalTime, judgeEffectDuration, (t: number) => {
+  animation(null, judgeEffectDuration, (t: number) => {
     const k = t / judgeEffectDuration;
     // 中心图案
     const effectR = (3 * maimaiTapR - maimaiTapR) * k + maimaiTapR;
@@ -69,11 +70,11 @@ export const JudgeEffectAnimation_Hex_or_Star = (ctx: CanvasRenderingContext2D, 
 /**
  * HOLD TOUCHHOLD按压时的特效
  * @param ctx
- * @param pausedTotalTime
+ * @param virtualTime
  * @param pos
  * @param noteid 提供这个note的id，在方法内部用来实现动画间隔
  */
-export const JudgeEffectAnimation_Circle = (ctx: CanvasRenderingContext2D, pausedTotalTime: number, pos: string, noteid: number) => {
+export const JudgeEffectAnimation_Circle = (ctx: CanvasRenderingContext2D, pos: string, noteid: number) => {
   let effectImage: HTMLImageElement = EffectIcon.Circle;
   // 特效动画
   /*
@@ -91,7 +92,7 @@ export const JudgeEffectAnimation_Circle = (ctx: CanvasRenderingContext2D, pause
 
   /** 其中一个圆环在一组中从出现到消失所占的时长比例 */
   const lengthK = 0.5;
-  animation(noteid.toString(), pausedTotalTime, judgeEffectDuration, (t: number) => {
+  animation(noteid.toString(), judgeEffectDuration, (t: number) => {
     if (t < lengthK * judgeEffectDuration) {
       const k = t / (lengthK * judgeEffectDuration);
       const effectR = (3 * maimaiTapR - maimaiTapR) * k + maimaiTapR;
@@ -129,7 +130,7 @@ export const JudgeEffectAnimation_Circle = (ctx: CanvasRenderingContext2D, pause
 };
 
 /** TOUCH结束後的判定特效 */
-export const JudgeEffectAnimation_Touch = (ctx: CanvasRenderingContext2D, pausedTotalTime: number, pos: string) => {
+export const JudgeEffectAnimation_Touch = (ctx: CanvasRenderingContext2D, pos: string) => {
   let effectImageCircle: HTMLImageElement = EffectIcon.TouchEff;
   let effectImage1: HTMLImageElement = EffectIcon.TouchEffStar1;
   let effectImage2: HTMLImageElement = EffectIcon.TouchEffStar2;
@@ -154,7 +155,6 @@ export const JudgeEffectAnimation_Touch = (ctx: CanvasRenderingContext2D, paused
   const outerStarS2 = maimaiTapR * 1.5;
   animation(
     null,
-    pausedTotalTime,
     judgeEffectDuration * 0.8,
     (t: number) => {
       const k = t / (judgeEffectDuration * 0.8);
@@ -195,7 +195,7 @@ export const JudgeEffectAnimation_Touch = (ctx: CanvasRenderingContext2D, paused
     },
     0,
     () => {
-      animation(null, pausedTotalTime, judgeEffectDuration * 2, (t: number) => {
+      animation(null, judgeEffectDuration * 2, (t: number) => {
         const k = t / (judgeEffectDuration * 2);
 
         // 内圈星星

@@ -52,9 +52,10 @@ import testsong_taiyoukei from './resource/sound/track/太陽系デスコ.mp3';
 import testbgi from './resource/maimai_img/ui/UI_Chara_105810.png';
 import { RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
 import { uiIcon } from './resourceReaders/uiIconReader';
-import { drawAnimations } from './drawUtils/animation';
+import { drawAnimations, initAnimations } from './drawUtils/animation';
 import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star, JudgeEffectAnimation_Touch } from './drawUtils/judgeEffectAnimations';
 import { calculate_speed_related_params_for_notes } from './maiReader/inoteReader';
+import { VirtualTime } from './drawUtils/virtualTime';
 
 const SongTrack = new Audio();
 SongTrack.volume = 0.5;
@@ -82,15 +83,11 @@ let tapEmergeSpeed: number = 0.2; // 0.2
 /** 谱面流速 */
 let speed: number = 0.65;
 
-/** 谱面开始播放时的时刻 */
-let starttime: number = 0;
+let virtualTime: VirtualTime = new VirtualTime();
+initAnimations(virtualTime);
+
 /** 谱面已经经过的时间 */
 let currentTime: number = 0;
-
-/** 暂停谱面时的时刻 */
-let lastPauseTime: number = 0;
-/** 暂停後度过的时间 */
-let pausedTotalTime: number = 0;
 
 let currentDifficulty = 5;
 
@@ -148,14 +145,35 @@ const starttimer = () => {
     SongTrack.play();
   }, advancedTime);
 
-  starttime = performance.now();
-  pausedTotalTime = 0;
-  lastPauseTime = 0;
+  let duration = (advancedTime + (SongTrack.duration * 1000));
+  // console.log({ duration: duration/1000 })
+  virtualTime.init(duration, advancedTime);
 
   //console.log(sheet.beats5?.beat);
   timer1 = setInterval(reader_and_updater, timerPeriod);
   timer3 = setInterval(drawer, timerPeriod);
+  virtualTime.onProgress((progress: number, kind: string) => {
+    if (kind == 'seek') {
+      // TODO: 调整音符状态
+      reader_and_updater();
+      drawer();
+    }
+  });
 };
+
+const changeSongTrackPlaybackrate = (rate: number) => {
+  SongTrack.playbackRate = rate;
+}
+const seekSongTrack = (progress: number): boolean => {
+  let duration = virtualTime.duration;
+  let time = (progress * duration);
+  if (time < advancedTime) {
+    return false;
+  } else {
+    SongTrack.currentTime = ((time - advancedTime) / 1000);
+    return true;
+  }
+}
 
 const finish = () => {
   clearInterval(timer1);
@@ -207,7 +225,7 @@ const touchConvergeCurrentRho = (c: number, m: number, t: number) => {
 　ここは便利のためreaderとupdaterを1つのtimerにしたんにゃ
  */
 const reader_and_updater = async () => {
-  currentTime = performance.now() - starttime - pausedTotalTime - advancedTime;
+  currentTime = virtualTime.read();
 
   //updater
 
@@ -287,7 +305,7 @@ const reader_and_updater = async () => {
           // move
 
           if (newNote.isTouching) {
-            JudgeEffectAnimation_Circle(ctx_effect_over, pausedTotalTime, noteIns.pos, note.noteIndex);
+            JudgeEffectAnimation_Circle(ctx_effect_over, noteIns.pos, note.noteIndex);
           }
 
           if (auto) {
@@ -354,7 +372,7 @@ const reader_and_updater = async () => {
           newNote.tailRho = ((currentTime - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
 
           if (newNote.isTouching) {
-            JudgeEffectAnimation_Circle(ctx_effect_over, pausedTotalTime, noteIns.pos, note.noteIndex);
+            JudgeEffectAnimation_Circle(ctx_effect_over, noteIns.pos, note.noteIndex);
           }
 
           if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeHold) {
@@ -414,7 +432,7 @@ const reader_and_updater = async () => {
           newNote.tailRho = ((currentTime - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
 
           if (newNote.isTouching) {
-            JudgeEffectAnimation_Circle(ctx_effect_over, pausedTotalTime, noteIns.pos, note.noteIndex);
+            JudgeEffectAnimation_Circle(ctx_effect_over, noteIns.pos, note.noteIndex);
           }
 
           if (currentTime >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeHold) {
@@ -736,7 +754,7 @@ const reader_and_updater = async () => {
         if (note.judgeStatus !== JudgeStatus.Miss) {
           if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
             // 特效图像
-            JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, pausedTotalTime, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
+            JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
           }
         }
         note.status = -3;
@@ -745,7 +763,7 @@ const reader_and_updater = async () => {
     } else if (noteIns.type === NoteType.Touch) {
       if (note.status === -4) {
         if (note.judgeStatus !== JudgeStatus.Miss) {
-          JudgeEffectAnimation_Touch(ctx_effect_over, pausedTotalTime, noteIns.pos);
+          JudgeEffectAnimation_Touch(ctx_effect_over, noteIns.pos);
         }
         note.status = -3;
       }
@@ -758,7 +776,7 @@ const reader_and_updater = async () => {
 
         // 特效图像
         if (note.touched) {
-          JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, pausedTotalTime, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
+          JudgeEffectAnimation_Hex_or_Star(ctx_effect_over, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
         }
 
         if (noteIns.isShortHold || (noteIns.type === NoteType.Hold && noteIns.remainTime! <= timerPeriod * 18) || (noteIns.type === NoteType.TouchHold && noteIns.remainTime! <= timerPeriod * 27)) {
@@ -899,7 +917,6 @@ const drawer = async () => {
     drawNote(
       ctx_notes,
       ctx_slideTrack,
-      pausedTotalTime,
       currentSheet.notes[note.noteIndex]!,
       note.isEach,
       note,
@@ -913,7 +930,7 @@ const drawer = async () => {
     );
   }
 
-  drawAnimations(pausedTotalTime);
+  drawAnimations();
 
   // game record
   ctx_game_record.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -1000,11 +1017,12 @@ let currentHoldStyle: RegularStyles = RegularStyles.Concise;
 let currentSlideStyle: RegularStyles = RegularStyles.Concise;
 let currentSlideColor: SlideColor = SlideColor.Blue;
 
-// React18生产环境useEffect运行两次 https://juejin.cn/post/7137654077743169573
+// React18+ 开发环境 useEffect 运行两次 https://juejin.cn/post/7137654077743169573
 let hasinit = false;
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default (props: Props) => {
+// React Devtools 需要函数名作为显示的组件名。
+// 既然将来要把 Maisim 独立成一个库，那么就需要一个有名字的函数。
+export default function Maisim(props: Props): JSX.Element {
   const onMouseDown = (e: Event) => {
     // @ts-ignore
     const area = whichArea(e.offsetX, e.offsetY);
@@ -1276,6 +1294,49 @@ export default (props: Props) => {
 
   const judgeLineK = 0.88;
 
+  // 变速相关
+  const [speedFactor, setSpeedFactor] = useState(1.0);
+  const changeSpeedFactor = () => {
+    setSpeedFactor((speedFactor == 1)? 0.75: (speedFactor == 0.75)? 0.5: 1);
+  }
+  useEffect(() => {
+    changeSongTrackPlaybackrate(speedFactor);
+    virtualTime.setSpeedFactor(speedFactor);
+  }, [speedFactor]);
+
+  // 进度条相关
+  const [showSlider, setShowSlider] = useState(false);
+  const sliderRef = useRef(null as any as HTMLInputElement); // 很脏……
+  const sliderMax = 10000;
+  useEffect(() => {
+    let slider = sliderRef.current;
+    let lastUpdatedValue = 0;
+    let clearBinding = virtualTime.onProgress((progress: number, _: string) => {
+      if (progress < 0) progress = 0;
+      if (progress > 1) progress = 1;
+      let newValue = (progress * sliderMax)
+      slider.value = newValue as any;
+      lastUpdatedValue = newValue;
+    });
+    let onChange = (ev: Event) => {
+      let value = Number((ev.target as HTMLInputElement).value);
+      let progress = (value / sliderMax);
+      if (props.gameState !== GameState.Begin) {
+        let ok = seekSongTrack(progress);
+        if (ok) {
+          virtualTime.seek(progress);
+        } else {
+          slider.value = lastUpdatedValue as any; // 使 slider 回到原位
+        }
+      }
+    };
+    slider.addEventListener('change', onChange);
+    return () => {
+      slider.removeEventListener('change', onChange);
+      clearBinding();
+    }
+  }, [props.gameState]);
+
   return (
     <div
       className="maisim"
@@ -1356,32 +1417,42 @@ export default (props: Props) => {
         )}
       </div>
       <div style={{ position: 'relative', zIndex: 114514 }}>
-        <button
-          onClick={() => {
-            //testmusic.play();
-            if (props.gameState === GameState.Begin) {
-              starttimer();
-              props.setGameState(GameState.Play);
-            } else if (props.gameState === GameState.Play) {
-              lastPauseTime = performance.now();
-              clearInterval(timer1);
-              clearInterval(timer3);
-              SongTrack.pause();
-              props.setGameState(GameState.Pause);
-            } else if (props.gameState === GameState.Pause) {
-              pausedTotalTime = pausedTotalTime + (performance.now() - lastPauseTime);
-              timer1 = setInterval(reader_and_updater, timerPeriod);
-              //timer2 = setInterval(updater, timerPeriod);
-              timer3 = setInterval(drawer, timerPeriod);
-              SongTrack.play();
-              props.setGameState(GameState.Play);
-            } else {
-            }
-          }}
-        >
-          {props.gameState === GameState.Play ? 'stop' : 'start'}
-        </button>
-        <button onClick={() => {}}>read</button>
+        <div>
+          <button
+            onClick={() => {
+              //testmusic.play();
+              if (props.gameState === GameState.Begin) {
+                starttimer();
+                props.setGameState(GameState.Play);
+              } else if (props.gameState === GameState.Play) {
+                virtualTime.pause();
+                clearInterval(timer1);
+                clearInterval(timer3);
+                SongTrack.pause();
+                props.setGameState(GameState.Pause);
+              } else if (props.gameState === GameState.Pause) {
+                virtualTime.resume();
+                timer1 = setInterval(reader_and_updater, timerPeriod);
+                timer3 = setInterval(drawer, timerPeriod);
+                SongTrack.play();
+                props.setGameState(GameState.Play);
+              } else {
+              }
+            }}
+          >
+            {props.gameState === GameState.Play ? 'stop' : 'start'}
+          </button>
+          <button onClick={() => {}}>read</button>
+        </div>
+        <div>
+          <button onClick={() => { changeSpeedFactor() }}>{speedFactor.toFixed(2)}×</button>
+        </div>
+        <div>
+          <button onClick={() => { setShowSlider(!(showSlider)) }}>⇄</button>
+        </div>
+        <div className="slider" style={{ top: '100%', left: '0', padding: '10px 20px', width: `${canvasW}px`, backgroundColor: '#d3d3d3cc', display: showSlider? 'block': 'none' }}>
+           <input type="range" min="0" max={sliderMax} style={{width:'100%'}} ref={sliderRef} />
+        </div>
       </div>
     </div>
   );
