@@ -26,6 +26,7 @@ export class VirtualTime {
         this.notifyPlayPause();
     }
     read(): number {
+        if (!(this.initialized)) { throw Error('invalid operation') }
         let realTime = this.getInstanceRealTime();
         if (!(this.paused)) {
             this.notifyProgress(realTime, 'read');
@@ -33,6 +34,7 @@ export class VirtualTime {
         return (this.computeProgress(realTime) * this.duration);
     }
     seek(targetProgress: number): void {
+        if (!(this.initialized)) { throw Error('invalid operation') }
         let realTime = this.getInstanceRealTime();
         let currentProgress = this.computeProgress(realTime);
         this.seekDelta = (this.seekDelta + targetProgress - currentProgress);
