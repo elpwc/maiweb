@@ -1,5 +1,3 @@
-import { threadId } from "worker_threads";
-
 export class VirtualTime {
     duration: number = Infinity;
     start: number = 0; // realTime
