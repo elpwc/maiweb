@@ -70,7 +70,6 @@ export const JudgeEffectAnimation_Hex_or_Star = (ctx: CanvasRenderingContext2D, 
 /**
  * HOLD TOUCHHOLD按压时的特效
  * @param ctx
- * @param virtualTime
  * @param pos
  * @param noteid 提供这个note的id，在方法内部用来实现动画间隔
  */
