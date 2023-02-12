@@ -1,3 +1,5 @@
+import { VirtualTime } from "./virtualTime";
+
 /** 动画 */
 interface Animation {
   /** key 非空的动画，同一个动画不会被重复添加 */
@@ -21,8 +23,23 @@ interface Animation {
 /** 显示的动画列表 */
 export let animationList: Animation[] = [];
 
+let animationVirtualTime: VirtualTime;
+let animationTimeoutAbortController: AbortController;
+export const initAnimations = (virtualTime: VirtualTime) => {
+  animationVirtualTime = virtualTime;
+  animationTimeoutAbortController = new AbortController();
+  // 拖动进度条後，清除所有动画
+  animationVirtualTime.onSeek((_: number) => {
+    // 清除已进入列表的动画
+    animationList.splice(0, animationList.length);
+    // 清除还在等待的动画
+    animationTimeoutAbortController.abort();
+    animationTimeoutAbortController = new AbortController();
+  });
+}
+
 /** 绘制所有动画 */
-export const drawAnimations = (pausedTotalTime: number) => {
+export const drawAnimations = () => {
   if (animationList.length > 0) {
     //console.log(animationList);
     for (let i = 0; i < animationList.length; i++) {
@@ -30,7 +47,7 @@ export const drawAnimations = (pausedTotalTime: number) => {
       // 绘制
       currentAnimation.draw(currentAnimation.currrentTick);
       // 更新时刻
-      currentAnimation.currrentTick = performance.now() - pausedTotalTime - currentAnimation.startTime;
+      currentAnimation.currrentTick = animationVirtualTime.read() - currentAnimation.startTime;
       if (currentAnimation.currrentTick > currentAnimation.length && currentAnimation.onFinish) {
         currentAnimation.onFinish();
       }
@@ -49,18 +66,21 @@ export const drawAnimations = (pausedTotalTime: number) => {
  * @param draw 动画绘制函数
  * @param wait 播放延迟，必须大于等于0，默认为0
  */
-export const animation = (key: string | null, pausedTotalTime: number, length: number, draw: (t: number) => void, wait: number = 0, onFinish?: (params?: any | null) => void) => {
+export const animation = (key: string | null, length: number, draw: (t: number) => void, wait: number = 0, onFinish?: (params?: any | null) => void) => {
   const fun = () => {
     const existing = key === null ? null : animationList.find(a => a.key === key);
     if (existing) {
       // 不重复加入同一个动画
     } else {
-      animationList.push({ key, length, draw, currrentTick: 0, startTime: performance.now() - pausedTotalTime, onFinish });
+      animationList.push({ key, length, draw, currrentTick: 0, startTime: animationVirtualTime.read(), onFinish });
     }
   };
 
   if (wait > 0) {
-    setTimeout(fun, wait);
+    const timeout = setTimeout(fun, wait);
+    animationTimeoutAbortController.signal.addEventListener('abort', () => {
+      clearTimeout(timeout);
+    });
   } else {
     fun();
   }
