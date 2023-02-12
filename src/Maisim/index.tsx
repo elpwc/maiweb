@@ -151,10 +151,11 @@ const starttimer = () => {
   // console.log({ duration: duration/1000 })
   virtualTime.init(duration, advancedTime);
   virtualTime.onSeek((progress: number) => {
+    // 进度条被拖动，重置音符状态
     showingNotes = [];
     nextNoteIndex = 0;
     const time = (duration * progress);
-    while ((currentSheet.notes[nextNoteIndex].emergeTime ?? 0) < time) {
+    while ((currentSheet.notes[nextNoteIndex]?.emergeTime ?? Infinity) < time) {
       nextNoteIndex++;
     }
     reader_and_updater();
@@ -179,6 +180,10 @@ const seekSongTrack = (progress: number): boolean => {
     SongTrack.currentTime = ((time - advancedTime) / 1000);
     return true;
   }
+}
+const handleSongTrackFinish = (callback: () => void): (() => void) => {
+  SongTrack.addEventListener('ended', callback);
+  return () => { SongTrack.removeEventListener('ended', callback); }
 }
 
 const finish = () => {
@@ -1342,6 +1347,16 @@ export default function Maisim(props: Props): JSX.Element {
       clearBinding();
     }
   }, [props.gameState]);
+
+  // 音乐播放完後，同步暂停状态
+  useEffect(() => {
+    return handleSongTrackFinish(() => {
+      virtualTime.pause();
+      clearInterval(timer1);
+      clearInterval(timer3);
+      props.setGameState(GameState.Pause);
+    }); 
+  }, [])
 
   return (
     <div

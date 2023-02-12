@@ -76,19 +76,10 @@ export class VirtualTime {
     }
     notifyProgress(realTime: number, kind: string) {
         let progress = this.computeProgress(realTime);
-        this.eventTarget.dispatchEvent(
-            new CustomEvent('progress', { detail: {progress, kind} })
-        );
+        this.sendEvent('progress', {progress, kind});
     }
     onProgress(callback: (progress: number, kind: string) => void): () => void {
-        let l = (ev: Event) => {
-            let {progress, kind} = (ev as CustomEvent).detail
-            callback(progress, kind);
-        };
-        this.eventTarget.addEventListener('progress', l);
-        return () => {
-            this.eventTarget.removeEventListener('progress', l);
-        };
+        return this.recvEvent('progress', ({progress,kind}) => callback(progress,kind));
     }
     onSeek(callback: (progress: number) => void): () => void {
         return this.onProgress((progress: number, kind: string) => {
@@ -98,18 +89,10 @@ export class VirtualTime {
         });
     }
     notifySpeedFactorChange(speedFactor: number): void {
-        this.eventTarget.dispatchEvent(
-            new CustomEvent('speedfactorchange', { detail: speedFactor })
-        );
+        this.sendEvent('speedfactorchange', speedFactor);
     }
     onSpeedFactorChange(callback: (speedFactor: number) => void): () => void {
-        let l = (ev: Event) => {
-            callback((ev as CustomEvent).detail);
-        }
-        this.eventTarget.addEventListener('speedfactorchange', l);
-        return () => {
-            this.eventTarget.removeEventListener('speedfactorchange', l);
-        };
+        return this.recvEvent('speedfactorchange', callback);
     }
     pause(): void {
         if (!(this.paused)) {
@@ -128,18 +111,18 @@ export class VirtualTime {
         }
     }
     notifyPlayPause(): void {
-        this.eventTarget.dispatchEvent(
-            new CustomEvent('playpause', { detail: this.paused })
-        );
+        this.sendEvent('playpause', this.paused);
     }
     onPlayPause(callback: (paused: boolean) => void): () => void {
-        let l = (ev: Event) => {
-            callback((ev as CustomEvent).detail);
-        };
-        this.eventTarget.addEventListener('playpause', l);
-        return () => {
-            this.eventTarget.removeEventListener('playpause', l);
-        }
+        return this.recvEvent('playpause', callback);
+    }
+    sendEvent(name: string, detail: any): void {
+        this.eventTarget.dispatchEvent(new CustomEvent(name, { detail }));
+    }
+    recvEvent(name: string, callback: (detail: any) => void): () => void {
+        let l = (ev: Event) => callback((ev as CustomEvent).detail);
+        this.eventTarget.addEventListener(name, l);
+        return () => { this.eventTarget.removeEventListener(name, l); }
     }
 }
 
