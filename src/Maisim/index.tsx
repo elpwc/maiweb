@@ -143,9 +143,11 @@ const starttimer = () => {
   showingNotes = [];
   nextNoteIndex = 0;
   advancedTime = (currentSheet.notes[0].emergeTime ?? 0) < 0 ? -(currentSheet.notes[0].emergeTime ?? 0) : 0;
-  setTimeout(() => {
-    SongTrack.play();
-  }, advancedTime);
+  // console.log({ advancedTime })
+  setTimeout(
+    () => { SongTrack.play(); },
+    (advancedTime / virtualTime.speedFactor) // 苟且做法（无法动态调整 timeout 的速度）
+  );
 
   const duration = (advancedTime + (SongTrack.duration * 1000));
   // console.log({ duration: duration/1000 })

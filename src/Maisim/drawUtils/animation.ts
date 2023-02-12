@@ -25,16 +25,17 @@ export let animationList: Animation[] = [];
 
 let animationVirtualTime: VirtualTime;
 let animationTimeoutAbortController: AbortController;
-
 export const initAnimations = (virtualTime: VirtualTime) => {
   animationVirtualTime = virtualTime;
+  animationTimeoutAbortController = new AbortController();
+  // 拖动进度条後，清除所有动画
   animationVirtualTime.onSeek((_: number) => {
-    // 拖动进度条後，清除所有动画
+    // 清除已进入列表的动画
     animationList.splice(0, animationList.length);
+    // 清除还在等待的动画
     animationTimeoutAbortController.abort();
     animationTimeoutAbortController = new AbortController();
   });
-  animationTimeoutAbortController = new AbortController();
 }
 
 /** 绘制所有动画 */
