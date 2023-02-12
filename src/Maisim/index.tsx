@@ -140,25 +140,31 @@ const drawOver = () => {
 /** 启动绘制器 */
 const starttimer = () => {
   readSheet();
+  showingNotes = [];
+  nextNoteIndex = 0;
   advancedTime = (currentSheet.notes[0].emergeTime ?? 0) < 0 ? -(currentSheet.notes[0].emergeTime ?? 0) : 0;
   setTimeout(() => {
     SongTrack.play();
   }, advancedTime);
 
-  let duration = (advancedTime + (SongTrack.duration * 1000));
+  const duration = (advancedTime + (SongTrack.duration * 1000));
   // console.log({ duration: duration/1000 })
   virtualTime.init(duration, advancedTime);
+  virtualTime.onSeek((progress: number) => {
+    showingNotes = [];
+    nextNoteIndex = 0;
+    const time = (duration * progress);
+    while ((currentSheet.notes[nextNoteIndex].emergeTime ?? 0) < time) {
+      nextNoteIndex++;
+    }
+    reader_and_updater();
+    drawer();
+  });
 
   //console.log(sheet.beats5?.beat);
   timer1 = setInterval(reader_and_updater, timerPeriod);
   timer3 = setInterval(drawer, timerPeriod);
-  virtualTime.onProgress((progress: number, kind: string) => {
-    if (kind == 'seek') {
-      // TODO: 调整音符状态
-      reader_and_updater();
-      drawer();
-    }
-  });
+
 };
 
 const changeSongTrackPlaybackrate = (rate: number) => {

@@ -46,7 +46,7 @@ export class VirtualTime {
         }
         if (!(this.initialized)) {
             this.speedFactor = speedFactor;
-            // this.notifySpeedFactorChange(speedFactor);
+            this.notifySpeedFactorChange(speedFactor);
             return;
         }
         let realTime = this.getInstanceRealTime();
@@ -55,7 +55,7 @@ export class VirtualTime {
         this.previousSpeedFactor = (scaledPlayingTime / playingTime);
         this.lastSpeedFactorChange = playingTime;
         this.speedFactor = speedFactor;
-        // this.notifySpeedFactorChange(speedFactor);
+        this.notifySpeedFactorChange(speedFactor);
     }
     static getRealTime(): number {
         return performance.now();
@@ -90,20 +90,27 @@ export class VirtualTime {
             this.eventTarget.removeEventListener('progress', l);
         };
     }
-    // notifySpeedFactorChange(speedFactor: number): void {
-    //     this.eventTarget.dispatchEvent(
-    //         new CustomEvent('speedfactorchange', { detail: speedFactor })
-    //     );
-    // }
-    // onSpeedFactorChange(callback: (speedFactor: number) => void): () => void {
-    //     let l = (ev: Event) => {
-    //         callback((ev as CustomEvent).detail);
-    //     }
-    //     this.eventTarget.addEventListener('speedfactorchange', l);
-    //     return () => {
-    //         this.eventTarget.removeEventListener('speedfactorchange', l);
-    //     };
-    // }
+    onSeek(callback: (progress: number) => void): () => void {
+        return this.onProgress((progress: number, kind: string) => {
+            if (kind == 'seek') {
+                callback(progress);
+            }
+        });
+    }
+    notifySpeedFactorChange(speedFactor: number): void {
+        this.eventTarget.dispatchEvent(
+            new CustomEvent('speedfactorchange', { detail: speedFactor })
+        );
+    }
+    onSpeedFactorChange(callback: (speedFactor: number) => void): () => void {
+        let l = (ev: Event) => {
+            callback((ev as CustomEvent).detail);
+        }
+        this.eventTarget.addEventListener('speedfactorchange', l);
+        return () => {
+            this.eventTarget.removeEventListener('speedfactorchange', l);
+        };
+    }
     pause(): void {
         if (!(this.paused)) {
             let realTime = VirtualTime.getRealTime();

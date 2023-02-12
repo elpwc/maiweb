@@ -24,14 +24,17 @@ interface Animation {
 export let animationList: Animation[] = [];
 
 let animationVirtualTime: VirtualTime;
+let animationTimeoutAbortController: AbortController;
+
 export const initAnimations = (virtualTime: VirtualTime) => {
   animationVirtualTime = virtualTime;
-  animationVirtualTime.onProgress((_: number, kind: string) => {
-    if (kind == 'seek') {
-      // 拖动进度条後，清除所有动画
-      animationList.splice(0, animationList.length);
-    }
+  animationVirtualTime.onSeek((_: number) => {
+    // 拖动进度条後，清除所有动画
+    animationList.splice(0, animationList.length);
+    animationTimeoutAbortController.abort();
+    animationTimeoutAbortController = new AbortController();
   });
+  animationTimeoutAbortController = new AbortController();
 }
 
 /** 绘制所有动画 */
@@ -73,7 +76,10 @@ export const animation = (key: string | null, length: number, draw: (t: number) 
   };
 
   if (wait > 0) {
-    setTimeout(fun, wait);
+    const timeout = setTimeout(fun, wait);
+    animationTimeoutAbortController.signal.addEventListener('abort', () => {
+      clearTimeout(timeout);
+    });
   } else {
     fun();
   }
