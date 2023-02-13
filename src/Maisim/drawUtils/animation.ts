@@ -1,4 +1,4 @@
-import { VirtualTime } from "./virtualTime";
+import { VirtualTime } from './virtualTime';
 
 /** 动画 */
 interface Animation {
@@ -36,7 +36,7 @@ export const initAnimations = (virtualTime: VirtualTime) => {
     animationTimeoutAbortController.abort();
     animationTimeoutAbortController = new AbortController();
   });
-}
+};
 
 /** 绘制所有动画 */
 export const drawAnimations = () => {

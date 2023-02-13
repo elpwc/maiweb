@@ -3,8 +3,8 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Area } from '../../Maisim/areas';
 import { uiIcon } from '../../Maisim/resourceReaders/uiIconReader';
 import { π } from '../../math';
-import { createSong } from '../../services/api/Song';
-import { createNotes } from '../../services/api/Notes';
+//import { createSong } from '../../services/api/Song';
+//import { createNotes } from '../../services/api/Notes';
 
 interface Props {
   onPress: (key: string) => void;
@@ -151,7 +151,7 @@ export default forwardRef((props: Props, ref) => {
   const onPress = (key: string) => {
     if (key !== '') {
       console.log(props);
-      if (key === 'K1') {
+      /*if (key === 'K1') {
         createSong({ name: 'test', artist: 'test', copyright: 'test', genre: 0, version: 0, is_private: false })
           .then((e: any) => {
             console.log(e);
@@ -169,7 +169,7 @@ export default forwardRef((props: Props, ref) => {
             console.log(e);
           });
         props.onPress(key);
-      }
+      }*/
     }
   };
 
