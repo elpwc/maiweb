@@ -77,7 +77,7 @@ TOUCH GROUP√
 4. 判定显示淡出 √
 5. 自动播放应该优先按外键 √
 6. 两个时间上离得近的HANABI会导致HANABI动画卡住 √(?)
-7. SLIDE的判定的位置还沒微调（TOUCH的也【先不急】
+7. SLIDE的判定的位置还沒微调（TOUCH的也【先不急】 √
 8. 自动播放连续TAP，靠後的会Good √
 9. HOLD按下的声音很怪，似乎是播放了很多次 √
 10. 对E（结束）的处理还没做【先不急】
@@ -111,10 +111,10 @@ TOUCH GROUP√
 3. 【UI】HANABI中间的亮点太魗了吧，其次第二亮区的扩散不是很明显
 4. 【BUG】HOLD头接触判定线时HOLD会消失一帧(?)
 5. 【Feature】匹配官机流速
-6. 【Feature】x0.5 x0.75变速功能（）
+6. 【Feature】x0.5 x0.75变速功能（） √
 7. 【Feature】外键变色功能
 8. 【提议】判定区触摸高亮功能改为可选，在Maisim props中设定
-9. 【Feature】可拖动的进度条 
+9. 【Feature】可拖动的进度条  √
 
 2.8
 1. 【疑问】TOUCH白框在TOUCH与TOUCH HOLD重叠时会出现吗（）

@@ -1342,7 +1342,7 @@ export const drawNote = (
         if (t < judgeResultShowTime) {
           // 出现时的缩小效果（暂定为持续 1/3 倍的显示时间并且仅用于 TAP 音符）
           const shrinkDuration = judgeResultShowTime / 3;
-          if (note.type == NoteType.Tap) {
+          if (note.type === NoteType.Tap) {
             if (t < shrinkDuration) {
               scale = 1 + 0.2 * (1 - t / shrinkDuration);
             } else {
@@ -1643,9 +1643,9 @@ export const drawNote = (
         }
       } else {
         if (lastLineDirection === 1) {
-          drawJudgeImage(effectOverCtx, judgeImage, x - judgeIconWidth, y, judgeIconWidth, judgeIconHeight, x, y, angle);
+          drawJudgeImage(effectOverCtx, judgeImage, x - judgeIconWidth, y - judgeIconHeight * 0.7, judgeIconWidth, judgeIconHeight, x, y, angle);
         } else {
-          drawJudgeImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, x, y, angle);
+          drawJudgeImage(effectOverCtx, judgeImage, x, y - judgeIconHeight * 0.7, judgeIconWidth, judgeIconHeight, x, y, angle);
         }
       }
     } else {
