@@ -496,7 +496,7 @@ export const drawNote = (
       if ((note.innerTouchOverlap ?? 0) > 0) {
         drawRotationImage(
           ctx,
-          note.innerTouchOverlap === 1 ? NoteIcon.touch_two : NoteIcon.touch_each_three,
+          note.innerTouchOverlap === 1 ? NoteIcon.touch_two : NoteIcon.touch_each_two,
           x - (NoteIcon.touch_two.width * centerk) / 2,
           y - (NoteIcon.touch_two.height * centerk) / 2,
           NoteIcon.touch_two.width * centerk,

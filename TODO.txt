@@ -122,4 +122,4 @@ TOUCH GROUP√
 
 2.17
 1. 【BUG】暂停时TOUCH HOLD声音继续播放
-2. 【BUG】TOUCH外框怎么反了（
+2. 【BUG】TOUCH EACH重叠时，总是显示靠外部的框（ √
