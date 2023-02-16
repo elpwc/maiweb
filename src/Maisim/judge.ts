@@ -147,9 +147,11 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
           showingNotes[i].holdPress = true;
         }
       }
-    } else if (noteIns.type === NoteType.Touch || (timeD >= timerPeriod * 9 && timeD <= timerPeriod * 18)) {
+    } else if (noteIns.type === NoteType.Touch /* 後面的condition是什么意思来着() */ || (timeD >= timerPeriod * 9 && timeD <= timerPeriod * 18)) {
       // 已经判定过一个NOTE就不再判定了
       if (judged) break;
+      // 适用于多个TOUCH短时间内叠加在一个位置上的情况，因为TOUCH点击后不会立即消失，还会继续隐藏几帧，所以需要跳过已经判定过的TOUCH
+      if (showingNotes[i].touched) continue;
 
       if (area.area.name === noteIns.pos) {
         // 设置标志位
@@ -273,7 +275,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
     } else if (noteIns.type === NoteType.SlideTrack) {
       if (noteIns.isChain) {
         // 人体蜈蚣
-        console.log(note.currentLineIndex, noteIns.slideLines?.length)
+        //console.log(note.currentLineIndex, noteIns.slideLines?.length);
         if (note.currentLineIndex < (noteIns.slideLines?.length ?? 0)) {
           const currentLine = noteIns.slideLines![note.currentLineIndex];
           //console.log(note, noteIns, note.currentLineIndex, currentLine);

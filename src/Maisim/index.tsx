@@ -145,18 +145,20 @@ const starttimer = () => {
   advancedTime = (currentSheet.notes[0].emergeTime ?? 0) < 0 ? -(currentSheet.notes[0].emergeTime ?? 0) : 0;
   // console.log({ advancedTime })
   setTimeout(
-    () => { SongTrack.play(); },
-    (advancedTime / virtualTime.speedFactor) // 苟且做法（无法动态调整 timeout 的速度）
+    () => {
+      SongTrack.play();
+    },
+    advancedTime / virtualTime.speedFactor // 苟且做法（无法动态调整 timeout 的速度）
   );
 
-  const duration = (advancedTime + (SongTrack.duration * 1000));
+  const duration = advancedTime + SongTrack.duration * 1000;
   // console.log({ duration: duration/1000 })
   virtualTime.init(duration, advancedTime);
   virtualTime.onSeek((progress: number) => {
     // 进度条被拖动，重置音符状态
     showingNotes = [];
     nextNoteIndex = 0;
-    const time = (duration * progress);
+    const time = duration * progress;
     while ((currentSheet.notes[nextNoteIndex]?.emergeTime ?? Infinity) < time) {
       nextNoteIndex++;
     }
@@ -167,26 +169,27 @@ const starttimer = () => {
   //console.log(sheet.beats5?.beat);
   timer1 = setInterval(reader_and_updater, timerPeriod);
   timer3 = setInterval(drawer, timerPeriod);
-
 };
 
 const changeSongTrackPlaybackrate = (rate: number) => {
   SongTrack.playbackRate = rate;
-}
+};
 const seekSongTrack = (progress: number): boolean => {
   let duration = virtualTime.duration;
-  let time = (progress * duration);
+  let time = progress * duration;
   if (time < advancedTime) {
     return false;
   } else {
-    SongTrack.currentTime = ((time - advancedTime) / 1000);
+    SongTrack.currentTime = (time - advancedTime) / 1000;
     return true;
   }
-}
+};
 const handleSongTrackFinish = (callback: () => void): (() => void) => {
   SongTrack.addEventListener('ended', callback);
-  return () => { SongTrack.removeEventListener('ended', callback); }
-}
+  return () => {
+    SongTrack.removeEventListener('ended', callback);
+  };
+};
 
 const finish = () => {
   clearInterval(timer1);
@@ -474,7 +477,8 @@ const reader_and_updater = async () => {
 
           newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
           if (auto) {
-            if (currentTime >= noteIns.time! - timerPeriod * 5) {
+            if (newNote.rho >= touchMaxDistance) {
+              //if (currentTime >= noteIns.time! - timerPeriod * 5) {
               judge(
                 showingNotes,
                 currentSheet,
@@ -1310,8 +1314,8 @@ export default function Maisim(props: Props): JSX.Element {
   // 变速相关
   const [speedFactor, setSpeedFactor] = useState(1.0);
   const changeSpeedFactor = () => {
-    setSpeedFactor((speedFactor == 1)? 0.75: (speedFactor == 0.75)? 0.5: 1);
-  }
+    setSpeedFactor(speedFactor == 1 ? 0.75 : speedFactor == 0.75 ? 0.5 : 1);
+  };
   useEffect(() => {
     changeSongTrackPlaybackrate(speedFactor);
     virtualTime.setSpeedFactor(speedFactor);
@@ -1327,13 +1331,13 @@ export default function Maisim(props: Props): JSX.Element {
     let clearBinding = virtualTime.onProgress((progress: number, _: string) => {
       if (progress < 0) progress = 0;
       if (progress > 1) progress = 1;
-      let newValue = (progress * sliderMax)
+      let newValue = progress * sliderMax;
       slider.value = newValue as any;
       lastUpdatedValue = newValue;
     });
     let onChange = (ev: Event) => {
       let value = Number((ev.target as HTMLInputElement).value);
-      let progress = (value / sliderMax);
+      let progress = value / sliderMax;
       if (props.gameState !== GameState.Begin) {
         let ok = seekSongTrack(progress);
         if (ok) {
@@ -1347,7 +1351,7 @@ export default function Maisim(props: Props): JSX.Element {
     return () => {
       slider.removeEventListener('change', onChange);
       clearBinding();
-    }
+    };
   }, [props.gameState]);
 
   // 音乐播放完後，同步暂停状态
@@ -1357,8 +1361,8 @@ export default function Maisim(props: Props): JSX.Element {
       clearInterval(timer1);
       clearInterval(timer3);
       props.setGameState(GameState.Pause);
-    }); 
-  }, [])
+    });
+  }, []);
 
   return (
     <div
@@ -1468,15 +1472,27 @@ export default function Maisim(props: Props): JSX.Element {
           <button onClick={() => {}}>read</button>
         </div>
         <div>
-          <button onClick={() => { changeSpeedFactor() }}>{speedFactor.toFixed(2)}×</button>
+          <button
+            onClick={() => {
+              changeSpeedFactor();
+            }}
+          >
+            {speedFactor.toFixed(2)}×
+          </button>
         </div>
         <div>
-          <button onClick={() => { setShowSlider(!(showSlider)) }}>⇄</button>
+          <button
+            onClick={() => {
+              setShowSlider(!showSlider);
+            }}
+          >
+            ⇄
+          </button>
         </div>
-        <div className="slider" style={{ top: '100%', left: '0', padding: '10px 20px', width: `${canvasW}px`, backgroundColor: '#d3d3d3cc', display: showSlider? 'block': 'none' }}>
-           <input type="range" min="0" max={sliderMax} style={{width:'100%'}} ref={sliderRef} />
+        <div className="slider" style={{ top: '100%', left: '0', padding: '10px 20px', width: `${canvasW}px`, backgroundColor: '#d3d3d3cc', display: showSlider ? 'block' : 'none' }}>
+          <input type="range" min="0" max={sliderMax} style={{ width: '100%' }} ref={sliderRef} />
         </div>
       </div>
     </div>
   );
-};
+}

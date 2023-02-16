@@ -72,7 +72,7 @@ TOUCH GROUP√
 
 2.1:
 1. 判定特效显示 √
-2. 两个时间上非常接近的TOUCH中，第二个无理（按不上【急】
+2. 两个时间上非常接近的TOUCH中，第二个无理（按不上【急】  √
 3. TOUCH初始位置似乎张得有些开（？，合在一起的速度也有些慢(?)【先别急】 √
 4. 判定显示淡出 √
 5. 自动播放应该优先按外键 √
@@ -94,7 +94,7 @@ TOUCH GROUP√
 6. 当TOUCH/TOUCH HOLD在第一个节拍里时，动画显示不完整（叶片丢失（莫名修好了） √
 7. 自动播放TOUCH HOLD总是GOOD(?) √
 8. 似乎较短的TOUCH HOLD有时不能被自动播放 √(?)
-9. 一直按着TOUCH HOLD不松开至结束，积蓄音不会停止
+9. 一直按着TOUCH HOLD不松开至结束，积蓄音不会停止→沒有复现 姑且不管了！
 10. TAP在MISS时也播放了判定动画 √
 11. 完成judge的auto後门
 
@@ -119,3 +119,7 @@ TOUCH GROUP√
 2.8
 1. 【疑问】TOUCH白框在TOUCH与TOUCH HOLD重叠时会出现吗（）
 2. TOUCH会被HOLD覆盖住
+
+2.17
+1. 【BUG】暂停时TOUCH HOLD声音继续播放
+2. 【BUG】TOUCH外框怎么反了（
