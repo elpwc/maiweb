@@ -52,7 +52,7 @@ export let maimaiADTouchR = maimaiJudgeLineR * 0.875;
 /** 1帧的时长 ms */ 
 export const timerPeriod: number = 16.6666666666667;
 
-/** Firework持续时长 */
+/** Firework持续时长 ms */
 export const fireworkLength: number = 1000;
 export let fireworkInnerCircleR: number = maimaiJudgeLineR * 0.4138;
 

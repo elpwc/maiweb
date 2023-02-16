@@ -11,17 +11,10 @@ import {
   maimaiSummonLineR,
   maimaiTapR,
   touchMaxDistance,
-  maimaiBR,
-  maimaiER,
-  trackItemWidth,
-  trackItemHeight,
-  trackItemGap,
   judgeLineRemainTimeTouch,
-  fireworkLength,
   setCanvasSize,
   judgeResultShowTime,
   judgeLineRemainTimeHold,
-  judgeEffectDuration,
 } from './const';
 import { ReadMaimaiData } from './maiReader/maiReaderMain';
 
@@ -56,6 +49,7 @@ import { drawAnimations, initAnimations } from './drawUtils/animation';
 import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star, JudgeEffectAnimation_Touch } from './drawUtils/judgeEffectAnimations';
 import { calculate_speed_related_params_for_notes } from './maiReader/inoteReader';
 import { VirtualTime } from './drawUtils/virtualTime';
+import { fireworkAt } from './drawUtils/firework';
 
 const SongTrack = new Audio();
 SongTrack.volume = 0.5;
@@ -102,20 +96,7 @@ let advancedTime = 0;
 
 /** 触发一个烟花 */
 export const fireworkTrigger = (triggerNote: Note) => {
-  // @ts-ignore
-  NoteSound.firework.cloneNode().play();
-  const fireworkNote = currentSheet.notes?.findIndex(n => {
-    return n.serial !== triggerNote.serial && n.fireworkTriggerIndex === triggerNote.serial;
-  });
-  if (fireworkNote !== -1) {
-    const fireworkNoteProps = showingNotes.findIndex(n => {
-      return n.noteIndex === fireworkNote;
-    });
-    console.log(fireworkNoteProps, showingNotes[fireworkNoteProps]);
-    if (fireworkNoteProps !== -1) {
-      showingNotes[fireworkNoteProps].fireworkTrigged = true;
-    }
-  }
+  fireworkAt(triggerNote.pos, ctx_effect_back);
 };
 
 /** 绘制外键 */
@@ -684,24 +665,6 @@ const reader_and_updater = async () => {
         }
         newNote.timer++;
         break;
-      /////////////////////////////// FIREWORK ///////////////////////////////
-      case NoteType.FireWork:
-        if (newNote.status === 0) {
-          // wait for trigging
-
-          if (currentTime >= noteIns.moveTime!) {
-            newNote.status = 1;
-          }
-        } else if (newNote.status === 1) {
-          // change
-
-          newNote.rho = (currentTime - noteIns.moveTime!) / fireworkLength;
-          if (currentTime >= noteIns.time) {
-            newNote.status = -1;
-          }
-        }
-        newNote.timer++;
-        break;
       /////////////////////////////// default ///////////////////////////////
       default:
         if (newNote.status === 0) {
@@ -839,7 +802,7 @@ const reader_and_updater = async () => {
       }
       return note.status !== -1;
     } else {
-      // FIREWORK
+      // 之後开发可能出现的其他功能性Note, 之前这边是FIREWORK，现在没了
       return note.status !== -1;
     }
   });

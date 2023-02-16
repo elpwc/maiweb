@@ -89,7 +89,7 @@ TOUCH GROUP√
 1. TAP型HOLD（1h,2h,3h），TOUCH型TOUCH HOLD（Ch）总是被判定为GOOD，且GOOD一直闪烁【急】 √
 2. TAP型HOLD判定时没有声音【急】 √
 3. 修改连续TOUCH, TOUCH HOLD白框的显示（应当按照谱面流速显示）【不是很急】 √
-4. 用animation重写FIREWORK?【不急】
+4. 用animation重写FIREWORK?【不急】 √
 5. auto中SLIDE第一段会被划掉 √
 6. 当TOUCH/TOUCH HOLD在第一个节拍里时，动画显示不完整（叶片丢失（莫名修好了） √
 7. 自动播放TOUCH HOLD总是GOOD(?) √
@@ -108,7 +108,7 @@ TOUCH GROUP√
 2.7
 1. 【BUG】人体蜈蚣无auto划不了 √
 2. 【BUG】全MISS竟然7%（）
-3. 【UI】HANABI中间的亮点太魗了吧，其次第二亮区的扩散不是很明显
+3. 【UI】HANABI中间的亮点太魗了吧，其次第二亮区的扩散不是很明显 √
 4. 【BUG】HOLD头接触判定线时HOLD会消失一帧(?)
 5. 【Feature】匹配官机流速
 6. 【Feature】x0.5 x0.75变速功能（） √

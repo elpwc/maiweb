@@ -2,7 +2,7 @@ import { abs } from '../../math';
 import { Note, Beat, SlideTrack } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
 import { Sheet } from '../../utils/sheet';
-import { fireworkLength, maimaiJudgeLineR, maimaiSummonLineR, maimaiTapR } from '../const';
+import { maimaiJudgeLineR, maimaiSummonLineR, maimaiTapR } from '../const';
 import { getJudgeDirectionParams } from '../slideTracks/judgeDirection';
 // 仅仅用来计算分段数量
 import { section } from '../slideTracks/section';
@@ -206,27 +206,6 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
             serial++;
           });
         }
-
-        if (res.isFirework) {
-          const tempFirework: Note = {
-            index: res.index,
-            serial,
-            pos: res.pos,
-            type: NoteType.FireWork,
-            beatIndex: -1,
-            partnotevalue: res.partnotevalue,
-            bpm: res.bpm,
-            emergeTime: -1, // 在index读入时根据触发Touch的emergeTime初始化
-            time: res.time + (res.type === NoteType.TouchHold ? res.remainTime ?? 0 : 0) + fireworkLength,
-            remainTime: 0, // 在index读入时根据触发Touch的emergeTime初始化
-            fireworkTriggerIndex: res.serial,
-          };
-
-          notesRes[notesRes.length - 1].fireworkTriggerIndex = serial;
-
-          notesRes.push(tempFirework);
-          serial++;
-        }
       }
     });
 
@@ -332,17 +311,6 @@ export const calculate_speed_related_params_for_notes = (notesOri: Note[], tapMo
       notes[i].moveTime = note.time - note.remainTime!;
       notes[i].emergeTime = note.time - note.remainTime! - note.stopTime! - emergingTime;
       notes[i].guideStarEmergeTime = note.time - note.remainTime! - note.stopTime!;
-    } else if (note.type === NoteType.FireWork) {
-      const trigger = currentSheet.notes.find(n => {
-        return n.serial === note.fireworkTriggerIndex;
-      });
-      if (trigger) {
-        notes[i].emergeTime = trigger.emergeTime;
-        // 开始描画时间
-        notes[i].moveTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime ?? 0 : 0);
-        // 整体存续时间
-        notes[i].remainTime = trigger.time + (trigger.type === NoteType.TouchHold ? trigger.remainTime ?? 0 : 0) - trigger.emergeTime! + fireworkLength;
-      }
     } else {
       const emergingTime = maimaiTapR / (tapEmergeSpeed * speed);
       const movingTime = (maimaiJudgeLineR - maimaiSummonLineR) / (tapMoveSpeed * speed);

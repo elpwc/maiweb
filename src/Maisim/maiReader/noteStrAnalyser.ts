@@ -56,7 +56,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
   }
   if (noteData.indexOf('f') !== -1) {
     // FIREWORK
-    noteRes.isFirework = true;
+    noteRes.hasFirework = true;
     noteData = noteData.replaceAll('f', '');
   }
 

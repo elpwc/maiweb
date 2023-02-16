@@ -12,9 +12,6 @@ export enum NoteType {
   Touch,
   TouchHold,
 
-  /** 烟花特效 */
-  FireWork,
-
   /** 结束标记 */
   EndMark,
 }

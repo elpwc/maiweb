@@ -252,11 +252,11 @@ export const drawNote = (
       y = center[1] + (props.rho + maimaiSummonLineR) * Math.sin(θ);
     } else {
       // 字母开头的位置（TOUCH）
-      if (firstChar === 'A' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold || note.type === NoteType.FireWork)) {
+      if (firstChar === 'A' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold)) {
         θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
         x = center[0] + maimaiScreenR * Math.cos(θ);
         y = center[1] + maimaiScreenR * Math.sin(θ);
-      } else if (firstChar === 'D' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold || note.type === NoteType.FireWork)) {
+      } else if (firstChar === 'D' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold)) {
         θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
         x = center[0] + maimaiScreenR * Math.cos(θ);
         y = center[1] + maimaiScreenR * Math.sin(θ);
@@ -1064,65 +1064,6 @@ export const drawNote = (
       }
     };
 
-    const drawFirework = () => {
-      const alphaMaxK = 0.5;
-      /** 烟花特效颜色变换的次数 */
-      const fireworkChangeTimes = 5;
-      // 烟花四散
-      drawRotationImage(
-        effectBackCtx,
-        EffectIcon.Firework,
-        x - maimaiScreenR,
-        y - maimaiScreenR,
-        maimaiScreenR * 2,
-        maimaiScreenR * 2,
-        x,
-        y,
-        45 * props.rho + (360 / 15) * Math.floor(props.rho * fireworkChangeTimes),
-        // alpha = x<k ? x/k : (1-x)/(1-k)
-        props.rho < alphaMaxK ? props.rho / alphaMaxK : (1 - props.rho) / (1 - alphaMaxK)
-      );
-      // 中央亮区
-      drawRotationImage(
-        effectBackCtx,
-        EffectIcon.FireworkInnerCircle,
-        x - fireworkInnerCircleR / 0.7,
-        y - fireworkInnerCircleR / 0.7,
-        (fireworkInnerCircleR * 2) / 0.7,
-        (fireworkInnerCircleR * 2) / 0.7,
-        x,
-        y,
-        0,
-        1 - props.rho
-      );
-      // 第二亮区
-      drawRotationImage(
-        effectBackCtx,
-        EffectIcon.FireworkInnerCircle,
-        x - maimaiSummonLineR * 2 * props.rho ** 0.1,
-        y - maimaiSummonLineR * 2 * props.rho ** 0.1,
-        maimaiSummonLineR * 2 * 2 * props.rho ** 0.1,
-        maimaiSummonLineR * 2 * 2 * props.rho ** 0.1,
-        x,
-        y,
-        0,
-        1 - props.rho ** 0.5
-      );
-      // 中心闪烁
-      drawRotationImage(
-        effectBackCtx,
-        EffectIcon.FireworkCenter,
-        x - fireworkInnerCircleR / 0.7,
-        y - fireworkInnerCircleR / 0.7,
-        (fireworkInnerCircleR * 2) / 0.7,
-        (fireworkInnerCircleR * 2) / 0.7,
-        x,
-        y,
-        0,
-        1
-      );
-    };
-
     switch (note.type) {
       case NoteType.Tap:
         if (isEach) {
@@ -1320,11 +1261,6 @@ export const drawNote = (
               NoteIcon.wifi_10,
             ]);
           }
-        }
-        break;
-      case NoteType.FireWork:
-        if (props.fireworkTrigged) {
-          drawFirework();
         }
         break;
       case NoteType.EndMark:
@@ -1689,7 +1625,7 @@ export const drawNote = (
             break;
           case 'A':
             θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-            if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
+            if (note.type === NoteType.Touch) {
               x = center[0] + maimaiADTouchR * Math.cos(θ);
               y = center[1] + maimaiADTouchR * Math.sin(θ);
             } else {
@@ -1704,7 +1640,7 @@ export const drawNote = (
             break;
           case 'D':
             θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-            if (note.type === NoteType.Touch || note.type === NoteType.FireWork) {
+            if (note.type === NoteType.Touch) {
               x = center[0] + maimaiADTouchR * Math.cos(θ);
               y = center[1] + maimaiADTouchR * Math.sin(θ);
             } else {

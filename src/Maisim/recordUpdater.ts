@@ -578,8 +578,9 @@ export const updateRecord = (
             gameRecord.achieving_rate_lost += basicEvaluation * 2;
             break;
         }
-        if (note.isFirework && props.judgeStatus !== JudgeStatus.Miss) {
+        if (note.hasFirework && props.judgeStatus !== JudgeStatus.Miss) {
           fireworkTrigger(note);
+          
         }
       }
 
@@ -795,7 +796,7 @@ export const updateRecord = (
             break;
         }
       }
-      if (note.isFirework && props.judgeStatus !== JudgeStatus.Miss) {
+      if (note.hasFirework && props.judgeStatus !== JudgeStatus.Miss) {
         fireworkTrigger(note);
       }
       break;

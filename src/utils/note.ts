@@ -78,8 +78,8 @@ export interface Note {
   isBreak?: boolean;
   /** 是否有保护套 */
   isEx?: boolean;
-  /** 是不是一个烟花特效而不是正常Note（没错，烟花特效也是当作Note被处理的（）） */
-  isFirework?: boolean;
+  /** 有没有带着烟花特效 */
+  hasFirework?: boolean;
 
   /** 位置 / 头位置 */
   pos: string;
@@ -189,7 +189,4 @@ export interface Note {
 
   /** 适用于TOUCH，此TOUCH是否在一个touch group中 */
   inTouchGroup?: boolean;
-
-  /** 对应的firework触发Note serial索引(是Note接口中的serial)（有的话 */
-  fireworkTriggerIndex?: number;
 }
