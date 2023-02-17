@@ -105,10 +105,12 @@ export const read_inote = (inoteOri: string, globalBpm?: number): { notes: Note[
       currentBPM = Number(noteGroup[0].substring(bpmSign + 1, noteGroup[0].indexOf(')')));
       noteGroup[0] = noteGroup[0].substring(0, noteGroup[0].indexOf('(')) + noteGroup[0].substring(noteGroup[0].indexOf(')') + 1, noteGroup[0].length);
     } else {
-      if (globalBpm === undefined) {
-        throw new Error('当前谱面没有指定BPM');
-      } else {
-        currentBPM = globalBpm;
+      if (index === 0) {
+        if (globalBpm === undefined) {
+          throw new Error('当前谱面没有指定BPM');
+        } else {
+          currentBPM = globalBpm;
+        }
       }
     }
 
@@ -122,7 +124,9 @@ export const read_inote = (inoteOri: string, globalBpm?: number): { notes: Note[
       }
       noteGroup[0] = noteGroup[0].substring(0, noteGroup[0].indexOf('{')) + noteGroup[0].substring(noteGroup[0].indexOf('}') + 1, noteGroup[0].length);
     } else {
-      throw new Error('当前谱面没有指定节拍');
+      if (index === 0) {
+        throw new Error('当前谱面没有指定节拍');
+      }
     }
 
     beatT.bpm = currentBPM;
