@@ -15,3 +15,8 @@ export enum NoteType {
   /** 结束标记 */
   EndMark,
 }
+
+/** 是否不是功能性的Note */
+export const isNormalNoteType = (type: NoteType) => {
+  return type === NoteType.Tap || type === NoteType.Hold || type === NoteType.Slide || type === NoteType.SlideTrack || type === NoteType.Touch || type === NoteType.TouchHold;
+};

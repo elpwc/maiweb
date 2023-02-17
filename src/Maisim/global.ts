@@ -1,3 +1,5 @@
+// 这里用来记录一些全局变量
+
 /** 游戏记录 */
 export const gameRecord = {
   criticalPerfect: 0,
@@ -7,14 +9,17 @@ export const gameRecord = {
   miss: 0,
   fast: 0,
   late: 0,
+  /** 最大COMBO */
   max_combo: 0,
+  /** 当前COMBO */
   combo: 0,
-  /** 达成率 */
+  /** 达成率 0-100 */
   achieving_rate: 0,
-  /** EX达成率 BREAK */
+  /** extra达成率 (BREAK) 0-1 */
   achieving_rate_ex: 0,
   /** 已丢失达成率 */
   achieving_rate_lost: 0,
+  /** DX分数 */
   dx_point: 0,
   tap: {
     criticalPerfect: 0,

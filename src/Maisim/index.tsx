@@ -33,7 +33,7 @@ import { APositions, ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged }
 import { abs, cos, sin, sqrt, π } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
 import { Note } from '../utils/note';
-import { NoteType } from '../utils/noteType';
+import { isNormalNoteType, NoteType } from '../utils/noteType';
 import { Sheet } from '../utils/sheet';
 import { Song } from '../utils/song';
 import { gameRecord } from './global';
@@ -61,7 +61,7 @@ SongTrack!.oncanplaythrough = e => {
 };
 
 /** 是否启用自动播放谱面 */
-let auto = true;
+let auto = false;
 /** 自动播放谱面的方式 */
 let autoType: AutoType = AutoType.Directly;
 
@@ -709,7 +709,7 @@ const reader_and_updater = async () => {
     const noteIns = currentSheet.notes[note.noteIndex];
 
     // MISS的
-    if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.Touch || noteIns.type === NoteType.SlideTrack) {
+    if (isNormalNoteType(noteIns.type)) {
       // SLIDE TRACK 划过一半但沒划完修正为GOOD
       if (noteIns.type === NoteType.SlideTrack && note.judgeStatus === JudgeStatus.Miss) {
         if (noteIns.slideType === 'w') {
@@ -735,7 +735,8 @@ const reader_and_updater = async () => {
         updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
       }
     }
-    // 按过的，return的是filt出的还没按的
+
+    // 修正判定，并updateRecord（更新分数），return的是filt出的还没按的
     if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.SlideTrack) {
       if (note.status === -4) {
         if (auto && autoType === AutoType.Directly) {
@@ -818,7 +819,6 @@ const reader_and_updater = async () => {
           if (noteIns.type === NoteType.TouchHold) {
             updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
           }
-          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
         }
       }
       return note.status !== -1;
@@ -946,7 +946,8 @@ const drawGameRecord = (ctx: CanvasRenderingContext2D) => {
   ctx.strokeStyle = 'white';
   ctx.font = '30px Arial';
   ctx.strokeText(`COMBO ${gameRecord.combo}`, center[0] - 50, center[1] - 30);
-  ctx.strokeText(`${(100 - gameRecord.achieving_rate_lost + gameRecord.achieving_rate_ex).toFixed(4)}%`, center[0] - 60, center[1]);
+  const record = abs(100 - gameRecord.achieving_rate_lost + gameRecord.achieving_rate_ex).toFixed(4);
+  ctx.strokeText(`${record}%`, center[0] - 60, center[1]);
 };
 
 const onPressDown = (area: TouchArea) => {

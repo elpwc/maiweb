@@ -14,8 +14,8 @@ export interface Sheet {
   /** 宴谱类型 */
   utageType?: string;
 
-  /** 基础评价值 */
+  /** 计算分数用：基础评价值（一个TAP的分值） */
   basicEvaluation: number;
-  /** 额外评价值 */
+  /** 计算分数用：额外评价值（1/5个BREAK的分值） */
   exEvaluation: number;
 }

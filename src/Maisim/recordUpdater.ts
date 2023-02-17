@@ -6,6 +6,7 @@ import { ShowingNoteProps } from '../utils/showingNoteProps';
 import { gameRecord } from './global';
 import { NoteSound } from './resourceReaders/noteSoundReader';
 
+/**  */
 const dx_score = [3, 2, 1, 0, 0];
 
 /** 控制TOUCH HOLD的储能音效开关 */
@@ -70,6 +71,7 @@ export const updateRecord = (
           case JudgeStatus.Miss:
             gameRecord.break.miss++;
             gameRecord.miss++;
+            gameRecord.achieving_rate_lost += basicEvaluation * 5;
             break;
         }
       } else if (note.isBreak) {
@@ -580,7 +582,6 @@ export const updateRecord = (
         }
         if (note.hasFirework && props.judgeStatus !== JudgeStatus.Miss) {
           fireworkTrigger(note);
-          
         }
       }
 
