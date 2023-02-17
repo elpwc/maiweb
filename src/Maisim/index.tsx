@@ -50,6 +50,7 @@ import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star, JudgeEff
 import { calculate_speed_related_params_for_notes } from './maiReader/inoteReader';
 import { VirtualTime } from './drawUtils/virtualTime';
 import { fireworkAt } from './drawUtils/firework';
+import { AutoType } from './utils/autoType';
 
 const SongTrack = new Audio();
 SongTrack.volume = 0.5;
@@ -59,8 +60,10 @@ SongTrack!.oncanplaythrough = e => {
   //alert('rua!');
 };
 
-/** 临时 自动播放 */
+/** 是否启用自动播放谱面 */
 let auto = true;
+/** 自动播放谱面的方式 */
+let autoType: AutoType = AutoType.Directly;
 
 /** 读入数据和更新绘制信息的Timer */
 let timer1: string | number | NodeJS.Timer | undefined;
@@ -257,7 +260,8 @@ const reader_and_updater = async () => {
                   area: getArea('K' + noteIns.pos)!,
                   pressTime: currentTime,
                 },
-                currentTouchingArea
+                currentTouchingArea,
+                autoType === AutoType.Directly
               );
             }
           }
@@ -315,7 +319,8 @@ const reader_and_updater = async () => {
                   area: getArea('K' + noteIns.pos)!,
                   pressTime: currentTime,
                 },
-                currentTouchingArea
+                currentTouchingArea,
+                autoType === AutoType.Directly
               );
               if (noteIns.isShortHold) {
                 break;
@@ -349,7 +354,8 @@ const reader_and_updater = async () => {
                       area: getArea('K' + noteIns.pos)!,
                       pressTime: currentTime,
                     },
-                    currentTouchingArea
+                    currentTouchingArea,
+                    autoType === AutoType.Directly
                   );
                   if (noteIns.isShortHold) {
                     break;
@@ -409,7 +415,8 @@ const reader_and_updater = async () => {
                   })[0],
                   pressTime: currentTime,
                 },
-                currentTouchingArea
+                currentTouchingArea,
+                autoType === AutoType.Directly
               );
             }
           }
@@ -470,7 +477,8 @@ const reader_and_updater = async () => {
                   })[0],
                   pressTime: currentTime,
                 },
-                currentTouchingArea
+                currentTouchingArea,
+                autoType === AutoType.Directly
               );
             }
           }
@@ -699,6 +707,7 @@ const reader_and_updater = async () => {
   // 清除die掉的 和 按过的 note
   showingNotes = showingNotes.filter(note => {
     const noteIns = currentSheet.notes[note.noteIndex];
+
     // MISS的
     if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.Touch || noteIns.type === NoteType.SlideTrack) {
       // SLIDE TRACK 划过一半但沒划完修正为GOOD
@@ -719,6 +728,9 @@ const reader_and_updater = async () => {
           }
         }
       }
+      if (auto && autoType === AutoType.Directly) {
+        note.judgeStatus = JudgeStatus.CriticalPerfect;
+      }
       if (note.status === -1 && !note.touched) {
         updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
       }
@@ -726,6 +738,9 @@ const reader_and_updater = async () => {
     // 按过的，return的是filt出的还没按的
     if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.SlideTrack) {
       if (note.status === -4) {
+        if (auto && autoType === AutoType.Directly) {
+          note.judgeStatus = JudgeStatus.CriticalPerfect;
+        }
         if (noteIns.isEx) {
           if (note.judgeStatus !== JudgeStatus.Miss) note.judgeStatus = JudgeStatus.CriticalPerfect;
         }
@@ -742,6 +757,9 @@ const reader_and_updater = async () => {
       return note.status !== -1;
     } else if (noteIns.type === NoteType.Touch) {
       if (note.status === -4) {
+        if (auto && autoType === AutoType.Directly) {
+          note.judgeStatus = JudgeStatus.CriticalPerfect;
+        }
         if (note.judgeStatus !== JudgeStatus.Miss) {
           JudgeEffectAnimation_Touch(ctx_effect_over, noteIns.pos);
         }
@@ -750,6 +768,9 @@ const reader_and_updater = async () => {
       return note.status !== -1;
     } else if (noteIns.type === NoteType.Hold || noteIns.type === NoteType.TouchHold) {
       if (note.status === -4) {
+        if (auto && autoType === AutoType.Directly) {
+          note.judgeStatus = JudgeStatus.CriticalPerfect;
+        }
         if (noteIns.isEx) {
           if (note.judgeStatus !== JudgeStatus.Miss) note.judgeStatus = JudgeStatus.CriticalPerfect;
         }

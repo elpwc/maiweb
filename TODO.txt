@@ -82,7 +82,7 @@ TOUCH GROUP√
 9. HOLD按下的声音很怪，似乎是播放了很多次 √
 10. 对E（结束）的处理还没做【先不急】
 11. 用animation重写判定结果显示 √
-12. 自动播放，SLIDE经常LATE GOOD（甚至TOO LATE【急】×【没办法解决，只能最後写后门。因为要达成这一点，必须在GUIDE STAR进入最後一个section的时刻按下，但这样必然导致最後一个section和倒数第二个section同时消失，这和原本的auto TRACK是不同的】
+12. 自动播放，SLIDE经常LATE GOOD（甚至TOO LATE【急】×【没办法解决，只能最後写后门。因为要达成这一点，必须在GUIDE STAR进入最後一个section的时刻按下，但这样必然导致最後一个section和倒数第二个section同时消失，这和原本的auto TRACK是不同的】 √
 13. HOLD尾移动到终点後会重叠 √
 
 2.5
@@ -96,7 +96,7 @@ TOUCH GROUP√
 8. 似乎较短的TOUCH HOLD有时不能被自动播放 √(?)
 9. 一直按着TOUCH HOLD不松开至结束，积蓄音不会停止→沒有复现 姑且不管了！
 10. TAP在MISS时也播放了判定动画 √
-11. 完成judge的auto後门
+11. 完成judge的auto後门 √
 
 2.6
 1. 【细节】判定特效有淡出效果，但还没加 √

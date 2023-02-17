@@ -15,9 +15,9 @@ import { section_wifi, section } from './slideTracks/section';
  * @param currentTime 谱面当前时刻
  * @param area 按下的判定区和按下时刻
  * @param currentTouchingArea 当前所有按下的判定区
- * @param isAuto 留给auto的後门，暂未使用
+ * @param isDirectAuto 是否Directly auto
  */
-export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, currentTime: number, area: TouchArea, currentTouchingArea: TouchArea[], isAuto: boolean = false) => {
+export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, currentTime: number, area: TouchArea, currentTouchingArea: TouchArea[], isDirectAuto: boolean = false) => {
   /** 是否已经判定过一个TAP/TOUCH/BREAK了，避免一次触摸重复判定距离过近的Note */
   let judged = false;
 
@@ -47,35 +47,42 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 
         console.log('timeD: ', timeD);
 
-        // FAST LATE
-        if (timeD >= 0) {
+        if (isDirectAuto) {
+          // AUTO
           showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
-        } else {
-          showingNotes[i].judgeTime = JudgeTimeStatus.Late;
-        }
-        console.log(showingNotes);
-        timeD = abs(timeD);
-
-        // PERFECT GOOD GREAT
-        if (timeD <= timerPeriod * 1) {
-          // CRITICAL PERFECT
           showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-        } else if (timeD <= timerPeriod * 3 && timeD > timerPeriod * 1) {
-          // PERFECT
-          showingNotes[i].judgeStatus = JudgeStatus.Perfect;
-        } else if (timeD <= timerPeriod * 6 && timeD > timerPeriod * 3) {
-          // GREAT
-          showingNotes[i].judgeStatus = JudgeStatus.Great;
-        } else if (timeD <= timerPeriod * 9 && timeD > timerPeriod * 6) {
-          // GOOD
-          showingNotes[i].judgeStatus = JudgeStatus.Good;
+          showingNotes[i].judgeLevel = 1;
         } else {
-        }
+          // FAST LATE
+          if (timeD >= 0) {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+          } else {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+          }
+          console.log(showingNotes);
+          timeD = abs(timeD);
 
-        //TAP BREAK细分
-        if (noteIns.isBreak) {
-          showingNotes[i].judgeLevel = Math.ceil(abs(timeD) / timerPeriod);
-          console.log(showingNotes[i].judgeLevel, abs(timeD), timerPeriod);
+          // PERFECT GOOD GREAT
+          if (timeD <= timerPeriod * 1) {
+            // CRITICAL PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+          } else if (timeD <= timerPeriod * 3 && timeD > timerPeriod * 1) {
+            // PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+          } else if (timeD <= timerPeriod * 6 && timeD > timerPeriod * 3) {
+            // GREAT
+            showingNotes[i].judgeStatus = JudgeStatus.Great;
+          } else if (timeD <= timerPeriod * 9 && timeD > timerPeriod * 6) {
+            // GOOD
+            showingNotes[i].judgeStatus = JudgeStatus.Good;
+          } else {
+          }
+
+          //TAP BREAK细分
+          if (noteIns.isBreak) {
+            showingNotes[i].judgeLevel = Math.ceil(abs(timeD) / timerPeriod);
+            console.log(showingNotes[i].judgeLevel, abs(timeD), timerPeriod);
+          }
         }
 
         // 更新game record
@@ -100,30 +107,36 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 
           console.log('timeD: ', timeD, noteIns.time, showingNotes[i].touchedTime, currentTime);
 
-          // FAST LATE
-          if (timeD >= 0) {
+          if (isDirectAuto) {
+            // AUTO
             showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
-          } else {
-            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
-          }
-          console.log(showingNotes);
-
-          // PERFECT GOOD GREAT
-          if (abs(timeD) <= timerPeriod * 1) {
-            // CRITICAL PERFECT
             showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-          } else if (abs(timeD) <= timerPeriod * 3 && abs(timeD) > timerPeriod * 1) {
-            // PERFECT
-            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
-          } else if (abs(timeD) <= timerPeriod * 6 && abs(timeD) > timerPeriod * 3) {
-            // GREAT
-            showingNotes[i].judgeStatus = JudgeStatus.Great;
-          } else if (abs(timeD) <= timerPeriod * 9 && abs(timeD) > timerPeriod * 6) {
-            // GOOD
-            showingNotes[i].judgeStatus = JudgeStatus.Good;
+            showingNotes[i].judgeLevel = 1;
           } else {
-          }
+            // FAST LATE
+            if (timeD >= 0) {
+              showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+            } else {
+              showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+            }
+            console.log(showingNotes);
 
+            // PERFECT GOOD GREAT
+            if (abs(timeD) <= timerPeriod * 1) {
+              // CRITICAL PERFECT
+              showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+            } else if (abs(timeD) <= timerPeriod * 3 && abs(timeD) > timerPeriod * 1) {
+              // PERFECT
+              showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+            } else if (abs(timeD) <= timerPeriod * 6 && abs(timeD) > timerPeriod * 3) {
+              // GREAT
+              showingNotes[i].judgeStatus = JudgeStatus.Great;
+            } else if (abs(timeD) <= timerPeriod * 9 && abs(timeD) > timerPeriod * 6) {
+              // GOOD
+              showingNotes[i].judgeStatus = JudgeStatus.Good;
+            } else {
+            }
+          }
           if (noteIns.isShortHold || noteIns.remainTime! <= timerPeriod * 18) {
             //SHORT的话就直接判定了喵
             if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
@@ -163,33 +176,39 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 
         judged = true;
 
-        let timeD = noteIns.time - currentTime;
-
-        console.log('timeD: ', timeD);
-
-        // FAST LATE
-        if (timeD >= 0) {
+        if (isDirectAuto) {
+          // AUTO
           showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
-        } else {
-          showingNotes[i].judgeTime = JudgeTimeStatus.Late;
-        }
-
-        // PERFECT GOOD GREAT
-        if (abs(timeD) <= timerPeriod * 9) {
-          // CRITICAL PERFECT
           showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-        } else if (timeD <= timerPeriod * 12 && timeD > timerPeriod * 9) {
-          // PERFECT
-          showingNotes[i].judgeStatus = JudgeStatus.Perfect;
-        } else if (timeD <= timerPeriod * 15 && timeD > timerPeriod * 12) {
-          // GREAT
-          showingNotes[i].judgeStatus = JudgeStatus.Great;
-        } else if (timeD <= timerPeriod * 18 && timeD > timerPeriod * 15) {
-          // GOOD
-          showingNotes[i].judgeStatus = JudgeStatus.Good;
+          showingNotes[i].judgeLevel = 1;
         } else {
-        }
+          let timeD = noteIns.time - currentTime;
 
+          console.log('timeD: ', timeD);
+
+          // FAST LATE
+          if (timeD >= 0) {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+          } else {
+            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+          }
+
+          // PERFECT GOOD GREAT
+          if (abs(timeD) <= timerPeriod * 9) {
+            // CRITICAL PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+          } else if (timeD <= timerPeriod * 12 && timeD > timerPeriod * 9) {
+            // PERFECT
+            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+          } else if (timeD <= timerPeriod * 15 && timeD > timerPeriod * 12) {
+            // GREAT
+            showingNotes[i].judgeStatus = JudgeStatus.Great;
+          } else if (timeD <= timerPeriod * 18 && timeD > timerPeriod * 15) {
+            // GOOD
+            showingNotes[i].judgeStatus = JudgeStatus.Good;
+          } else {
+          }
+        }
         if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
           // touch group
           if (noteIns.inTouchGroup) {
@@ -233,30 +252,36 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 
           console.log('timeD: ', timeD);
 
-          // FAST LATE
-          if (timeD >= 0) {
+          if (isDirectAuto) {
+            // AUTO
             showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
-          } else {
-            showingNotes[i].judgeTime = JudgeTimeStatus.Late;
-          }
-
-          // PERFECT GOOD GREAT
-          if (abs(timeD) <= timerPeriod * 9) {
-            // CRITICAL PERFECT
             showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-          } else if (timeD <= timerPeriod * 12 && timeD > timerPeriod * 9) {
-            // PERFECT
-            showingNotes[i].judgeStatus = JudgeStatus.Perfect;
-          } else if (timeD <= timerPeriod * 15 && timeD > timerPeriod * 12) {
-            // GREAT
-            showingNotes[i].judgeStatus = JudgeStatus.Great;
-          } else if (timeD <= timerPeriod * 18 && timeD > timerPeriod * 15) {
-            // GOOD
-            showingNotes[i].judgeStatus = JudgeStatus.Good;
+            showingNotes[i].judgeLevel = 1;
           } else {
+            // FAST LATE
+            if (timeD >= 0) {
+              showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+            } else {
+              showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+            }
+
+            // PERFECT GOOD GREAT
+            if (abs(timeD) <= timerPeriod * 9) {
+              // CRITICAL PERFECT
+              showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+            } else if (timeD <= timerPeriod * 12 && timeD > timerPeriod * 9) {
+              // PERFECT
+              showingNotes[i].judgeStatus = JudgeStatus.Perfect;
+            } else if (timeD <= timerPeriod * 15 && timeD > timerPeriod * 12) {
+              // GREAT
+              showingNotes[i].judgeStatus = JudgeStatus.Great;
+            } else if (timeD <= timerPeriod * 18 && timeD > timerPeriod * 15) {
+              // GOOD
+              showingNotes[i].judgeStatus = JudgeStatus.Good;
+            } else {
+            }
           }
         }
-
         if (noteIns.isShortHold || noteIns.remainTime! <= timerPeriod * 27) {
           //SHORT的话就直接判定了喵
           updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
@@ -319,55 +344,62 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
                       /** 走完最後一段的时间ms */
                       const finalSectionTime = currentLine.remainTime! * (1 - sectionInfoWifi![j][4].start);
 
-                      let timeD = noteIns.time - finalSectionTime - currentTime;
-
-                      // FAST LATE
-                      if (timeD >= 0) {
+                      if (isDirectAuto) {
+                        // AUTO
                         showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                        showingNotes[i].judgeLevel = 1;
                       } else {
-                        showingNotes[i].judgeTime = JudgeTimeStatus.Late;
-                      }
+                        let timeD = noteIns.time - finalSectionTime - currentTime;
 
-                      // TOO FAST GOOD (提前划完)
-                      if (timeD > finalSectionTime) {
-                        showingNotes[i].judgeStatus = JudgeStatus.Good;
-                        showingNotes[i].tooFast = true;
-                      } else {
-                        // 正常判断
-                        // SLIDE TRACK的Perfect判定时间
-                        const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
+                        // FAST LATE
+                        if (timeD >= 0) {
+                          showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+                        } else {
+                          showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+                        }
 
-                        timeD = abs(timeD);
+                        // TOO FAST GOOD (提前划完)
+                        if (timeD > finalSectionTime) {
+                          showingNotes[i].judgeStatus = JudgeStatus.Good;
+                          showingNotes[i].tooFast = true;
+                        } else {
+                          // 正常判断
+                          // SLIDE TRACK的Perfect判定时间
+                          const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
 
-                        if (perfectJudgeTime < 26) {
-                          // PERFECT GOOD GREAT
-                          if (timeD <= timerPeriod * perfectJudgeTime) {
-                            // CRITICAL PERFECT
-                            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                          } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
-                            // GREAT
-                            showingNotes[i].judgeStatus = JudgeStatus.Great;
-                          } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
-                            // GOOD
-                            showingNotes[i].judgeStatus = JudgeStatus.Good;
-                          } else {
-                          }
-                        } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
-                          // PERFECT GOOD GREAT
-                          if (timeD <= timerPeriod * perfectJudgeTime) {
-                            // CRITICAL PERFECT
-                            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                          } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
-                            // GOOD
-                            showingNotes[i].judgeStatus = JudgeStatus.Good;
-                          } else {
-                          }
-                        } else if (perfectJudgeTime >= 36) {
-                          // PERFECT GOOD GREAT
-                          if (timeD <= timerPeriod * perfectJudgeTime) {
-                            // CRITICAL PERFECT
-                            showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                          } else {
+                          timeD = abs(timeD);
+
+                          if (perfectJudgeTime < 26) {
+                            // PERFECT GOOD GREAT
+                            if (timeD <= timerPeriod * perfectJudgeTime) {
+                              // CRITICAL PERFECT
+                              showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                            } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
+                              // GREAT
+                              showingNotes[i].judgeStatus = JudgeStatus.Great;
+                            } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
+                              // GOOD
+                              showingNotes[i].judgeStatus = JudgeStatus.Good;
+                            } else {
+                            }
+                          } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
+                            // PERFECT GOOD GREAT
+                            if (timeD <= timerPeriod * perfectJudgeTime) {
+                              // CRITICAL PERFECT
+                              showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                            } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
+                              // GOOD
+                              showingNotes[i].judgeStatus = JudgeStatus.Good;
+                            } else {
+                            }
+                          } else if (perfectJudgeTime >= 36) {
+                            // PERFECT GOOD GREAT
+                            if (timeD <= timerPeriod * perfectJudgeTime) {
+                              // CRITICAL PERFECT
+                              showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                            } else {
+                            }
                           }
                         }
                       }
@@ -432,57 +464,64 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
                   /** 走完最後一段的时间ms */
                   const finalSectionTime = currentLine.remainTime! * (1 - sectionInfo![sectionInfo?.length! - 1].start);
 
-                  let timeD = noteIns.time - finalSectionTime - currentTime;
-
-                  console.log('timeD: ', timeD);
-
-                  // FAST LATE
-                  if (timeD >= 0) {
+                  if (isDirectAuto) {
+                    // AUTO
                     showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+                    showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                    showingNotes[i].judgeLevel = 1;
                   } else {
-                    showingNotes[i].judgeTime = JudgeTimeStatus.Late;
-                  }
+                    let timeD = noteIns.time - finalSectionTime - currentTime;
 
-                  // TOO FAST GOOD (提前划完)
-                  if (timeD > finalSectionTime) {
-                    showingNotes[i].judgeStatus = JudgeStatus.Good;
-                    showingNotes[i].tooFast = true;
-                  } else {
-                    // 正常判断
-                    // SLIDE TRACK的Perfect判定时间
-                    const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
-                    console.log(timeD, perfectJudgeTime);
-                    timeD = abs(timeD);
+                    console.log('timeD: ', timeD);
 
-                    if (perfectJudgeTime < 26) {
-                      // PERFECT GOOD GREAT
-                      if (timeD <= timerPeriod * perfectJudgeTime) {
-                        // CRITICAL PERFECT
-                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                      } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
-                        // GREAT
-                        showingNotes[i].judgeStatus = JudgeStatus.Great;
-                      } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
-                        // GOOD
-                        showingNotes[i].judgeStatus = JudgeStatus.Good;
-                      } else {
-                      }
-                    } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
-                      // PERFECT GOOD GREAT
-                      if (timeD <= timerPeriod * perfectJudgeTime) {
-                        // CRITICAL PERFECT
-                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                      } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
-                        // GOOD
-                        showingNotes[i].judgeStatus = JudgeStatus.Good;
-                      } else {
-                      }
-                    } else if (perfectJudgeTime >= 36) {
-                      // PERFECT GOOD GREAT
-                      if (timeD <= timerPeriod * perfectJudgeTime) {
-                        // CRITICAL PERFECT
-                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                      } else {
+                    // FAST LATE
+                    if (timeD >= 0) {
+                      showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+                    } else {
+                      showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+                    }
+
+                    // TOO FAST GOOD (提前划完)
+                    if (timeD > finalSectionTime) {
+                      showingNotes[i].judgeStatus = JudgeStatus.Good;
+                      showingNotes[i].tooFast = true;
+                    } else {
+                      // 正常判断
+                      // SLIDE TRACK的Perfect判定时间
+                      const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
+                      console.log(timeD, perfectJudgeTime);
+                      timeD = abs(timeD);
+
+                      if (perfectJudgeTime < 26) {
+                        // PERFECT GOOD GREAT
+                        if (timeD <= timerPeriod * perfectJudgeTime) {
+                          // CRITICAL PERFECT
+                          showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                        } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
+                          // GREAT
+                          showingNotes[i].judgeStatus = JudgeStatus.Great;
+                        } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
+                          // GOOD
+                          showingNotes[i].judgeStatus = JudgeStatus.Good;
+                        } else {
+                        }
+                      } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
+                        // PERFECT GOOD GREAT
+                        if (timeD <= timerPeriod * perfectJudgeTime) {
+                          // CRITICAL PERFECT
+                          showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                        } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
+                          // GOOD
+                          showingNotes[i].judgeStatus = JudgeStatus.Good;
+                        } else {
+                        }
+                      } else if (perfectJudgeTime >= 36) {
+                        // PERFECT GOOD GREAT
+                        if (timeD <= timerPeriod * perfectJudgeTime) {
+                          // CRITICAL PERFECT
+                          showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                        } else {
+                        }
                       }
                     }
                   }
@@ -555,55 +594,62 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
                   /** 走完最後一段的时间ms */
                   const finalSectionTime = noteIns.remainTime! * (1 - sectionInfoWifi![j][4].start);
 
-                  let timeD = noteIns.time - finalSectionTime - currentTime;
-
-                  // FAST LATE
-                  if (timeD >= 0) {
+                  if (isDirectAuto) {
+                    // AUTO
                     showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+                    showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                    showingNotes[i].judgeLevel = 1;
                   } else {
-                    showingNotes[i].judgeTime = JudgeTimeStatus.Late;
-                  }
+                    let timeD = noteIns.time - finalSectionTime - currentTime;
 
-                  // TOO FAST GOOD (提前划完)
-                  if (timeD > finalSectionTime) {
-                    showingNotes[i].judgeStatus = JudgeStatus.Good;
-                    showingNotes[i].tooFast = true;
-                  } else {
-                    // 正常判断
-                    // SLIDE TRACK的Perfect判定时间
-                    const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
+                    // FAST LATE
+                    if (timeD >= 0) {
+                      showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+                    } else {
+                      showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+                    }
 
-                    timeD = abs(timeD);
+                    // TOO FAST GOOD (提前划完)
+                    if (timeD > finalSectionTime) {
+                      showingNotes[i].judgeStatus = JudgeStatus.Good;
+                      showingNotes[i].tooFast = true;
+                    } else {
+                      // 正常判断
+                      // SLIDE TRACK的Perfect判定时间
+                      const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
 
-                    if (perfectJudgeTime < 26) {
-                      // PERFECT GOOD GREAT
-                      if (timeD <= timerPeriod * perfectJudgeTime) {
-                        // CRITICAL PERFECT
-                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                      } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
-                        // GREAT
-                        showingNotes[i].judgeStatus = JudgeStatus.Great;
-                      } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
-                        // GOOD
-                        showingNotes[i].judgeStatus = JudgeStatus.Good;
-                      } else {
-                      }
-                    } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
-                      // PERFECT GOOD GREAT
-                      if (timeD <= timerPeriod * perfectJudgeTime) {
-                        // CRITICAL PERFECT
-                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                      } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
-                        // GOOD
-                        showingNotes[i].judgeStatus = JudgeStatus.Good;
-                      } else {
-                      }
-                    } else if (perfectJudgeTime >= 36) {
-                      // PERFECT GOOD GREAT
-                      if (timeD <= timerPeriod * perfectJudgeTime) {
-                        // CRITICAL PERFECT
-                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                      } else {
+                      timeD = abs(timeD);
+
+                      if (perfectJudgeTime < 26) {
+                        // PERFECT GOOD GREAT
+                        if (timeD <= timerPeriod * perfectJudgeTime) {
+                          // CRITICAL PERFECT
+                          showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                        } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
+                          // GREAT
+                          showingNotes[i].judgeStatus = JudgeStatus.Great;
+                        } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
+                          // GOOD
+                          showingNotes[i].judgeStatus = JudgeStatus.Good;
+                        } else {
+                        }
+                      } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
+                        // PERFECT GOOD GREAT
+                        if (timeD <= timerPeriod * perfectJudgeTime) {
+                          // CRITICAL PERFECT
+                          showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                        } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
+                          // GOOD
+                          showingNotes[i].judgeStatus = JudgeStatus.Good;
+                        } else {
+                        }
+                      } else if (perfectJudgeTime >= 36) {
+                        // PERFECT GOOD GREAT
+                        if (timeD <= timerPeriod * perfectJudgeTime) {
+                          // CRITICAL PERFECT
+                          showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                        } else {
+                        }
                       }
                     }
                   }
@@ -661,57 +707,65 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
                 /** 走完最後一段的时间ms */
                 const finalSectionTime = noteIns.remainTime! * (1 - sectionInfo![sectionInfo?.length! - 1].start);
 
-                let timeD = noteIns.time - finalSectionTime - currentTime;
-
-                console.log('timeD: ', timeD);
-
-                // FAST LATE
-                if (timeD >= 0) {
+                console.log(123123123)
+                if (isDirectAuto) {
+                  // AUTO
                   showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+                  showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                  showingNotes[i].judgeLevel = 1;
                 } else {
-                  showingNotes[i].judgeTime = JudgeTimeStatus.Late;
-                }
+                  let timeD = noteIns.time - finalSectionTime - currentTime;
 
-                // TOO FAST GOOD (提前划完)
-                if (timeD > finalSectionTime) {
-                  showingNotes[i].judgeStatus = JudgeStatus.Good;
-                  showingNotes[i].tooFast = true;
-                } else {
-                  // 正常判断
-                  // SLIDE TRACK的Perfect判定时间
-                  const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
-                  console.log(timeD, perfectJudgeTime);
-                  timeD = abs(timeD);
+                  console.log('timeD: ', timeD);
 
-                  if (perfectJudgeTime < 26) {
-                    // PERFECT GOOD GREAT
-                    if (timeD <= timerPeriod * perfectJudgeTime) {
-                      // CRITICAL PERFECT
-                      showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                    } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
-                      // GREAT
-                      showingNotes[i].judgeStatus = JudgeStatus.Great;
-                    } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
-                      // GOOD
-                      showingNotes[i].judgeStatus = JudgeStatus.Good;
-                    } else {
-                    }
-                  } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
-                    // PERFECT GOOD GREAT
-                    if (timeD <= timerPeriod * perfectJudgeTime) {
-                      // CRITICAL PERFECT
-                      showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                    } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
-                      // GOOD
-                      showingNotes[i].judgeStatus = JudgeStatus.Good;
-                    } else {
-                    }
-                  } else if (perfectJudgeTime >= 36) {
-                    // PERFECT GOOD GREAT
-                    if (timeD <= timerPeriod * perfectJudgeTime) {
-                      // CRITICAL PERFECT
-                      showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
-                    } else {
+                  // FAST LATE
+                  if (timeD >= 0) {
+                    showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
+                  } else {
+                    showingNotes[i].judgeTime = JudgeTimeStatus.Late;
+                  }
+
+                  // TOO FAST GOOD (提前划完)
+                  if (timeD > finalSectionTime) {
+                    showingNotes[i].judgeStatus = JudgeStatus.Good;
+                    showingNotes[i].tooFast = true;
+                  } else {
+                    // 正常判断
+                    // SLIDE TRACK的Perfect判定时间
+                    const perfectJudgeTime = 14 + finalSectionTime / timerPeriod / 4;
+                    console.log(timeD, perfectJudgeTime);
+                    timeD = abs(timeD);
+
+                    if (perfectJudgeTime < 26) {
+                      // PERFECT GOOD GREAT
+                      if (timeD <= timerPeriod * perfectJudgeTime) {
+                        // CRITICAL PERFECT
+                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                      } else if (timeD <= timerPeriod * 26 && timeD > timerPeriod * perfectJudgeTime) {
+                        // GREAT
+                        showingNotes[i].judgeStatus = JudgeStatus.Great;
+                      } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * 26) {
+                        // GOOD
+                        showingNotes[i].judgeStatus = JudgeStatus.Good;
+                      } else {
+                      }
+                    } else if (perfectJudgeTime >= 26 && perfectJudgeTime < 36) {
+                      // PERFECT GOOD GREAT
+                      if (timeD <= timerPeriod * perfectJudgeTime) {
+                        // CRITICAL PERFECT
+                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                      } else if (timeD <= timerPeriod * 36 && timeD > timerPeriod * perfectJudgeTime) {
+                        // GOOD
+                        showingNotes[i].judgeStatus = JudgeStatus.Good;
+                      } else {
+                      }
+                    } else if (perfectJudgeTime >= 36) {
+                      // PERFECT GOOD GREAT
+                      if (timeD <= timerPeriod * perfectJudgeTime) {
+                        // CRITICAL PERFECT
+                        showingNotes[i].judgeStatus = JudgeStatus.CriticalPerfect;
+                      } else {
+                      }
                     }
                   }
                 }
