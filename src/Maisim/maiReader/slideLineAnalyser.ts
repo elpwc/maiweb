@@ -1,9 +1,8 @@
-import { Note, SlideLine, SlideTrack } from '../../utils/note';
-import { NoteType } from '../../utils/noteType';
+import { SlideTrack } from '../../utils/note';
 import { noteValue_and_noteNumber_analyser } from './noteValueAnalyser';
 
 /** 对一整条SLIDE的谱面文本的分析 */
-export const analyse_slide_line = (oriData: string, currentBPM: number) => {
+export const analyse_slide_line = (oriData: string, currentBPM: number): SlideTrack => {
   // SLIDES
   let slide = oriData;
 

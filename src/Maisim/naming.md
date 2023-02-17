@@ -33,3 +33,4 @@ III. 难以归类的
 - 第1次谱面处理     以节拍和Note分割谱面文本  （read_inote）
 - 第2次谱面处理     将分割好的谱面文本转换为Note对象  （read_inote）
 - 第3次谱面处理     根据谱面流速调整Note对象的与流速有关联的属性  （calculate_speed_related_params_for_notes）
+- "第0次谱面处理"     即读入maidata.txt文件内的各个属性到Song对象  （ReadMaimaiData）

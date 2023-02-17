@@ -3,7 +3,7 @@ import { NoteType } from '../../utils/noteType';
 import { noteValue_and_noteNumber_analyser } from './noteValueAnalyser';
 import { analyse_slide_line } from './slideLineAnalyser';
 
-/** 分析单个note的谱面文本 */
+/** 分析谱面中一个note的文本 */
 export const analyse_note_original_data = (noteDataOri: string, index: number, currentBPM: number) => {
   //console.log(noteDataOri, index);
   let noteRes: Note = {

@@ -3,13 +3,22 @@ import { Note, Beat } from './note';
 
 /** 一个谱面 */
 export interface Sheet {
+  /** 谱师 */
   designer?: string;
+  /** 难度 EXPERT，MASTER etc */
   difficulty: Difficulty;
-  level: number;
+  /** 底数 */
+  levelNumber: number;
+  /** 显示的等级 */
+  level: string;
   /** 所有Note */
   notes: Note[];
   /** 每一拍 */
   beats: Beat[];
+  /** 乐曲开始後谱面开始播放的时刻 s */
+  first: number;
+  /** SINGLE MESSAGE */
+  smsg?: string;
 
   /** 宴谱类型 */
   utageType?: string;

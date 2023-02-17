@@ -11,10 +11,13 @@ import { analyse_note_original_data } from './noteStrAnalyser';
 /**
  * 读取maimaiDX谱面文件的inote属性
  * @param inoteOri inote内容
- * @returns
+ * @param globalBpm 谱面文件属性里的全局bpm，可以不填，只是万一谱面前面没加(bpm)的话，就会参考这个
+ * @returns 返回这个谱面里的音符列表和节拍列表
  */
-export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } => {
+export const read_inote = (inoteOri: string, globalBpm?: number): { notes: Note[]; beats: Beat[] } => {
+  /** 当下处理的这一拍的BPM */
   let currentBPM: number = 0;
+  /** 当下处理的这一拍的拍数 */
   let currentNoteNumber: number = 0;
 
   let beatRes: Beat[] = [];
@@ -23,14 +26,16 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
   let inote = inoteOri;
 
   //清除空格Tab
-  inote = inote.replaceAll(' ', '').replaceAll('\t', '');
+  inote = inote.replaceAll(' ', '').replaceAll('\t', '').replaceAll('　', '');
 
   //清除注释和结束符
   inote = inote
     .split('\n')
     .map(line => {
-      if (line.substring(0, 2) !== '||' || line === 'E') {
+      if (line.substring(0, 2) !== '||' /* 注释 */ || line === 'E') {
         return line;
+      } else {
+        return '';
       }
     })
     .join('');
@@ -44,10 +49,11 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
   const allNotes: string[][] = inote
     .replaceAll('\n', '')
     .replaceAll('\r', '')
-    .replaceAll('\t', '')
-    // 伪EACH
-    .replaceAll('`', '`速')
-    .split(/,|`/)
+    // 伪EACH。把[`]替换为[,速]，变成普通的两个节拍，仅仅留下[速]作为标识
+    // 因为考虑到未来谱面的新Note可能会使用其他字母，所以这里使用汉字做转义符
+    .replaceAll('`', ',速')
+    // 分离所有节拍
+    .split(',')
     .map(e => {
       if (e.includes('(') || e.includes('{')) {
         // 针对 (4)12 这样的情况（即简写的TAP EACH前带了拍数或BPM变换）
@@ -75,13 +81,15 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
       }
     });
 
+  /** 当前处理的节拍在谱面中从0开始的时间 ms */
   let currentTime: number = 0;
-
+  /** Note唯一标识，递增 */
   let serial: number = 0;
 
   //处理所有
   allNotes.forEach((noteGroup: string[], index) => {
     // 一次处理一个拍的
+    /** 容纳当前处理的节拍 */
     let beatT: Beat = {
       //notes: [],
       notevalue: 0,
@@ -96,6 +104,12 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
     if (bpmSign > -1) {
       currentBPM = Number(noteGroup[0].substring(bpmSign + 1, noteGroup[0].indexOf(')')));
       noteGroup[0] = noteGroup[0].substring(0, noteGroup[0].indexOf('(')) + noteGroup[0].substring(noteGroup[0].indexOf(')') + 1, noteGroup[0].length);
+    } else {
+      if (globalBpm === undefined) {
+        throw new Error('当前谱面没有指定BPM');
+      } else {
+        currentBPM = globalBpm;
+      }
     }
 
     const noteSign = noteGroup[0].indexOf('{');
@@ -107,6 +121,8 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
         currentNoteNumber = Number(noteGroup[0].substring(noteSign + 1, noteGroup[0].indexOf('}')));
       }
       noteGroup[0] = noteGroup[0].substring(0, noteGroup[0].indexOf('{')) + noteGroup[0].substring(noteGroup[0].indexOf('}') + 1, noteGroup[0].length);
+    } else {
+      throw new Error('当前谱面没有指定节拍');
     }
 
     beatT.bpm = currentBPM;
@@ -277,6 +293,31 @@ export const read_inote = (inoteOri: string): { notes: Note[]; beats: Beat[] } =
   });
 
   console.log(beatRes, notesRes);
+
+  // 如果沒有EndMark，在这里加入
+  if (notesRes.length === 0 /* 谱面空白的情况 */ || notesRes[notesRes.length - 1].type !== NoteType.EndMark) {
+    notesRes.push({
+      /** 顺序 (实际好像没用过？) */
+      index: -1,
+      serial: serial + 1,
+      pos: 'E',
+      type: NoteType.EndMark,
+      /** 在beats中的索引 */
+      beatIndex: beatRes.length,
+      /** 这一段的节拍 */
+      partnotevalue: currentNoteNumber,
+      /** 这一段的BPM */
+      bpm: currentBPM,
+      /** 这个Note应当被判定的时间 */
+      time: currentTime,
+    });
+    beatRes.push({
+      notevalue: currentNoteNumber,
+      bpm: currentBPM,
+      time: currentTime,
+      noteIndexes: [notesRes.length - 1],
+    });
+  }
 
   return { beats: beatRes, notes: notesRes };
 };

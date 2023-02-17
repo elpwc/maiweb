@@ -33,10 +33,10 @@ TOUCH GROUP√
 2. BREAK WIFI√
 2.5. BREAK SLIDE TRACK√
 3. BREAK HOLD √
-4. 相应的判定（忘了做没做了）
+4. 相应的判定（忘了做没做了） √
 
 9.29:
-4. 相应的判定【麻烦】
+4. 相应的判定【麻烦】 √
 
 1. Hanabi√
 2. 封装【重要】【在做了】
@@ -44,7 +44,7 @@ TOUCH GROUP√
 4: BREAK的欢呼声【别急】
 
 10.1:
-5. 优化Hanabi的图像【不急】
+5. 优化Hanabi的图像【不急】 √
 6. SHORT TOUCH HOLD接触时 外框【简单】【算了】x
 6.5. TOUCH HOLD松开时停止声音√
 6.6. SHORT TOUCH HOLD FIREWORK不显示草【急】√
@@ -60,7 +60,7 @@ TOUCH GROUP√
 1. Maisim onClick接受按键数据 √
 
 10.4:
-1. 重写谱面分析（第一层的，不是notes
+1. 重写谱面分析（第一层的，不是notes √
 2. 反正该考虑后端数据结构了喵 √
 
 11.1:
@@ -107,7 +107,7 @@ TOUCH GROUP√
 
 2.7
 1. 【BUG】人体蜈蚣无auto划不了 √
-2. 【BUG】全MISS竟然7%（）
+2. 【BUG】全MISS竟然7%（） √
 3. 【UI】HANABI中间的亮点太魗了吧，其次第二亮区的扩散不是很明显 √
 4. 【BUG】HOLD头接触判定线时HOLD会消失一帧(?)
 5. 【Feature】匹配官机流速
@@ -123,3 +123,6 @@ TOUCH GROUP√
 2.17
 1. 【BUG】暂停时TOUCH HOLD声音继续播放
 2. 【BUG】TOUCH EACH重叠时，总是显示靠外部的框（ √
+
+2.18
+1. 适配first
