@@ -21,8 +21,7 @@ export const ReadMaimaiData = (sheetData: string): Song => {
   sheetData.split('\n&').forEach(e => {
     const splitPos = e.indexOf('=');
     const pname = e.substring(0, splitPos);
-    const pvalue = e.substring(splitPos + 1, e.length - 1);
-
+    const pvalue = e.substring(splitPos + 1, e.length);
     //console.log(pname, pvalue);
 
     switch (pname) {
@@ -60,6 +59,7 @@ export const ReadMaimaiData = (sheetData: string): Song => {
       switch (propPrefix) {
         case 'first':
           globalFirst = Number(pvalue);
+          console.log(pvalue, globalFirst);
           break;
         case 'des':
           globalDes = pvalue;

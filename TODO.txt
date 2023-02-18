@@ -126,3 +126,4 @@ TOUCH GROUP√
 
 2.18
 1. 适配first
+2. first读出来总是0 √
