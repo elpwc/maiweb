@@ -87,7 +87,7 @@ let speedTap: number = 7;
 /** 谱面流速TOUCH */
 let speedTouch: number = 6.5;
 
-/** SLIDE显示时机 */
+/** SLIDE显示时机 -1~1*/
 let slideTrackOffset: number = 0;
 
 let virtualTime: VirtualTime = new VirtualTime();
@@ -203,7 +203,7 @@ const readSheet = () => {
 
   currentSheet = songdata.sheets[0];
   // 第三次谱面处理
-  currentSheet.notes = calculate_speed_related_params_for_notes(currentSheet.notes, tapMoveSpeed, tapEmergeSpeed, (speedTap + 1) * 0.07, (speedTouch + 1) * 0.07, currentSheet);
+  currentSheet.notes = calculate_speed_related_params_for_notes(currentSheet.notes, tapMoveSpeed, tapEmergeSpeed, (speedTap + 1) * 0.07, (speedTouch + 1) * 0.07, slideTrackOffset, currentSheet);
 };
 
 /** 当前绘制在画布上的所有Notes */
