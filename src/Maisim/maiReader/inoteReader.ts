@@ -333,7 +333,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number): { notes: Note[
  * @param notesOri
  * @returns
  */
-export const calculate_speed_related_params_for_notes = (notesOri: Note[], tapMoveSpeed: number, tapEmergeSpeed: number, speed: number, currentSheet: Sheet) => {
+export const calculate_speed_related_params_for_notes = (notesOri: Note[], tapMoveSpeed: number, tapEmergeSpeed: number, speedTap: number, speedTouch: number, currentSheet: Sheet) => {
   /** 在计算多TOUCH白线时存储和累加每个TOUCH TOUCHHOLD重叠的数量 */
   interface TouchInfo {
     /** TOUCH的可唯一标识id */
@@ -351,6 +351,14 @@ export const calculate_speed_related_params_for_notes = (notesOri: Note[], tapMo
   /** 为Notes计算浮现的时机 */
   const notes = notesOri;
   notes.forEach((note: Note, i: number) => {
+    // 为TOUCH和TOUCH以外设置不同的速度
+    let speed = 0;
+    if (note.type === NoteType.Touch || note.type === NoteType.TouchHold) {
+      speed = speedTouch;
+    } else {
+      speed = speedTap;
+    }
+
     if (note.type === NoteType.SlideTrack) {
       const emergingTime = (maimaiJudgeLineR - maimaiSummonLineR) / (tapMoveSpeed * speed);
       notes[i].moveTime = note.time - note.remainTime!;

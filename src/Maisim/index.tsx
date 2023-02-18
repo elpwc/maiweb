@@ -61,24 +61,34 @@ SongTrack!.oncanplaythrough = e => {
 };
 
 /** 是否启用自动播放谱面 */
-let auto = false;
+let auto = true;
 /** 自动播放谱面的方式 */
 let autoType: AutoType = AutoType.Directly;
 
 /** 读入数据和更新绘制信息的Timer */
-let timer1: string | number | NodeJS.Timer | undefined;
-/** 未启用 */
-let timer2: string | number | NodeJS.Timeout | undefined;
+let timer_readAndUpdate: string | number | NodeJS.Timer | undefined;
+/** 画外键 */
+let timer_drawkeys: string | number | NodeJS.Timeout | undefined;
 /** 根据绘制信息去绘制的Timer */
-let timer3: string | number | NodeJS.Timer | undefined;
+let timer_draw: string | number | NodeJS.Timer | undefined;
 
-/** NOTE移动速度 */
-let tapMoveSpeed: number = 0.85; // 0.85
-/** NOTE浮现时的速度 */
+/** NOTE移动速度调整量 */
+let tapMoveSpeed: number = 1; // 0.85
+/** NOTE浮现时的速度调整量 */
 let tapEmergeSpeed: number = 0.2; // 0.2
 
-/** 谱面流速 */
-let speed: number = 0.65;
+/** 判定调整A */
+let offsetA = 0;
+/** 判定调整B */
+let offsetB = 0;
+
+/** 谱面流速TAP */
+let speedTap: number = 7;
+/** 谱面流速TOUCH */
+let speedTouch: number = 6.5;
+
+/** SLIDE显示时机 */
+let slideTrackOffset: number = 0;
 
 let virtualTime: VirtualTime = new VirtualTime();
 initAnimations(virtualTime);
@@ -153,8 +163,8 @@ const starttimer = () => {
       drawer();
     });
 
-    timer1 = setInterval(reader_and_updater, timerPeriod);
-    timer3 = setInterval(drawer, timerPeriod);
+    timer_readAndUpdate = setInterval(reader_and_updater, timerPeriod);
+    timer_draw = setInterval(drawer, timerPeriod);
   }, currentSheet.first * 1000);
 };
 
@@ -179,8 +189,8 @@ const handleSongTrackFinish = (callback: () => void): (() => void) => {
 };
 
 const finish = () => {
-  clearInterval(timer1);
-  clearInterval(timer3);
+  clearInterval(timer_readAndUpdate);
+  clearInterval(timer_draw);
 };
 
 let songdata: Song;
@@ -193,7 +203,7 @@ const readSheet = () => {
 
   currentSheet = songdata.sheets[0];
   // 第三次谱面处理
-  currentSheet.notes = calculate_speed_related_params_for_notes(currentSheet.notes, tapMoveSpeed, tapEmergeSpeed, speed, currentSheet);
+  currentSheet.notes = calculate_speed_related_params_for_notes(currentSheet.notes, tapMoveSpeed, tapEmergeSpeed, (speedTap + 1) * 0.07, (speedTouch + 1) * 0.07, currentSheet);
 };
 
 /** 当前绘制在画布上的所有Notes */
@@ -1260,7 +1270,7 @@ export default function Maisim(props: Props): JSX.Element {
           initEvent();
 
           drawOver();
-          timer2 = setInterval(drawKeys, timerPeriod);
+          timer_drawkeys = setInterval(drawKeys, timerPeriod);
 
           // 计算用
           //ppqqAnglCalc();
@@ -1346,8 +1356,8 @@ export default function Maisim(props: Props): JSX.Element {
   useEffect(() => {
     return handleSongTrackFinish(() => {
       virtualTime.pause();
-      clearInterval(timer1);
-      clearInterval(timer3);
+      clearInterval(timer_readAndUpdate);
+      clearInterval(timer_draw);
       props.setGameState(GameState.Pause);
     });
   }, []);
@@ -1441,14 +1451,14 @@ export default function Maisim(props: Props): JSX.Element {
                 props.setGameState(GameState.Play);
               } else if (props.gameState === GameState.Play) {
                 virtualTime.pause();
-                clearInterval(timer1);
-                clearInterval(timer3);
+                clearInterval(timer_readAndUpdate);
+                clearInterval(timer_draw);
                 SongTrack.pause();
                 props.setGameState(GameState.Pause);
               } else if (props.gameState === GameState.Pause) {
                 virtualTime.resume();
-                timer1 = setInterval(reader_and_updater, timerPeriod);
-                timer3 = setInterval(drawer, timerPeriod);
+                timer_readAndUpdate = setInterval(reader_and_updater, timerPeriod);
+                timer_draw = setInterval(drawer, timerPeriod);
                 SongTrack.play();
                 props.setGameState(GameState.Play);
               } else {
