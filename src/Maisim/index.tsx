@@ -137,22 +137,25 @@ const starttimer = () => {
 
   const duration = advancedTime + SongTrack.duration * 1000;
   // console.log({ duration: duration/1000 })
-  virtualTime.init(duration, advancedTime);
-  virtualTime.onSeek((progress: number) => {
-    // 进度条被拖动，重置音符状态
-    showingNotes = [];
-    nextNoteIndex = 0;
-    const time = duration * progress;
-    while ((currentSheet.notes[nextNoteIndex]?.emergeTime ?? Infinity) < time) {
-      nextNoteIndex++;
-    }
-    reader_and_updater();
-    drawer();
-  });
 
   //console.log(sheet.beats5?.beat);
-  timer1 = setInterval(reader_and_updater, timerPeriod);
-  timer3 = setInterval(drawer, timerPeriod);
+  setTimeout(() => {
+    virtualTime.init(duration, advancedTime);
+    virtualTime.onSeek((progress: number) => {
+      // 进度条被拖动，重置音符状态
+      showingNotes = [];
+      nextNoteIndex = 0;
+      const time = duration * progress;
+      while ((currentSheet.notes[nextNoteIndex]?.emergeTime ?? Infinity) < time) {
+        nextNoteIndex++;
+      }
+      reader_and_updater();
+      drawer();
+    });
+
+    timer1 = setInterval(reader_and_updater, timerPeriod);
+    timer3 = setInterval(drawer, timerPeriod);
+  }, currentSheet.first * 1000);
 };
 
 const changeSongTrackPlaybackrate = (rate: number) => {

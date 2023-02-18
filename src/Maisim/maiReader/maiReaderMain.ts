@@ -59,7 +59,6 @@ export const ReadMaimaiData = (sheetData: string): Song => {
       switch (propPrefix) {
         case 'first':
           globalFirst = Number(pvalue);
-          console.log(pvalue, globalFirst);
           break;
         case 'des':
           globalDes = pvalue;
