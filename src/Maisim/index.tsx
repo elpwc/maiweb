@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import './index.css';
 import {
   canvasWidth,
@@ -33,7 +33,7 @@ import { APositions, ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged }
 import { abs, cos, sin, sqrt, π } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
 import { Note } from '../utils/note';
-import { isNormalNoteType, NoteType } from '../utils/noteType';
+import { isInnerScreenNoteTyoe, isNormalNoteType, NoteType } from '../utils/noteType';
 import { Sheet } from '../utils/sheet';
 import { Song } from '../utils/song';
 import { gameRecord } from './global';
@@ -61,7 +61,7 @@ SongTrack!.oncanplaythrough = e => {
 };
 
 /** 是否启用自动播放谱面 */
-let auto = true;
+let auto = false;
 /** 自动播放谱面的方式 */
 let autoType: AutoType = AutoType.Directly;
 
@@ -89,6 +89,9 @@ let speedTouch: number = 6.5;
 
 /** SLIDE显示时机 -1~1*/
 let slideTrackOffset: number = 0;
+
+/** 是否启用键盘打歌，启用的话，内屏NOTE都会auto */
+let enableKeyborad: boolean = true;
 
 let virtualTime: VirtualTime = new VirtualTime();
 initAnimations(virtualTime);
@@ -416,7 +419,7 @@ const reader_and_updater = async () => {
 
           newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
 
-          if (auto) {
+          if (auto || enableKeyborad) {
             if (currentTime >= noteIns.time!) {
               judge(
                 showingNotes,
@@ -477,7 +480,7 @@ const reader_and_updater = async () => {
           // converge
 
           newNote.rho = touchConvergeCurrentRho(currentTime, noteIns.moveTime!, noteIns.time!);
-          if (auto) {
+          if (auto || enableKeyborad) {
             if (newNote.rho >= touchMaxDistance) {
               //if (currentTime >= noteIns.time! - timerPeriod * 5) {
               judge(
@@ -550,7 +553,7 @@ const reader_and_updater = async () => {
           }
 
           // auto 自动画线
-          if (auto) {
+          if (auto || enableKeyborad) {
             if (noteIns.isChain) {
               // 人体蜈蚣
               const currentLine = noteIns.slideLines![note.currentLineIndex];
@@ -741,7 +744,7 @@ const reader_and_updater = async () => {
           }
         }
       }
-      if (auto && autoType === AutoType.Directly) {
+      if ((auto && autoType === AutoType.Directly) || (enableKeyborad && isInnerScreenNoteTyoe(noteIns.type))) {
         note.judgeStatus = JudgeStatus.CriticalPerfect;
       }
       if (note.status === -1 && !note.touched) {
@@ -771,7 +774,7 @@ const reader_and_updater = async () => {
       return note.status !== -1;
     } else if (noteIns.type === NoteType.Touch) {
       if (note.status === -4) {
-        if (auto && autoType === AutoType.Directly) {
+        if ((auto && autoType === AutoType.Directly) || enableKeyborad) {
           note.judgeStatus = JudgeStatus.CriticalPerfect;
         }
         if (note.judgeStatus !== JudgeStatus.Miss) {
@@ -782,7 +785,7 @@ const reader_and_updater = async () => {
       return note.status !== -1;
     } else if (noteIns.type === NoteType.Hold || noteIns.type === NoteType.TouchHold) {
       if (note.status === -4) {
-        if (auto && autoType === AutoType.Directly) {
+        if ((auto && autoType === AutoType.Directly) || (enableKeyborad && isInnerScreenNoteTyoe(noteIns.type))) {
           note.judgeStatus = JudgeStatus.CriticalPerfect;
         }
         if (noteIns.isEx) {
@@ -1237,6 +1240,90 @@ export default function Maisim(props: Props): JSX.Element {
 
   const onTouch = () => {};
 
+  const onKeyDown = (key: string) => {
+    console.log(key);
+    let area;
+    switch (key) {
+      case 'KeyG':
+        area = getArea('K1');
+        break;
+      case 'KeyH':
+        area = getArea('K2');
+        break;
+      case 'KeyN':
+        area = getArea('K3');
+        break;
+      case 'KeyB':
+        area = getArea('K4');
+        break;
+      case 'KeyV':
+        area = getArea('K5');
+        break;
+      case 'KeyC':
+        area = getArea('K6');
+        break;
+      case 'KeyD':
+        area = getArea('K7');
+        break;
+      case 'KeyF':
+        area = getArea('K8');
+        break;
+      default:
+        break;
+    }
+    if (area) {
+      currentTouchingArea.push({
+        area,
+        pressTime: currentTime,
+      });
+      onPressDown({
+        area,
+        pressTime: currentTime,
+      });
+    }
+  };
+
+  const onKeyUp = (key: string) => {
+    let area: Area | undefined;
+    switch (key) {
+      case 'KeyG':
+        area = getArea('K1');
+        break;
+      case 'KeyH':
+        area = getArea('K2');
+        break;
+      case 'KeyN':
+        area = getArea('K3');
+        break;
+      case 'KeyB':
+        area = getArea('K4');
+        break;
+      case 'KeyV':
+        area = getArea('K5');
+        break;
+      case 'KeyC':
+        area = getArea('K6');
+        break;
+      case 'KeyD':
+        area = getArea('K7');
+        break;
+      case 'KeyF':
+        area = getArea('K8');
+        break;
+      default:
+        break;
+    }
+    if (area) {
+      currentTouchingArea = currentTouchingArea.filter(ta => {
+        return ta.area.name !== area!.name;
+      });
+      onPressUp({
+        area,
+        pressTime: currentTime,
+      });
+    }
+  };
+
   //设置事件处理程序
   function initEvent() {
     const el = document.getElementsByClassName('canvasEvent')[0];
@@ -1251,6 +1338,15 @@ export default function Maisim(props: Props): JSX.Element {
     //el.addEventListener('click', onClick, false);
     el.addEventListener('mousedown', onMouseDown1, false);
     el.addEventListener('mouseup', onMouseUp1, false);
+  }
+
+  if (enableKeyborad) {
+    document.onkeydown = e => {
+      onKeyDown(e.code);
+    };
+    document.onkeyup = e => {
+      onKeyUp(e.code);
+    };
   }
 
   const [canvasW, setCanvasW] = useState(800);
@@ -1312,7 +1408,7 @@ export default function Maisim(props: Props): JSX.Element {
   // 变速相关
   const [speedFactor, setSpeedFactor] = useState(1.0);
   const changeSpeedFactor = () => {
-    setSpeedFactor(speedFactor == 1 ? 0.75 : speedFactor == 0.75 ? 0.5 : 1);
+    setSpeedFactor(speedFactor === 1 ? 0.75 : speedFactor === 0.75 ? 0.5 : 1);
   };
   useEffect(() => {
     changeSongTrackPlaybackrate(speedFactor);
@@ -1369,6 +1465,8 @@ export default function Maisim(props: Props): JSX.Element {
         left: `${props.l}px`,
       }}
       ref={containerDivRef}
+      // tabIndex={0}
+      // onKeyDown={(e) => {console.log(e.code)}}
     >
       <div className="canvasContainer">
         <div className="bottomContainer" style={{ height: canvasH, width: canvasW }}>

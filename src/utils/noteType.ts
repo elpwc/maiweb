@@ -20,3 +20,8 @@ export enum NoteType {
 export const isNormalNoteType = (type: NoteType) => {
   return type === NoteType.Tap || type === NoteType.Hold || type === NoteType.Slide || type === NoteType.SlideTrack || type === NoteType.Touch || type === NoteType.TouchHold;
 };
+
+/** 是否是内屏Note */
+export const isInnerScreenNoteTyoe = (type: NoteType) => {
+  return type === NoteType.SlideTrack || type === NoteType.Touch || type === NoteType.TouchHold;
+};
