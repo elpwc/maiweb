@@ -33,7 +33,7 @@ import { APositions, ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged }
 import { abs, cos, sin, sqrt, π } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
 import { Note } from '../utils/note';
-import { isInnerScreenNoteTyoe, isNormalNoteType, NoteType } from '../utils/noteType';
+import { isInnerScreenNoteType, isNormalNoteType, NoteType } from '../utils/noteType';
 import { Sheet } from '../utils/sheet';
 import { Song } from '../utils/song';
 import { gameRecord } from './global';
@@ -744,7 +744,7 @@ const reader_and_updater = async () => {
           }
         }
       }
-      if ((auto && autoType === AutoType.Directly) || (enableKeyborad && isInnerScreenNoteTyoe(noteIns.type))) {
+      if ((auto && autoType === AutoType.Directly) || (enableKeyborad && isInnerScreenNoteType(noteIns.type))) {
         note.judgeStatus = JudgeStatus.CriticalPerfect;
       }
       if (note.status === -1 && !note.touched) {
@@ -785,7 +785,7 @@ const reader_and_updater = async () => {
       return note.status !== -1;
     } else if (noteIns.type === NoteType.Hold || noteIns.type === NoteType.TouchHold) {
       if (note.status === -4) {
-        if ((auto && autoType === AutoType.Directly) || (enableKeyborad && isInnerScreenNoteTyoe(noteIns.type))) {
+        if ((auto && autoType === AutoType.Directly) || (enableKeyborad && isInnerScreenNoteType(noteIns.type))) {
           note.judgeStatus = JudgeStatus.CriticalPerfect;
         }
         if (noteIns.isEx) {

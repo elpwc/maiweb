@@ -22,6 +22,6 @@ export const isNormalNoteType = (type: NoteType) => {
 };
 
 /** 是否是内屏Note */
-export const isInnerScreenNoteTyoe = (type: NoteType) => {
+export const isInnerScreenNoteType = (type: NoteType) => {
   return type === NoteType.SlideTrack || type === NoteType.Touch || type === NoteType.TouchHold;
 };
