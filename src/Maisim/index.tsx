@@ -51,6 +51,7 @@ import { calculate_speed_related_params_for_notes } from './maiReader/inoteReade
 import { VirtualTime } from './drawUtils/virtualTime';
 import { fireworkAt } from './drawUtils/firework';
 import { AutoType } from './utils/autoType';
+import { FlipMode } from './utils/flipMode';
 
 const SongTrack = new Audio();
 SongTrack.volume = 0.5;
@@ -61,9 +62,11 @@ SongTrack!.oncanplaythrough = e => {
 };
 
 /** 是否启用自动播放谱面 */
-let auto = false;
+let auto = true;
 /** 自动播放谱面的方式 */
 let autoType: AutoType = AutoType.Directly;
+/** 是否启用键盘打歌，启用的话，内屏NOTE都会auto */
+let enableKeyborad: boolean = false;
 
 /** 读入数据和更新绘制信息的Timer */
 let timer_readAndUpdate: string | number | NodeJS.Timer | undefined;
@@ -90,8 +93,8 @@ let speedTouch: number = 6.5;
 /** SLIDE显示时机 -1~1*/
 let slideTrackOffset: number = 0;
 
-/** 是否启用键盘打歌，启用的话，内屏NOTE都会auto */
-let enableKeyborad: boolean = true;
+/** 镜像模式 */
+let flipMode: FlipMode = FlipMode.None;
 
 let virtualTime: VirtualTime = new VirtualTime();
 initAnimations(virtualTime);
@@ -202,7 +205,7 @@ let currentSheet: Sheet;
 
 /** 初始化谱面 */
 const readSheet = () => {
-  songdata = ReadMaimaiData(sheetdata);
+  songdata = ReadMaimaiData(sheetdata, flipMode);
 
   currentSheet = songdata.sheets[0];
   // 第三次谱面处理

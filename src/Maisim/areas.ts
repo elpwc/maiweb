@@ -1,6 +1,7 @@
 import { abs, atan, cos, sin, π } from '../math';
 import { isInner, lineLen } from './drawUtils/_base';
 import { center, keyInnerR, keyOuterR, keyWidth, maimaiADTouchR, maimaiBR, maimaiER, maimaiJudgeLineR, maimaiScreenR, maimaiSummonLineR } from './const';
+import { FlipMode } from './utils/flipMode';
 
 /** 一块判定区 */
 export interface Area {
@@ -226,4 +227,73 @@ export const getTouchCenterCoord = (pos: string): [number, number] => {
   }
 
   return [x, y];
+};
+
+/** 如果设置了谱面镜像，翻转pos */
+export const flipPos = (pos: string | undefined, flipMode: FlipMode): string => {
+  if (pos === undefined) return '';
+  if (pos === '') return '';
+  if (flipMode === FlipMode.None) return pos;
+
+  const flipPosNum = (pos: string): string => {
+    switch (flipMode) {
+      case FlipMode.Horizonal:
+        return (9 - Number(pos)).toString();
+      case FlipMode.Vertical:
+        if (Number(pos) < 5) {
+          return (5 - Number(pos)).toString();
+        } else {
+          return (13 - Number(pos)).toString();
+        }
+      case FlipMode.Both:
+        if (Number(pos) < 5) {
+          return (4 + Number(pos)).toString();
+        } else {
+          return (Number(pos) - 4).toString();
+        }
+      default:
+        return pos;
+    }
+  };
+  const flipPosNumED = (pos: string): string => {
+    switch (flipMode) {
+      case FlipMode.Horizonal:
+        if (Number(pos) === 1) {
+          return '1';
+        } else {
+          return (10 - Number(pos)).toString();
+        }
+      case FlipMode.Vertical:
+        if (Number(pos) < 6) {
+          return (6 - Number(pos)).toString();
+        } else {
+          return (14 - Number(pos)).toString();
+        }
+      case FlipMode.Both:
+        if (Number(pos) < 5) {
+          return (4 + Number(pos)).toString();
+        } else {
+          return (Number(pos) - 4).toString();
+        }
+      default:
+        return pos;
+    }
+  };
+
+  const firstChar = pos.substring(0, 1);
+  if (isNaN(Number(firstChar))) {
+    // A B C ..
+    if (firstChar === 'C') {
+      return 'C';
+    } else {
+      if (firstChar === 'E' || firstChar === 'D') {
+        return firstChar + flipPosNumED(pos.substring(1, 2));
+      } else {
+        return firstChar + flipPosNum(pos.substring(1, 2));
+      }
+    }
+  } else {
+    // 1 2 3 ..
+    return flipPosNum(pos);
+  }
 };

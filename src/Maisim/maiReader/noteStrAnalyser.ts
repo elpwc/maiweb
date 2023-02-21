@@ -1,10 +1,13 @@
 import { Note, SlideLine, SlideTrack } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
+import { flipPos } from '../areas';
+import { flipTrack } from '../slideTracks/_global';
+import { FlipMode } from '../utils/flipMode';
 import { noteValue_and_noteNumber_analyser } from './noteValueAnalyser';
 import { analyse_slide_line } from './slideLineAnalyser';
 
 /** 分析谱面中一个note的文本 */
-export const analyse_note_original_data = (noteDataOri: string, index: number, currentBPM: number) => {
+export const analyse_note_original_data = (noteDataOri: string, index: number, currentBPM: number, flipMode: FlipMode) => {
   //console.log(noteDataOri, index);
   let noteRes: Note = {
     index,
@@ -97,14 +100,14 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
     } else {
       // TAP
       noteRes.type = NoteType.Tap;
-      noteRes.pos = noteData;
+      noteRes.pos = flipPos(noteData, flipMode);
     }
   }
 
   if (noteData.length === 2) {
     // TOUCH (except C)
     noteRes.type = NoteType.Touch;
-    noteRes.pos = noteData;
+    noteRes.pos = flipPos(noteData, flipMode);
 
     // C1 C2
     if (noteRes.pos === 'C1' || noteRes.pos === 'C2') {
@@ -147,18 +150,18 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
         if (firstChar === 'C') {
           noteRes.pos = 'C';
         } else {
-          noteRes.pos = noteData.substring(0, 2);
+          noteRes.pos = flipPos(noteData.substring(0, 2), flipMode);
         }
       } else {
         // HOLD
         noteRes.type = NoteType.Hold;
         noteRes.isShortHold = false;
-        noteRes.pos = noteData.substring(0, 1);
+        noteRes.pos = flipPos(noteData.substring(0, 1), flipMode);
       }
     } else {
       // SLIDE (TAP + SLIDES)
       // SLIDE TAP
-      noteRes.pos = noteData.substring(0, 1);
+      noteRes.pos = flipPos(noteData.substring(0, 1), flipMode);
       noteRes.type = NoteType.Slide;
       noteData = noteData.substring(1, noteData.length);
 
@@ -178,7 +181,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
           const temp_slideLinesOri: SlideTrack[] = [];
           slide.split(']').forEach(lineOriData => {
             if (lineOriData !== '') {
-              const analysedLine = analyse_slide_line(lineOriData + ']', currentBPM);
+              const analysedLine = analyse_slide_line(lineOriData + ']', currentBPM, flipMode);
               temp_slideLinesOri.push(analysedLine);
             }
           });
@@ -232,8 +235,8 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
             if (positions.substring(0, 2) === 'pp' || positions.substring(0, 2) === 'qq') {
               // pp qq
               temp_slideLinesOri.push({
-                slideType: positions.substring(0, 2),
-                endPos: positions.substring(2, 3),
+                slideType: flipTrack(positions.substring(0, 2), flipMode),
+                endPos: flipPos(positions.substring(2, 3), flipMode),
                 pos: i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos,
 
                 /**  持续时间占比 */
@@ -245,8 +248,8 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
               //V
               temp_slideLinesOri.push({
                 slideType: positions.substring(0, 1),
-                turnPos: positions.substring(1, 2),
-                endPos: positions.substring(2, 3),
+                turnPos: flipPos(positions.substring(1, 2), flipMode),
+                endPos: flipPos(positions.substring(2, 3), flipMode),
                 pos: i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos,
 
                 /**  持续时间占比 */
@@ -257,8 +260,8 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
             } else {
               // normal
               temp_slideLinesOri.push({
-                slideType: positions.substring(0, 1),
-                endPos: positions.substring(1, 2),
+                slideType: flipTrack(positions.substring(0, 1), flipMode),
+                endPos: flipPos(positions.substring(1, 2), flipMode),
                 pos: i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos,
 
                 /**  持续时间占比 */
@@ -279,7 +282,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
           currentSlideTrackRes.slideLines = temp_slideLinesOri;
         } else {
           // 正常
-          currentSlideTrackRes = analyse_slide_line(slide, currentBPM);
+          currentSlideTrackRes = analyse_slide_line(slide, currentBPM, flipMode);
         }
 
         noteData = noteData.substring(0, noteData.indexOf('['));
@@ -297,13 +300,13 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
         if (firstChar === 'C') {
           noteRes.pos = 'C';
         } else {
-          noteRes.pos = noteData.substring(0, 2);
+          noteRes.pos = flipPos(noteData.substring(0, 2), flipMode);
         }
         noteRes.isShortHold = true;
       } else {
         // HOLD
         noteRes.type = NoteType.Hold;
-        noteRes.pos = noteData.substring(0, 1);
+        noteRes.pos = flipPos(noteData.substring(0, 1), flipMode);
         noteRes.isShortHold = true;
       }
     }

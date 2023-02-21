@@ -1,16 +1,24 @@
 import { NoteType } from '../../utils/noteType';
 import { Sheet } from '../../utils/sheet';
 import { Song } from '../../utils/song';
+import { FlipMode } from '../utils/flipMode';
 import { read_inote } from './inoteReader';
 
 // 参见 https://w.atwiki.jp/simai/pages/510.html
-/** 分析整个谱面文件里的内容，转化为对象（不是指读入inote的谱面文本的部分）（第0次谱面处理（大嘘） */
-export const ReadMaimaiData = (sheetData: string): Song => {
+/**
+ * 分析整个谱面文件里的内容，转化为对象（不是指读入inote的谱面文本的部分），顺便进行0-2次的谱面处理
+ * @param sheetData 原始文本
+ * @param flipMode 谱面翻转模式，默认不翻转
+ * @returns
+ */
+export const ReadMaimaiData = (sheetData: string, flipMode: FlipMode): Song => {
   let res: Song = {
     title: '',
     availableDifficulties: [],
     sheets: [],
   };
+
+  //（第0次谱面处理（）
 
   let globalFirst: number = 0;
   let globalDes: string | null = null;
@@ -108,7 +116,7 @@ export const ReadMaimaiData = (sheetData: string): Song => {
             res.sheets[sheetIndex].level = pvalue;
             break;
           case 'inote':
-            const noteRes = read_inote(pvalue, res.wholebpm);
+            const noteRes = read_inote(pvalue, res.wholebpm, flipMode);
             res.sheets[sheetIndex].beats = noteRes.beats;
             res.sheets[sheetIndex].notes = noteRes.notes;
 

@@ -1,6 +1,7 @@
 import { center, maimaiJudgeLineR, maimaiScreenR } from '../const';
 import { abs, acos, asin, atan, cos, sin, sqrt, π } from '../../math';
 import { lineLen } from '../drawUtils/_base';
+import { FlipMode } from '../utils/flipMode';
 
 /** 尺寸改变後重新赋值 */
 export const updateVarAfterSizeChanged = () => {
@@ -176,6 +177,48 @@ export const trackLength = (type: string, startPos: number, endPosOri: number, t
       break;
   }
   return 0;
+};
+
+/** 如果设置了谱面镜像，翻转TRACK类型 */
+export const flipTrack = (type: string, flipMode: FlipMode) => {
+  if (type === undefined) return '';
+  if (type === '') return '';
+  if (flipMode === FlipMode.None || (flipMode === FlipMode.Both && type !== '<' && type !== '>')) return type;
+  if (!['pp', 'qq', 'p', 'q', '<', '>', 's', 'z'].includes(type)) return type;
+
+  const pairs = [
+    ['pp', 'qq'],
+    ['p', 'q'],
+    ['s', 'z'],
+    ['qq', 'pp'],
+    ['q', 'p'],
+    ['z', 's'],
+  ];
+
+  const pairsHori = [
+    ['<', '>'],
+    ['>', '<'],
+  ];
+
+  let res: string[] | undefined = undefined;
+
+  if (flipMode === FlipMode.Horizonal || flipMode === FlipMode.Vertical) {
+    res = pairs.find(pair => {
+      return pair[0] === type;
+    });
+  }
+
+  if ((flipMode === FlipMode.Horizonal && res === undefined) || flipMode === FlipMode.Both) {
+    res = pairsHori.find(pair => {
+      return pair[0] === type;
+    });
+  }
+
+  if (res) {
+    return res[1];
+  } else {
+    return type;
+  }
 };
 
 // 只是开发中计算数值用的，沒有实装（也不需要

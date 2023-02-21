@@ -6,6 +6,7 @@ import { maimaiJudgeLineR, maimaiSummonLineR, maimaiTapR } from '../const';
 import { getJudgeDirectionParams } from '../slideTracks/judgeDirection';
 // 仅仅用来计算分段数量
 import { section } from '../slideTracks/section';
+import { FlipMode } from '../utils/flipMode';
 import { analyse_note_original_data } from './noteStrAnalyser';
 
 /**
@@ -14,7 +15,7 @@ import { analyse_note_original_data } from './noteStrAnalyser';
  * @param globalBpm 谱面文件属性里的全局bpm，可以不填，只是万一谱面前面没加(bpm)的话，就会参考这个
  * @returns 返回这个谱面里的音符列表和节拍列表
  */
-export const read_inote = (inoteOri: string, globalBpm?: number): { notes: Note[]; beats: Beat[] } => {
+export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipMode = FlipMode.None): { notes: Note[]; beats: Beat[] } => {
   /** 当下处理的这一拍的BPM */
   let currentBPM: number = 0;
   /** 当下处理的这一拍的拍数 */
@@ -140,7 +141,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number): { notes: Note[
     noteGroup.forEach((noteStr: string) => {
       // 一次处理一拍里的一个
       /** 要加入Notes列表的note */
-      const res: Note | null = analyse_note_original_data(noteStr, index, currentBPM);
+      const res: Note | null = analyse_note_original_data(noteStr, index, currentBPM, flipMode);
       //console.log(res);
 
       isNiseEach = res?.isNiseEach ?? false;
