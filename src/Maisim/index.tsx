@@ -32,7 +32,7 @@ import { initResources } from './resourceReaders/_init';
 import { APositions, ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged } from './slideTracks/_global';
 import { abs, cos, sin, sqrt, π } from '../math';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
-import { Note } from '../utils/note';
+import { Note, SectionInfo } from '../utils/note';
 import { isInnerScreenNoteType, isNormalNoteType, NoteType } from '../utils/noteType';
 import { Sheet } from '../utils/sheet';
 import { Song } from '../utils/song';
@@ -562,7 +562,7 @@ const reader_and_updater = async () => {
               const currentLine = noteIns.slideLines![note.currentLineIndex];
               if (currentLine.slideType === 'w') {
                 // SLIDE分段信息
-                const sectionInfoWifi = section_wifi(currentLine.pos!, currentLine.endPos ?? '');
+                const sectionInfoWifi = currentLine.sections as SectionInfo[][];
                 sectionInfoWifi.forEach((sectionInfo, j) => {
                   for (let i = 0; i < sectionInfo!.length; i++) {
                     const section = sectionInfo![i];
@@ -584,7 +584,7 @@ const reader_and_updater = async () => {
                 });
               } else {
                 // SLIDE分段信息
-                const sectionInfo = section(currentLine.slideType, currentLine.pos!, currentLine.endPos ?? '', currentLine.turnPos);
+                const sectionInfo: SectionInfo[] = currentLine.sections as SectionInfo[];
                 for (let i = 0; i < sectionInfo!.length; i++) {
                   const section = sectionInfo![i];
                   if (
@@ -605,7 +605,7 @@ const reader_and_updater = async () => {
               // 不是人体蜈蚣
               if (noteIns.slideType === 'w') {
                 // SLIDE分段信息
-                const sectionInfoWifi = section_wifi(noteIns.pos, noteIns.endPos ?? '');
+                const sectionInfoWifi = noteIns.sections as SectionInfo[][];
                 sectionInfoWifi.forEach((sectionInfo, j) => {
                   for (let i = 0; i < sectionInfo!.length; i++) {
                     const section = sectionInfo![i];
@@ -619,7 +619,7 @@ const reader_and_updater = async () => {
                 });
               } else {
                 // SLIDE分段信息
-                const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
+                const sectionInfo: SectionInfo[] = noteIns.sections as SectionInfo[];
                 for (let i = 0; i < sectionInfo!.length; i++) {
                   const section = sectionInfo![i];
                   if (

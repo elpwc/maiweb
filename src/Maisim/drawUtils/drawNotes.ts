@@ -26,16 +26,14 @@ import { getTrackProps } from '../slideTracks/tracks';
 import { APositions, trackLength } from '../slideTracks/_global';
 import { drawRotationImage, lineLen } from './_base';
 import { NoteIcon } from '../resourceReaders/noteIconReader';
-import { Note, SlideLine } from '../../utils/note';
+import { Note, SectionInfo, SlideLine } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
-import { section } from '../slideTracks/section';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { RegularStyles, SlideColor, TapStyles } from '../../utils/noteStyles';
 import { JudgeStatus, JudgeTimeStatus } from '../../utils/judgeStatus';
 import { JudgeIcon } from '../resourceReaders/judgeIconReader';
 import { animation } from './animation';
 import { getTouchCenterCoord } from '../areas';
-import { VirtualTime } from './virtualTime';
 
 let tapIcon: HTMLImageElement;
 let tapEachIcon: HTMLImageElement;
@@ -681,7 +679,7 @@ export const drawNote = (
                   trackLength(slideLine.slideType!, Number(slideLine.pos), Number(slideLine.endPos), slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos));
 
                 // SLIDE分段信息
-                const sectionInfo = section(slideLine.slideType, slideLine.pos!, slideLine.endPos ?? '', slideLine.turnPos);
+                const sectionInfo = slideLine.sections as SectionInfo[];
 
                 // 画SLIDE TRACK
                 ctx_slideTrack.save();
@@ -886,7 +884,7 @@ export const drawNote = (
                 (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos), note.turnPos === undefined ? undefined : Number(note.turnPos));
 
               // SLIDE分段信息
-              const sectionInfo = section(note.slideType, note.pos, note.endPos ?? '', note.turnPos);
+              const sectionInfo = note.sections as SectionInfo[];
 
               // 画SLIDE TRACK
               ctx_slideTrack.save();

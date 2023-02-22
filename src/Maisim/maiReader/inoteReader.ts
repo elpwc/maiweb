@@ -5,7 +5,7 @@ import { Sheet } from '../../utils/sheet';
 import { maimaiJudgeLineR, maimaiSummonLineR, maimaiTapR } from '../const';
 import { getJudgeDirectionParams } from '../slideTracks/judgeDirection';
 // 仅仅用来计算分段数量
-import { section } from '../slideTracks/section';
+import { section, section_wifi } from '../slideTracks/section';
 import { FlipMode } from '../utils/flipMode';
 import { analyse_note_original_data } from './noteStrAnalyser';
 
@@ -187,6 +187,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
         // 加入SLIDE TRACK
         if (foreType === NoteType.Slide) {
           res.slideTracks?.forEach((slideTrack: SlideTrack) => {
+            const sections = slideTrack.slideType === 'w' ? section_wifi(res.pos, slideTrack.endPos!) : section(slideTrack.slideType, res.pos, slideTrack.endPos!, slideTrack.turnPos);
             const tempSlideTrackNote: Note = {
               index: res.index,
               serial,
@@ -210,7 +211,8 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
               isStarTap: res.isStarTap,
               isNoTapSlide: res.isNoTapSlide,
               isNoTapNoTameTimeSlide: res.isNoTapNoTameTimeSlide,
-              sectionCount: slideTrack.slideType === 'w' ? 5 : section(slideTrack.slideType, res.pos, slideTrack.endPos!, slideTrack.turnPos)?.length,
+              sections,
+              sectionCount: slideTrack.slideType === 'w' ? 5 : sections?.length,
               isChain: slideTrack.isChain,
               slideLines: slideTrack.slideLines,
               slideLineDirectionParams: slideTrack.isChain

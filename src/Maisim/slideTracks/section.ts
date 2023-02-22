@@ -1,7 +1,8 @@
+import { SectionInfo } from '../../utils/note';
 import { trackLength } from './_global';
 
 /** SLIDE TRACK分段 */
-export const section = (type: string | undefined, startPos: string, endPosOri: string, turnPosOri?: string): { start: number; areas: string[] }[] | undefined => {
+export const section = (type: string | undefined, startPos: string, endPosOri: string, turnPosOri?: string): SectionInfo[] | undefined => {
   let endPos = Number(endPosOri) - Number(startPos) + 1;
   let turnPos = (Number(turnPosOri) ?? 0) - Number(startPos) + 1;
   if (endPos < 1) endPos += 8;
@@ -20,7 +21,7 @@ export const section = (type: string | undefined, startPos: string, endPosOri: s
 };
 
 /** SLIDE TRACK分段(仅适用于A1开头的SLIDE TRACK) */
-const section_A1 = (type: string | undefined, endPos: number, turnPos: number, startPos: number): { start: number; areas: string[] }[] | undefined => {
+const section_A1 = (type: string | undefined, endPos: number, turnPos: number, startPos: number): SectionInfo[] | undefined => {
   switch (type) {
     case '-':
       switch (endPos) {
@@ -94,9 +95,8 @@ const section_A1 = (type: string | undefined, endPos: number, turnPos: number, s
       } else if (startPos >= 3 && startPos <= 6) {
         const points = [0, 0.0390625, 0.1640625, 0.2890625, 0.4140625, 0.5390625, 0.6640625, 0.7890625, 0.9140625, 1];
         const areas = [['A1'], ['D2', 'A2'], ['D3', 'A3'], ['D4', 'A4'], ['D5', 'A5'], ['D6', 'A6'], ['D7', 'A7'], ['D8', 'A8'], ['D1', 'A1']];
-
-        for (let i = 0; i < 10 - endPos; i++) {
-          res2.push({ start: points[i] / ((9 - endPos) / 8), areas: areas[i] });
+        for (let i = 0; i < endPos; i++) {
+          res2.push({ start: points[i] / ((endPos - 1) / 8), areas: areas[i] });
         }
       } else {
       }
@@ -565,7 +565,7 @@ const section_A1 = (type: string | undefined, endPos: number, turnPos: number, s
   }
 };
 
-export const section_wifi = (startPos: string, endPosOri: string): { start: number; areas: string[] }[][] => {
+export const section_wifi = (startPos: string, endPosOri: string): SectionInfo[][] => {
   let endPos = Number(endPosOri) - Number(startPos) + 1;
   if (endPos < 1) endPos += 8;
 

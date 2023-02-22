@@ -39,6 +39,9 @@ export interface SlideLine {
   remainTime?: number;
   /** 开始时的时刻，是相对于人体蜈蚣而言的，第一段的beginTime总是从0开始 */
   beginTime?: number;
+
+  /** 分段信息 */
+  sections?: SectionInfo[] | SectionInfo[][];
 }
 
 /** Slide轨迹 */
@@ -56,6 +59,9 @@ export interface SlideTrack {
   /** HOLD演示节拍[]里内容的後一个数字 */
   notenumber?: number;
 
+  /** 分段信息 */
+  sections?: SectionInfo[] | SectionInfo[][];
+
   /**  持续时长/ms*/
   remainTime?: number;
   /**  ため时长 */
@@ -64,6 +70,14 @@ export interface SlideTrack {
   isChain?: boolean;
   /** (人体蜈蚣)包含的子轨迹 */
   slideLines?: SlideLine[];
+}
+
+/** 分段信息 */
+export interface SectionInfo {
+  /** 开始位置与总长的比值 */
+  start: number;
+  /** 这一段的判定区 */
+  areas: string[];
 }
 
 /** 一个Note */
@@ -132,7 +146,7 @@ export interface Note {
   partnotevalue: number;
   /** 这一段的BPM */
   bpm: number;
-  /** 这个Note应当被判定的时间 */
+  /** 这个Note应当被判定的时刻 */
   time: number;
 
   ///////////////////////// 以下仅适用于SlideTrack///////////////
@@ -154,6 +168,8 @@ export interface Note {
   /** GUIDE STAR开始浮现的时间 */
   guideStarEmergeTime?: number;
 
+  /** 分段信息 */
+  sections?: SectionInfo[] | /* WIFI */ SectionInfo[][];
   /** SLIDE TRACK 分段的长度 */
   sectionCount?: number;
 

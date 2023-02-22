@@ -18,7 +18,7 @@ I. 音符类
 - SLIDE TRACK                 星星尾（对于链状SLIDE, 指所有LINE）
 - SLIDE CHAIN / 人体蜈蚣      链状SLIDE
 - SLIDE LINE                  链状SLIDE中的其中一条
-- Section                     SLIDE中在一段判定区内的部分
+- Section / SLIDE区间         SLIDE中在一段判定区内的部分
 - WIFI
 - FIREWORK / HANABI           烟花特效
 

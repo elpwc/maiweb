@@ -1,6 +1,7 @@
 import { Note, SlideLine, SlideTrack } from '../../utils/note';
 import { NoteType } from '../../utils/noteType';
 import { flipPos } from '../areas';
+import { section, section_wifi } from '../slideTracks/section';
 import { flipTrack } from '../slideTracks/_global';
 import { FlipMode } from '../utils/flipMode';
 import { noteValue_and_noteNumber_analyser } from './noteValueAnalyser';
@@ -179,9 +180,9 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
           currentSlideTrackRes.isChain = true;
 
           const temp_slideLinesOri: SlideTrack[] = [];
-          slide.split(']').forEach(lineOriData => {
+          slide.split(']').forEach((lineOriData, i) => {
             if (lineOriData !== '') {
-              const analysedLine = analyse_slide_line(lineOriData + ']', currentBPM, flipMode);
+              const analysedLine = analyse_slide_line(lineOriData + ']', i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, currentBPM, flipMode);
               temp_slideLinesOri.push(analysedLine);
             }
           });
@@ -199,6 +200,10 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
           let beginTime = 0;
 
           temp_slideLinesOri.forEach((slideLineOri, i) => {
+            const sections =
+              slideLineOri.slideType === 'w'
+                ? section_wifi(i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, slideLineOri.endPos!)
+                : section(slideLineOri.slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, slideLineOri.endPos!, slideLineOri.turnPos);
             slideLines.push({
               slideType: slideLineOri.slideType,
               endPos: slideLineOri.endPos,
@@ -208,6 +213,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
               /**  持续时间占比 */
               remainTime: slideLineOri.remainTime,
               beginTime,
+              sections,
             });
             beginTime += slideLineOri.remainTime ?? 0;
           });
@@ -234,39 +240,55 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
           while (positions !== '') {
             if (positions.substring(0, 2) === 'pp' || positions.substring(0, 2) === 'qq') {
               // pp qq
+              const slideType = flipTrack(positions.substring(0, 2), flipMode);
+              const endPos = flipPos(positions.substring(2, 3), flipMode);
+              const pos = i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos;
               temp_slideLinesOri.push({
-                slideType: flipTrack(positions.substring(0, 2), flipMode),
-                endPos: flipPos(positions.substring(2, 3), flipMode),
-                pos: i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos,
+                slideType,
+                endPos,
+                pos,
 
                 /**  持续时间占比 */
                 remainTime: 0,
                 beginTime: 0,
+                sections: section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
               });
               positions = positions.substring(3, positions.length);
             } else if (positions.substring(0, 1) === 'V') {
               //V
+              const slideType = flipTrack(positions.substring(0, 1), flipMode);
+              const turnPos = flipPos(positions.substring(1, 2), flipMode);
+              const endPos = flipPos(positions.substring(2, 3), flipMode);
+              const pos = i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos;
               temp_slideLinesOri.push({
-                slideType: positions.substring(0, 1),
-                turnPos: flipPos(positions.substring(1, 2), flipMode),
-                endPos: flipPos(positions.substring(2, 3), flipMode),
-                pos: i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos,
+                slideType,
+                turnPos,
+                endPos,
+                pos,
 
                 /**  持续时间占比 */
                 remainTime: 0,
                 beginTime: 0,
+                sections: section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
               });
               positions = positions.substring(3, positions.length);
             } else {
               // normal
+              const slideType = flipTrack(positions.substring(0, 1), flipMode);
+              const endPos = flipPos(positions.substring(1, 2), flipMode);
+              const pos = i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos;
               temp_slideLinesOri.push({
-                slideType: flipTrack(positions.substring(0, 1), flipMode),
-                endPos: flipPos(positions.substring(1, 2), flipMode),
-                pos: i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos,
+                slideType,
+                endPos,
+                pos,
 
                 /**  持续时间占比 */
                 remainTime: 0,
                 beginTime: 0,
+                sections:
+                  positions.substring(0, 1) === 'w'
+                    ? section_wifi(i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!)
+                    : section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
               });
               positions = positions.substring(2, positions.length);
             }
@@ -282,7 +304,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
           currentSlideTrackRes.slideLines = temp_slideLinesOri;
         } else {
           // 正常
-          currentSlideTrackRes = analyse_slide_line(slide, currentBPM, flipMode);
+          currentSlideTrackRes = analyse_slide_line(slide, noteRes.pos, currentBPM, flipMode);
         }
 
         noteData = noteData.substring(0, noteData.indexOf('['));

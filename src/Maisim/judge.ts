@@ -1,12 +1,12 @@
 import { abs } from '../math';
 import { JudgeTimeStatus, JudgeStatus } from '../utils/judgeStatus';
+import { SectionInfo } from '../utils/note';
 import { NoteType } from '../utils/noteType';
 import { Sheet } from '../utils/sheet';
 import { ShowingNoteProps } from '../utils/showingNoteProps';
 import { TouchArea } from '../utils/touchArea';
 import { timerPeriod } from './const';
 import { updateRecord } from './recordUpdater';
-import { section_wifi, section } from './slideTracks/section';
 
 /**
  * 做出一个判定
@@ -307,7 +307,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
           if (currentLine.slideType === 'w') {
             // 如果是WIFI
             // SLIDE分段信息
-            const sectionInfoWifi = section_wifi(currentLine.pos!, currentLine.endPos ?? '');
+            const sectionInfoWifi = currentLine.sections as SectionInfo[][];
             console.log(sectionInfoWifi);
             // 可供点击的下一个段的区域
             const nextPositionsWifi = sectionInfoWifi.map((sec, j) => {
@@ -440,7 +440,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
             // 正常SLIDE TRACK,除了WIFI以外的
 
             // SLIDE分段信息
-            const sectionInfo = section(currentLine.slideType, currentLine.pos!, currentLine.endPos ?? '', currentLine.turnPos);
+            const sectionInfo = currentLine.sections as SectionInfo[];
             console.log(sectionInfo);
             // 可供点击的下一个段的区域
             const nextPositions = sectionInfo![note.currentSectionIndex].areas;
@@ -561,7 +561,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
         if (noteIns.slideType === 'w') {
           // 如果是WIFI
           // SLIDE分段信息
-          const sectionInfoWifi = section_wifi(noteIns.pos, noteIns.endPos ?? '');
+          const sectionInfoWifi = noteIns.sections as SectionInfo[][];
           console.log(sectionInfoWifi);
           // 可供点击的下一个段的区域
           const nextPositionsWifi = sectionInfoWifi.map((sec, j) => {
@@ -683,7 +683,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
           // 正常SLIDE TRACK,除了WIFI以外的
 
           // SLIDE分段信息
-          const sectionInfo = section(noteIns.slideType, noteIns.pos, noteIns.endPos ?? '', noteIns.turnPos);
+          const sectionInfo = noteIns.sections as SectionInfo[];
           console.log(note.currentSectionIndex, sectionInfo);
 
           if (note.currentSectionIndex !== -1) {
@@ -707,7 +707,6 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
                 /** 走完最後一段的时间ms */
                 const finalSectionTime = noteIns.remainTime! * (1 - sectionInfo![sectionInfo?.length! - 1].start);
 
-                console.log(123123123)
                 if (isDirectAuto) {
                   // AUTO
                   showingNotes[i].judgeTime = JudgeTimeStatus.Fast;
