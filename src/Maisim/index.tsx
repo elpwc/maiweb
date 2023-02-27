@@ -194,11 +194,6 @@ const handleSongTrackFinish = (callback: () => void): (() => void) => {
   };
 };
 
-const finish = () => {
-  clearInterval(timer_readAndUpdate);
-  clearInterval(timer_draw);
-};
-
 let songdata: Song;
 
 let currentSheet: Sheet;
@@ -228,6 +223,19 @@ let nextNoteIndex = 0;
 const touchConvergeCurrentRho = (c: number, m: number, t: number) => {
   const a = 1 - ((c - m) / (t - m)) ** 1.8;
   return touchMaxDistance * (1 - sqrt(a < 0 ? 0 : a)) /* 判断小于0是为了防止出现根-1导致叶片闭合後不被绘制 */;
+};
+
+/** 终止播放，清除变量，恢复到初始状态 */
+const finish = () => {
+  clearInterval(timer_readAndUpdate);
+  clearInterval(timer_draw);
+  SongTrack.pause();
+  seekSongTrack(0);
+  virtualTime = new VirtualTime();
+  initAnimations(virtualTime);
+
+  showingNotes = [];
+  currentTouchingArea = [];
 };
 
 /*
@@ -692,6 +700,13 @@ const reader_and_updater = async () => {
         }
         newNote.timer++;
         break;
+      /////////////////////////////// E ///////////////////////////////
+      case NoteType.EndMark:
+        if (currentTime >= noteIns.time) {
+          //finish();
+          // 应该播放结算动画
+        }
+        break;
       /////////////////////////////// default ///////////////////////////////
       default:
         if (newNote.status === 0) {
@@ -851,7 +866,7 @@ const reader_and_updater = async () => {
   });
 
   // reader
-  while (currentTime >= currentSheet.notes[nextNoteIndex].emergeTime!) {
+  while (nextNoteIndex < currentSheet.notes.length && currentTime >= currentSheet.notes[nextNoteIndex].emergeTime!) {
     showingNotes.push({
       beatIndex: currentSheet.notes[nextNoteIndex].beatIndex,
       noteIndex: nextNoteIndex,
@@ -874,6 +889,11 @@ const reader_and_updater = async () => {
       currentGuideStarLineIndex: 0,
     });
     nextNoteIndex++;
+
+    if (currentSheet.notes[nextNoteIndex].type === NoteType.EndMark) {
+      // 终止
+      break;
+    }
   }
 
   //console.log(nextNoteIndex, showingNotes);
@@ -1423,7 +1443,7 @@ export default function Maisim(props: Props): JSX.Element {
 
   // 进度条相关
   const [showSlider, setShowSlider] = useState(false);
-  const sliderRef = useRef(null as any as HTMLInputElement); // 很脏……
+  const sliderRef = useRef(null as any as HTMLInputElement); // 很脏……（确实...（）
   const sliderMax = 10000;
   useEffect(() => {
     let slider = sliderRef.current;
