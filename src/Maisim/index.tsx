@@ -832,6 +832,9 @@ const reader_and_updater = async () => {
             }
           }
 
+          // HOLD和TOUCH HOLD的真判定（修正後的
+          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+
           note.status = -3;
 
           // 停掉可能的TOUCH HOLD声音

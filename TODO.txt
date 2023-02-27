@@ -125,8 +125,9 @@ TOUCH GROUP√
 2. 【BUG】TOUCH EACH重叠时，总是显示靠外部的框（ √
 
 2.18
-1. 适配first
+1. 适配first √
 2. first读出来总是0 √
 
 2.22
 1. 紫潘开头有个5<4[8:25] auto不了 √
+2. 蜘蛛の糸紫 auto完不是101% √
