@@ -131,3 +131,17 @@ TOUCH GROUP√
 2.22
 1. 紫潘开头有个5<4[8:25] auto不了 √
 2. 蜘蛛の糸紫 auto完不是101% √
+
+3.3
+1. 把recordUpdater.ts的这一堆写成一个方法，并且添加声音管理，还有更新分数後的一系列更新计算
+          case JudgeStatus.Good:
+            gameRecord.break.criticalPerfect++;
+            gameRecord.criticalPerfect++;
+            gameRecord.achieving_rate += basicEvaluation * 5;
+            gameRecord.achieving_rate_ex += exEvaluation * 1;
+            gameRecord.dx_point += dx_score[0];
+            // @ts-ignore
+            NoteSound.break1.cloneNode().play();
+2. 旧框的basicScore, exScore, lostScore
+3. 中央显示
+4. 当前状态显示

@@ -12,3 +12,9 @@ export enum JudgeTimeStatus {
   Fast,
   Late,
 }
+
+/** 分数计算方式 */
+export enum ScoreCalculationType {
+  maimai,
+  maimaiDX
+}

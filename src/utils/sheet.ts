@@ -27,4 +27,21 @@ export interface Sheet {
   basicEvaluation: number;
   /** 计算分数用：额外评价值（1/5个BREAK的分值） */
   exEvaluation: number;
+  /** 计算分数用：旧框理论总分（BREAK按照2500计算） */
+  oldTheoreticalScore: number;
+  /** 计算分数用：旧框理论Rate */
+  oldTheoreticalRate: number;
+
+  tapCount: number;
+  breakCount: number;
+  breakTapCount: number;
+  breakHoldCount: number;
+  breakSlideCount: number;
+  holdCount: number;
+  slideTrackCount: number;
+  touchCount: number;
+  touchHoldCount: number;
+
+  /** NOTE总数 */
+  noteTotalCount: number;
 }

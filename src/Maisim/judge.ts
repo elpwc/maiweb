@@ -87,7 +87,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 
         // 更新game record
         if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore);
         }
       }
     } else if (noteIns.type === NoteType.Hold) {
@@ -140,14 +140,14 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
           if (noteIns.isShortHold || noteIns.remainTime! <= timerPeriod * 18) {
             //SHORT的话就直接判定了喵
             if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-              updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true);
+              updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, true);
             }
-            updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+            updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore);
             showingNotes[i].status = -4;
           } else {
             // 按压声音
             if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-              updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true);
+              updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, true);
             }
           }
         }
@@ -224,7 +224,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
                     showingNotes[j].judgeStatus = showingNotes[i].judgeStatus;
 
                     // 更新touch group自动判定的TOUCH的game record
-                    updateRecord(currentSheet.notes[touchGroupMemberIndex], showingNotes[j], currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
+                    updateRecord(currentSheet.notes[touchGroupMemberIndex], showingNotes[j], currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, false);
                   }
                 }
               });
@@ -232,7 +232,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
           }
 
           // 更新game record
-          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
+          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, false);
         }
       }
     } else if (noteIns.type === NoteType.TouchHold) {
@@ -284,11 +284,11 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
         }
         if (noteIns.isShortHold || noteIns.remainTime! <= timerPeriod * 27) {
           //SHORT的话就直接判定了喵
-          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore);
           showingNotes[i].status = -4;
         } else {
           // 按压声音
-          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, true);
+          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, true, true);
         }
 
         if (timeD < -timerPeriod * 15 && timeD >= -(noteIns.remainTime! - 12 * timerPeriod)) {
@@ -405,7 +405,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
                       }
                       // game record
                       if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-                        updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
+                        updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, false);
                       }
                     }
                   } else {
@@ -528,7 +528,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 
                   // game record
                   if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-                    updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
+                    updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, false);
                   }
                 } else {
                   // 还不是最後一个区域，进入下一个
@@ -655,7 +655,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
                   }
                   // game record
                   if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-                    updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
+                    updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, false);
                   }
                 }
               } else {
@@ -771,7 +771,7 @@ export const judge = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, cur
 
                 // game record
                 if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
-                  updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, false);
+                  updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, false);
                 }
               } else {
                 // 当前分段位追加
@@ -826,7 +826,7 @@ export const judge_up = (showingNotes: ShowingNoteProps[], currentSheet: Sheet, 
           }
 
           // 暂停按压声音
-          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
+          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, true, false);
         }
         break;
     }

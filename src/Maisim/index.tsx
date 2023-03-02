@@ -31,7 +31,7 @@ import { drawOutRing } from './drawUtils/drawOutRing';
 import { initResources } from './resourceReaders/_init';
 import { APositions, ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged } from './slideTracks/_global';
 import { abs, cos, sin, sqrt, π } from '../math';
-import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
+import { JudgeStatus, JudgeTimeStatus, ScoreCalculationType } from '../utils/judgeStatus';
 import { Note, SectionInfo } from '../utils/note';
 import { isInnerScreenNoteType, isNormalNoteType, NoteType } from '../utils/noteType';
 import { Sheet } from '../utils/sheet';
@@ -89,6 +89,9 @@ let offsetB = 0;
 let speedTap: number = 7;
 /** 谱面流速TOUCH */
 let speedTouch: number = 6.5;
+
+/** 计分方式 */
+let scoreCalculationType: ScoreCalculationType = ScoreCalculationType.maimaiDX;
 
 /** SLIDE显示时机 -1~1*/
 let slideTrackOffset: number = 0;
@@ -766,7 +769,7 @@ const reader_and_updater = async () => {
         note.judgeStatus = JudgeStatus.CriticalPerfect;
       }
       if (note.status === -1 && !note.touched) {
-        updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+        updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore);
       }
     }
 
@@ -848,13 +851,13 @@ const reader_and_updater = async () => {
           }
 
           // HOLD和TOUCH HOLD的真判定（修正後的
-          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation);
+          updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore);
 
           note.status = -3;
 
           // 停掉可能的TOUCH HOLD声音
           if (noteIns.type === NoteType.TouchHold) {
-            updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, true, false);
+            updateRecord(noteIns, note, currentSheet.basicEvaluation, currentSheet.exEvaluation, currentSheet.oldTheoreticalScore, true, false);
           }
         }
       }
@@ -989,7 +992,9 @@ const drawGameRecord = (ctx: CanvasRenderingContext2D) => {
   ctx.font = '30px Arial';
   ctx.strokeText(`COMBO ${gameRecord.combo}`, center[0] - 50, center[1] - 30);
   const record = abs(100 - gameRecord.achieving_rate_lost + gameRecord.achieving_rate_ex).toFixed(4);
+  const old_record = abs(gameRecord.old_achieving_rate).toFixed(4);
   ctx.strokeText(`${record}%`, center[0] - 60, center[1]);
+  ctx.strokeText(`旧:${old_record}%`, center[0] - 60, center[1] + 50);
 };
 
 const onPressDown = (area: TouchArea) => {

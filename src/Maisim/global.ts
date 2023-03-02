@@ -21,6 +21,10 @@ export const gameRecord = {
   achieving_rate_lost: 0,
   /** DX分数 */
   dx_point: 0,
+  /** 旧框计分  */
+  old_score: 0,
+  /** 旧框达成率  */
+  old_achieving_rate: 0,
   tap: {
     criticalPerfect: 0,
     perfect: 0,

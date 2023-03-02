@@ -97,6 +97,21 @@ export const ReadMaimaiData = (sheetData: string, flipMode: FlipMode): Song => {
             basicEvaluation: 0,
             exEvaluation: 0,
             first: NaN,
+            oldTheoreticalScore: 0,
+            oldTheoreticalRate: 0,
+
+            tapCount: 0,
+            breakCount: 0,
+            holdCount: 0,
+            slideTrackCount: 0,
+            touchCount: 0,
+            touchHoldCount: 0,
+            breakTapCount: 0,
+            breakHoldCount: 0,
+            breakSlideCount: 0,
+
+            /** NOTE总数 */
+            noteTotalCount: 0,
           });
         }
         sheetIndex = res.sheets.length - 1;
@@ -120,30 +135,67 @@ export const ReadMaimaiData = (sheetData: string, flipMode: FlipMode): Song => {
             res.sheets[sheetIndex].beats = noteRes.beats;
             res.sheets[sheetIndex].notes = noteRes.notes;
 
+            // 计算各种note数量
+            res.sheets[sheetIndex].tapCount = res.sheets[sheetIndex].notes.filter(note => {
+              return (note.type === NoteType.Tap || note.type === NoteType.Slide) && !note.isBreak;
+            }).length;
+            res.sheets[sheetIndex].breakCount = res.sheets[sheetIndex].notes.filter(note => {
+              return note.isBreak;
+            }).length;
+            res.sheets[sheetIndex].breakTapCount = res.sheets[sheetIndex].notes.filter(note => {
+              return (note.type === NoteType.Tap || note.type === NoteType.Slide) && note.isBreak;
+            }).length;
+            res.sheets[sheetIndex].breakHoldCount = res.sheets[sheetIndex].notes.filter(note => {
+              return note.type === NoteType.Hold && note.isBreak;
+            }).length;
+            res.sheets[sheetIndex].breakSlideCount = res.sheets[sheetIndex].notes.filter(note => {
+              return note.type === NoteType.SlideTrack && note.isBreak;
+            }).length;
+            res.sheets[sheetIndex].touchCount = res.sheets[sheetIndex].notes.filter(note => {
+              return note.type === NoteType.Touch && !note.isBreak;
+            }).length;
+            res.sheets[sheetIndex].touchHoldCount = res.sheets[sheetIndex].notes.filter(note => {
+              return note.type === NoteType.TouchHold && !note.isBreak;
+            }).length;
+            res.sheets[sheetIndex].holdCount = res.sheets[sheetIndex].notes.filter(note => {
+              return note.type === NoteType.Hold && !note.isBreak;
+            }).length;
+            res.sheets[sheetIndex].slideTrackCount = res.sheets[sheetIndex].notes.filter(note => {
+              return note.type === NoteType.SlideTrack && !note.isBreak;
+            }).length;
+
             // evaluation 计算此谱面评价值
             res.sheets[sheetIndex].basicEvaluation =
-              100 /
-              (res.sheets[sheetIndex].notes.filter(note => {
-                return (note.type === NoteType.Tap || note.type === NoteType.Slide || note.type === NoteType.Touch) && !note.isBreak;
-              }).length *
-                1 +
-                res.sheets[sheetIndex].notes.filter(note => {
-                  return (note.type === NoteType.Hold || note.type === NoteType.TouchHold) && !note.isBreak;
-                }).length *
-                  2 +
-                res.sheets[sheetIndex].notes.filter(note => {
-                  return note.type === NoteType.SlideTrack && !note.isBreak;
-                }).length *
-                  3 +
-                res.sheets[sheetIndex].notes.filter(note => {
-                  return note.isBreak;
-                }).length *
-                  5);
-            res.sheets[sheetIndex].exEvaluation =
-              1 /
-              res.sheets[sheetIndex].notes.filter(note => {
-                return note.isBreak;
-              }).length;
+              (100 / (res.sheets[sheetIndex].tapCount + res.sheets[sheetIndex].touchCount)) * 1 +
+              (res.sheets[sheetIndex].holdCount + res.sheets[sheetIndex].touchHoldCount) * 2 +
+              res.sheets[sheetIndex].slideTrackCount * 3 +
+              res.sheets[sheetIndex].breakCount * 5;
+            res.sheets[sheetIndex].exEvaluation = 1 / res.sheets[sheetIndex].breakCount;
+
+            // 旧框理论分
+            res.sheets[sheetIndex].oldTheoreticalScore =
+              (res.sheets[sheetIndex].tapCount + res.sheets[sheetIndex].touchCount) * 500 +
+              (res.sheets[sheetIndex].holdCount + res.sheets[sheetIndex].touchHoldCount) * 1000 +
+              res.sheets[sheetIndex].slideTrackCount * 1500 +
+              res.sheets[sheetIndex].breakCount * 2500;
+
+            // 旧框理论Rate
+            res.sheets[sheetIndex].oldTheoreticalRate =
+              ((res.sheets[sheetIndex].tapCount + res.sheets[sheetIndex].touchCount) * 500 +
+                (res.sheets[sheetIndex].holdCount + res.sheets[sheetIndex].touchHoldCount) * 1000 +
+                res.sheets[sheetIndex].slideTrackCount * 1500 +
+                res.sheets[sheetIndex].breakCount * 2600) /
+              res.sheets[sheetIndex].oldTheoreticalScore;
+
+            // 物量
+            res.sheets[sheetIndex].noteTotalCount =
+              res.sheets[sheetIndex].tapCount +
+              res.sheets[sheetIndex].touchCount +
+              res.sheets[sheetIndex].holdCount +
+              res.sheets[sheetIndex].touchHoldCount +
+              res.sheets[sheetIndex].slideTrackCount +
+              res.sheets[sheetIndex].breakCount;
+
             break;
           default:
             break;
