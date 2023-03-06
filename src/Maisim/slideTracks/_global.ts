@@ -1,7 +1,7 @@
 import { center, maimaiJudgeLineR, maimaiScreenR } from '../const';
 import { abs, acos, asin, atan, cos, sin, sqrt, π } from '../utils/math';
 import { lineLen } from '../drawUtils/_base';
-import { FlipMode } from '../utils/flipMode';
+import { FlipMode } from '../utils/types/flipMode';
 
 /** 尺寸改变後重新赋值 */
 export const updateVarAfterSizeChanged = () => {
@@ -25,6 +25,7 @@ export const updateVarAfterSizeChanged = () => {
   qplen = lineLen(APositions[0][0], APositions[0][1], APositions[5][0], APositions[5][1]) / 2;
 };
 
+// 1-8判定点的坐标
 export let APositions: [number, number][] = [];
 
 for (let i = 1; i <= 8; i++) {

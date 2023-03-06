@@ -2,7 +2,7 @@ import { TouchArea } from '../utils/touchArea';
 import { cos, sin } from '../utils/math';
 import { Area, keys } from '../areas';
 import { center, keyInnerR, keyLightWidth, keyOuterR, keyPressOffset, maimaiSummonLineR } from '../const';
-import { KeyState } from '../utils/keyState';
+import { KeyState } from '../utils/types/keyState';
 
 const drawKey = (ctx: CanvasRenderingContext2D, key: Area, pressed: boolean = false, color: string = '') => {
   // 按钮

@@ -1,4 +1,4 @@
-import { NoteType } from './noteType';
+import { NoteType } from './types/noteType';
 import { SlideTrackJudgementParams } from './slideTrackJudgementParams';
 
 /*

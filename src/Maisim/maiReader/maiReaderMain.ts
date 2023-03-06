@@ -1,7 +1,6 @@
-import { Difficulty } from '../utils/difficulties';
-import { FlipMode } from '../utils/flipMode';
+import { FlipMode } from '../utils/types/flipMode';
 import { Note } from '../utils/note';
-import { NoteType } from '../utils/noteType';
+import { NoteType } from '../utils/types/noteType';
 import { Sheet, SheetSecondaryProps, SheetStatisticsProps } from '../utils/sheet';
 import { Song } from '../utils/song';
 import { read_inote } from './inoteReader';

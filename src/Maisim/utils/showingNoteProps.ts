@@ -1,4 +1,4 @@
-import { JudgeStatus, JudgeTimeStatus } from './judgeStatus';
+import { JudgeStatus, JudgeTimeStatus } from './types/judgeStatus';
 
 /** 当前绘制的Note，包含各类实时变化量 */
 export interface ShowingNoteProps {

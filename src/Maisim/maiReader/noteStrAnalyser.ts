@@ -1,9 +1,9 @@
 import { flipPos } from '../areas';
 import { section, section_wifi } from '../slideTracks/section';
 import { flipTrack } from '../slideTracks/_global';
-import { FlipMode } from '../utils/flipMode';
+import { FlipMode } from '../utils/types/flipMode';
 import { Note, SlideTrack, SlideLine } from '../utils/note';
-import { NoteType } from '../utils/noteType';
+import { NoteType } from '../utils/types/noteType';
 import { noteValue_and_noteNumber_analyser } from './noteValueAnalyser';
 import { analyse_slide_line } from './slideLineAnalyser';
 

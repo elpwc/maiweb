@@ -2,7 +2,7 @@ import { SlideTrack } from '../utils/note';
 import { flipPos } from '../areas';
 import { section } from '../slideTracks/section';
 import { flipTrack } from '../slideTracks/_global';
-import { FlipMode } from '../utils/flipMode';
+import { FlipMode } from '../utils/types/flipMode';
 import { noteValue_and_noteNumber_analyser } from './noteValueAnalyser';
 
 /** 对一整条SLIDE的谱面文本的分析（majdata型人体蜈蚣不走这里，直接在noteStrAnalyser.ts里解析） */

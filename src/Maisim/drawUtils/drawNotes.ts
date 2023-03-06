@@ -26,13 +26,13 @@ import { APositions, trackLength } from '../slideTracks/_global';
 import { drawRotationImage, lineLen } from './_base';
 import { NoteIcon } from '../resourceReaders/noteIconReader';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
-import { RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
+import { RegularStyles, SlideColor, TapStyles } from '../utils/types/noteStyles';
 import { JudgeIcon } from '../resourceReaders/judgeIconReader';
 import { animation } from './animation';
 import { getTouchCenterCoord } from '../areas';
-import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
+import { JudgeStatus, JudgeTimeStatus } from '../utils/types/judgeStatus';
 import { Note, SectionInfo, SlideLine } from '../utils/note';
-import { NoteType } from '../utils/noteType';
+import { NoteType } from '../utils/types/noteType';
 import { ShowingNoteProps } from '../utils/showingNoteProps';
 
 let tapIcon: HTMLImageElement;

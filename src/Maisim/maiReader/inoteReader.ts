@@ -3,10 +3,10 @@ import { maimaiJudgeLineR, maimaiSummonLineR, maimaiTapR } from '../const';
 import { getJudgeDirectionParams } from '../slideTracks/judgeDirection';
 // 仅仅用来计算分段数量
 import { section, section_wifi } from '../slideTracks/section';
-import { FlipMode } from '../utils/flipMode';
+import { FlipMode } from '../utils/types/flipMode';
 import { analyse_note_original_data } from './noteStrAnalyser';
 import { Note, Beat, SlideTrack } from '../utils/note';
-import { NoteType } from '../utils/noteType';
+import { NoteType } from '../utils/types/noteType';
 import { Sheet } from '../utils/sheet';
 
 /**

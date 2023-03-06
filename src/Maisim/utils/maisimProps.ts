@@ -1,10 +1,10 @@
-import { GameState } from './utils/gamestate';
-import { AutoType } from './utils/autoType';
-import { BackgroundType } from './utils/backgroundType';
-import { FlipMode } from './utils/flipMode';
-import { ScoreCalculationType } from './utils/judgeStatus';
-import { TapStyles, RegularStyles, SlideColor } from './utils/noteStyles';
-import { Sheet, SheetSecondaryProps } from './utils/sheet';
+import { GameState } from './types/gamestate';
+import { AutoType } from './types/autoType';
+import { BackgroundType } from './types/backgroundType';
+import { FlipMode } from './types/flipMode';
+import { ScoreCalculationType } from './types/judgeStatus';
+import { TapStyles, RegularStyles, SlideColor } from './types/noteStyles';
+import { Sheet, SheetSecondaryProps } from './sheet';
 
 export interface MaisimProps {
   /** 唯一标识，当有多个Maisim时，请为每个Maisim分配不同的id */

@@ -36,17 +36,17 @@ import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star, JudgeEff
 import { calculate_speed_related_params_for_notes, read_inote } from './maiReader/inoteReader';
 import { VirtualTime } from './drawUtils/virtualTime';
 import { fireworkAt } from './drawUtils/firework';
-import { AutoType } from './utils/autoType';
-import { FlipMode } from './utils/flipMode';
-import { GameState } from './utils/gamestate';
-import { ScoreCalculationType, JudgeStatus, JudgeTimeStatus } from './utils/judgeStatus';
-import { KeyState } from './utils/keyState';
+import { AutoType } from './utils/types/autoType';
+import { FlipMode } from './utils/types/flipMode';
+import { GameState } from './utils/types/gamestate';
+import { ScoreCalculationType, JudgeStatus, JudgeTimeStatus } from './utils/types/judgeStatus';
+import { KeyState } from './utils/types/keyState';
 import { SectionInfo } from './utils/note';
-import { TapStyles, RegularStyles, SlideColor } from './utils/noteStyles';
-import { NoteType, isNormalNoteType, isInnerScreenNoteType } from './utils/noteType';
+import { TapStyles, RegularStyles, SlideColor } from './utils/types/noteStyles';
+import { NoteType, isNormalNoteType, isInnerScreenNoteType } from './utils/types/noteType';
 import { ShowingNoteProps } from './utils/showingNoteProps';
-import { BackgroundType } from './utils/backgroundType';
-import { MaisimProps } from './maisimProps';
+import { BackgroundType } from './utils/types/backgroundType';
+import { MaisimProps } from './utils/maisimProps';
 import { Sheet } from './utils/sheet';
 import { getSheet } from './maiReader/maiReaderMain';
 

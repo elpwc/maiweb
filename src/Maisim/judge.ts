@@ -2,9 +2,9 @@ import { abs } from './utils/math';
 import { TouchArea } from './utils/touchArea';
 import { timerPeriod } from './const';
 import { updateRecord } from './recordUpdater';
-import { JudgeTimeStatus, JudgeStatus } from './utils/judgeStatus';
+import { JudgeTimeStatus, JudgeStatus } from './utils/types/judgeStatus';
 import { SectionInfo } from './utils/note';
-import { NoteType } from './utils/noteType';
+import { NoteType } from './utils/types/noteType';
 import { Sheet } from './utils/sheet';
 import { ShowingNoteProps } from './utils/showingNoteProps';
 

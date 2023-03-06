@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
-import { GameState } from './utils/gamestate';
+import { GameState } from './utils/types/gamestate';
 import Maisim from './Maisim';
-import { RegularStyles, SlideColor, TapStyles } from './utils/noteStyles';
+import { RegularStyles, SlideColor, TapStyles } from './utils/types/noteStyles';
 import { Area } from './Maisim/areas';
 import NotesEditor from './NotesEditor';
 import HeadScreen from './HeadScreen';

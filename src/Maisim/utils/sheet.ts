@@ -1,4 +1,4 @@
-import { Difficulty } from './difficulties';
+import { Difficulty } from './types/difficulties';
 import { Note, Beat } from './note';
 
 /** 一个谱面 */

@@ -1,7 +1,7 @@
 import { abs, atan, cos, sin, π } from './utils/math';
 import { isInner, lineLen } from './drawUtils/_base';
 import { center, keyInnerR, keyOuterR, keyWidth, maimaiADTouchR, maimaiBR, maimaiER, maimaiJudgeLineR, maimaiScreenR, maimaiSummonLineR } from './const';
-import { FlipMode } from './utils/flipMode';
+import { FlipMode } from './utils/types/flipMode';
 
 /** 一块判定区 */
 export interface Area {

@@ -1,8 +1,8 @@
 import { gameRecord } from './global';
 import { NoteSound } from './resourceReaders/noteSoundReader';
-import { JudgeStatus, JudgeTimeStatus } from './utils/judgeStatus';
+import { JudgeStatus, JudgeTimeStatus } from './utils/types/judgeStatus';
 import { Note } from './utils/note';
-import { NoteType } from './utils/noteType';
+import { NoteType } from './utils/types/noteType';
 import { ShowingNoteProps } from './utils/showingNoteProps';
 
 /**  */
