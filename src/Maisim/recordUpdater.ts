@@ -1,10 +1,9 @@
-import { fireworkTrigger } from '.';
-import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
-import { Note } from '../utils/note';
-import { NoteType } from '../utils/noteType';
-import { ShowingNoteProps } from '../utils/showingNoteProps';
 import { gameRecord } from './global';
 import { NoteSound } from './resourceReaders/noteSoundReader';
+import { JudgeStatus, JudgeTimeStatus } from './utils/judgeStatus';
+import { Note } from './utils/note';
+import { NoteType } from './utils/noteType';
+import { ShowingNoteProps } from './utils/showingNoteProps';
 
 /**  */
 const dx_score = [3, 2, 1, 0, 0];
@@ -613,7 +612,7 @@ export const updateRecord = (
             break;
         }
         if (note.hasFirework && props.judgeStatus !== JudgeStatus.Miss) {
-          fireworkTrigger(note);
+          //fireworkTrigger(note);
         }
       }
 
@@ -846,7 +845,7 @@ export const updateRecord = (
         }
       }
       if (note.hasFirework && props.judgeStatus !== JudgeStatus.Miss) {
-        fireworkTrigger(note);
+        //fireworkTrigger(note);
       }
       break;
     default:

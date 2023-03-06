@@ -1,4 +1,4 @@
-import { sqrt } from '../../math';
+import { sqrt } from '../utils/math';
 
 /**
  * 画图

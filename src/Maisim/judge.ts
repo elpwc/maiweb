@@ -1,12 +1,12 @@
-import { abs } from '../math';
-import { JudgeTimeStatus, JudgeStatus } from '../utils/judgeStatus';
-import { SectionInfo } from '../utils/note';
-import { NoteType } from '../utils/noteType';
-import { Sheet } from '../utils/sheet';
-import { ShowingNoteProps } from '../utils/showingNoteProps';
-import { TouchArea } from '../utils/touchArea';
+import { abs } from './utils/math';
+import { TouchArea } from './utils/touchArea';
 import { timerPeriod } from './const';
 import { updateRecord } from './recordUpdater';
+import { JudgeTimeStatus, JudgeStatus } from './utils/judgeStatus';
+import { SectionInfo } from './utils/note';
+import { NoteType } from './utils/noteType';
+import { Sheet } from './utils/sheet';
+import { ShowingNoteProps } from './utils/showingNoteProps';
 
 /**
  * 做出一个判定

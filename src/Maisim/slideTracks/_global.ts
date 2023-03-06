@@ -1,5 +1,5 @@
 import { center, maimaiJudgeLineR, maimaiScreenR } from '../const';
-import { abs, acos, asin, atan, cos, sin, sqrt, π } from '../../math';
+import { abs, acos, asin, atan, cos, sin, sqrt, π } from '../utils/math';
 import { lineLen } from '../drawUtils/_base';
 import { FlipMode } from '../utils/flipMode';
 

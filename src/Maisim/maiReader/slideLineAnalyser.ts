@@ -1,4 +1,4 @@
-import { SlideTrack } from '../../utils/note';
+import { SlideTrack } from '../utils/note';
 import { flipPos } from '../areas';
 import { section } from '../slideTracks/section';
 import { flipTrack } from '../slideTracks/_global';

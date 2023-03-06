@@ -1,4 +1,4 @@
-import { cos, sin } from '../../math';
+import { cos, sin } from '../utils/math';
 import { keys } from '../areas';
 import { canvasHeight, canvasWidth, center, keySideDotDistance, keySideDotR, keySideDotRtoCenter, keySideLineDistance, maimaiR, maimaiScreenR } from '../const';
 import { clearArcFun } from './_base';

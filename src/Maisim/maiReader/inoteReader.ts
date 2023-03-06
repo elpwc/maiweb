@@ -1,13 +1,13 @@
-import { abs } from '../../math';
-import { Note, Beat, SlideTrack } from '../../utils/note';
-import { NoteType } from '../../utils/noteType';
-import { Sheet } from '../../utils/sheet';
+import { abs } from '../utils/math';
 import { maimaiJudgeLineR, maimaiSummonLineR, maimaiTapR } from '../const';
 import { getJudgeDirectionParams } from '../slideTracks/judgeDirection';
 // 仅仅用来计算分段数量
 import { section, section_wifi } from '../slideTracks/section';
 import { FlipMode } from '../utils/flipMode';
 import { analyse_note_original_data } from './noteStrAnalyser';
+import { Note, Beat, SlideTrack } from '../utils/note';
+import { NoteType } from '../utils/noteType';
+import { Sheet } from '../utils/sheet';
 
 /**
  * 读取maimaiDX谱面文件的inote属性

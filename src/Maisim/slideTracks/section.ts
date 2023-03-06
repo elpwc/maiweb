@@ -1,4 +1,4 @@
-import { SectionInfo } from '../../utils/note';
+import { SectionInfo } from '../utils/note';
 import { trackLength } from './_global';
 
 /** SLIDE TRACK分段 */

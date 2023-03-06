@@ -1,4 +1,4 @@
-import { π } from '../math';
+import { π } from './utils/math';
 
 export let canvasWidth = 800;
 export let canvasHeight = 800;

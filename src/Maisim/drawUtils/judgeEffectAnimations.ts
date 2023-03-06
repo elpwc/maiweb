@@ -1,9 +1,8 @@
-import { cos, sin, π } from '../../math';
+import { cos, sin, π } from '../utils/math';
 import { getTouchCenterCoord } from '../areas';
 import { center, judgeEffectDuration, maimaiJudgeLineR, maimaiTapR } from '../const';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { animation } from './animation';
-import { VirtualTime } from './virtualTime';
 import { drawRotationImage } from './_base';
 
 /** TAP STAR HOLD TOUCHHOLD结束後的判定特效 */

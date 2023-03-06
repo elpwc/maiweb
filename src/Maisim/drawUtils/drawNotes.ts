@@ -1,5 +1,4 @@
-import { ShowingNoteProps } from '../../utils/showingNoteProps';
-import { cos, sin, π } from '../../math';
+import { cos, sin, π } from '../utils/math';
 import {
   center,
   maimaiSummonLineR,
@@ -26,14 +25,15 @@ import { getTrackProps } from '../slideTracks/tracks';
 import { APositions, trackLength } from '../slideTracks/_global';
 import { drawRotationImage, lineLen } from './_base';
 import { NoteIcon } from '../resourceReaders/noteIconReader';
-import { Note, SectionInfo, SlideLine } from '../../utils/note';
-import { NoteType } from '../../utils/noteType';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
-import { RegularStyles, SlideColor, TapStyles } from '../../utils/noteStyles';
-import { JudgeStatus, JudgeTimeStatus } from '../../utils/judgeStatus';
+import { RegularStyles, SlideColor, TapStyles } from '../utils/noteStyles';
 import { JudgeIcon } from '../resourceReaders/judgeIconReader';
 import { animation } from './animation';
 import { getTouchCenterCoord } from '../areas';
+import { JudgeStatus, JudgeTimeStatus } from '../utils/judgeStatus';
+import { Note, SectionInfo, SlideLine } from '../utils/note';
+import { NoteType } from '../utils/noteType';
+import { ShowingNoteProps } from '../utils/showingNoteProps';
 
 let tapIcon: HTMLImageElement;
 let tapEachIcon: HTMLImageElement;

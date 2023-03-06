@@ -1,7 +1,9 @@
-import { NoteType } from '../../utils/noteType';
-import { Sheet } from '../../utils/sheet';
-import { Song } from '../../utils/song';
+import { Difficulty } from '../utils/difficulties';
 import { FlipMode } from '../utils/flipMode';
+import { Note } from '../utils/note';
+import { NoteType } from '../utils/noteType';
+import { Sheet, SheetSecondaryProps, SheetStatisticsProps } from '../utils/sheet';
+import { Song } from '../utils/song';
 import { read_inote } from './inoteReader';
 
 // 参见 https://w.atwiki.jp/simai/pages/510.html
@@ -131,70 +133,15 @@ export const ReadMaimaiData = (sheetData: string, flipMode: FlipMode): Song => {
             res.sheets[sheetIndex].level = pvalue;
             break;
           case 'inote':
+            // 分析谱面
             const noteRes = read_inote(pvalue, res.wholebpm, flipMode);
             res.sheets[sheetIndex].beats = noteRes.beats;
             res.sheets[sheetIndex].notes = noteRes.notes;
 
-            // 计算各种note数量
-            res.sheets[sheetIndex].tapCount = res.sheets[sheetIndex].notes.filter(note => {
-              return (note.type === NoteType.Tap || note.type === NoteType.Slide) && !note.isBreak;
-            }).length;
-            res.sheets[sheetIndex].breakCount = res.sheets[sheetIndex].notes.filter(note => {
-              return note.isBreak;
-            }).length;
-            res.sheets[sheetIndex].breakTapCount = res.sheets[sheetIndex].notes.filter(note => {
-              return (note.type === NoteType.Tap || note.type === NoteType.Slide) && note.isBreak;
-            }).length;
-            res.sheets[sheetIndex].breakHoldCount = res.sheets[sheetIndex].notes.filter(note => {
-              return note.type === NoteType.Hold && note.isBreak;
-            }).length;
-            res.sheets[sheetIndex].breakSlideCount = res.sheets[sheetIndex].notes.filter(note => {
-              return note.type === NoteType.SlideTrack && note.isBreak;
-            }).length;
-            res.sheets[sheetIndex].touchCount = res.sheets[sheetIndex].notes.filter(note => {
-              return note.type === NoteType.Touch && !note.isBreak;
-            }).length;
-            res.sheets[sheetIndex].touchHoldCount = res.sheets[sheetIndex].notes.filter(note => {
-              return note.type === NoteType.TouchHold && !note.isBreak;
-            }).length;
-            res.sheets[sheetIndex].holdCount = res.sheets[sheetIndex].notes.filter(note => {
-              return note.type === NoteType.Hold && !note.isBreak;
-            }).length;
-            res.sheets[sheetIndex].slideTrackCount = res.sheets[sheetIndex].notes.filter(note => {
-              return note.type === NoteType.SlideTrack && !note.isBreak;
-            }).length;
+            // 计算物量和基础值
+            const statisticsProps = getStatisticsProps(res.sheets[sheetIndex].notes);
 
-            // evaluation 计算此谱面评价值
-            res.sheets[sheetIndex].basicEvaluation =
-              (100 / (res.sheets[sheetIndex].tapCount + res.sheets[sheetIndex].touchCount)) * 1 +
-              (res.sheets[sheetIndex].holdCount + res.sheets[sheetIndex].touchHoldCount) * 2 +
-              res.sheets[sheetIndex].slideTrackCount * 3 +
-              res.sheets[sheetIndex].breakCount * 5;
-            res.sheets[sheetIndex].exEvaluation = 1 / res.sheets[sheetIndex].breakCount;
-
-            // 旧框理论分
-            res.sheets[sheetIndex].oldTheoreticalScore =
-              (res.sheets[sheetIndex].tapCount + res.sheets[sheetIndex].touchCount) * 500 +
-              (res.sheets[sheetIndex].holdCount + res.sheets[sheetIndex].touchHoldCount) * 1000 +
-              res.sheets[sheetIndex].slideTrackCount * 1500 +
-              res.sheets[sheetIndex].breakCount * 2500;
-
-            // 旧框理论Rate
-            res.sheets[sheetIndex].oldTheoreticalRate =
-              ((res.sheets[sheetIndex].tapCount + res.sheets[sheetIndex].touchCount) * 500 +
-                (res.sheets[sheetIndex].holdCount + res.sheets[sheetIndex].touchHoldCount) * 1000 +
-                res.sheets[sheetIndex].slideTrackCount * 1500 +
-                res.sheets[sheetIndex].breakCount * 2600) /
-              res.sheets[sheetIndex].oldTheoreticalScore;
-
-            // 物量
-            res.sheets[sheetIndex].noteTotalCount =
-              res.sheets[sheetIndex].tapCount +
-              res.sheets[sheetIndex].touchCount +
-              res.sheets[sheetIndex].holdCount +
-              res.sheets[sheetIndex].touchHoldCount +
-              res.sheets[sheetIndex].slideTrackCount +
-              res.sheets[sheetIndex].breakCount;
+            Object.assign(res.sheets[sheetIndex], statisticsProps);
 
             break;
           default:
@@ -206,7 +153,7 @@ export const ReadMaimaiData = (sheetData: string, flipMode: FlipMode): Song => {
 
   // 应用全局属性
   res.sheets.forEach(sheet => {
-    if (isNaN(sheet.first) && globalFirst !== 0) {
+    if (isNaN(sheet.first ?? NaN) && globalFirst !== 0) {
       sheet.first = globalFirst;
     }
     if (sheet.designer === null && globalDes !== null) {
@@ -225,4 +172,103 @@ export const ReadMaimaiData = (sheetData: string, flipMode: FlipMode): Song => {
 「%」→「\％」
 「\」→「\￥」
     */
+};
+
+/** 计算谱面的物量和基础值 */
+export const getStatisticsProps = (notes: Note[]): SheetStatisticsProps => {
+  const res: SheetStatisticsProps = {
+    basicEvaluation: 0,
+    exEvaluation: 0,
+    oldTheoreticalScore: 0,
+    oldTheoreticalRate: 0,
+
+    tapCount: 0,
+    breakCount: 0,
+    holdCount: 0,
+    slideTrackCount: 0,
+    touchCount: 0,
+    touchHoldCount: 0,
+    breakTapCount: 0,
+    breakHoldCount: 0,
+    breakSlideCount: 0,
+
+    /** NOTE总数 */
+    noteTotalCount: 0,
+  };
+
+  // 计算各种note数量
+  res.tapCount = notes.filter(note => {
+    return (note.type === NoteType.Tap || note.type === NoteType.Slide) && !note.isBreak;
+  }).length;
+  res.breakCount = notes.filter(note => {
+    return note.isBreak;
+  }).length;
+  res.breakTapCount = notes.filter(note => {
+    return (note.type === NoteType.Tap || note.type === NoteType.Slide) && note.isBreak;
+  }).length;
+  res.breakHoldCount = notes.filter(note => {
+    return note.type === NoteType.Hold && note.isBreak;
+  }).length;
+  res.breakSlideCount = notes.filter(note => {
+    return note.type === NoteType.SlideTrack && note.isBreak;
+  }).length;
+  res.touchCount = notes.filter(note => {
+    return note.type === NoteType.Touch && !note.isBreak;
+  }).length;
+  res.touchHoldCount = notes.filter(note => {
+    return note.type === NoteType.TouchHold && !note.isBreak;
+  }).length;
+  res.holdCount = notes.filter(note => {
+    return note.type === NoteType.Hold && !note.isBreak;
+  }).length;
+  res.slideTrackCount = notes.filter(note => {
+    return note.type === NoteType.SlideTrack && !note.isBreak;
+  }).length;
+
+  // evaluation 计算此谱面评价值
+  res.basicEvaluation = (100 / (res.tapCount + res.touchCount)) * 1 + (res.holdCount + res.touchHoldCount) * 2 + res.slideTrackCount * 3 + res.breakCount * 5;
+  res.exEvaluation = 1 / res.breakCount;
+
+  // 旧框理论分
+  res.oldTheoreticalScore = (res.tapCount + res.touchCount) * 500 + (res.holdCount + res.touchHoldCount) * 1000 + res.slideTrackCount * 1500 + res.breakCount * 2500;
+
+  // 旧框理论Rate
+  res.oldTheoreticalRate = ((res.tapCount + res.touchCount) * 500 + (res.holdCount + res.touchHoldCount) * 1000 + res.slideTrackCount * 1500 + res.breakCount * 2600) / res.oldTheoreticalScore;
+
+  // 物量
+  res.noteTotalCount = res.tapCount + res.touchCount + res.holdCount + res.touchHoldCount + res.slideTrackCount + res.breakCount;
+
+  return res;
+};
+
+/** 通过谱面文本返回Sheet */
+export const getSheet = (notes: string, flipMode: FlipMode = FlipMode.None, sheetProps: SheetSecondaryProps = {}): Sheet => {
+  const noteRes = read_inote(notes, sheetProps.wholeBPM, flipMode);
+  const res: Sheet = {
+    notes: noteRes.notes,
+    beats: noteRes.beats,
+    basicEvaluation: 0,
+    exEvaluation: 0,
+    oldTheoreticalScore: 0,
+    oldTheoreticalRate: 0,
+    tapCount: 0,
+    breakCount: 0,
+    holdCount: 0,
+    slideTrackCount: 0,
+    touchCount: 0,
+    touchHoldCount: 0,
+    breakTapCount: 0,
+    breakHoldCount: 0,
+    breakSlideCount: 0,
+    noteTotalCount: 0,
+  };
+
+  Object.assign(res, sheetProps);
+
+  // 计算物量和基础值
+  const statisticsProps = getStatisticsProps(res.notes);
+
+  Object.assign(res, statisticsProps);
+
+  return res;
 };

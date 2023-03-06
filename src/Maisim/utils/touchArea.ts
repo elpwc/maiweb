@@ -1,4 +1,4 @@
-import { Area } from '../Maisim/areas';
+import { Area } from '../areas';
 
 /** 按下一个判定区域的记录 */
 export interface TouchArea {

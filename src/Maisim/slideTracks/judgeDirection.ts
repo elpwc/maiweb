@@ -1,4 +1,4 @@
-import { atan2, cos, sin, π } from '../../math';
+import { atan2, cos, sin, π } from '../utils/math';
 import { center } from '../const';
 import {
   APositions,
