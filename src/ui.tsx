@@ -75,6 +75,7 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
         { difficulty: 'master', lvBase: 14, lv: '14.2', name: 'yyyyyyyyyyyyyy', official: false, uploader: 'foobar' },
     ]
     let dummySongs: Array<{ genre: string, title: string, artist: string, notes: Array<{ difficulty: string, lvBase: number, lv: string, name: string, official: boolean, uploader: string }> }> = [
+        // { genre: 'VOCALOID', title: '太陽系デスコ', artist: 'ナユタン星人', notes: [{ difficulty: 'master', lvBase: 10, lv: '10.5', name: '测试谱面', official: false, uploader: 'admin' }] },
         { genre: 'VOCALOID', title: 'いーあるふぁんくらぶ', artist: 'みきとP', notes: dummyNotes },
         { genre: 'VOCALOID', title: 'ココロ', artist: 'トラボルタ', notes: dummyNotes },
         { genre: 'VOCALOID', title: '千本桜', artist: '黒うさP', notes: dummyNotes },
@@ -106,7 +107,7 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
                     <div style={{ background: 'darkgray', marginRight: '5px', height: '30px', width: '30px', flexShrink: '0' }}></div>
                     <div lang="ja">{ song.title }</div>
                 </div>
-                <table style={{ fontSize: '75%', width: '100%', margin: '5px 0px' }}>{ song.notes.map(notes => (
+                <table className="notes-table" style={{ whiteSpace: 'nowrap', fontSize: '75%', width: '100%', margin: '5px 0px' }}>{ song.notes.map(notes => (
                     <tr>
                         <td>
                             <span style={{ color: 'white', fontWeight: 'bold', background: difficultyColors[notes.difficulty], height: '16px', width: '16px', display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -115,9 +116,11 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
                             {' '}
                             <span>{notes.lv}</span>
                         </td>
-                        <td>
-                            {notes.official? [<span style={{ color: 'red' }}>[official]</span>, ' ']: []}
-                            <span>{notes.name}</span>
+                        <td style={{ width: '100%', position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ position: 'absolute', left: '0', right: '0', top: '0', bottom: '0', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                                {notes.official? [<span style={{ color: 'red' }}>[official]</span>, ' ']: []}
+                                <span title={notes.name}>{notes.name}</span>
+                            </div>
                         </td>
                         <td>
                             {notes.uploader}
@@ -222,7 +225,7 @@ export function UI(): JSX.Element {
     return <Context.Provider value={{state,setState}}>
         <div style={{
                 display: 'grid',
-                gridTemplateColumns: l? `${leftColumn?'auto':'0'} 100vh ${rightColumn?'auto':'0'}`: '1fr',
+                gridTemplateColumns: l? `${leftColumn?(rightColumn?'minmax(auto,25vw)':'auto'):'0'} 100vh ${rightColumn?'auto':'0'}`: '1fr',
                 gridTemplateRows: l? 'auto 4fr 2fr min-content': 'min-content 100vw min-content auto',
                 overflow: l? 'hidden': 'auto',
                 position: 'absolute', width: '100vw', height: '100vh', background: '#51BCF3'
