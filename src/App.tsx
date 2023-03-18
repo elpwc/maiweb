@@ -8,6 +8,7 @@ import Begin from './pages/Begin';
 import Select from './pages/Select';
 import NotesEditor from './NotesEditor';
 import HeadScreen from './HeadScreen';
+import { UI } from './ui';
 
 function App() {
   const [gameState, setGameState] = useState(GameState.Begin);
@@ -29,6 +30,8 @@ function App() {
     setwinHeight(window.innerHeight);
     setwinWidth(window.innerWidth);
   }, []);
+
+  return <UI />
 
   return (
     <div className="App">
