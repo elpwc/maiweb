@@ -1,16 +1,19 @@
 import { createContext, useState, useContext, useEffect } from "react";
+import ReactDOM from "react-dom";
 
 interface State {
     layout: 'landscape'|'portrait',
     landscapeLeftPanelsVisible: boolean,
     landscapeRightPanelsVisible: boolean,
     portraitCurrentTab: 'list'|'notes'|'details'
+    currentModal: null|'login'|'profile'|'filters'
 };
 const defaultState: State = {
-    layout: 'landscape' as 'landscape'|'portrait',
+    layout: 'landscape',
     landscapeLeftPanelsVisible: true,
     landscapeRightPanelsVisible: true,
-    portraitCurrentTab: 'list' as 'list'|'notes'|'details'
+    portraitCurrentTab: 'list',
+    currentModal: null
 }
 const Context = createContext<{
     state: State,
@@ -21,6 +24,20 @@ function Panel(props: { style?: React.CSSProperties, children: JSX.Element|JSX.E
     return <div style={{ background: 'white', boxShadow: '1px 3px 0px rgba(0, 0, 0, 0.4)', borderRadius: '5px', padding: '5px', margin: '5px 5px', ...(props.style ?? {}) }}>
         { props.children }
     </div>
+}
+
+function Modal(props: { name: 'login'|'profile'|'filters', title: string, children: JSX.Element|JSX.Element[] }): JSX.Element {
+    let ctx = useContext(Context);
+    return ReactDOM.createPortal(<div style={{ display: (ctx.state.currentModal == props.name)? 'block': 'none' }}>
+        <div style={{ position: 'fixed', backgroundColor: 'black', opacity: '0.5', top: '0', left: '0', bottom: '0', right: '0' }}></div>
+        <Panel style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', padding: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '110%', fontWeight: 'bold' }}>{ props.title }</span>
+                <a href="javascript:void(0)" onClick={() => ctx.setState({ ...ctx.state, currentModal: null })}>Close</a>
+            </div>
+            <div>{ props.children }</div>
+        </Panel>
+    </div>, document.getElementById('portal')!);
 }
 
 function PortraitLayoutTab(props: { tab: 'list'|'notes'|'details', text: string }): JSX.Element {
@@ -46,7 +63,7 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
                 <div>UserName</div>
             </div>
             <div>
-                <a href="javascript:void(0)">Profile...</a>
+                <a href="javascript:void(0)" onClick={() => ctx.setState({ ...ctx.state, currentModal: 'profile' })}>Profile...</a>
                 {' '}
                 <a href="javascript:void(0)">Logout...</a>
             </div>
@@ -236,6 +253,13 @@ export function UI(): JSX.Element {
             <PlayControlPanel style={{ gridArea: l? '4 / 2 / 5 / 3': '3 / 1 / 4 / 2' }}/>
             <NotesEditorPanel style={{ gridArea: l? '1 / 3 / 3 / 4': '4 / 1 / 5 / 2' }}/>
             <DetailsPanel style={{ gridArea: l? '3 / 3 / 5 / 4': '4 / 1 / 5 / 2' }}/>
+            <Modal name={'profile'} title={'Profile'}>
+                <div>The quick brown fox jumps over lazy dog.</div>
+                <div>The quick brown fox jumps over lazy dog.</div>
+                <div>The quick brown fox jumps over lazy dog.</div>
+                <div>The quick brown fox jumps over lazy dog.</div>
+                <div>The quick brown fox jumps over lazy dog.</div>
+            </Modal>
         </div>
     </Context.Provider>
 }
