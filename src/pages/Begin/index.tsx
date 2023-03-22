@@ -32,9 +32,9 @@ export default forwardRef((props: Props, ref) => {
   }, []);
 
   const onPress = (key: string) => {
-    alert(key);
+    // alert(key);
 
-    alert(123123);
+    // alert(123123);
   };
 
   return (
@@ -44,7 +44,7 @@ export default forwardRef((props: Props, ref) => {
       <img src={uiIcon.UI_ADV_Img_PromoChara} className="dxkuma" alt="logo" />
 
       <div className="tip">
-        <p className="beginTip">请点击mamaDX屏幕或按下任意键</p>
+        <p className="beginTip">Maimai Simulator</p>
         <img src={uiIcon.Begin_Tip} className="tipsbg" alt="tip" />
       </div>
 

@@ -1,5 +1,9 @@
+#portal > * > * {
+  z-index: 1000000;
+}
+
 .maisim {
-  position: absolute;
+  position: relative;
 }
 
 .canvasContainer > canvas {
@@ -9,9 +13,11 @@
 }
 
 .canvasContainer > div {
+  position: relative;
+}
+
+.canvasContainer > .uiContainer {
   position: absolute;
-  top: 0;
-  left: 0;
 }
 
 canvas {
@@ -25,22 +31,23 @@ canvas {
 }
 
 .bottomContainer {
-  z-index: -100;
-  background-color: black;
+  /*z-index: -100;*/
+  /*background-color: black;*/
 }
 
 .bottomContainer .bgi {
-  z-index: -90;
+  /*z-index: -90;*/
+  z-index: unset;
 }
 .bottomContainer .bga {
-  z-index: -80;
+  /*z-index: -80;*/
 }
 .bottomContainer .transperantDiv {
-  z-index: -70;
+  /*z-index: -70;*/
   background-color: black;
 }
 .bottomContainer .judgeLine {
-  z-index: -60;
+  /*z-index: -60;*/
 }
 
 .canvasGameRecord {

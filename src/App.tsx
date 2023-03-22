@@ -12,8 +12,7 @@ import { UI } from './ui';
 
 function App() {
   const [gameState, setGameState] = useState(GameState.Begin);
-  const [winWidth, setwinWidth] = useState(0);
-  const [winHeight, setwinHeight] = useState(0);
+  const [size, setSize] = useState(0);
   const [key, setkey]: [string, any] = useState('');
   const [showEditor, setshowEditor]: [boolean, any] = useState(false);
   const [currentnotes, setcurrentnotes]: [string, any] = useState('');
@@ -21,38 +20,16 @@ function App() {
   const beginRef = useRef(null);
   const selectRef = useRef(null);
 
-  useEffect(() => {
-    window.addEventListener('resize', e => {
-      setwinHeight((e.target as Window).innerHeight);
-      setwinWidth((e.target as Window).innerWidth);
-    });
-
-    setwinHeight(window.innerHeight);
-    setwinWidth(window.innerWidth);
-  }, []);
-
-  return <UI />
-
-  return (
-    <div className="App">
-      <div className="mainContainer">
-        <div style={{ display: 'flex' }}>
-          <HeadScreen
-            showEditor={showEditor}
-            setshowEditor={v => {
-              setshowEditor(v);
-            }}
-            winWidth={winWidth}
-            winHeight={winHeight}
-          />
+  return <UI size={size} setSize={setSize} onPlay={() => { document.getElementById('playButton')?.click() }} maisim={
           <Maisim
             gameState={gameState}
             setGameState={e => {
               setGameState(e);
             }}
-            w={winHeight > winWidth ? winWidth : winHeight}
-            h={winHeight > winWidth ? winWidth : winHeight}
-            l={(winHeight > winWidth ? winWidth : winHeight) * 0.78 * 0.3 + 50}
+            w={size}
+            h={size}
+            l={0}
+            //l={size * 0.78 * 0.3 + 50}
             t={0}
             tapStyle={TapStyles.Concise}
             holdStyle={RegularStyles.Concise}
@@ -75,8 +52,8 @@ function App() {
                     <Begin
                       ref={beginRef}
                       onPress={key => {
-                        alert(123);
-                        setGameState(GameState.Select);
+                        // alert(123);
+                        // setGameState(GameState.Select);
                       }}
                     />
                   );
@@ -87,7 +64,7 @@ function App() {
                       onPress={key => {
                         //setGameState(GameState.Select);
                       }}
-                      w={winHeight > winWidth ? winWidth : winHeight}
+                      w={size}
                     />
                   );
                 case GameState.Enter:
@@ -111,21 +88,8 @@ function App() {
             }}
             lightStatus={[]}
           />
-        </div>
-        {showEditor ? (
-          <NotesEditor
-            notes={currentnotes}
-            onEdit={notes => {
-              setcurrentnotes(notes);
-            }}
-            onPlay={() => {}}
-          />
-        ) : (
-          <></>
-        )}
-      </div>
-    </div>
-  );
+        }
+      />
 }
 
 export default App;

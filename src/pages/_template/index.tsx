@@ -21,7 +21,7 @@ export default forwardRef((props: Props, ref) => {
   }));
 
   const onPress = (key: string) => {
-    alert(key);
+    // alert(key);
   };
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext, useEffect, useCallback } from "react";
 import ReactDOM from "react-dom";
 
 interface State {
@@ -6,22 +6,36 @@ interface State {
     landscapeLeftPanelsVisible: boolean,
     landscapeRightPanelsVisible: boolean,
     portraitCurrentTab: 'list'|'notes'|'details'
-    currentModal: null|'login'|'profile'|'filters'
+    currentModal: null|'login'|'profile'|'filters',
+    authToken: null|string
 };
 const defaultState: State = {
     layout: 'landscape',
     landscapeLeftPanelsVisible: true,
     landscapeRightPanelsVisible: true,
     portraitCurrentTab: 'list',
-    currentModal: null
+    currentModal: 'login',
+    authToken: null
 }
 const Context = createContext<{
     state: State,
-    setState: (newState: State) => void
+    setState: (newState: State) => void,
+    onPlay: () => void
 }>(null as any);
 
-function Panel(props: { style?: React.CSSProperties, children: JSX.Element|JSX.Element[] }): JSX.Element {
-    return <div style={{ background: 'white', boxShadow: '1px 3px 0px rgba(0, 0, 0, 0.4)', borderRadius: '5px', padding: '5px', margin: '5px 5px', ...(props.style ?? {}) }}>
+function Link(props: { onClick: () => void, children: string|JSX.Element }): JSX.Element {
+    return <a href="javascript:void(0)" onClick={props.onClick}>{props.children}</a>
+}
+
+function LinkToModal(props: { name: 'login'|'profile'|'filters', children: string|JSX.Element }): JSX.Element {
+    let ctx = useContext(Context);
+    return <Link onClick={() => ctx.setState({ ...ctx.state, currentModal: props.name })}>
+        {props.children}
+    </Link>
+}
+
+function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.Element|JSX.Element[] }): JSX.Element {
+    return <div id={props.id} style={{ background: 'white', boxShadow: '1px 3px 0px rgba(0, 0, 0, 0.4)', borderRadius: '5px', padding: '5px', margin: '5px 5px', ...(props.style ?? {}) }}>
         { props.children }
     </div>
 }
@@ -38,6 +52,36 @@ function Modal(props: { name: 'login'|'profile'|'filters', title: string, childr
             <div>{ props.children }</div>
         </Panel>
     </div>, document.getElementById('portal')!);
+}
+
+function LoginModal(): JSX.Element {
+    let ctx = useContext(Context);
+    let login = () => {
+        // TODO
+    };
+    return <Modal name={'login'} title={'Login'}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px 20px' }}>
+            <table>
+                <tr><td>Email:</td><td><input type="email"></input></td></tr>
+                <tr><td>Pasword:</td><td><input type="password"></input></td></tr>
+            </table>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <a href="javascript:void(0)" onClick={() => { login() }}>Login</a>
+            </div>
+        </div>
+    </Modal>
+}
+
+function ProfileModal(): JSX.Element {
+    return <Modal name={'profile'} title={'Profile'}>
+        {/* TODO */}
+    </Modal>
+}
+
+function FiltersModal(): JSX.Element {
+    return <Modal name={'filters'} title={'Filters'}>
+        {/* TODO */}
+    </Modal>
 }
 
 function PortraitLayoutTab(props: { tab: 'list'|'notes'|'details', text: string }): JSX.Element {
@@ -63,9 +107,9 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
                 <div>UserName</div>
             </div>
             <div>
-                <a href="javascript:void(0)" onClick={() => ctx.setState({ ...ctx.state, currentModal: 'profile' })}>Profile...</a>
+                <LinkToModal name="profile">Profile...</LinkToModal>
                 {' '}
-                <a href="javascript:void(0)">Logout...</a>
+                <a href="javascript:void(0)" onClick={() => { if(globalThis.confirm('logout?')) { /* TODO */ } }}>Logout...</a>
             </div>
         </div>
     </Panel>
@@ -73,6 +117,14 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
 
 function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
+    let play = () => {
+        if (ctx.state.authToken == null) {
+            // play _notesInDev
+            ctx.onPlay();
+        } else {
+            // load song and notes ...
+        }
+    };
     let hide = (
         (ctx.state.layout == 'landscape' && !ctx.state.landscapeLeftPanelsVisible)
         || (ctx.state.layout == 'portrait' && ctx.state.portraitCurrentTab != 'list')
@@ -92,7 +144,7 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
         { difficulty: 'master', lvBase: 14, lv: '14.2', name: 'yyyyyyyyyyyyyy', official: false, uploader: 'foobar' },
     ]
     let dummySongs: Array<{ genre: string, title: string, artist: string, notes: Array<{ difficulty: string, lvBase: number, lv: string, name: string, official: boolean, uploader: string }> }> = [
-        // { genre: 'VOCALOID', title: '太陽系デスコ', artist: 'ナユタン星人', notes: [{ difficulty: 'master', lvBase: 10, lv: '10.5', name: '测试谱面', official: false, uploader: 'admin' }] },
+        { genre: 'VOCALOID', title: '太陽系デスコ', artist: 'ナユタン星人', notes: [{ difficulty: 'master', lvBase: 10, lv: '10.5', name: '测试谱面', official: false, uploader: 'admin' }] },
         { genre: 'VOCALOID', title: 'いーあるふぁんくらぶ', artist: 'みきとP', notes: dummyNotes },
         { genre: 'VOCALOID', title: 'ココロ', artist: 'トラボルタ', notes: dummyNotes },
         { genre: 'VOCALOID', title: '千本桜', artist: '黒うさP', notes: dummyNotes },
@@ -116,7 +168,7 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
         <div style={{ marginBottom: '5px', display: 'flex' }}>
             <input type="text" placeholder="Keyword" style={{ flexGrow: '1', flexShrink: '1', minWidth: '0', marginRight: '5px' }}></input>
             <a href="javascript:void(0)" style={{ marginRight: '5px' }}>Search</a>
-            <a href="javascript:void(0)">Filters...</a>
+            <LinkToModal name={'filters'}>Filters...</LinkToModal>
         </div>
         <div style={{ overflow: 'auto', display: 'flex', flexDirection: 'column', flexGrow: '1', borderTop: '1px solid gray', borderBottom: '1px solid gray' }}>{dummySongs.map((song, i) => (
             <div style={{ borderTop: (i != 0)? '1px solid lightgray': 'none', padding: '5px' }}>
@@ -143,7 +195,7 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
                             {notes.uploader}
                         </td>
                         <td>
-                            <a href="javascript:void(0)">Play</a>
+                            <a href="javascript:void(0)" onClick={() => {play()}}>Play</a>
                             {' '}
                             <a href="javascript:void(0)">Favorite</a>
                         </td>
@@ -154,16 +206,16 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
     </Panel>
 }
 
-function MaisimPanel(props: { style?: React.CSSProperties }): JSX.Element {
+function MaisimPanel(props: { children: JSX.Element, style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
     let l = (ctx.state.layout == 'landscape');
-    return <Panel style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', ...(props.style ?? {}) }}>
-        <div> 
-            <h1>Maisim</h1>
-            <div style={{ position: 'absolute', left: '0px', top: '0px', display: l? 'block': 'none' }}>
+    return <Panel id="maisimPanel" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', ...(props.style ?? {}) }}>
+        {props.children}
+        <div>
+            <div style={{ position: 'absolute', zIndex: '100', left: '0px', top: '0px', display: l? 'block': 'none' }}>
                 <label><input type="checkbox" checked={ctx.state.landscapeLeftPanelsVisible} onChange={() => { ctx.setState({ ...ctx.state, landscapeLeftPanelsVisible: !(ctx.state.landscapeLeftPanelsVisible) }) }}></input>Left Panels</label>
             </div>
-            <div style={{ position: 'absolute', right: '0px', top: '0px', display: l? 'block': 'none' }}>
+            <div style={{ position: 'absolute', zIndex: '100', right: '0px', top: '0px', display: l? 'block': 'none' }}>
                 <label>Right Panels<input type="checkbox" checked={ctx.state.landscapeRightPanelsVisible} onChange={() => { ctx.setState({ ...ctx.state, landscapeRightPanelsVisible: !(ctx.state.landscapeRightPanelsVisible) }) }}></input></label>
             </div>
         </div>
@@ -171,20 +223,24 @@ function MaisimPanel(props: { style?: React.CSSProperties }): JSX.Element {
 }
 
 function PlayControlPanel(props: { style?: React.CSSProperties }): JSX.Element {
+    let ctx = useContext(Context);
+    let playPause = () => {
+        ctx.onPlay();
+    }
     return <Panel style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch', ...(props.style ?? {}) }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
             <div>
-                <select>
-                    <option>1.00x</option>
-                    <option>0.75x</option>
-                    <option>0.50x</option>
+                <select id="controlSpeedSelect">
+                    <option value={1.00}>1.00x</option>
+                    <option value={0.75}>0.75x</option>
+                    <option value={0.50}>0.50x</option>
                 </select>
                 {' '}
-                <a href="javascript:void(0);">Play/Pause</a>
+                <a href="javascript:void(0);" onClick={() => playPause()}>Play/Pause</a>
                 {' '}
                 <a href="javascript:void(0);">Restart</a>
             </div>
-            <input type="range"></input>
+            <input id="controlSlider" type="range" min="0" max={10000 /* ad hoc hard coded value */}></input>
         </div>
     </Panel>
 }
@@ -218,7 +274,7 @@ function DetailsPanel(props: { style?: React.CSSProperties }): JSX.Element {
     </Panel>
 }
 
-export function UI(): JSX.Element {
+export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize: number) => void, onPlay: () => void }): JSX.Element {
     let [state,setState] = useState(defaultState);
     let resizeCallback = () => {
         let [w, h] = [window.innerWidth, window.innerHeight];
@@ -226,11 +282,22 @@ export function UI(): JSX.Element {
         if (newLayout != state.layout) {
             setState({ ...state, layout: newLayout })
         }
+        let resizeMaisim = () => {
+            let maisimPanel = document.getElementById('maisimPanel')!;
+            let style = getComputedStyle(maisimPanel);
+            let newSize = parseFloat(style['height']);
+            props.setSize(newSize);
+        }
+        if (newLayout != state.layout) {
+            setTimeout(resizeMaisim, 0);
+        } else {
+            resizeMaisim();
+        }
     };
     useEffect(() => {
         let t = setTimeout(resizeCallback, 0);
         return () => { clearTimeout(t); };
-    }, [])
+    })
     useEffect(() => {
         window.addEventListener('resize', resizeCallback);
         return () => { window.removeEventListener('resize', resizeCallback); };
@@ -239,7 +306,7 @@ export function UI(): JSX.Element {
     let leftColumn = state.landscapeLeftPanelsVisible;
     let rightColumn = state.landscapeRightPanelsVisible;
     if (!leftColumn && !rightColumn) { leftColumn = rightColumn = true; }
-    return <Context.Provider value={{state,setState}}>
+    return <Context.Provider value={{state,setState, onPlay:props.onPlay}}>
         <div style={{
                 display: 'grid',
                 gridTemplateColumns: l? `${leftColumn?(rightColumn?'minmax(auto,25vw)':'auto'):'0'} 100vh ${rightColumn?'auto':'0'}`: '1fr',
@@ -249,17 +316,13 @@ export function UI(): JSX.Element {
             }}>
             <UserPanel style={{ gridArea: l? '1 / 1 / 2 / 2': '1 / 1 / 2 / 2' }} />
             <SongListPanel style={{ gridArea: l? '2 / 1 / 5 / 2': '4 / 1 / 5 / 2' }}/>
-            <MaisimPanel style={{ gridArea: l? '1 / 2 / 4 / 3': '2 / 1 / 3 / 2' }}/>
+            <MaisimPanel style={{ gridArea: l? '1 / 2 / 4 / 3': '2 / 1 / 3 / 2' }}>{props.maisim}</MaisimPanel>
             <PlayControlPanel style={{ gridArea: l? '4 / 2 / 5 / 3': '3 / 1 / 4 / 2' }}/>
             <NotesEditorPanel style={{ gridArea: l? '1 / 3 / 3 / 4': '4 / 1 / 5 / 2' }}/>
             <DetailsPanel style={{ gridArea: l? '3 / 3 / 5 / 4': '4 / 1 / 5 / 2' }}/>
-            <Modal name={'profile'} title={'Profile'}>
-                <div>The quick brown fox jumps over lazy dog.</div>
-                <div>The quick brown fox jumps over lazy dog.</div>
-                <div>The quick brown fox jumps over lazy dog.</div>
-                <div>The quick brown fox jumps over lazy dog.</div>
-                <div>The quick brown fox jumps over lazy dog.</div>
-            </Modal>
+            <LoginModal />
+            <ProfileModal />
+            <FiltersModal />
         </div>
     </Context.Provider>
 }
