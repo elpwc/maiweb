@@ -1,5 +1,7 @@
 // 这里用来记录一些全局变量
 
+import AnimationUtils from './drawUtils/animation';
+
 /** 游戏记录 */
 export const gameRecord = {
   criticalPerfect: 0,
@@ -70,4 +72,10 @@ export const gameRecord = {
     fast: 0,
     late: 0,
   },
+};
+
+/** 当前动画绘制器 */
+export let animationFactory: AnimationUtils;
+export let setAnimationFactory = (v: AnimationUtils) => {
+  animationFactory = v;
 };

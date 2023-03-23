@@ -2,8 +2,8 @@ import { cos, sin, π } from '../utils/math';
 import { getTouchCenterCoord } from '../areas';
 import { center, judgeEffectDuration, maimaiJudgeLineR, maimaiTapR } from '../const';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
-import { animation } from './animation';
 import { drawRotationImage } from './_base';
+import { animationFactory } from '../global';
 
 /** TAP STAR HOLD TOUCHHOLD结束後的判定特效 */
 export const JudgeEffectAnimation_Hex_or_Star = (ctx: CanvasRenderingContext2D, pos: string, type: 'hex' | 'star') => {
@@ -29,7 +29,7 @@ export const JudgeEffectAnimation_Hex_or_Star = (ctx: CanvasRenderingContext2D, 
 
   /** 外部图案轨道半径 */
   const effectOuterOrbitR = maimaiTapR;
-  animation(null, judgeEffectDuration, (t: number) => {
+  animationFactory.animation(null, judgeEffectDuration, (t: number) => {
     const k = t / judgeEffectDuration;
     // 中心图案
     const effectR = (3 * maimaiTapR - maimaiTapR) * k + maimaiTapR;
@@ -90,7 +90,7 @@ export const JudgeEffectAnimation_Circle = (ctx: CanvasRenderingContext2D, pos: 
 
   /** 其中一个圆环在一组中从出现到消失所占的时长比例 */
   const lengthK = 0.5;
-  animation(noteid.toString(), judgeEffectDuration, (t: number) => {
+  animationFactory.animation(noteid.toString(), judgeEffectDuration, (t: number) => {
     if (t < lengthK * judgeEffectDuration) {
       const k = t / (lengthK * judgeEffectDuration);
       const effectR = (3 * maimaiTapR - maimaiTapR) * k + maimaiTapR;
@@ -151,7 +151,7 @@ export const JudgeEffectAnimation_Touch = (ctx: CanvasRenderingContext2D, pos: s
   const outerStarS1 = maimaiTapR * 0.5;
   /** 到中心距离最终 */
   const outerStarS2 = maimaiTapR * 1.5;
-  animation(
+  animationFactory.animation(
     null,
     judgeEffectDuration * 0.8,
     (t: number) => {
@@ -193,7 +193,7 @@ export const JudgeEffectAnimation_Touch = (ctx: CanvasRenderingContext2D, pos: s
     },
     0,
     () => {
-      animation(null, judgeEffectDuration * 2, (t: number) => {
+      animationFactory.animation(null, judgeEffectDuration * 2, (t: number) => {
         const k = t / (judgeEffectDuration * 2);
 
         // 内圈星星

@@ -1,8 +1,8 @@
 import { getTouchCenterCoord } from '../areas';
 import { fireworkInnerCircleR, fireworkLength, maimaiScreenR, maimaiSummonLineR } from '../const';
+import { animationFactory } from '../global';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { NoteSound } from '../resourceReaders/noteSoundReader';
-import { animation } from './animation';
 import { drawRotationImage } from './_base';
 
 const alphaMaxK = 0.5;
@@ -17,7 +17,7 @@ export const fireworkAt = (pos: string, effectBackCtx: CanvasRenderingContext2D,
   }
 
   const [x, y] = getTouchCenterCoord(pos);
-  animation(null, fireworkLength, (t: number) => {
+  animationFactory.animation(null, fireworkLength, (t: number) => {
     const k = t / fireworkLength;
 
     // 烟花四散

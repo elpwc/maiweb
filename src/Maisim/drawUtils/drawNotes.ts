@@ -28,12 +28,12 @@ import { NoteIcon } from '../resourceReaders/noteIconReader';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { RegularStyles, SlideColor, TapStyles } from '../utils/types/noteStyles';
 import { JudgeIcon } from '../resourceReaders/judgeIconReader';
-import { animation } from './animation';
 import { getTouchCenterCoord } from '../areas';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/types/judgeStatus';
 import { Note, SectionInfo, SlideLine } from '../utils/note';
 import { NoteType } from '../utils/types/noteType';
 import { ShowingNoteProps } from '../utils/showingNoteProps';
+import { animationFactory } from '../global';
 
 let tapIcon: HTMLImageElement;
 let tapEachIcon: HTMLImageElement;
@@ -1270,7 +1270,7 @@ export const drawNote = (
     const drawJudgeImage = (ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, w: number, h: number, centerX: number, centerY: number, r?: number) => {
       const key = 'judge' + note.serial;
       const total = judgeResultShowTime + judgeResultFadeOutDuration;
-      animation(key, total, (t: number) => {
+      animationFactory.animation(key, total, (t: number) => {
         let alpha = 1;
         let scale = 1;
         if (t < judgeResultShowTime) {

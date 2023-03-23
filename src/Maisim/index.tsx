@@ -24,14 +24,13 @@ import { drawOutRing } from './drawUtils/drawOutRing';
 import { initResources } from './resourceReaders/_init';
 import { APositions, ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged } from './slideTracks/_global';
 import { abs, cos, sin, sqrt, π } from './utils/math';
-import { gameRecord } from './global';
+import { gameRecord, animationFactory, setAnimationFactory } from './global';
 import { judge, judge_up } from './judge';
 import { updateRecord } from './recordUpdater';
 import { NoteSound } from './resourceReaders/noteSoundReader';
 import testsong_taiyoukei from './resource/sound/track/太陽系デスコ.mp3';
 import testbgi from './resource/maimai_img/ui/UI_Chara_105810.png';
 import { uiIcon } from './resourceReaders/uiIconReader';
-import { drawAnimations, initAnimations } from './drawUtils/animation';
 import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star, JudgeEffectAnimation_Touch } from './drawUtils/judgeEffectAnimations';
 import { calculate_speed_related_params_for_notes, read_inote } from './maiReader/inoteReader';
 import { VirtualTime } from './drawUtils/virtualTime';
@@ -49,6 +48,7 @@ import { BackgroundType } from './utils/types/backgroundType';
 import { MaisimProps } from './utils/maisimProps';
 import { Sheet } from './utils/sheet';
 import { getSheet } from './maiReader/maiReaderMain';
+import AnimationUtils from './drawUtils/animation';
 
 export default function Maisim({
   /** 唯一标识，当有多个Maisim时，请为每个Maisim分配不同的id */
@@ -284,6 +284,10 @@ export default function Maisim({
     return touchMaxDistance * (1 - sqrt(a < 0 ? 0 : a)) /* 判断小于0是为了防止出现根-1导致叶片闭合後不被绘制 */;
   };
 
+  const initAnimation = () => {
+    setAnimationFactory(new AnimationUtils(virtualTime.current));
+  };
+
   /** 终止播放，清除变量，恢复到初始状态 */
   const finish = () => {
     clearInterval(timer_readAndUpdate.current);
@@ -291,7 +295,7 @@ export default function Maisim({
     SongTrack.pause();
     seekSongTrack(0);
     virtualTime.current = new VirtualTime();
-    initAnimations(virtualTime.current);
+    initAnimation();
 
     showingNotes.current = [];
     currentTouchingArea.current = [];
@@ -1031,7 +1035,7 @@ export default function Maisim({
       );
     }
 
-    drawAnimations();
+    animationFactory.drawAnimations();
 
     // game record
     ctx_game_record.current.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -1422,7 +1426,7 @@ export default function Maisim({
 
   // 初始化动画
   useEffect(() => {
-    initAnimations(virtualTime.current);
+    initAnimation();
   }, []);
 
   // 变速相关
