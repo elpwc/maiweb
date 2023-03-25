@@ -1,6 +1,10 @@
 import { createContext, useState, useContext, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
+import appconfig from "./appconfig";
+import { findOneUser } from "./services/api/findOneUser";
 import { loginAuth } from "./services/api/loginAuth";
+import { updateUser } from "./services/api/updateUser";
+import { uploadAvatarApp } from "./services/api/uploadAvatarApp";
 
 interface State {
     layout: 'landscape'|'portrait',
@@ -53,6 +57,9 @@ function readSavedUser(): null|API.WhoamiDto {
 function writeSavedUser(user: null|API.WhoamiDto) {
     document.cookie = `user=${encodeURIComponent(JSON.stringify(user))}; SameSite=Strict; Max-Age=31536000; Secure`;
 }
+function avatarUrl(avatarFileName: string) {
+    return `${appconfig.apiBaseURL}/api/v1/uploads/${avatarFileName}`;
+}
 
 function Link(props: { onClick: () => void, children: string|JSX.Element }): JSX.Element {
     return <a href="javascript:void(0)" onClick={props.onClick}>{props.children}</a>
@@ -71,14 +78,22 @@ function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.
     </div>
 }
 
-function Modal(props: { name: 'login'|'account'|'filters', title: string, children: JSX.Element|JSX.Element[] }): JSX.Element {
+function Modal(props: { name: 'login'|'account'|'filters', title: string, children: JSX.Element|JSX.Element[], pending?: boolean }): JSX.Element {
     let ctx = useContext(Context);
+    let close = () => {
+        if (typeof props.pending != 'undefined') {
+            if (props.pending) {
+                return;
+            }
+        }
+        ctx.setState({ ...ctx.state, currentModal: null })
+    }
     return ReactDOM.createPortal(<div style={{ display: (ctx.state.currentModal == props.name)? 'block': 'none' }}>
         <div style={{ position: 'fixed', backgroundColor: 'black', opacity: '0.5', top: '0', left: '0', bottom: '0', right: '0' }}></div>
         <Panel style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', padding: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: '110%', fontWeight: 'bold' }}>{ props.title }</span>
-                <a href="javascript:void(0)" onClick={() => ctx.setState({ ...ctx.state, currentModal: null })}>Close</a>
+                <a href="javascript:void(0)" onClick={() => {close()}}>Close</a>
             </div>
             <div>{ props.children }</div>
         </Panel>
@@ -127,9 +142,78 @@ function LoginModal(): JSX.Element {
     </Modal>
 }
 
-function MyPageModal(): JSX.Element {
-    return <Modal name={'account'} title={'Account'}>
-        {/* TODO */}
+function AccountModal(): JSX.Element {
+    let ctx = useContext(Context);
+    let [userInfo, setUserInfo] = useState<null|API.UserInfoDto>(null);
+    useEffect(() => {
+        if (ctx.state.currentModal == 'account') {
+            if (ctx.state.user != null) {
+                (async () => {
+                    try {
+                        setUserInfo(await findOneUser({ id: String(ctx.state.user!.id) }, { token: ctx.state.user!.sessionToken }));
+                    } catch(err) {
+                        showError(err);
+                        setUserInfo(null);
+                    }
+                })();
+            } else {
+                setUserInfo(null);
+            }
+        } else {
+            setUserInfo(null);
+        }
+    }, [ctx.state.currentModal]);
+    let [pending, setPending] = useState(false);
+    let fileInputRef = useRef<HTMLInputElement>(null);
+    let userUpdateBase = (userInfo: API.UserInfoDto): API.UserInfoUpdateDto => {
+        return {
+            name: userInfo.name,
+            bio: userInfo.bio,
+            avatarFileName: userInfo.avatarFileName
+        }
+    }
+    let changeAvatar = async () => {
+        if (pending) {
+            return;
+        }
+        if (!userInfo || !(fileInputRef.current!.files)) {
+            return;
+        }
+        setPending(true);
+        try {
+            let avatarFileName = await uploadAvatarApp(
+                {},
+                fileInputRef.current!.files![0],
+                { token: ctx.state.user!.sessionToken }
+            );
+            await updateUser(
+                { id: String(userInfo.id) },
+                { ...userUpdateBase(userInfo), avatarFileName },
+                { token: ctx.state.user!.sessionToken }
+            );
+            setUserInfo({ ...userInfo, avatarFileName });
+            let updatedUser = { ...ctx.state.user!, avatarFileName };
+            ctx.setState({ ...ctx.state, user: updatedUser });
+            writeSavedUser(updatedUser);
+        } catch(err) {
+            showError(err);
+        } finally {
+            setPending(false);
+        }
+    };
+    return <Modal name={'account'} title={'Account'} pending={pending}>
+        <div style={{ minWidth: '30vw' }}>
+            {(userInfo == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
+            <div>
+                <div style={{ width: '64px', height: '64px', background: userInfo.avatarFileName? undefined: 'lightgray' }}>
+                    { userInfo.avatarFileName? <img src={avatarUrl(userInfo.avatarFileName)} alt="Avatar" style={{ width: '100%', height: '100%' }} />: <></> }
+                </div>
+                <div><input type="file" accept=".png,.gif,.jpg" ref={fileInputRef} onChange={() => {changeAvatar()}}></input></div>
+                <div>Name: {userInfo.name}</div>
+                <div>Bio: {userInfo.bio}</div>
+                <div>CreateTime: {userInfo.createTime}</div>
+            </div>}
+        </div>
     </Modal>
 }
 
@@ -163,8 +247,8 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
                 { (ctx.state.user != null)? <>
-                    <div style={{ background: 'darkgray', marginRight: '5px', height: '20px', width: '20px', flexShrink: '0' }}>
-
+                    <div style={{ background: (ctx.state.user.avatarFileName)? undefined: 'darkgray', marginRight: '5px', height: '20px', width: '20px', flexShrink: '0' }}>
+                        {(ctx.state.user.avatarFileName)? <img src={avatarUrl(ctx.state.user.avatarFileName)} alt="Avatar" style={{ width: '100%', height: '100%' }} />: <></>}
                     </div>
                     <div style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
                         {ctx.state.user.name}
@@ -389,7 +473,7 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
             <NotesEditorPanel style={{ gridArea: l? '1 / 3 / 3 / 4': '4 / 1 / 5 / 2' }}/>
             <DetailsPanel style={{ gridArea: l? '3 / 3 / 5 / 4': '4 / 1 / 5 / 2' }}/>
             <LoginModal />
-            <MyPageModal />
+            <AccountModal />
             <FiltersModal />
         </div>
     </Context.Provider>
