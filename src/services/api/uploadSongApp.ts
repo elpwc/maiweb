@@ -24,7 +24,6 @@ export async function uploadSongApp(body: {}, file?: File, options?: { [key: str
   return request<string>('/upload-song', {
     method: 'POST',
     data: formData,
-    requestType: 'form',
     ...(options || {}),
   });
 }

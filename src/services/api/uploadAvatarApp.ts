@@ -24,7 +24,6 @@ export async function uploadAvatarApp(body: {}, file?: File, options?: { [key: s
   return request<string>('/upload-avatar', {
     method: 'POST',
     data: formData,
-    requestType: 'form',
     ...(options || {}),
   });
 }
