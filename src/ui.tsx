@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useEffect, useCallback } from "react";
 import ReactDOM from "react-dom";
+import { loginAuth } from "./services/api/loginAuth";
 
 interface State {
     layout: 'landscape'|'portrait',
@@ -7,21 +8,51 @@ interface State {
     landscapeRightPanelsVisible: boolean,
     portraitCurrentTab: 'list'|'notes'|'details'
     currentModal: null|'login'|'profile'|'filters',
-    authToken: null|string
+    user: null|API.WhoamiDto
 };
-const defaultState: State = {
-    layout: 'landscape',
-    landscapeLeftPanelsVisible: true,
-    landscapeRightPanelsVisible: true,
-    portraitCurrentTab: 'list',
-    currentModal: 'login',
-    authToken: null
-}
+const defaultState: State = (() => {
+    let user = readSavedUser();
+    return {
+        layout: 'landscape',
+        landscapeLeftPanelsVisible: true,
+        landscapeRightPanelsVisible: true,
+        portraitCurrentTab: 'list',
+        currentModal: (user != null)? null: 'login',
+        user: user
+    }
+})();
 const Context = createContext<{
     state: State,
     setState: (newState: State) => void,
     onPlay: () => void
 }>(null as any);
+
+function showError(err: any) {
+    if (err.data) {
+        if (err.data.message instanceof Array) {
+            alert(err.data.message[0]);
+        } else {
+            alert(err.data.message || err.statusText);
+        }
+    } else {
+        alert(err.statusText);
+    }
+}
+function readSavedUser(): null|API.WhoamiDto {
+    for (let item of document.cookie.split('; ')) {
+        if (item.startsWith('user=')) {
+            try {
+                return JSON.parse(decodeURIComponent(item.split('=')[1]));
+            } catch(err) {
+                return null;
+            }
+        }
+    }
+    return null;
+}
+function writeSavedUser(user: null|API.WhoamiDto) {
+    document.cookie = `user=${encodeURIComponent(JSON.stringify(user))}; SameSite=Strict; Max-Age=31536000; Secure`;
+}
 
 function Link(props: { onClick: () => void, children: string|JSX.Element }): JSX.Element {
     return <a href="javascript:void(0)" onClick={props.onClick}>{props.children}</a>
@@ -56,17 +87,39 @@ function Modal(props: { name: 'login'|'profile'|'filters', title: string, childr
 
 function LoginModal(): JSX.Element {
     let ctx = useContext(Context);
-    let login = () => {
-        // TODO
+    let [pending, setPending] = useState(false);
+    let login = async () => {
+        let emailInput = document.getElementById('emailInput') as HTMLInputElement;
+        let passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
+        if (pending) {
+            return;
+        }
+        setPending(true);
+        try {
+            let user = await loginAuth({
+                email: emailInput.value,
+                password: passwordInput.value
+            });
+            emailInput.value = '';
+            passwordInput.value = '';
+            ctx.setState({ ...ctx.state, user, currentModal: null });
+            writeSavedUser(user);
+        } catch(err) {
+            showError(err)
+        } finally {
+            setPending(false);
+        }
     };
     return <Modal name={'login'} title={'Login'}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px 20px' }}>
             <table>
-                <tr><td>Email:</td><td><input type="email"></input></td></tr>
-                <tr><td>Pasword:</td><td><input type="password"></input></td></tr>
+                <tr><td>Email:</td><td><input id="emailInput" type="email"></input></td></tr>
+                <tr><td>Pasword:</td><td><input id="passwordInput" type="password" onKeyDown={(ev) => { if(ev.key == 'Enter') { login(); } }}></input></td></tr>
             </table>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <a href="javascript:void(0)" onClick={() => { login() }}>Login</a>
+                <a href="javascript:void(0)" onClick={() => { login() }}>
+                    {pending? 'loading...': 'Login'}
+                </a>
             </div>
         </div>
     </Modal>
@@ -100,16 +153,29 @@ function PortaritLayoutTabs(): JSX.Element {
 function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
     let hide = (ctx.state.layout == 'landscape' && !ctx.state.landscapeLeftPanelsVisible);
-    return <Panel style={{ display: hide? 'none': 'block', ...(props.style ?? {}) }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ background: 'darkgray', marginRight: '5px', height: '20px', width: '20px', flexShrink: '0' }}></div>
-                <div>UserName</div>
+    let logout = () => {
+        ctx.setState({ ...ctx.state, user: null, currentModal: 'login' });
+        writeSavedUser(null);
+    }
+    return <Panel style={{ display: hide? 'none': 'block', overflow: 'hidden', ...(props.style ?? {}) }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+                { (ctx.state.user != null)? <>
+                    <div style={{ background: 'darkgray', marginRight: '5px', height: '20px', width: '20px', flexShrink: '0' }}>
+
+                    </div>
+                    <div style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                        {ctx.state.user.name}
+                    </div>
+                </>: <>
+                    <div style={{ background: 'darkgray', marginRight: '5px', height: '20px', width: '20px', flexShrink: '0' }}></div>
+                    <div>UserName</div>
+                </> }
             </div>
             <div>
                 <LinkToModal name="profile">Profile...</LinkToModal>
                 {' '}
-                <a href="javascript:void(0)" onClick={() => { if(globalThis.confirm('logout?')) { /* TODO */ } }}>Logout...</a>
+                <a href="javascript:void(0)" onClick={() => { if(globalThis.confirm('logout?')) { logout(); } }}>Logout...</a>
             </div>
         </div>
     </Panel>
@@ -118,7 +184,7 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
 function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
     let play = () => {
-        if (ctx.state.authToken == null) {
+        if (ctx.state.user == null) {
             // play _notesInDev
             ctx.onPlay();
         } else {
@@ -297,7 +363,7 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
     useEffect(() => {
         let t = setTimeout(resizeCallback, 0);
         return () => { clearTimeout(t); };
-    })
+    }, []);
     useEffect(() => {
         window.addEventListener('resize', resizeCallback);
         return () => { window.removeEventListener('resize', resizeCallback); };
