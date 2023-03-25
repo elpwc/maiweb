@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect, useCallback } from "react";
+import { createContext, useState, useContext, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { loginAuth } from "./services/api/loginAuth";
 
@@ -7,7 +7,7 @@ interface State {
     landscapeLeftPanelsVisible: boolean,
     landscapeRightPanelsVisible: boolean,
     portraitCurrentTab: 'list'|'notes'|'details'
-    currentModal: null|'login'|'profile'|'filters',
+    currentModal: null|'login'|'account'|'filters',
     user: null|API.WhoamiDto
 };
 const defaultState: State = (() => {
@@ -58,7 +58,7 @@ function Link(props: { onClick: () => void, children: string|JSX.Element }): JSX
     return <a href="javascript:void(0)" onClick={props.onClick}>{props.children}</a>
 }
 
-function LinkToModal(props: { name: 'login'|'profile'|'filters', children: string|JSX.Element }): JSX.Element {
+function LinkToModal(props: { name: 'login'|'account'|'filters', children: string|JSX.Element }): JSX.Element {
     let ctx = useContext(Context);
     return <Link onClick={() => ctx.setState({ ...ctx.state, currentModal: props.name })}>
         {props.children}
@@ -71,7 +71,7 @@ function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.
     </div>
 }
 
-function Modal(props: { name: 'login'|'profile'|'filters', title: string, children: JSX.Element|JSX.Element[] }): JSX.Element {
+function Modal(props: { name: 'login'|'account'|'filters', title: string, children: JSX.Element|JSX.Element[] }): JSX.Element {
     let ctx = useContext(Context);
     return ReactDOM.createPortal(<div style={{ display: (ctx.state.currentModal == props.name)? 'block': 'none' }}>
         <div style={{ position: 'fixed', backgroundColor: 'black', opacity: '0.5', top: '0', left: '0', bottom: '0', right: '0' }}></div>
@@ -88,9 +88,11 @@ function Modal(props: { name: 'login'|'profile'|'filters', title: string, childr
 function LoginModal(): JSX.Element {
     let ctx = useContext(Context);
     let [pending, setPending] = useState(false);
+    let emailInputRef = useRef<HTMLInputElement>(null);
+    let passwordInputRef = useRef<HTMLInputElement>(null);
     let login = async () => {
-        let emailInput = document.getElementById('emailInput') as HTMLInputElement;
-        let passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
+        let emailInput = emailInputRef.current!;
+        let passwordInput = passwordInputRef.current!;
         if (pending) {
             return;
         }
@@ -113,8 +115,8 @@ function LoginModal(): JSX.Element {
     return <Modal name={'login'} title={'Login'}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px 20px' }}>
             <table>
-                <tr><td>Email:</td><td><input id="emailInput" type="email"></input></td></tr>
-                <tr><td>Pasword:</td><td><input id="passwordInput" type="password" onKeyDown={(ev) => { if(ev.key == 'Enter') { login(); } }}></input></td></tr>
+                <tr><td>Email:</td><td><input ref={emailInputRef} type="email"></input></td></tr>
+                <tr><td>Pasword:</td><td><input ref={passwordInputRef} type="password" onKeyDown={(ev) => { if(ev.key == 'Enter') { login(); } }}></input></td></tr>
             </table>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <a href="javascript:void(0)" onClick={() => { login() }}>
@@ -125,8 +127,8 @@ function LoginModal(): JSX.Element {
     </Modal>
 }
 
-function ProfileModal(): JSX.Element {
-    return <Modal name={'profile'} title={'Profile'}>
+function MyPageModal(): JSX.Element {
+    return <Modal name={'account'} title={'Account'}>
         {/* TODO */}
     </Modal>
 }
@@ -169,11 +171,11 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
                     </div>
                 </>: <>
                     <div style={{ background: 'darkgray', marginRight: '5px', height: '20px', width: '20px', flexShrink: '0' }}></div>
-                    <div>UserName</div>
+                    <div>Name</div>
                 </> }
             </div>
             <div>
-                <LinkToModal name="profile">Profile...</LinkToModal>
+                <LinkToModal name="account">Account...</LinkToModal>
                 {' '}
                 <a href="javascript:void(0)" onClick={() => { if(globalThis.confirm('logout?')) { logout(); } }}>Logout...</a>
             </div>
@@ -387,7 +389,7 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
             <NotesEditorPanel style={{ gridArea: l? '1 / 3 / 3 / 4': '4 / 1 / 5 / 2' }}/>
             <DetailsPanel style={{ gridArea: l? '3 / 3 / 5 / 4': '4 / 1 / 5 / 2' }}/>
             <LoginModal />
-            <ProfileModal />
+            <MyPageModal />
             <FiltersModal />
         </div>
     </Context.Provider>
