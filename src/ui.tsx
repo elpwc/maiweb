@@ -11,7 +11,7 @@ interface State {
     landscapeLeftPanelsVisible: boolean,
     landscapeRightPanelsVisible: boolean,
     portraitCurrentTab: 'list'|'notes'|'details'
-    currentModal: null|'login'|'account'|'filters',
+    currentModal: null|ModalName,
     user: null|API.WhoamiDto
 };
 const defaultState: State = (() => {
@@ -65,24 +65,24 @@ function Link(props: { onClick: () => void, children: string|JSX.Element }): JSX
     return <a href="javascript:void(0)" onClick={props.onClick}>{props.children}</a>
 }
 
-function LinkToModal(props: { name: 'login'|'account'|'filters', children: string|JSX.Element }): JSX.Element {
-    let ctx = useContext(Context);
-    return <Link onClick={() => ctx.setState({ ...ctx.state, currentModal: props.name })}>
-        {props.children}
-    </Link>
-}
-
 function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.Element|JSX.Element[] }): JSX.Element {
     return <div id={props.id} style={{ background: 'white', boxShadow: '1px 3px 0px rgba(0, 0, 0, 0.4)', borderRadius: '5px', padding: '5px', margin: '5px 5px', ...(props.style ?? {}) }}>
         { props.children }
     </div>
 }
 
-function Modal(props: { name: 'login'|'account'|'filters', title: string, children: JSX.Element|JSX.Element[], pending?: boolean }): JSX.Element {
+type ModalName = 'login'|'menu'|'profile'|'songlist'|'noteslist'|'filters';
+function LinkToModal(props: { name: ModalName, children: string|JSX.Element }): JSX.Element {
+    let ctx = useContext(Context);
+    return <Link onClick={() => ctx.setState({ ...ctx.state, currentModal: props.name })}>
+        {props.children}
+    </Link>
+}
+function Modal(props: { name: ModalName, title: string, children: JSX.Element|JSX.Element[], closeGuard?: () => boolean }): JSX.Element {
     let ctx = useContext(Context);
     let close = () => {
-        if (typeof props.pending != 'undefined') {
-            if (props.pending) {
+        if (props.closeGuard) {
+            if (!(props.closeGuard())) {
                 return;
             }
         }
@@ -142,11 +142,22 @@ function LoginModal(): JSX.Element {
     </Modal>
 }
 
-function AccountModal(): JSX.Element {
+function MenuModal(): JSX.Element {
+    return <Modal name={'menu'} title={'Menu'}>
+        <div>{ ([['profile','My Profile'],['songlist','Uploaded Songs'],['noteslist','Uploaded Notes']] as [ModalName,string][]).map(([name,title]) =>
+            <LinkToModal name={name} key={name}>
+                <div style={{ minWidth: '30vw', textAlign: 'center', padding: '8px 0px', margin: '8px 0px', border: '2px solid darkblue', borderRadius: '5px', backgroundColor: 'hsl(233, 50%, 97%)' }}>
+                    {title}
+                </div>
+            </LinkToModal>
+        )}</div>
+    </Modal>
+}
+function ProfileModal(): JSX.Element {
     let ctx = useContext(Context);
     let [userInfo, setUserInfo] = useState<null|API.UserInfoDto>(null);
     useEffect(() => {
-        if (ctx.state.currentModal == 'account') {
+        if (ctx.state.currentModal == 'profile') {
             if (ctx.state.user != null) {
                 (async () => {
                     try {
@@ -201,7 +212,7 @@ function AccountModal(): JSX.Element {
             setPending(false);
         }
     };
-    return <Modal name={'account'} title={'Account'} pending={pending}>
+    return <Modal name={'profile'} title={'Profile'} closeGuard={() => !pending}>
         <div style={{ minWidth: '30vw' }}>
             {(userInfo == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
             <div>
@@ -214,6 +225,16 @@ function AccountModal(): JSX.Element {
                 <div>CreateTime: {userInfo.createTime}</div>
             </div>}
         </div>
+    </Modal>
+}
+function SongListModal(): JSX.Element {
+    return <Modal name="songlist" title="Song List">
+        <h1>Song List</h1>
+    </Modal>
+}
+function NotesListModal(): JSX.Element {
+    return <Modal name="noteslist" title="Notes List">
+        <h1>Notes List</h1>
     </Modal>
 }
 
@@ -259,7 +280,7 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
                 </> }
             </div>
             <div>
-                <LinkToModal name="account">Account...</LinkToModal>
+                <LinkToModal name="menu">Menu...</LinkToModal>
                 {' '}
                 <a href="javascript:void(0)" onClick={() => { if(globalThis.confirm('logout?')) { logout(); } }}>Logout...</a>
             </div>
@@ -473,7 +494,10 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
             <NotesEditorPanel style={{ gridArea: l? '1 / 3 / 3 / 4': '4 / 1 / 5 / 2' }}/>
             <DetailsPanel style={{ gridArea: l? '3 / 3 / 5 / 4': '4 / 1 / 5 / 2' }}/>
             <LoginModal />
-            <AccountModal />
+            <MenuModal />
+            <ProfileModal />
+            <SongListModal />
+            <NotesListModal />
             <FiltersModal />
         </div>
     </Context.Provider>
