@@ -71,7 +71,7 @@ function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.
     </div>
 }
 
-type ModalName = 'register'|'login'|'menu'|'profile'|'song_edit'|'notes_edit'|'filters';
+type ModalName = 'register'|'login'|'menu'|'profile'|'profile_edit'|'song_edit'|'notes_edit'|'filters';
 interface Modal { name: ModalName, argument?: any };
 function LinkToModal(props: { name: ModalName, argument?: any, children: string|JSX.Element, style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
@@ -166,26 +166,62 @@ function MenuModal(): JSX.Element {
 }
 function ProfileModal(): JSX.Element {
     let ctx = useContext(Context);
+    let [pending, setPending] = useState(false);
     let [userInfo, setUserInfo] = useState<null|API.UserInfoDto>(null);
     useEffect(() => {
         if (ctx.state.currentModal?.name == 'profile') {
-            if (ctx.state.user != null) {
-                (async () => {
-                    try {
-                        setUserInfo(await findOneUser({ id: String(ctx.state.user!.id) }, { token: ctx.state.user!.sessionToken }));
-                    } catch(err) {
-                        showError(err);
-                        setUserInfo(null);
-                    }
-                })();
-            } else {
-                setUserInfo(null);
-            }
+            let currentUser = ctx.state.user!;
+            let userId: number = ctx.state.currentModal.argument ?? currentUser.id;
+            (async () => {
+                setPending(true);
+                try {
+                    setUserInfo(await findOneUser(
+                        { id: String(userId) },
+                        { token: currentUser.sessionToken }
+                    ));
+                } catch(err) {
+                    showError(err);
+                    setUserInfo(null);
+                } finally {
+                    setPending(false);
+                }
+            })();
         } else {
             setUserInfo(null);
         }
     }, [ctx.state.currentModal]);
+    let edit = () => {
+        ctx.setState({ ...ctx.state, currentModal: {
+            name: 'profile_edit',
+            argument: userInfo!
+        }})
+    };
+    return <Modal name={'profile'} title={'Profile'} closeGuard={() => !pending}>
+        <div style={{ minWidth: '30vw' }}>
+            {(userInfo == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
+            <div>
+                <div style={{ width: '64px', height: '64px', background: userInfo.avatarFileName? undefined: 'lightgray' }}>
+                    { userInfo.avatarFileName? <img src={avatarUrl(userInfo.avatarFileName)} alt="Avatar" style={{ width: '100%', height: '100%' }} />: <></> }
+                </div>
+                <div>Name: {userInfo.name}</div>
+                <div>Bio: {userInfo.bio}</div>
+                <div>CreateTime: {userInfo.createTime}</div>
+                <Link onClick={() => {edit()}}>Edit</Link>
+            </div>}
+        </div>
+    </Modal>
+}
+function ProfileEditModal(): JSX.Element {
+    let ctx = useContext(Context);
     let [pending, setPending] = useState(false);
+    let [userInfo, setUserInfo] = useState<null|API.UserInfoDto>(null);
+    useEffect(() => {
+        if (ctx.state.currentModal?.name == 'profile_edit') {
+            setUserInfo(ctx.state.currentModal.argument!);
+        } else {
+            setUserInfo(null);
+        }
+    }, [ctx.state.currentModal]);
     let fileInputRef = useRef<HTMLInputElement>(null);
     let userUpdateBase = (userInfo: API.UserInfoDto): API.UserInfoUpdateDto => {
         return {
@@ -223,7 +259,7 @@ function ProfileModal(): JSX.Element {
             setPending(false);
         }
     };
-    return <Modal name={'profile'} title={'Profile'} closeGuard={() => !pending}>
+    return <Modal name={'profile_edit'} title={'Edit Profile'} closeGuard={() => !pending}>
         <div style={{ minWidth: '30vw' }}>
             {(userInfo == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
             <div>
@@ -512,6 +548,7 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
             <LoginModal />
             <MenuModal />
             <ProfileModal />
+            <ProfileEditModal />
             <SongEditModal />
             <NotesEditModal />
             <FiltersModal />
