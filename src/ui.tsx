@@ -153,11 +153,12 @@ function LoginModal(): JSX.Element {
 }
 
 function MenuModal(): JSX.Element {
+    let ctx = useContext(Context);
     let items: [ModalName,string][] = [['profile','My Profile'],['song_edit','Add New Song'],['notes_edit','Add New Notes']];
     return <Modal name={'menu'} title={'Menu'}>
         <div>{ items.map(([name,title]) =>
             <LinkToModal name={name} key={name}>
-                <div style={{ minWidth: '30vw', textAlign: 'center', padding: '8px 0px', margin: '8px 0px', border: '2px solid darkblue', borderRadius: '5px', backgroundColor: 'hsl(233, 50%, 97%)' }}>
+                <div style={{ minWidth: (ctx.state.layout == 'landscape')? '30vw': '60vw', textAlign: 'center', padding: '8px 0px', margin: '8px 0px', border: '2px solid darkblue', borderRadius: '5px', backgroundColor: 'hsl(233, 50%, 97%)' }}>
                     {title}
                 </div>
             </LinkToModal>
@@ -196,17 +197,46 @@ function ProfileModal(): JSX.Element {
             argument: userInfo!
         }})
     };
+    // TODO: relations, ban/unban
     return <Modal name={'profile'} title={'Profile'} closeGuard={() => !pending}>
-        <div style={{ minWidth: '30vw' }}>
+        <div style={{ minWidth: (ctx.state.layout == 'landscape')? '40vw': '80vw', maxHeight: '60vh', overflow: 'auto', margin: '10px 0px' }}>
             {(userInfo == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
             <div>
-                <div style={{ width: '64px', height: '64px', background: userInfo.avatarFileName? undefined: 'lightgray' }}>
-                    { userInfo.avatarFileName? <img src={avatarUrl(userInfo.avatarFileName)} alt="Avatar" style={{ width: '100%', height: '100%' }} />: <></> }
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ width: '64px', height: '64px', background: userInfo.avatarFileName? undefined: 'lightgray' }}>
+                            { userInfo.avatarFileName? <img src={avatarUrl(userInfo.avatarFileName)} alt="Avatar" style={{ width: '100%', height: '100%' }} />: <></> }
+                        </div>
+                        <div>
+                            <div style={{ fontSize: '110%', fontWeight: 'bold' }}>{userInfo.name}</div>
+                            <div style={{ fontSize: '90%', color: 'gray' }}>UID {userInfo.id}{ (userInfo.authLevel == 10)? ' (admin)': (userInfo.authLevel == 5)? ' (moderator)': '' }</div>
+                            <div style={{ fontSize: '90%', color: 'gray' }}>registered {(new Date(userInfo.createTime)).toDateString()}</div>
+                        </div>
+                    </div>
+                    <div>
+                        { (userInfo.id == ctx.state.user!.id)?
+                            <div><Link onClick={() => {edit()}} style={{ margin: '0px 10px' }}>Edit My Profile</Link></div>: <></> }
+                        { (userInfo.banned)?
+                            <div style={{ color: 'red' }}>[Banned]</div>: <></> }
+                        { ((ctx.state.user!.authLevel == 5 || ctx.state.user!.authLevel == 10) && (userInfo.id != ctx.state.user!.id) && (userInfo.authLevel == 0))?
+                            (userInfo.banned? <Link onClick={() => {}}>Unban</Link>: <Link onClick={() => {}}>Ban</Link>): <></> }
+                    </div>
                 </div>
-                <div>Name: {userInfo.name}</div>
-                <div>Bio: {userInfo.bio}</div>
-                <div>CreateTime: {userInfo.createTime}</div>
-                <Link onClick={() => {edit()}}>Edit</Link>
+                <div style={{ fontSize: '90%', padding: '5px 10px', margin: '5px 0px', backgroundColor: 'hsl(0,0%,94%)', color: 'hsl(0,0%,35%)' }}>{ userInfo.bio || '(bio is not set)' }</div>
+                <div>
+                    <div style={{ marginBottom: '5px' }}>
+                        <div><b>◆ Songs</b></div>
+                        <div>...</div>
+                    </div>
+                    <div style={{ marginBottom: '5px' }}>
+                        <div><b>◆ Notes</b></div>
+                        <div>...</div>
+                    </div>
+                    <div style={{ marginBottom: '5px' }}>
+                        <div><b>◆ Records</b></div>
+                        <div>...</div>
+                    </div>
+                </div>
             </div>}
         </div>
     </Modal>
@@ -259,7 +289,7 @@ function ProfileEditModal(): JSX.Element {
             setPending(false);
         }
     };
-    return <Modal name={'profile_edit'} title={'Edit Profile'} closeGuard={() => !pending}>
+    return <Modal name={'profile_edit'} title={'Edit My Profile'} closeGuard={() => !pending}>
         <div style={{ minWidth: '30vw' }}>
             {(userInfo == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
             <div>
