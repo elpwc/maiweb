@@ -11,3 +11,9 @@
 .notes-table td {
   padding-right: 5px;
 }
+.appearLikeLink {
+  text-decoration: underline;
+  cursor: pointer;
+  color: LinkText;
+  color: -webkit-link;
+}

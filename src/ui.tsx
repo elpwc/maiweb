@@ -258,15 +258,23 @@ function ProfileModal(): JSX.Element {
 function ProfileEditModal(): JSX.Element {
     let ctx = useContext(Context);
     let [pending, setPending] = useState(false);
+    let [dirty, setDirty] = useState(false);
     let [userInfo, setUserInfo] = useState<null|API.UserInfoDto>(null);
+    let avatarImageRef = useRef<HTMLImageElement>(null);
+    let avatarFileInputRef = useRef<HTMLInputElement>(null);
+    let nameInputRef = useRef<HTMLInputElement>(null);
+    let bioInputRef = useRef<HTMLTextAreaElement>(null);
     useEffect(() => {
         if (ctx.state.currentModal?.name == 'profile_edit') {
             setUserInfo(ctx.state.currentModal.argument!);
+            // avatarImageRef.current!.src = avatarUrl(userInfo?.avatarFileName);
+            // avatarFileInputRef.current!.value = null as any;
+            // nameInputRef.current!.value = userInfo?.name ?? '';
+            // bioInputRef.current!.value = userInfo?.bio ?? '';
         } else {
             setUserInfo(null);
         }
     }, [ctx.state.currentModal]);
-    let fileInputRef = useRef<HTMLInputElement>(null);
     let userUpdateBase = (userInfo: API.UserInfoDto): API.UserInfoUpdateDto => {
         return {
             name: userInfo.name,
@@ -278,14 +286,14 @@ function ProfileEditModal(): JSX.Element {
         if (pending) {
             return;
         }
-        if (!userInfo || !(fileInputRef.current!.files)) {
+        if (!userInfo || !(avatarFileInputRef.current!.files)) {
             return;
         }
         setPending(true);
         try {
             let avatarFileName = await uploadAvatarApp(
                 {},
-                fileInputRef.current!.files![0],
+                avatarFileInputRef.current!.files![0],
                 { token: ctx.state.user!.sessionToken }
             );
             await updateUser(
@@ -304,16 +312,33 @@ function ProfileEditModal(): JSX.Element {
         }
     };
     return <Modal name={'profile_edit'} title={'Edit My Profile'} closeGuard={() => !pending}>
-        <div style={{ minWidth: '30vw' }}>
+        <div>
             {(userInfo == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
             <div>
-                <div style={{ width: '64px', height: '64px', background: userInfo.avatarFileName? undefined: 'lightgray' }}>
-                    { userInfo.avatarFileName? <img src={avatarUrl(userInfo.avatarFileName)} alt="Avatar" style={{ width: '100%', height: '100%' }} />: <></> }
+                <table><tbody>
+                    <tr><td>Avatar:</td><td>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <div style={{ width: '64px', height: '64px' }}>
+                                <img ref={avatarImageRef} style={{ width: '100%', height: '100%' }} />
+                            </div>
+                            <div style={{ flexGrow: '1', padding: '0px 8px' }}>
+                                <label>
+                                    <span className="appearLikeLink">Choose Avatar File...</span>
+                                    <input style={{ width: '0' }} type="file" accept=".png,.gif,.jpg" ref={avatarFileInputRef} onChange={() => {changeAvatar()}}>
+                                </input></label>
+                            </div>
+                        </div>
+                    </td></tr>
+                    <tr><td>Name:</td><td>
+                        <input type="text" ref={nameInputRef}></input>
+                    </td></tr>
+                    <tr><td>Bio:</td><td>
+                        <textarea ref={bioInputRef} style={{ resize: 'none', boxSizing: 'border-box', width: '100%', minWidth: '30vw' }}></textarea>
+                    </td></tr>
+                </tbody></table>
+                <div style={{ textAlign: 'center', padding: '5px 0px' }}>
+                    <Link onClick={() => {}}>Apply Changes</Link>
                 </div>
-                <div><input type="file" accept=".png,.gif,.jpg" ref={fileInputRef} onChange={() => {changeAvatar()}}></input></div>
-                <div>Name: {userInfo.name}</div>
-                <div>Bio: {userInfo.bio}</div>
-                <div>CreateTime: {userInfo.createTime}</div>
             </div>}
         </div>
     </Modal>
