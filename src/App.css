@@ -2,13 +2,13 @@
   display: flex;
   justify-content: space-between;
 }
-.notes-table {
+.notesTable {
   border-collapse: collapse;
 }
-.notes-table tr:hover {
+.notesTable tr:hover {
   background-color: lightgray;
 }
-.notes-table td {
+.notesTable td {
   padding-right: 5px;
 }
 .appearLikeLink {
@@ -16,4 +16,7 @@
   cursor: pointer;
   color: LinkText;
   color: -webkit-link;
+}
+.fileInputWrapper > input {
+  width: 0;
 }

@@ -65,6 +65,17 @@ function avatarUrl(avatarFileName: string|undefined) {
         return DefaultAvatar;
     }
 }
+function formCloseGuard(pending: boolean, dirty: boolean): () => boolean {
+    return (): boolean => {
+        if (pending) {
+            return false;
+        }
+        if (dirty) {
+            return window.confirm('Discard changes?');
+        }
+        return true;
+    }
+}
 
 function Link(props: { onClick: () => void, children: string|JSX.Element, style?: React.CSSProperties, enabled?: boolean }): JSX.Element {
     let anchorRef = useRef<HTMLAnchorElement>(null);
@@ -77,6 +88,17 @@ function Link(props: { onClick: () => void, children: string|JSX.Element, style?
         }
     }, [props.enabled]);
     return <a ref={anchorRef} onClick={props.onClick} style={props.style}>{props.children}</a>
+}
+function SubmitLink(props: { onClick: () => void, children: string|JSX.Element, style?: React.CSSProperties, pending: boolean }): JSX.Element {
+    return <Link enabled={!props.pending} onClick={props.onClick} style={props.style}>
+        {props.pending? 'loading...': props.children}
+    </Link>
+}
+function FileInputWrapper(props: { children: JSX.Element, pending: boolean }): JSX.Element {
+    return <label className="fileInputWrapper">
+        <span className={props.pending? '': 'appearLikeLink'}>{props.pending? 'uploading...': 'Choose File...'}</span>
+        {props.children}
+    </label>
 }
 
 function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.Element|JSX.Element[] }): JSX.Element {
@@ -155,9 +177,9 @@ function LoginModal(): JSX.Element {
                 <tr><td>Pasword:</td><td><input ref={passwordInputRef} type="password" onKeyDown={(ev) => { if(ev.key == 'Enter') { login(); } }}></input></td></tr>
             </tbody></table>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Link onClick={() => { login() }}>
-                    {pending? 'loading...': 'Login'}
-                </Link>
+                <SubmitLink pending={pending} onClick={() => { login() }}>
+                    Login
+                </SubmitLink>
                 <LinkToModal name="register" style={{ fontSize: '80%', marginTop: '8px' }}>
                     Register with an Invitation Code
                 </LinkToModal>
@@ -257,87 +279,102 @@ function ProfileModal(): JSX.Element {
 }
 function ProfileEditModal(): JSX.Element {
     let ctx = useContext(Context);
-    let [pending, setPending] = useState(false);
+    let [uploadPending, setUploadPending] = useState(false);
+    let [submitPending, setSubmitPending] = useState(false);
+    let pending = uploadPending || submitPending;
     let [dirty, setDirty] = useState(false);
     let [userInfo, setUserInfo] = useState<null|API.UserInfoDto>(null);
     let avatarImageRef = useRef<HTMLImageElement>(null);
+    let [avatarFileName, setAvatarFileName] = useState<string>('');
     let avatarFileInputRef = useRef<HTMLInputElement>(null);
     let nameInputRef = useRef<HTMLInputElement>(null);
     let bioInputRef = useRef<HTMLTextAreaElement>(null);
     useEffect(() => {
         if (ctx.state.currentModal?.name == 'profile_edit') {
             setUserInfo(ctx.state.currentModal.argument!);
-            // avatarImageRef.current!.src = avatarUrl(userInfo?.avatarFileName);
-            // avatarFileInputRef.current!.value = null as any;
-            // nameInputRef.current!.value = userInfo?.name ?? '';
-            // bioInputRef.current!.value = userInfo?.bio ?? '';
         } else {
             setUserInfo(null);
         }
     }, [ctx.state.currentModal]);
-    let userUpdateBase = (userInfo: API.UserInfoDto): API.UserInfoUpdateDto => {
-        return {
-            name: userInfo.name,
-            bio: userInfo.bio,
-            avatarFileName: userInfo.avatarFileName
+    useEffect(() => {
+        if (userInfo != null) {
+            avatarImageRef.current!.src = avatarUrl(userInfo?.avatarFileName);
+            setAvatarFileName(userInfo.avatarFileName);
+            nameInputRef.current!.value = userInfo?.name ?? '';
+            bioInputRef.current!.value = userInfo?.bio ?? '';
+            setDirty(false);
         }
-    }
-    let changeAvatar = async () => {
+    }, [userInfo])
+    let handleAvatarChange = async () => {
         if (pending) {
             return;
         }
-        if (!userInfo || !(avatarFileInputRef.current!.files)) {
+        setUploadPending(true);
+        let file = avatarFileInputRef.current!.files![0];
+        try {
+            let blobUrl = URL.createObjectURL(file);
+            let fileName = await uploadAvatarApp({}, file, { token: ctx.state.user!.sessionToken });
+            avatarImageRef.current!.src = blobUrl;
+            setAvatarFileName(fileName);
+            setDirty(true);
+        } catch(err) {
+            showError(err);
+        } finally {
+            setUploadPending(false);
+        }
+    }
+    let handleTextChange = () => {
+        setDirty(true);
+    }
+    let submit = async () => {
+        if (pending) {
             return;
         }
-        setPending(true);
+        setSubmitPending(true);
+        let userId = userInfo!.id;
+        let name = nameInputRef.current!.value;
+        let bio = bioInputRef.current!.value;
         try {
-            let avatarFileName = await uploadAvatarApp(
-                {},
-                avatarFileInputRef.current!.files![0],
-                { token: ctx.state.user!.sessionToken }
-            );
             await updateUser(
-                { id: String(userInfo.id) },
-                { ...userUpdateBase(userInfo), avatarFileName },
+                { id: String(userId) },
+                { name, bio, avatarFileName },
                 { token: ctx.state.user!.sessionToken }
             );
-            setUserInfo({ ...userInfo, avatarFileName });
-            let updatedUser = { ...ctx.state.user!, avatarFileName };
-            ctx.setState({ ...ctx.state, user: updatedUser });
+            let updatedUser = { ...ctx.state.user!, name, bio, avatarFileName };
+            ctx.setState({ ...ctx.state, user: updatedUser, currentModal: {name:'profile',argument:userId} });
             writeSavedUser(updatedUser);
         } catch(err) {
             showError(err);
         } finally {
-            setPending(false);
+            setSubmitPending(false);
         }
-    };
-    return <Modal name={'profile_edit'} title={'Edit My Profile'} closeGuard={() => !pending}>
+    }
+    return <Modal name={'profile_edit'} title={'Edit My Profile'} closeGuard={formCloseGuard(pending, dirty)}>
         <div>
             {(userInfo == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
             <div>
-                <table><tbody>
+                <table style={{ marginTop: '10px' }}><tbody>
                     <tr><td>Avatar:</td><td>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <div style={{ width: '64px', height: '64px' }}>
                                 <img ref={avatarImageRef} style={{ width: '100%', height: '100%' }} />
                             </div>
                             <div style={{ flexGrow: '1', padding: '0px 8px' }}>
-                                <label>
-                                    <span className="appearLikeLink">Choose Avatar File...</span>
-                                    <input style={{ width: '0' }} type="file" accept=".png,.gif,.jpg" ref={avatarFileInputRef} onChange={() => {changeAvatar()}}>
-                                </input></label>
+                                <FileInputWrapper pending={uploadPending}>
+                                    <input type="file" accept=".png,.gif,.jpg" ref={avatarFileInputRef} onChange={() => {handleAvatarChange()}}></input>
+                                </FileInputWrapper>
                             </div>
                         </div>
                     </td></tr>
                     <tr><td>Name:</td><td>
-                        <input type="text" ref={nameInputRef}></input>
+                        <input type="text" ref={nameInputRef} onChange={() => {handleTextChange()}}></input>
                     </td></tr>
                     <tr><td>Bio:</td><td>
-                        <textarea ref={bioInputRef} style={{ resize: 'none', boxSizing: 'border-box', width: '100%', minWidth: '30vw' }}></textarea>
+                        <textarea ref={bioInputRef} style={{ resize: 'none', boxSizing: 'border-box', width: '100%', minWidth: '30vw' }} onChange={() => {handleTextChange()}}></textarea>
                     </td></tr>
                 </tbody></table>
                 <div style={{ textAlign: 'center', padding: '5px 0px' }}>
-                    <Link onClick={() => {}}>Apply Changes</Link>
+                    <SubmitLink pending={submitPending} onClick={() => {submit()}}>Apply Changes</SubmitLink>
                 </div>
             </div>}
         </div>
@@ -464,7 +501,7 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
                     <div style={{ background: 'darkgray', marginRight: '5px', height: '30px', width: '30px', flexShrink: '0' }}></div>
                     <div lang="ja">{ song.title }</div>
                 </div>
-                <table className="notes-table" style={{ whiteSpace: 'nowrap', fontSize: '75%', width: '100%', margin: '5px 0px' }}><tbody>{ song.notes.map((notes, j) => (
+                <table className="notesTable" style={{ whiteSpace: 'nowrap', fontSize: '75%', width: '100%', margin: '5px 0px' }}><tbody>{ song.notes.map((notes, j) => (
                     <tr key={j /*TODO*/}>
                         <td>
                             <span style={{ color: 'white', fontWeight: 'bold', background: difficultyColors[notes.difficulty], height: '16px', width: '16px', display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
