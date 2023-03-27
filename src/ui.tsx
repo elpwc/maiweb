@@ -57,12 +57,26 @@ function readSavedUser(): null|API.WhoamiDto {
 function writeSavedUser(user: null|API.WhoamiDto) {
     document.cookie = `user=${encodeURIComponent(JSON.stringify(user))}; SameSite=Strict; Max-Age=31536000; Secure`;
 }
-function avatarUrl(avatarFileName: string) {
-    return `${appconfig.apiBaseURL}/api/v1/uploads/${avatarFileName}`;
+function avatarUrl(avatarFileName: string|undefined) {
+    if (avatarFileName) {
+        return `${appconfig.apiBaseURL}/api/v1/uploads/${avatarFileName}`;
+    } else {
+        const DefaultAvatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIj4KICAgIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgc3Ryb2tlPSJsaWdodGdyYXkiIGZpbGw9ImRhcmtncmF5IiAvPgo8L3N2Zz4=';
+        return DefaultAvatar;
+    }
 }
 
-function Link(props: { onClick: () => void, children: string|JSX.Element, style?: React.CSSProperties }): JSX.Element {
-    return <a href="javascript:void(0)" onClick={props.onClick} style={props.style}>{props.children}</a>
+function Link(props: { onClick: () => void, children: string|JSX.Element, style?: React.CSSProperties, enabled?: boolean }): JSX.Element {
+    let anchorRef = useRef<HTMLAnchorElement>(null);
+    useEffect(() => {
+        if (props.enabled ?? true) {
+            // see: https://github.com/facebook/react/issues/16382
+            anchorRef.current!.href = 'javascript:void(0)';
+        } else {
+            anchorRef.current!.removeAttribute('href');
+        }
+    }, [props.enabled]);
+    return <a ref={anchorRef} onClick={props.onClick} style={props.style}>{props.children}</a>
 }
 
 function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.Element|JSX.Element[] }): JSX.Element {
@@ -136,10 +150,10 @@ function LoginModal(): JSX.Element {
     };
     return <Modal name={'login'} title={'Login'} closeGuard={() => !pending}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px 20px' }}>
-            <table>
+            <table><tbody>
                 <tr><td>Email:</td><td><input ref={emailInputRef} type="email"></input></td></tr>
                 <tr><td>Pasword:</td><td><input ref={passwordInputRef} type="password" onKeyDown={(ev) => { if(ev.key == 'Enter') { login(); } }}></input></td></tr>
-            </table>
+            </tbody></table>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Link onClick={() => { login() }}>
                     {pending? 'loading...': 'Login'}
@@ -204,8 +218,8 @@ function ProfileModal(): JSX.Element {
             <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{ width: '64px', height: '64px', background: userInfo.avatarFileName? undefined: 'lightgray' }}>
-                            { userInfo.avatarFileName? <img src={avatarUrl(userInfo.avatarFileName)} alt="Avatar" style={{ width: '100%', height: '100%' }} />: <></> }
+                        <div style={{ width: '64px', height: '64px' }}>
+                            <img src={avatarUrl(userInfo.avatarFileName)} style={{ width: '100%', height: '100%' }} />
                         </div>
                         <div>
                             <div style={{ fontSize: '110%', fontWeight: 'bold' }}>{userInfo.name}</div>
@@ -325,7 +339,7 @@ function FiltersModal(): JSX.Element {
 
 function PortraitLayoutTab(props: { tab: 'list'|'notes'|'details', text: string }): JSX.Element {
     let ctx = useContext(Context);
-    return <div><a href={ctx.state.portraitCurrentTab != props.tab? 'javascript:void(0)': undefined} onClick={() => ctx.setState({ ...ctx.state, portraitCurrentTab: props.tab })}>{props.text}</a></div>
+    return <div><Link enabled={ctx.state.portraitCurrentTab != props.tab} onClick={() => ctx.setState({ ...ctx.state, portraitCurrentTab: props.tab })}>{props.text}</Link></div>
 }
 function PortaritLayoutTabs(): JSX.Element {
     let ctx = useContext(Context);
@@ -348,17 +362,12 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
     return <Panel style={{ display: hide? 'none': 'block', overflow: 'hidden', ...(props.style ?? {}) }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
-                { (ctx.state.user != null)? <>
-                    <div style={{ background: (ctx.state.user.avatarFileName)? undefined: 'darkgray', marginRight: '5px', height: '20px', width: '20px', flexShrink: '0' }}>
-                        {(ctx.state.user.avatarFileName)? <img src={avatarUrl(ctx.state.user.avatarFileName)} alt="Avatar" style={{ width: '100%', height: '100%' }} />: <></>}
+                    <div style={{ marginRight: '5px', height: '20px', width: '20px', flexShrink: '0' }}>
+                        <img src={avatarUrl(ctx.state.user?.avatarFileName)} style={{ width: '100%', height: '100%' }} />
                     </div>
                     <div style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                        {ctx.state.user.name}
+                        {ctx.state.user?.name ?? 'Guest'}
                     </div>
-                </>: <>
-                    <div style={{ background: 'darkgray', marginRight: '5px', height: '20px', width: '20px', flexShrink: '0' }}></div>
-                    <div>Name</div>
-                </> }
             </div>
             <div>
                 { (ctx.state.user != null)? <LinkToModal name="menu">Menu...</LinkToModal>: <LinkToModal name="login">Login...</LinkToModal> }
@@ -425,13 +434,13 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
             <LinkToModal name={'filters'}>Filters...</LinkToModal>
         </div>
         <div style={{ overflow: 'auto', display: 'flex', flexDirection: 'column', flexGrow: '1', borderTop: '1px solid gray', borderBottom: '1px solid gray' }}>{dummySongs.map((song, i) => (
-            <div style={{ borderTop: (i != 0)? '1px solid lightgray': 'none', padding: '5px' }}>
+            <div key={i /*TODO*/} style={{ borderTop: (i != 0)? '1px solid lightgray': 'none', padding: '5px' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <div style={{ background: 'darkgray', marginRight: '5px', height: '30px', width: '30px', flexShrink: '0' }}></div>
                     <div lang="ja">{ song.title }</div>
                 </div>
-                <table className="notes-table" style={{ whiteSpace: 'nowrap', fontSize: '75%', width: '100%', margin: '5px 0px' }}>{ song.notes.map(notes => (
-                    <tr>
+                <table className="notes-table" style={{ whiteSpace: 'nowrap', fontSize: '75%', width: '100%', margin: '5px 0px' }}><tbody>{ song.notes.map((notes, j) => (
+                    <tr key={j /*TODO*/}>
                         <td>
                             <span style={{ color: 'white', fontWeight: 'bold', background: difficultyColors[notes.difficulty], height: '16px', width: '16px', display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <div>{notes.lvBase}</div>
@@ -441,7 +450,7 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
                         </td>
                         <td style={{ width: '100%', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', left: '0', right: '0', top: '0', bottom: '0', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                                {notes.official? [<span style={{ color: 'red' }}>[official]</span>, ' ']: []}
+                                {notes.official? <><span style={{ color: 'red' }}>[official]</span>{' '}</>: <></>}
                                 <span title={notes.name}>{notes.name}</span>
                             </div>
                         </td>
@@ -454,7 +463,7 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
                             <Link onClick={() => {}}>Details...</Link>
                         </td>
                     </tr> 
-                ))}</table>
+                ))}</tbody></table>
             </div>
         ))}</div>
     </Panel>
@@ -466,10 +475,10 @@ function MaisimPanel(props: { children: JSX.Element, style?: React.CSSProperties
     return <Panel id="maisimPanel" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', ...(props.style ?? {}) }}>
         {props.children}
         <div>
-            <div style={{ position: 'absolute', zIndex: '100', left: '0px', top: '0px', display: l? 'block': 'none' }}>
+            <div style={{ position: 'absolute', zIndex: '200000', left: '0px', top: '0px', display: l? 'block': 'none' }}>
                 <label><input type="checkbox" checked={ctx.state.landscapeLeftPanelsVisible} onChange={() => { ctx.setState({ ...ctx.state, landscapeLeftPanelsVisible: !(ctx.state.landscapeLeftPanelsVisible) }) }}></input>Left Panels</label>
             </div>
-            <div style={{ position: 'absolute', zIndex: '100', right: '0px', top: '0px', display: l? 'block': 'none' }}>
+            <div style={{ position: 'absolute', zIndex: '200000', right: '0px', top: '0px', display: l? 'block': 'none' }}>
                 <label>Right Panels<input type="checkbox" checked={ctx.state.landscapeRightPanelsVisible} onChange={() => { ctx.setState({ ...ctx.state, landscapeRightPanelsVisible: !(ctx.state.landscapeRightPanelsVisible) }) }}></input></label>
             </div>
         </div>
