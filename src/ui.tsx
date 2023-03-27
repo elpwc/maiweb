@@ -11,7 +11,7 @@ interface State {
     landscapeLeftPanelsVisible: boolean,
     landscapeRightPanelsVisible: boolean,
     portraitCurrentTab: 'list'|'notes'|'details'
-    currentModal: null|ModalName,
+    currentModal: null|Modal,
     user: null|API.WhoamiDto
 };
 const defaultState: State = (() => {
@@ -21,7 +21,7 @@ const defaultState: State = (() => {
         landscapeLeftPanelsVisible: true,
         landscapeRightPanelsVisible: true,
         portraitCurrentTab: 'list',
-        currentModal: (user != null)? null: 'login',
+        currentModal: (user != null)? null: {name:'login'},
         user: user
     }
 })();
@@ -61,8 +61,8 @@ function avatarUrl(avatarFileName: string) {
     return `${appconfig.apiBaseURL}/api/v1/uploads/${avatarFileName}`;
 }
 
-function Link(props: { onClick: () => void, children: string|JSX.Element }): JSX.Element {
-    return <a href="javascript:void(0)" onClick={props.onClick}>{props.children}</a>
+function Link(props: { onClick: () => void, children: string|JSX.Element, style?: React.CSSProperties }): JSX.Element {
+    return <a href="javascript:void(0)" onClick={props.onClick} style={props.style}>{props.children}</a>
 }
 
 function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.Element|JSX.Element[] }): JSX.Element {
@@ -71,10 +71,11 @@ function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.
     </div>
 }
 
-type ModalName = 'login'|'menu'|'profile'|'songlist'|'noteslist'|'filters';
-function LinkToModal(props: { name: ModalName, children: string|JSX.Element }): JSX.Element {
+type ModalName = 'register'|'login'|'menu'|'profile'|'song_edit'|'notes_edit'|'filters';
+interface Modal { name: ModalName, argument?: any };
+function LinkToModal(props: { name: ModalName, argument?: any, children: string|JSX.Element, style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
-    return <Link onClick={() => ctx.setState({ ...ctx.state, currentModal: props.name })}>
+    return <Link onClick={() => ctx.setState({ ...ctx.state, currentModal: {name:props.name, argument:props.argument} })} style={props.style}>
         {props.children}
     </Link>
 }
@@ -88,18 +89,24 @@ function Modal(props: { name: ModalName, title: string, children: JSX.Element|JS
         }
         ctx.setState({ ...ctx.state, currentModal: null })
     }
-    return ReactDOM.createPortal(<div style={{ display: (ctx.state.currentModal == props.name)? 'block': 'none' }}>
+    return ReactDOM.createPortal(<div style={{ display: (ctx.state.currentModal?.name == props.name)? 'block': 'none' }}>
         <div style={{ position: 'fixed', backgroundColor: 'black', opacity: '0.5', top: '0', left: '0', bottom: '0', right: '0' }}></div>
         <Panel style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', padding: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: '110%', fontWeight: 'bold' }}>{ props.title }</span>
-                <a href="javascript:void(0)" onClick={() => {close()}}>Close</a>
+                <Link onClick={() => {close()}}>Close</Link>
             </div>
             <div>{ props.children }</div>
         </Panel>
     </div>, document.getElementById('portal')!);
 }
 
+function RegisterModal(): JSX.Element {
+    // TODO
+    return <Modal name="register" title={'Register'}>
+        <h1>Sign Up</h1>
+    </Modal>
+}
 function LoginModal(): JSX.Element {
     let ctx = useContext(Context);
     let [pending, setPending] = useState(false);
@@ -127,24 +134,28 @@ function LoginModal(): JSX.Element {
             setPending(false);
         }
     };
-    return <Modal name={'login'} title={'Login'}>
+    return <Modal name={'login'} title={'Login'} closeGuard={() => !pending}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px 20px' }}>
             <table>
                 <tr><td>Email:</td><td><input ref={emailInputRef} type="email"></input></td></tr>
                 <tr><td>Pasword:</td><td><input ref={passwordInputRef} type="password" onKeyDown={(ev) => { if(ev.key == 'Enter') { login(); } }}></input></td></tr>
             </table>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <a href="javascript:void(0)" onClick={() => { login() }}>
+                <Link onClick={() => { login() }}>
                     {pending? 'loading...': 'Login'}
-                </a>
+                </Link>
+                <LinkToModal name="register" style={{ fontSize: '80%', marginTop: '8px' }}>
+                    Register with an Invitation Code
+                </LinkToModal>
             </div>
         </div>
     </Modal>
 }
 
 function MenuModal(): JSX.Element {
+    let items: [ModalName,string][] = [['profile','My Profile'],['song_edit','Add New Song'],['notes_edit','Add New Notes']];
     return <Modal name={'menu'} title={'Menu'}>
-        <div>{ ([['profile','My Profile'],['songlist','Uploaded Songs'],['noteslist','Uploaded Notes']] as [ModalName,string][]).map(([name,title]) =>
+        <div>{ items.map(([name,title]) =>
             <LinkToModal name={name} key={name}>
                 <div style={{ minWidth: '30vw', textAlign: 'center', padding: '8px 0px', margin: '8px 0px', border: '2px solid darkblue', borderRadius: '5px', backgroundColor: 'hsl(233, 50%, 97%)' }}>
                     {title}
@@ -157,7 +168,7 @@ function ProfileModal(): JSX.Element {
     let ctx = useContext(Context);
     let [userInfo, setUserInfo] = useState<null|API.UserInfoDto>(null);
     useEffect(() => {
-        if (ctx.state.currentModal == 'profile') {
+        if (ctx.state.currentModal?.name == 'profile') {
             if (ctx.state.user != null) {
                 (async () => {
                     try {
@@ -227,14 +238,16 @@ function ProfileModal(): JSX.Element {
         </div>
     </Modal>
 }
-function SongListModal(): JSX.Element {
-    return <Modal name="songlist" title="Song List">
-        <h1>Song List</h1>
+function SongEditModal(): JSX.Element {
+    // TODO
+    return <Modal name="song_edit" title="Add New Song">
+        <h1>Song Info</h1>
     </Modal>
 }
-function NotesListModal(): JSX.Element {
-    return <Modal name="noteslist" title="Notes List">
-        <h1>Notes List</h1>
+function NotesEditModal(): JSX.Element {
+    // TODO
+    return <Modal name="notes_edit" title="Add New Notes">
+        <h1>Notes Info</h1>
     </Modal>
 }
 
@@ -261,8 +274,10 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
     let hide = (ctx.state.layout == 'landscape' && !ctx.state.landscapeLeftPanelsVisible);
     let logout = () => {
-        ctx.setState({ ...ctx.state, user: null, currentModal: 'login' });
-        writeSavedUser(null);
+        if (window.confirm('logout?')) {
+            ctx.setState({ ...ctx.state, user: null, currentModal: {name:'login'} });
+            writeSavedUser(null);
+        }
     }
     return <Panel style={{ display: hide? 'none': 'block', overflow: 'hidden', ...(props.style ?? {}) }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', overflow: 'hidden' }}>
@@ -280,9 +295,9 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
                 </> }
             </div>
             <div>
-                <LinkToModal name="menu">Menu...</LinkToModal>
-                {' '}
-                <a href="javascript:void(0)" onClick={() => { if(globalThis.confirm('logout?')) { logout(); } }}>Logout...</a>
+                { (ctx.state.user != null)? <LinkToModal name="menu">Menu...</LinkToModal>: <LinkToModal name="login">Login...</LinkToModal> }
+                { ' ' }
+                { (ctx.state.user != null)? <Link onClick={() => { logout(); }}>Logout...</Link>: <LinkToModal name="register">Register...</LinkToModal> }
             </div>
         </div>
     </Panel>
@@ -340,7 +355,7 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
         <PortaritLayoutTabs/>
         <div style={{ marginBottom: '5px', display: 'flex' }}>
             <input type="text" placeholder="Keyword" style={{ flexGrow: '1', flexShrink: '1', minWidth: '0', marginRight: '5px' }}></input>
-            <a href="javascript:void(0)" style={{ marginRight: '5px' }}>Search</a>
+            <Link style={{ marginRight: '5px' }} onClick={() => {}}>Search</Link>
             <LinkToModal name={'filters'}>Filters...</LinkToModal>
         </div>
         <div style={{ overflow: 'auto', display: 'flex', flexDirection: 'column', flexGrow: '1', borderTop: '1px solid gray', borderBottom: '1px solid gray' }}>{dummySongs.map((song, i) => (
@@ -368,9 +383,9 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
                             {notes.uploader}
                         </td>
                         <td>
-                            <a href="javascript:void(0)" onClick={() => {play()}}>Play</a>
+                            <Link onClick={() => {play()}}>Play</Link>
                             {' '}
-                            <a href="javascript:void(0)">Favorite</a>
+                            <Link onClick={() => {}}>Details...</Link>
                         </td>
                     </tr> 
                 ))}</table>
@@ -409,9 +424,9 @@ function PlayControlPanel(props: { style?: React.CSSProperties }): JSX.Element {
                     <option value={0.50}>0.50x</option>
                 </select>
                 {' '}
-                <a href="javascript:void(0);" onClick={() => playPause()}>Play/Pause</a>
+                <Link onClick={() => playPause()}>Play/Pause</Link>
                 {' '}
-                <a href="javascript:void(0);">Restart</a>
+                <Link onClick={() => {}}>Restart</Link>
             </div>
             <input id="controlSlider" type="range" min="0" max={10000 /* ad hoc hard coded value */}></input>
         </div>
@@ -493,11 +508,12 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
             <PlayControlPanel style={{ gridArea: l? '4 / 2 / 5 / 3': '3 / 1 / 4 / 2' }}/>
             <NotesEditorPanel style={{ gridArea: l? '1 / 3 / 3 / 4': '4 / 1 / 5 / 2' }}/>
             <DetailsPanel style={{ gridArea: l? '3 / 3 / 5 / 4': '4 / 1 / 5 / 2' }}/>
+            <RegisterModal />
             <LoginModal />
             <MenuModal />
             <ProfileModal />
-            <SongListModal />
-            <NotesListModal />
+            <SongEditModal />
+            <NotesEditModal />
             <FiltersModal />
         </div>
     </Context.Provider>
