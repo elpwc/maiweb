@@ -1,10 +1,16 @@
 import { createContext, useState, useContext, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import appconfig from "./appconfig";
+import { findAllUser } from "./services/api/findAllUser";
 import { findOneUser } from "./services/api/findOneUser";
+import { inviteAuth } from "./services/api/inviteAuth";
 import { loginAuth } from "./services/api/loginAuth";
 import { updateUser } from "./services/api/updateUser";
 import { uploadAvatarApp } from "./services/api/uploadAvatarApp";
+
+const User = 0;
+const Mod = 5;
+const Admin = 10;
 
 interface State {
     layout: 'landscape'|'portrait',
@@ -107,7 +113,7 @@ function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.
     </div>
 }
 
-type ModalName = 'register'|'login'|'menu'|'profile'|'profile_edit'|'song_edit'|'notes_edit'|'filters';
+type ModalName = 'register'|'login'|'menu'|'profile'|'profile_edit'|'song_edit'|'notes_edit'|'invite'|'users'|'filters';
 interface Modal { name: ModalName, argument?: any };
 function LinkToModal(props: { name: ModalName, argument?: any, children: string|JSX.Element, style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
@@ -190,11 +196,18 @@ function LoginModal(): JSX.Element {
 
 function MenuModal(): JSX.Element {
     let ctx = useContext(Context);
-    let items: [ModalName,string][] = [['profile','My Profile'],['song_edit','Add New Song'],['notes_edit','Add New Notes']];
+    let items: [ModalName,string,boolean][] = [
+        ['profile','My Profile',false],
+        ['song_edit','Add New Song',false],
+        ['notes_edit','Add New Notes',false],
+        ['invite','Generate Invitation Codes',true],
+        ['users','List All Users',true]
+    ];
     return <Modal name={'menu'} title={'Menu'}>
-        <div>{ items.map(([name,title]) =>
+        <div>{ items.map(([name,title,admin]) =>
+            (admin && ctx.state.user!.authLevel != Admin)? <></>:
             <LinkToModal name={name} key={name}>
-                <div style={{ minWidth: (ctx.state.layout == 'landscape')? '30vw': '60vw', textAlign: 'center', padding: '8px 0px', margin: '8px 0px', border: '2px solid darkblue', borderRadius: '5px', backgroundColor: 'hsl(233, 50%, 97%)' }}>
+                <div className="menuItem" style={{ minWidth: (ctx.state.layout == 'landscape')? '30vw': '60vw', textAlign: 'center', padding: '8px 0px', margin: '8px 0px' }}>
                     {title}
                 </div>
             </LinkToModal>
@@ -245,7 +258,7 @@ function ProfileModal(): JSX.Element {
                         </div>
                         <div>
                             <div style={{ fontSize: '110%', fontWeight: 'bold' }}>{userInfo.name}</div>
-                            <div style={{ fontSize: '90%', color: 'gray' }}>UID {userInfo.id}{ (userInfo.authLevel == 10)? ' (admin)': (userInfo.authLevel == 5)? ' (moderator)': '' }</div>
+                            <div style={{ fontSize: '90%', color: 'gray' }}>UID {userInfo.id}{ (userInfo.authLevel == Admin)? ' (admin)': (userInfo.authLevel == Mod)? ' (mod)': '' }</div>
                             <div style={{ fontSize: '90%', color: 'gray' }}>registered {(new Date(userInfo.createTime)).toDateString()}</div>
                         </div>
                     </div>
@@ -254,7 +267,7 @@ function ProfileModal(): JSX.Element {
                             <div><Link onClick={() => {edit()}} style={{ margin: '0px 10px' }}>Edit My Profile</Link></div>: <></> }
                         { (userInfo.banned)?
                             <div style={{ color: 'red' }}>[Banned]</div>: <></> }
-                        { ((ctx.state.user!.authLevel == 5 || ctx.state.user!.authLevel == 10) && (userInfo.id != ctx.state.user!.id) && (userInfo.authLevel == 0))?
+                        { ((ctx.state.user!.authLevel == Mod || ctx.state.user!.authLevel == Admin) && (userInfo.id != ctx.state.user!.id) && (userInfo.authLevel == User))?
                             (userInfo.banned? <Link onClick={() => {}}>Unban</Link>: <Link onClick={() => {}}>Ban</Link>): <></> }
                     </div>
                 </div>
@@ -390,6 +403,97 @@ function NotesEditModal(): JSX.Element {
     // TODO
     return <Modal name="notes_edit" title="Add New Notes">
         <h1>Notes Info</h1>
+    </Modal>
+}
+function InviteModal(): JSX.Element {
+    let ctx = useContext(Context);
+    let [generatedCodes, setGeneratedCodes] = useState('');
+    let [authLevel, setAuthLevel] = useState(0);
+    let [amount, setAmount] = useState(1);
+    let priviledgedColor = 'hsl(0, 90%, 60%)';
+    let authLevelDesc: { [key:number]: string } = {[User]:'User', [Mod]:'Mod', [Admin]:'Admin'};
+    let [pending, setPending] = useState(false)
+    let generate = async () => {
+        setPending(true);
+        try {
+            let payload = { authLevel, amount };
+            let res = await inviteAuth(payload, { token: ctx.state.user!.sessionToken });
+            setGeneratedCodes(`// ${authLevelDesc[payload.authLevel]} * ${payload.amount}\n${res.list.join('\n')}`);
+        } catch(err) {
+            showError(err);
+        } finally {
+            setPending(false);
+        }
+    };
+    return <Modal name="invite" title="Invite" closeGuard={() => !pending}>
+        <div style={{ display: 'flex', minWidth: (ctx.state.layout == 'landscape')? '30vw': '75vw' }}>
+            <table><tbody>
+                <tr style={{ color: (authLevel != User)? priviledgedColor: undefined }}>
+                    <td>Priviledge:</td>
+                    <td><select value={authLevel} onChange={ev => {setAuthLevel(Number(ev.target.value))}} style={{ color: (authLevel != User)? priviledgedColor: undefined }}>
+                        { Object.keys(authLevelDesc).map(lv =>
+                        <option key={lv} value={lv} style={{ color: 'black' }}>{authLevelDesc[Number(lv)]}</option>) }
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Amount:</td>
+                    <td><select value={amount} onChange={ev => {setAmount(Number(ev.target.value))}}>
+                        <option value="1">1</option>
+                        <option value="10">10</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select></td>
+                </tr>
+            </tbody></table>
+            <div style={{ display: 'flex', alignItems: 'center', padding: '0px 15px' }}>
+                <SubmitLink pending={pending} onClick={() => {generate()}}>Generate Codes</SubmitLink>
+            </div>
+        </div>
+        <div>
+            <textarea value={generatedCodes} readOnly={true} placeholder="Generated Codes" style={{ marginTop: '5px', boxSizing: 'border-box', width: '100%', resize: 'none', minHeight: '20vh' }}></textarea>
+        </div>
+    </Modal>
+}
+function UsersModal(): JSX.Element {
+    let ctx = useContext(Context);
+    let [users, setUsers] = useState<API.UserInfoDto[]>([]);
+    let [pending, setPending] = useState(false);
+    useEffect(() => {
+        if (ctx.state.currentModal?.name == 'users') {
+            (async () => {
+                setPending(true);
+                try {
+                    setUsers(await findAllUser({ token: ctx.state.user!.sessionToken }));
+                } catch(err) {
+                    showError(err);
+                } finally {
+                    setPending(false);
+                }
+            })();
+        } else {
+            setUsers([]);
+        }
+    }, [ctx.state.currentModal])
+    return <Modal name="users" title="Users" closeGuard={() => !pending}>
+        <div style={{ minWidth: (ctx.state.layout == 'landscape')? '30vw': '75vw', maxHeight: '65vh', overflow: 'auto' }}>
+            { (users.length == 0)? <h1>Loading...</h1>:
+                <table className="userTable"><tbody>
+                    <tr>
+                        <th>Avatar</th>
+                        <th>UID</th>
+                        <th>Name</th>
+                        <th>Registered</th>
+                        <th>Last Login</th>
+                    </tr>
+                    { users.map(user => <tr>
+                        <td><div style={{ width: '32px', height: '32px' }}><img src={avatarUrl(user.avatarFileName)} style={{ width: '100%', height: '100%' }} /></div></td>
+                        <td><div>{ user.id }</div></td>
+                        <td><div><LinkToModal name="profile" argument={user.id}>{ user.name }</LinkToModal></div></td>
+                        <td><div>{ (new Date(user.createTime)).toDateString() }</div></td>
+                        <td><div>{ (new Date(user.lastLogin)).toDateString() }</div></td>
+                    </tr>) }
+                </tbody></table>}
+        </div>
     </Modal>
 }
 
@@ -652,6 +756,8 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
             <ProfileEditModal />
             <SongEditModal />
             <NotesEditModal />
+            <InviteModal />
+            <UsersModal />
             <FiltersModal />
         </div>
     </Context.Provider>

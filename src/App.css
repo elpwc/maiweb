@@ -2,14 +2,28 @@
   display: flex;
   justify-content: space-between;
 }
-.notesTable {
+.notesTable, .userTable {
   border-collapse: collapse;
 }
-.notesTable tr:hover {
+.notesTable tr:hover, .userTable tr:not(:first-child):hover {
   background-color: lightgray;
 }
-.notesTable td {
+.notesTable td, .userTable td {
   padding-right: 5px;
+}
+.userTable th {
+  font-size: 90%;
+}
+.userTable td {
+  font-size: 85%;
+}
+.menuItem {
+  border: 2px solid hsl(200, 87%, 50%);
+  border-radius: 5px;
+  background-color: transparent;
+}
+.menuItem:hover {
+  background-color: hsl(200, 87%, 93%);
 }
 .appearLikeLink {
   text-decoration: underline;
