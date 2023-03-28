@@ -1,8 +1,8 @@
 import { getTouchCenterCoord } from '../areas';
-import { fireworkInnerCircleR, fireworkLength, maimaiScreenR, maimaiSummonLineR } from '../const';
-import { animationFactory } from '../global';
+import MaimaiValues from '../maimaiValues';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { NoteSound } from '../resourceReaders/noteSoundReader';
+import AnimationUtils from './animation';
 import { drawRotationImage } from './_base';
 
 const alphaMaxK = 0.5;
@@ -10,24 +10,24 @@ const alphaMaxK = 0.5;
 const fireworkChangeTimes = 5;
 
 /** 在指定位置播放烟花动画 */
-export const fireworkAt = (pos: string, effectBackCtx: CanvasRenderingContext2D, hasSound: boolean = true) => {
+export const fireworkAt = (values: MaimaiValues, pos: string, effectBackCtx: CanvasRenderingContext2D, animationFactory: AnimationUtils, hasSound: boolean = true) => {
   if (hasSound) {
     // @ts-ignore
     NoteSound.firework.cloneNode().play();
   }
 
-  const [x, y] = getTouchCenterCoord(pos);
-  animationFactory.animation(null, fireworkLength, (t: number) => {
-    const k = t / fireworkLength;
+  const [x, y] = getTouchCenterCoord(pos, values);
+  animationFactory.animation(null, values.fireworkLength, (t: number) => {
+    const k = t / values.fireworkLength;
 
     // 烟花四散
     drawRotationImage(
       effectBackCtx,
       EffectIcon.Firework,
-      x - maimaiScreenR,
-      y - maimaiScreenR,
-      maimaiScreenR * 2,
-      maimaiScreenR * 2,
+      x - values.maimaiScreenR,
+      y - values.maimaiScreenR,
+      values.maimaiScreenR * 2,
+      values.maimaiScreenR * 2,
       x,
       y,
       45 * k + (360 / 15) * Math.floor(k * fireworkChangeTimes),
@@ -38,10 +38,10 @@ export const fireworkAt = (pos: string, effectBackCtx: CanvasRenderingContext2D,
     drawRotationImage(
       effectBackCtx,
       EffectIcon.FireworkInnerCircle,
-      x - fireworkInnerCircleR / 0.7,
-      y - fireworkInnerCircleR / 0.7,
-      (fireworkInnerCircleR * 2) / 0.7,
-      (fireworkInnerCircleR * 2) / 0.7,
+      x - values.fireworkInnerCircleR / 0.7,
+      y - values.fireworkInnerCircleR / 0.7,
+      (values.fireworkInnerCircleR * 2) / 0.7,
+      (values.fireworkInnerCircleR * 2) / 0.7,
       x,
       y,
       0,
@@ -51,10 +51,10 @@ export const fireworkAt = (pos: string, effectBackCtx: CanvasRenderingContext2D,
     drawRotationImage(
       effectBackCtx,
       EffectIcon.FireworkInnerCircle,
-      x - maimaiSummonLineR * 2 * k ** 0.1,
-      y - maimaiSummonLineR * 2 * k ** 0.1,
-      maimaiSummonLineR * 2 * 2 * k ** 0.1,
-      maimaiSummonLineR * 2 * 2 * k ** 0.1,
+      x - values.maimaiSummonLineR * 2 * k ** 0.1,
+      y - values.maimaiSummonLineR * 2 * k ** 0.1,
+      values.maimaiSummonLineR * 2 * 2 * k ** 0.1,
+      values.maimaiSummonLineR * 2 * 2 * k ** 0.1,
       x,
       y,
       0,
@@ -64,10 +64,10 @@ export const fireworkAt = (pos: string, effectBackCtx: CanvasRenderingContext2D,
     drawRotationImage(
       effectBackCtx,
       EffectIcon.FireworkCenter,
-      x - (fireworkInnerCircleR / 0.7) * ((4 / 3) * (1 - k)),
-      y - (fireworkInnerCircleR / 0.7) * ((4 / 3) * (1 - k)),
-      ((fireworkInnerCircleR * 2) / 0.7) * ((4 / 3) * (1 - k)),
-      ((fireworkInnerCircleR * 2) / 0.7) * ((4 / 3) * (1 - k)),
+      x - (values.fireworkInnerCircleR / 0.7) * ((4 / 3) * (1 - k)),
+      y - (values.fireworkInnerCircleR / 0.7) * ((4 / 3) * (1 - k)),
+      ((values.fireworkInnerCircleR * 2) / 0.7) * ((4 / 3) * (1 - k)),
+      ((values.fireworkInnerCircleR * 2) / 0.7) * ((4 / 3) * (1 - k)),
       x,
       y,
       45 * k,

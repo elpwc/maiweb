@@ -10,6 +10,8 @@ import { sheetdata2 } from './Maisim/_notesInDev';
 
 function App() {
   const [gameState, setGameState] = useState(GameState.Begin);
+  const [gameState2, setGameState2] = useState(GameState.Begin);
+  const [gameState3, setGameState3] = useState(GameState.Begin);
   const [winWidth, setwinWidth] = useState(0);
   const [winHeight, setwinHeight] = useState(0);
   const [key, setkey]: [string, any] = useState('');
@@ -71,9 +73,9 @@ function App() {
         <div style={{ display: 'flex' }}>
           <Maisim
             id="2"
-            gameState={gameState}
+            gameState={gameState2}
             setGameState={e => {
-              setGameState(e);
+              setGameState2(e);
             }}
             w={150}
             h={150}
@@ -104,9 +106,9 @@ function App() {
           />
           <Maisim
             id="3"
-            gameState={gameState}
+            gameState={gameState3}
             setGameState={e => {
-              setGameState(e);
+              setGameState3(e);
             }}
             w={winHeight > winWidth ? winWidth : winHeight}
             h={winHeight > winWidth ? winWidth : winHeight}

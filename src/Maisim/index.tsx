@@ -1,32 +1,15 @@
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import './index.css';
-import {
-  canvasWidth,
-  canvasHeight,
-  center,
-  maimaiScreenR,
-  maimaiJudgeLineR,
-  maimaiR,
-  timerPeriod,
-  maimaiSummonLineR,
-  maimaiTapR,
-  touchMaxDistance,
-  judgeLineRemainTimeTouch,
-  setCanvasSize,
-  judgeResultShowTime,
-  judgeLineRemainTimeHold,
-} from './const';
+
 import { TouchArea } from './utils/touchArea';
 import { drawNote, updateIcons } from './drawUtils/drawNotes';
-import { Area, areas, getArea, initAreas, whichArea } from './areas';
+import { Area, AreaUtils } from './areas';
 import { drawAllKeys, drawAllTouchingAreas } from './drawUtils/drawTouchingAreas';
 import { drawOutRing } from './drawUtils/drawOutRing';
 import { initResources } from './resourceReaders/_init';
-import { APositions, ppqqAnglCalc, pqTrackJudgeCalc, updateVarAfterSizeChanged } from './slideTracks/_global';
 import { abs, cos, sin, sqrt, π } from './utils/math';
-import { gameRecord, animationFactory, setAnimationFactory } from './global';
 import { judge, judge_up } from './judge';
-import { updateRecord } from './recordUpdater';
+import { TouchHoldSoundsManager, updateRecord } from './recordUpdater';
 import { NoteSound } from './resourceReaders/noteSoundReader';
 import testsong_taiyoukei from './resource/sound/track/太陽系デスコ.mp3';
 import testbgi from './resource/maimai_img/ui/UI_Chara_105810.png';
@@ -49,89 +32,177 @@ import { MaisimProps } from './utils/maisimProps';
 import { Sheet } from './utils/sheet';
 import { getSheet } from './maiReader/maiReaderMain';
 import AnimationUtils from './drawUtils/animation';
+import MaimaiValues from './maimaiValues';
 
-export default function Maisim({
-  /** 唯一标识，当有多个Maisim时，请为每个Maisim分配不同的id */
-  id = '',
-  w,
-  h,
+export default function Maisim(
+  //#region Maisim Props
+  {
+    /** 唯一标识，当有多个Maisim时，请为每个Maisim分配不同的id */
+    id = '',
+    w,
+    h,
 
-  /** 以下两个是为了计算按下的偏移 */
-  t,
-  l,
+    /** 以下两个是为了计算按下的偏移 */
+    t,
+    l,
 
-  tapStyle = TapStyles.Concise,
-  holdStyle = RegularStyles.Concise,
-  slideStyle = RegularStyles.Concise,
-  slideColor = SlideColor.Blue,
+    tapStyle = TapStyles.Concise,
+    holdStyle = RegularStyles.Concise,
+    slideStyle = RegularStyles.Concise,
+    slideColor = SlideColor.Blue,
 
-  /** 镜像模式 */
-  flipMode = FlipMode.None,
+    /** 镜像模式 */
+    flipMode = FlipMode.None,
 
-  /** 是否显示特效 */
-  doShowEffect = true,
-  /** 自动 */
-  isAuto,
-  /** 自动的模式 */
-  autoType = AutoType.Directly,
-  /** 外键 */
-  doShowKeys = true,
-  /** 中央显示 */
-  centerText = 0,
+    /** 是否显示特效 */
+    doShowEffect = true,
+    /** 自动 */
+    isAuto,
+    /** 自动的模式 */
+    autoType = AutoType.Directly,
+    /** 外键 */
+    doShowKeys = true,
+    /** 中央显示 */
+    centerText = 0,
 
-  /** 谱 */
-  sheet,
-  /** 谱面属性 */
-  sheetProps = {},
-  /** 曲 */
-  track = undefined,
-  /** 背景显示方式 */
-  backgroundType = BackgroundType.Image,
-  /** 背景图 */
-  backgroundImage = undefined,
-  /** BGA */
-  backgroundAnime = undefined,
-  /** 背景色 */
-  backgroundColor = 'black',
+    /** 谱 */
+    sheet,
+    /** 谱面属性 */
+    sheetProps = {},
+    /** 曲 */
+    track = undefined,
+    /** 背景显示方式 */
+    backgroundType = BackgroundType.Image,
+    /** 背景图 */
+    backgroundImage = undefined,
+    /** BGA */
+    backgroundAnime = undefined,
+    /** 背景色 */
+    backgroundColor = 'black',
 
-  gameState,
-  setGameState = undefined,
-  onPlayStart = undefined,
-  onGameRecordChange = undefined,
-  onPlayFinish = undefined,
+    gameState,
+    setGameState = undefined,
+    onPlayStart = undefined,
+    onGameRecordChange = undefined,
+    onPlayFinish = undefined,
 
-  /** 是否显示UI遮盖层 */
-  doShowUIContent = false,
-  /** UI遮盖层 */
-  uiContent = undefined,
+    /** 是否显示UI遮盖层 */
+    doShowUIContent = false,
+    /** UI遮盖层 */
+    uiContent = undefined,
 
-  /** 屏幕/按钮点击事件 */
-  onScreenPressDown = undefined,
-  onScreenPressUp = undefined,
+    /** 屏幕/按钮点击事件 */
+    onScreenPressDown = undefined,
+    onScreenPressUp = undefined,
 
-  /** 按钮灯光控制 */
-  lightStatus = [],
+    /** 按钮灯光控制 */
+    lightStatus = [],
 
-  /** 是否启用键盘打歌，启用的话，内屏NOTE都会auto */
-  doEnableKeyboard = true,
-  /** 谱面流速TAP */
-  speedTap = 7,
-  /** 谱面流速TOUCH */
-  speedTouch = 6.5,
-  /** 计分方式 */
-  scoreCalculationType = ScoreCalculationType.maimaiDX,
-  /** SLIDE显示时机 -1~1*/
-  slideTrackOffset = 0,
-  /** 播放倍速 */
-  playSpeedFactor = 1,
-  /** 当前播放时刻 */
-  songTrackTick = 0,
-  /** 播放进度前进 */
-  onTrackProcess = undefined,
-  /** 调试mode */
-  isInDev = false,
-}: MaisimProps): JSX.Element {
+    /** 是否启用键盘打歌，启用的话，内屏NOTE都会auto */
+    doEnableKeyboard = true,
+    /** 谱面流速TAP */
+    speedTap = 7,
+    /** 谱面流速TOUCH */
+    speedTouch = 6.5,
+    /** 计分方式 */
+    scoreCalculationType = ScoreCalculationType.maimaiDX,
+    /** SLIDE显示时机 -1~1*/
+    slideTrackOffset = 0,
+    /** 播放倍速 */
+    playSpeedFactor = 1,
+    /** 当前播放时刻 */
+    songTrackTick = 0,
+    /** 播放进度前进 */
+    onTrackProcess = undefined,
+    /** 调试mode */
+    isInDev = false,
+  }: //#endregion Maisim Props
+  MaisimProps
+): JSX.Element {
   //#region 喵
+
+  //#region Global
+  const animationFactory: React.MutableRefObject<AnimationUtils> = useRef(new AnimationUtils());
+
+  const maimaiValues: React.MutableRefObject<MaimaiValues> = useRef(new MaimaiValues());
+
+  const areaFactory: React.MutableRefObject<AreaUtils> = useRef(new AreaUtils(maimaiValues.current));
+
+  /** 游戏记录 */
+  const gameRecord = useRef({
+    criticalPerfect: 0,
+    perfect: 0,
+    great: 0,
+    good: 0,
+    miss: 0,
+    fast: 0,
+    late: 0,
+    /** 最大COMBO */
+    max_combo: 0,
+    /** 当前COMBO */
+    combo: 0,
+    /** 达成率 0-100 */
+    achieving_rate: 0,
+    /** extra达成率 (BREAK) 0-1 */
+    achieving_rate_ex: 0,
+    /** 已丢失达成率 */
+    achieving_rate_lost: 0,
+    /** DX分数 */
+    dx_point: 0,
+    /** 旧框计分  */
+    old_score: 0,
+    /** 旧框达成率  */
+    old_achieving_rate: 0,
+    tap: {
+      criticalPerfect: 0,
+      perfect: 0,
+      great: 0,
+      good: 0,
+      miss: 0,
+      fast: 0,
+      late: 0,
+    },
+    hold: {
+      criticalPerfect: 0,
+      perfect: 0,
+      great: 0,
+      good: 0,
+      miss: 0,
+      fast: 0,
+      late: 0,
+    },
+    slide: {
+      criticalPerfect: 0,
+      perfect: 0,
+      great: 0,
+      good: 0,
+      miss: 0,
+      fast: 0,
+      late: 0,
+    },
+    touch: {
+      criticalPerfect: 0,
+      perfect: 0,
+      great: 0,
+      good: 0,
+      miss: 0,
+      fast: 0,
+      late: 0,
+    },
+    break: {
+      criticalPerfect: 0,
+      perfect: 0,
+      great: 0,
+      good: 0,
+      miss: 0,
+      fast: 0,
+      late: 0,
+    },
+  });
+
+  const touchHoldSoundsManager: React.MutableRefObject<TouchHoldSoundsManager> = useRef(new TouchHoldSoundsManager());
+
+  //#endregion Global
 
   const SongTrack = new Audio();
   SongTrack.volume = 0.5;
@@ -173,10 +244,10 @@ export default function Maisim({
     const el: HTMLCanvasElement = document.getElementsByClassName('canvasKeys' + id)[0] as HTMLCanvasElement;
     const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    drawAllKeys(ctx, currentTouchingArea.current, keyStates);
+    ctx.clearRect(0, 0, maimaiValues.current.canvasWidth, maimaiValues.current.canvasHeight);
+    drawAllKeys(ctx, maimaiValues.current, areaFactory.current.keys, currentTouchingArea.current, keyStates);
 
-    drawFrame(ctx, canvasWidth - 100, 30);
+    drawFrame(ctx, maimaiValues.current.canvasWidth - 100, 30);
   };
 
   /** 绘制最上遮盖层（外键底层和周围白色） */
@@ -184,12 +255,13 @@ export default function Maisim({
     const el: HTMLCanvasElement = document.getElementsByClassName('canvasOver' + id)[0] as HTMLCanvasElement;
     const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
-    drawOutRing(ctx);
+    drawOutRing(maimaiValues.current, areaFactory.current.keys, ctx);
   };
 
   /** 启动绘制器 */
   const starttimer = () => {
     readSheet();
+    console.log(id, 123)
     if (currentSheet.current) {
       showingNotes.current = [];
       nextNoteIndex.current = 0;
@@ -222,8 +294,8 @@ export default function Maisim({
           }
         });
 
-        timer_readAndUpdate.current = setInterval(reader_and_updater, timerPeriod);
-        timer_draw.current = setInterval(drawer, timerPeriod);
+        timer_readAndUpdate.current = setInterval(reader_and_updater, maimaiValues.current.timerPeriod);
+        timer_draw.current = setInterval(drawer, maimaiValues.current.timerPeriod);
       }, currentSheet.current.first ?? 0 * 1000);
     }
   };
@@ -256,6 +328,7 @@ export default function Maisim({
     currentSheet.current = getSheet(sheet, flipMode, sheetProps);
     // 第三次谱面处理
     currentSheet.current.notes = calculate_speed_related_params_for_notes(
+      maimaiValues.current,
       currentSheet.current.notes,
       tapMoveSpeed,
       tapEmergeSpeed,
@@ -281,11 +354,11 @@ export default function Maisim({
    */
   const touchConvergeCurrentRho = (c: number, m: number, t: number) => {
     const a = 1 - ((c - m) / (t - m)) ** 1.8;
-    return touchMaxDistance * (1 - sqrt(a < 0 ? 0 : a)) /* 判断小于0是为了防止出现根-1导致叶片闭合後不被绘制 */;
+    return maimaiValues.current.touchMaxDistance * (1 - sqrt(a < 0 ? 0 : a)) /* 判断小于0是为了防止出现根-1导致叶片闭合後不被绘制 */;
   };
 
   const initAnimation = () => {
-    setAnimationFactory(new AnimationUtils(virtualTime.current));
+    animationFactory.current = new AnimationUtils(virtualTime.current);
   };
 
   /** 终止播放，清除变量，恢复到初始状态 */
@@ -330,24 +403,27 @@ export default function Maisim({
         case NoteType.Tap:
           if (newNote.status === 0) {
             // emerge
-            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
+            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiValues.current.maimaiTapR;
 
             if (currentTime.current >= noteIns.moveTime!) {
-              newNote.radius = maimaiTapR;
+              newNote.radius = maimaiValues.current.maimaiTapR;
               newNote.status = 1;
             }
           } else if (newNote.status === 1) {
             // move
-            newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+            newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
             if (isAuto) {
-              if (newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
+              if (newNote.rho >= maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR) {
                 judge(
+                  maimaiValues.current,
+                  touchHoldSoundsManager.current,
                   showingNotes.current,
+                  maimaiValues.current.timerPeriod,
                   currentSheet.current!,
                   currentTime.current,
                   {
-                    area: getArea('K' + noteIns.pos)!,
+                    area: areaFactory.current.getArea('K' + noteIns.pos)!,
                     pressTime: currentTime.current,
                   },
                   currentTouchingArea.current,
@@ -356,13 +432,13 @@ export default function Maisim({
               }
             }
 
-            if (newNote.rho > maimaiScreenR + maimaiTapR) {
+            if (newNote.rho > maimaiValues.current.maimaiScreenR + maimaiValues.current.maimaiTapR) {
               newNote.status = -4;
             }
           } else if (newNote.status === -3) {
             // judge
 
-            if (currentTime.current >= noteIns.time! + judgeResultShowTime) {
+            if (currentTime.current >= noteIns.time! + maimaiValues.current.judgeResultShowTime) {
               newNote.status = -1;
             }
           }
@@ -371,19 +447,19 @@ export default function Maisim({
         case NoteType.Hold:
           if (newNote.status === 0) {
             //emerge
-            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
+            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiValues.current.maimaiTapR;
 
             if (currentTime.current >= noteIns.moveTime!) {
-              newNote.radius = maimaiTapR;
+              newNote.radius = maimaiValues.current.maimaiTapR;
               newNote.status = 1;
             }
           } else if (newNote.status === 1) {
             // grow
-            newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+            newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
             // HOLD长度大于maimaiJudgeLine-maimaiSummonLine
             if (currentTime.current >= noteIns.time!) {
-              newNote.rho = maimaiJudgeLineR - maimaiSummonLineR;
+              newNote.rho = maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR;
               newNote.status = 2;
             }
 
@@ -396,17 +472,20 @@ export default function Maisim({
             // move
 
             if (newNote.isTouching) {
-              JudgeEffectAnimation_Circle(ctx_effect_over.current, noteIns.pos, note.noteIndex);
+              JudgeEffectAnimation_Circle(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, note.noteIndex);
             }
 
             if (isAuto) {
-              if (!note.touched && newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
+              if (!note.touched && newNote.rho >= maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR) {
                 judge(
+                  maimaiValues.current,
+                  touchHoldSoundsManager.current,
                   showingNotes.current,
+                  maimaiValues.current.timerPeriod,
                   currentSheet.current!,
                   currentTime.current,
                   {
-                    area: getArea('K' + noteIns.pos)!,
+                    area: areaFactory.current.getArea('K' + noteIns.pos)!,
                     pressTime: currentTime.current,
                   },
                   currentTouchingArea.current,
@@ -420,28 +499,33 @@ export default function Maisim({
 
             if (noteIns.time! < noteIns.moveTime! + noteIns.remainTime!) {
               // HOLD长度大于maimaiJudgeLine-maimaiSummonLine
-              newNote.rho = ((noteIns.time! - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+              newNote.rho = ((noteIns.time! - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
               if (currentTime.current >= noteIns.moveTime! + noteIns.remainTime!) {
                 newNote.status = 3;
               }
             } else {
               // HOLD长度小于maimaiJudgeLine-maimaiSummonLine
 
-              newNote.tailRho = ((currentTime.current - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+              newNote.tailRho =
+                ((currentTime.current - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) *
+                (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
-              newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+              newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
               if (currentTime.current >= noteIns.time!) {
-                newNote.rho = ((noteIns.time! - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+                newNote.rho = ((noteIns.time! - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
                 if (isAuto) {
-                  if (!note.touched && newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
+                  if (!note.touched && newNote.rho >= maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR) {
                     judge(
+                      maimaiValues.current,
+                      touchHoldSoundsManager.current,
                       showingNotes.current,
+                      maimaiValues.current.timerPeriod,
                       currentSheet.current!,
                       currentTime.current,
                       {
-                        area: getArea('K' + noteIns.pos)!,
+                        area: areaFactory.current.getArea('K' + noteIns.pos)!,
                         pressTime: currentTime.current,
                       },
                       currentTouchingArea.current,
@@ -462,18 +546,20 @@ export default function Maisim({
           } else if (newNote.status === 3) {
             // disappear
 
-            newNote.tailRho = ((currentTime.current - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+            newNote.tailRho =
+              ((currentTime.current - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) *
+              (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
             if (newNote.isTouching) {
-              JudgeEffectAnimation_Circle(ctx_effect_over.current, noteIns.pos, note.noteIndex);
+              JudgeEffectAnimation_Circle(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, note.noteIndex);
             }
 
-            if (currentTime.current >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeHold) {
+            if (currentTime.current >= noteIns.time! + noteIns.remainTime! + maimaiValues.current.judgeLineRemainTimeHold) {
               newNote.status = -4;
             }
           } else if (newNote.status === -3) {
             // judge
-            if (currentTime.current >= (noteIns.time ?? 0) + (noteIns.remainTime ?? 0) + judgeResultShowTime) {
+            if (currentTime.current >= (noteIns.time ?? 0) + (noteIns.remainTime ?? 0) + maimaiValues.current.judgeResultShowTime) {
               newNote.status = -1;
             }
           }
@@ -483,7 +569,7 @@ export default function Maisim({
         case NoteType.TouchHold:
           if (newNote.status === 0) {
             //emerge
-            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
+            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiValues.current.maimaiTapR;
 
             if (currentTime.current > noteIns.moveTime!) {
               newNote.status = 1;
@@ -496,11 +582,14 @@ export default function Maisim({
             if (isAuto || doEnableKeyboard) {
               if (currentTime.current >= noteIns.time!) {
                 judge(
+                  maimaiValues.current,
+                  touchHoldSoundsManager.current,
                   showingNotes.current,
+                  maimaiValues.current.timerPeriod,
                   currentSheet.current!,
                   currentTime.current,
                   {
-                    area: areas.filter(a => {
+                    area: areaFactory.current.areas.filter(a => {
                       return a.name === noteIns.pos;
                     })[0],
                     pressTime: currentTime.current,
@@ -526,16 +615,16 @@ export default function Maisim({
             newNote.tailRho = ((currentTime.current - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
 
             if (newNote.isTouching) {
-              JudgeEffectAnimation_Circle(ctx_effect_over.current, noteIns.pos, note.noteIndex);
+              JudgeEffectAnimation_Circle(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, note.noteIndex);
             }
 
-            if (currentTime.current >= noteIns.time! + noteIns.remainTime! + judgeLineRemainTimeHold) {
+            if (currentTime.current >= noteIns.time! + noteIns.remainTime! + maimaiValues.current.judgeLineRemainTimeHold) {
               newNote.status = -4;
             }
           } else if (newNote.status === -3) {
             // judge
 
-            if (currentTime.current >= (noteIns.time ?? 0) + (noteIns.remainTime ?? 0) + judgeResultShowTime) {
+            if (currentTime.current >= (noteIns.time ?? 0) + (noteIns.remainTime ?? 0) + maimaiValues.current.judgeResultShowTime) {
               newNote.status = -1;
             }
           }
@@ -545,7 +634,7 @@ export default function Maisim({
         case NoteType.Touch:
           if (newNote.status === 0) {
             // emerge
-            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
+            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiValues.current.maimaiTapR;
 
             if (currentTime.current >= noteIns.moveTime!) {
               newNote.status = 1;
@@ -555,14 +644,17 @@ export default function Maisim({
 
             newNote.rho = touchConvergeCurrentRho(currentTime.current, noteIns.moveTime!, noteIns.time!);
             if (isAuto || doEnableKeyboard) {
-              if (newNote.rho >= touchMaxDistance) {
-                //if (currentTime.current >= noteIns.time! - timerPeriod * 5) {
+              if (newNote.rho >= maimaiValues.current.touchMaxDistance) {
+                //if (currentTime.current >= noteIns.time! -  maimaiValues.current.timerPeriod * 5) {
                 judge(
+                  maimaiValues.current,
+                  touchHoldSoundsManager.current,
                   showingNotes.current,
+                  maimaiValues.current.timerPeriod,
                   currentSheet.current!,
                   currentTime.current,
                   {
-                    area: areas.filter(a => {
+                    area: areaFactory.current.areas.filter(a => {
                       return a.name === noteIns.pos;
                     })[0],
                     pressTime: currentTime.current,
@@ -579,14 +671,14 @@ export default function Maisim({
           } else if (newNote.status === -2) {
             // stop
 
-            newNote.rho = touchMaxDistance;
-            if (currentTime.current >= noteIns.time! + judgeLineRemainTimeTouch) {
+            newNote.rho = maimaiValues.current.touchMaxDistance;
+            if (currentTime.current >= noteIns.time! + maimaiValues.current.judgeLineRemainTimeTouch) {
               newNote.status = -4;
             }
           } else if (newNote.status === -3) {
             // judge
 
-            if (currentTime.current >= noteIns.time! + judgeResultShowTime) {
+            if (currentTime.current >= noteIns.time! + maimaiValues.current.judgeResultShowTime) {
               newNote.status = -1;
             }
           }
@@ -603,7 +695,7 @@ export default function Maisim({
             }
           } else if (newNote.status === 1) {
             // hangup
-            newNote.guideStarRadius = ((currentTime.current - noteIns.guideStarEmergeTime!) / (noteIns.moveTime! - noteIns.guideStarEmergeTime!)) * maimaiTapR;
+            newNote.guideStarRadius = ((currentTime.current - noteIns.guideStarEmergeTime!) / (noteIns.moveTime! - noteIns.guideStarEmergeTime!)) * maimaiValues.current.maimaiTapR;
 
             if (currentTime.current >= noteIns.moveTime!) {
               // @ts-ignore
@@ -710,13 +802,13 @@ export default function Maisim({
           } else if (newNote.status === -2) {
             // stop
             newNote.rho = noteIns.time;
-            if (currentTime.current >= noteIns.time! + judgeLineRemainTimeHold) {
+            if (currentTime.current >= noteIns.time! + maimaiValues.current.judgeLineRemainTimeHold) {
               newNote.status = -3;
             }
           } else if (newNote.status === -3) {
             // judge
 
-            if (currentTime.current >= noteIns.time! + judgeResultShowTime) {
+            if (currentTime.current >= noteIns.time! + maimaiValues.current.judgeResultShowTime) {
               newNote.status = -1;
             }
           }
@@ -726,7 +818,7 @@ export default function Maisim({
         case NoteType.Slide:
           if (newNote.status === 0) {
             // emerge
-            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiTapR;
+            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiValues.current.maimaiTapR;
 
             if (currentTime.current >= noteIns.moveTime!) {
               newNote.status = 1;
@@ -734,16 +826,19 @@ export default function Maisim({
           } else if (newNote.status === 1) {
             // move
 
-            newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+            newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
             if (isAuto) {
-              if (newNote.rho >= maimaiJudgeLineR - maimaiSummonLineR) {
+              if (newNote.rho >= maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR) {
                 judge(
+                  maimaiValues.current,
+                  touchHoldSoundsManager.current,
                   showingNotes.current,
+                  maimaiValues.current.timerPeriod,
                   currentSheet.current!,
                   currentTime.current,
                   {
-                    area: getArea('K' + noteIns.pos)!,
+                    area: areaFactory.current.getArea('K' + noteIns.pos)!,
                     pressTime: currentTime.current,
                   },
                   currentTouchingArea.current
@@ -757,7 +852,7 @@ export default function Maisim({
           } else if (newNote.status === -3) {
             // judge
 
-            if (currentTime.current >= noteIns.time! + judgeResultShowTime) {
+            if (currentTime.current >= noteIns.time! + maimaiValues.current.judgeResultShowTime) {
               newNote.status = -1;
             }
           }
@@ -774,7 +869,7 @@ export default function Maisim({
         default:
           if (newNote.status === 0) {
             // emerge
-            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.time! - noteIns.emergeTime!)) * maimaiTapR;
+            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.time! - noteIns.emergeTime!)) * maimaiValues.current.maimaiTapR;
 
             if (currentTime.current >= noteIns.moveTime!) {
               newNote.status = 1;
@@ -782,7 +877,7 @@ export default function Maisim({
           } else if (newNote.status === 1) {
             // move
 
-            newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiJudgeLineR - maimaiSummonLineR);
+            newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
             if (currentTime.current >= noteIns.time!) {
               newNote.status = -4;
@@ -790,7 +885,7 @@ export default function Maisim({
           } else if (newNote.status === -3) {
             // judge
 
-            if (currentTime.current >= noteIns.time! + judgeResultShowTime) {
+            if (currentTime.current >= noteIns.time! + maimaiValues.current.judgeResultShowTime) {
               newNote.status = -1;
             }
           }
@@ -829,7 +924,7 @@ export default function Maisim({
           note.judgeStatus = JudgeStatus.CriticalPerfect;
         }
         if (note.status === -1 && !note.touched) {
-          updateRecord(noteIns, note, currentSheet.current!.basicEvaluation, currentSheet.current!.exEvaluation, currentSheet.current!.oldTheoreticalScore);
+          updateRecord(gameRecord.current, noteIns, note, currentSheet.current!.basicEvaluation, currentSheet.current!.exEvaluation, currentSheet.current!.oldTheoreticalScore);
         }
       }
 
@@ -847,7 +942,7 @@ export default function Maisim({
           if (note.judgeStatus !== JudgeStatus.Miss) {
             if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
               // 特效图像
-              JudgeEffectAnimation_Hex_or_Star(ctx_effect_over.current, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
+              JudgeEffectAnimation_Hex_or_Star(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
             }
           }
           note.status = -3;
@@ -859,9 +954,9 @@ export default function Maisim({
             note.judgeStatus = JudgeStatus.CriticalPerfect;
           }
           if (note.judgeStatus !== JudgeStatus.Miss) {
-            JudgeEffectAnimation_Touch(ctx_effect_over.current, noteIns.pos);
+            JudgeEffectAnimation_Touch(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos);
             if (noteIns.hasFirework) {
-              fireworkAt(noteIns.pos, ctx_effect_back.current);
+              fireworkAt(maimaiValues.current, noteIns.pos, ctx_effect_back.current, animationFactory.current);
             }
           }
           note.status = -3;
@@ -878,10 +973,14 @@ export default function Maisim({
 
           // 特效图像
           if (note.touched) {
-            JudgeEffectAnimation_Hex_or_Star(ctx_effect_over.current, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
+            JudgeEffectAnimation_Hex_or_Star(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
           }
 
-          if (noteIns.isShortHold || (noteIns.type === NoteType.Hold && noteIns.remainTime! <= timerPeriod * 18) || (noteIns.type === NoteType.TouchHold && noteIns.remainTime! <= timerPeriod * 27)) {
+          if (
+            noteIns.isShortHold ||
+            (noteIns.type === NoteType.Hold && noteIns.remainTime! <= maimaiValues.current.timerPeriod * 18) ||
+            (noteIns.type === NoteType.TouchHold && noteIns.remainTime! <= maimaiValues.current.timerPeriod * 27)
+          ) {
             // 超短HOLD, TOUCH HOLD直接判定
 
             note.status = -3;
@@ -890,7 +989,7 @@ export default function Maisim({
               note.holdingTime += currentTime.current - (note.touchedTime ?? 0);
             }
             /** 按下时长占总时长的比例 */
-            let holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * timerPeriod);
+            let holdingPercent = note.holdingTime / (noteIns.remainTime! - (12 + (noteIns.type === NoteType.Hold ? 6 : 15)) * maimaiValues.current.timerPeriod);
 
             if (note.judgeStatus === JudgeStatus.Miss) {
               //MISS修正为GOOD
@@ -914,13 +1013,23 @@ export default function Maisim({
             }
 
             // HOLD和TOUCH HOLD的真判定（修正後的
-            updateRecord(noteIns, note, currentSheet.current!.basicEvaluation, currentSheet.current!.exEvaluation, currentSheet.current!.oldTheoreticalScore);
+            updateRecord(maimaiValues.current, noteIns, note, currentSheet.current!.basicEvaluation, currentSheet.current!.exEvaluation, currentSheet.current!.oldTheoreticalScore);
 
             note.status = -3;
 
             // 停掉可能的TOUCH HOLD声音
             if (noteIns.type === NoteType.TouchHold) {
-              updateRecord(noteIns, note, currentSheet.current!.basicEvaluation, currentSheet.current!.exEvaluation, currentSheet.current!.oldTheoreticalScore, true, false);
+              updateRecord(
+                maimaiValues.current,
+                noteIns,
+                note,
+                currentSheet.current!.basicEvaluation,
+                currentSheet.current!.exEvaluation,
+                currentSheet.current!.oldTheoreticalScore,
+                true,
+                false,
+                touchHoldSoundsManager.current
+              );
             }
           }
         }
@@ -1008,18 +1117,20 @@ export default function Maisim({
     lastFrameBeginTime.current = currentFrameBeginTime;
 
     // 清空画布
-    ctx_notes.current.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx_slideTrack.current.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx_effect_over.current.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx_effect_back.current.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx_notes.current.clearRect(0, 0, maimaiValues.current.canvasWidth, maimaiValues.current.canvasHeight);
+    ctx_slideTrack.current.clearRect(0, 0, maimaiValues.current.canvasWidth, maimaiValues.current.canvasHeight);
+    ctx_effect_over.current.clearRect(0, 0, maimaiValues.current.canvasWidth, maimaiValues.current.canvasHeight);
+    ctx_effect_back.current.clearRect(0, 0, maimaiValues.current.canvasWidth, maimaiValues.current.canvasHeight);
 
     // 高亮点击的区域
-    drawAllTouchingAreas(ctx_notes.current, currentTouchingArea.current);
+    drawAllTouchingAreas(ctx_notes.current, maimaiValues.current, currentTouchingArea.current);
 
     // 不用foreach是为了从里往外，这样外侧的才会绘制在内侧Note之上
     for (let i = showingNotes.current.length - 1; i >= 0; i--) {
       const note = showingNotes.current[i];
       drawNote(
+        animationFactory.current,
+        maimaiValues.current,
         ctx_notes.current,
         ctx_slideTrack.current,
         currentSheet.current!.notes[note.noteIndex]!,
@@ -1035,10 +1146,10 @@ export default function Maisim({
       );
     }
 
-    animationFactory.drawAnimations();
+    animationFactory.current.drawAnimations();
 
     // game record
-    ctx_game_record.current.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx_game_record.current.clearRect(0, 0, maimaiValues.current.canvasWidth, maimaiValues.current.canvasHeight);
     drawGameRecord(ctx_game_record.current);
   };
 
@@ -1046,26 +1157,30 @@ export default function Maisim({
   const drawGameRecord = (ctx: CanvasRenderingContext2D) => {
     ctx.strokeStyle = 'red';
     ctx.font = '20px Arial';
-    ctx.strokeText(`Critical: ${gameRecord.criticalPerfect}, Perfect: ${gameRecord.perfect}, Great: ${gameRecord.great}, Good: ${gameRecord.good}, Miss: ${gameRecord.miss}`, 50, 250);
+    ctx.strokeText(
+      `Critical: ${gameRecord.current.criticalPerfect}, Perfect: ${gameRecord.current.perfect}, Great: ${gameRecord.current.great}, Good: ${gameRecord.current.good}, Miss: ${gameRecord.current.miss}`,
+      50,
+      250
+    );
     ctx.strokeStyle = 'white';
     ctx.font = '30px Arial';
-    ctx.strokeText(`COMBO ${gameRecord.combo}`, center[0] - 50, center[1] - 30);
-    const record = abs(100 - gameRecord.achieving_rate_lost + gameRecord.achieving_rate_ex).toFixed(4);
-    const old_record = abs(gameRecord.old_achieving_rate).toFixed(4);
-    ctx.strokeText(`${record}%`, center[0] - 60, center[1]);
-    ctx.strokeText(`旧:${old_record}%`, center[0] - 60, center[1] + 50);
+    ctx.strokeText(`COMBO ${gameRecord.current.combo}`, maimaiValues.current.center[0] - 50, maimaiValues.current.center[1] - 30);
+    const record = abs(100 - gameRecord.current.achieving_rate_lost + gameRecord.current.achieving_rate_ex).toFixed(4);
+    const old_record = abs(gameRecord.current.old_achieving_rate).toFixed(4);
+    ctx.strokeText(`${record}%`, maimaiValues.current.center[0] - 60, maimaiValues.current.center[1]);
+    ctx.strokeText(`旧:${old_record}%`, maimaiValues.current.center[0] - 60, maimaiValues.current.center[1] + 50);
   };
 
   const onPressDown = (area: TouchArea) => {
     console.log(area);
-    judge(showingNotes.current, currentSheet.current!, currentTime.current, area, currentTouchingArea.current);
+    judge(gameRecord.current, touchHoldSoundsManager.current, showingNotes.current, maimaiValues.current.timerPeriod, currentSheet.current!, currentTime.current, area, currentTouchingArea.current);
 
-    console.log(gameRecord, showingNotes.current);
+    console.log(gameRecord.current, showingNotes.current);
   };
 
   const onPressUp = (area: TouchArea) => {
-    judge_up(showingNotes.current, currentSheet.current!, currentTime.current, area);
-    console.log('up', gameRecord, showingNotes.current);
+    judge_up(gameRecord.current, touchHoldSoundsManager.current, showingNotes.current, maimaiValues.current.timerPeriod, currentSheet.current!, currentTime.current, area);
+    console.log('up', gameRecord.current, showingNotes.current);
   };
 
   //#endregion 喵
@@ -1264,28 +1379,28 @@ export default function Maisim({
     let area;
     switch (key) {
       case 'KeyG':
-        area = getArea('K1');
+        area = areaFactory.current.getArea('K1');
         break;
       case 'KeyH':
-        area = getArea('K2');
+        area = areaFactory.current.getArea('K2');
         break;
       case 'KeyN':
-        area = getArea('K3');
+        area = areaFactory.current.getArea('K3');
         break;
       case 'KeyB':
-        area = getArea('K4');
+        area = areaFactory.current.getArea('K4');
         break;
       case 'KeyV':
-        area = getArea('K5');
+        area = areaFactory.current.getArea('K5');
         break;
       case 'KeyC':
-        area = getArea('K6');
+        area = areaFactory.current.getArea('K6');
         break;
       case 'KeyD':
-        area = getArea('K7');
+        area = areaFactory.current.getArea('K7');
         break;
       case 'KeyF':
-        area = getArea('K8');
+        area = areaFactory.current.getArea('K8');
         break;
       default:
         break;
@@ -1306,28 +1421,28 @@ export default function Maisim({
     let area: Area | undefined;
     switch (key) {
       case 'KeyG':
-        area = getArea('K1');
+        area = areaFactory.current.getArea('K1');
         break;
       case 'KeyH':
-        area = getArea('K2');
+        area = areaFactory.current.getArea('K2');
         break;
       case 'KeyN':
-        area = getArea('K3');
+        area = areaFactory.current.getArea('K3');
         break;
       case 'KeyB':
-        area = getArea('K4');
+        area = areaFactory.current.getArea('K4');
         break;
       case 'KeyV':
-        area = getArea('K5');
+        area = areaFactory.current.getArea('K5');
         break;
       case 'KeyC':
-        area = getArea('K6');
+        area = areaFactory.current.getArea('K6');
         break;
       case 'KeyD':
-        area = getArea('K7');
+        area = areaFactory.current.getArea('K7');
         break;
       case 'KeyF':
-        area = getArea('K8');
+        area = areaFactory.current.getArea('K8');
         break;
       default:
         break;
@@ -1388,11 +1503,10 @@ export default function Maisim({
         // 首次完成加载後
         setloadMsg('');
         initCtx();
-        initAreas();
         initEvent();
 
         drawOver();
-        timer_drawkeys.current = setInterval(drawKeys, timerPeriod);
+        timer_drawkeys.current = setInterval(drawKeys, maimaiValues.current.timerPeriod);
 
         // 计算用
         //ppqqAnglCalc();
@@ -1405,13 +1519,12 @@ export default function Maisim({
 
   useEffect(() => {
     console.log(w, h);
-    setCanvasSize(w, h);
+    maimaiValues.current = new MaimaiValues(w, h);
     setCanvasH(h);
     setCanvasW(w);
 
     setTimeout(() => {
-      initAreas();
-      updateVarAfterSizeChanged();
+      areaFactory.current = new AreaUtils(maimaiValues.current);
       drawOver();
     }, 50);
   }, [w, h]);
@@ -1426,7 +1539,7 @@ export default function Maisim({
 
   // 初始化动画
   useEffect(() => {
-    initAnimation();
+    maimaiValues.current = new MaimaiValues(w, h);
   }, []);
 
   // 变速相关
@@ -1498,10 +1611,10 @@ export default function Maisim({
             className="bottomItem bgi"
             src={testbgi}
             style={{
-              top: maimaiR - maimaiJudgeLineR / judgeLineK,
-              left: maimaiR - maimaiJudgeLineR / judgeLineK,
-              height: (maimaiJudgeLineR / judgeLineK) * 2,
-              width: (maimaiJudgeLineR / judgeLineK) * 2,
+              top: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+              left: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+              height: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
+              width: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
             }}
           />
           {/** bga */}
@@ -1509,10 +1622,10 @@ export default function Maisim({
             className="bottomItem bga"
             src=""
             style={{
-              top: maimaiR - maimaiJudgeLineR / judgeLineK,
-              left: maimaiR - maimaiJudgeLineR / judgeLineK,
-              height: (maimaiJudgeLineR / judgeLineK) * 2,
-              width: (maimaiJudgeLineR / judgeLineK) * 2,
+              top: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+              left: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+              height: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
+              width: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
             }}
           />
           {/** 半透明遮罩 */}
@@ -1523,10 +1636,10 @@ export default function Maisim({
             className="bottomItem judgeLine"
             src={uiIcon.Outline_03}
             style={{
-              top: maimaiR - maimaiJudgeLineR / judgeLineK,
-              left: maimaiR - maimaiJudgeLineR / judgeLineK,
-              height: (maimaiJudgeLineR / judgeLineK) * 2,
-              width: (maimaiJudgeLineR / judgeLineK) * 2,
+              top: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+              left: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+              height: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
+              width: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
             }}
           />
         </div>
@@ -1540,10 +1653,10 @@ export default function Maisim({
         <div
           className="uiContainer"
           style={{
-            top: maimaiR - maimaiJudgeLineR / judgeLineK,
-            left: maimaiR - maimaiJudgeLineR / judgeLineK,
-            height: (maimaiJudgeLineR / judgeLineK) * 2,
-            width: (maimaiJudgeLineR / judgeLineK) * 2,
+            top: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+            left: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+            height: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
+            width: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
           }}
         >
           {doShowUIContent ? <>{uiContent}</> : <></>}
@@ -1568,6 +1681,7 @@ export default function Maisim({
               //testmusic.play();
               if (gameState === GameState.Begin) {
                 starttimer();
+                initAnimation();
                 setGameState?.(GameState.Play);
                 console.log(114);
               } else if (gameState === GameState.Play) {
@@ -1579,8 +1693,8 @@ export default function Maisim({
                 setGameState?.(GameState.Pause);
               } else if (gameState === GameState.Pause) {
                 virtualTime.current.resume();
-                timer_readAndUpdate.current = setInterval(reader_and_updater, timerPeriod);
-                timer_draw.current = setInterval(drawer, timerPeriod);
+                timer_readAndUpdate.current = setInterval(reader_and_updater, maimaiValues.current.timerPeriod);
+                timer_draw.current = setInterval(drawer, maimaiValues.current.timerPeriod);
                 SongTrack.play();
                 setGameState?.(GameState.Play);
               } else {

@@ -1,14 +1,15 @@
+import MaimaiValues from '../maimaiValues';
 import { SectionInfo } from '../utils/note';
 import { trackLength } from './_global';
 
 /** SLIDE TRACK分段 */
-export const section = (type: string | undefined, startPos: string, endPosOri: string, turnPosOri?: string): SectionInfo[] | undefined => {
+export const section = (type: string | undefined, values: MaimaiValues, startPos: string, endPosOri: string, turnPosOri?: string): SectionInfo[] | undefined => {
   let endPos = Number(endPosOri) - Number(startPos) + 1;
   let turnPos = (Number(turnPosOri) ?? 0) - Number(startPos) + 1;
   if (endPos < 1) endPos += 8;
   if (turnPos < 1) turnPos += 8;
 
-  return section_A1(type, endPos, turnPos, Number(startPos))?.map(section => {
+  return section_A1(type, values, endPos, turnPos, Number(startPos))?.map(section => {
     const resAreas = section.areas.map(area => {
       if (area !== 'C') {
         let newPos = Number(area.substring(1, 2)) + Number(startPos) - 1;
@@ -21,7 +22,7 @@ export const section = (type: string | undefined, startPos: string, endPosOri: s
 };
 
 /** SLIDE TRACK分段(仅适用于A1开头的SLIDE TRACK) */
-const section_A1 = (type: string | undefined, endPos: number, turnPos: number, startPos: number): SectionInfo[] | undefined => {
+const section_A1 = (type: string | undefined, values: MaimaiValues, endPos: number, turnPos: number, startPos: number): SectionInfo[] | undefined => {
   switch (type) {
     case '-':
       switch (endPos) {
@@ -541,10 +542,10 @@ const section_A1 = (type: string | undefined, endPos: number, turnPos: number, s
         { start: 0.827119, areas: ['E6', 'A5'] },
       ];
     case 'V':
-      const length1 = trackLength('-', 1, turnPos);
-      const length2 = trackLength('-', turnPos, endPos);
-      const part1: { start: number; areas: string[] }[] | undefined = section_A1('-', turnPos, 0, 0);
-      const part2: { start: number; areas: string[] }[] | undefined = section('-', turnPos.toString(), endPos.toString());
+      const length1 = trackLength('-', values, 1, turnPos);
+      const length2 = trackLength('-', values, turnPos, endPos);
+      const part1: { start: number; areas: string[] }[] | undefined = section_A1('-', values, turnPos, 0, 0);
+      const part2: { start: number; areas: string[] }[] | undefined = section('-', values, turnPos.toString(), endPos.toString());
       const resV = [];
 
       for (let i = 0; i < part1?.length! - 1; i++) {

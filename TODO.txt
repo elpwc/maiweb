@@ -154,3 +154,6 @@ areas.ts
 const.ts
 global.ts
 recordUpdater.ts  touchHoldSounds
+
+3.26
+宴会场添加utageComment属性

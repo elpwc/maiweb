@@ -1,25 +1,13 @@
+import MaimaiValues from '../maimaiValues';
 import { atan2, cos, sin, π } from '../utils/math';
-import { center } from '../const';
-import {
-  APositions,
-  ppPoints,
-  qpCenterCircleR,
-  qpLeftCircleCenter,
-  qpLeftRighCircleR,
-  qpRightCircleCenter,
-  qqPoints,
-  rotateCoordination,
-  rotateCoordination2,
-  szLeftPoint,
-  szRightPoint,
-} from './_global';
+import { ppPoints, qqPoints, rotateCoordination, rotateCoordination2 } from './_global';
 
 /**
  * 确定SLIDE TRACK判定图像的角度
  * @param slideLine
  * @returns 角度喵
  */
-export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string, turnPosOri_: string, type: string) => {
+export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string, turnPosOri_: string, type: string, values: MaimaiValues) => {
   let startPos = Number(startPosOri_);
   let endPosOri = Number(endPosOri_);
   let turnPosOri = Number(turnPosOri_);
@@ -31,11 +19,11 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 
   let angle = ((startPos - 1) * 2 * π) / 8;
 
-  // let startPosX = APositions[0][0],
-  // 	startPosY = APositions[0][1];
+  // let startPosX = values.APositions[0][0],
+  // 	startPosY = values.APositions[0][1];
 
-  let startPosX = APositions[startPos - 1][0],
-    startPosY = APositions[startPos - 1][1];
+  let startPosX = values.APositions[startPos - 1][0],
+    startPosY = values.APositions[startPos - 1][1];
 
   switch (type) {
     case '<':
@@ -46,25 +34,25 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
       break;
     case 's':
       {
-        const startPosPx = rotateCoordination2(szRightPoint, center, angle);
+        const startPosPx = rotateCoordination2(values.szRightPoint, values.center, angle);
         startPosX = startPosPx[0];
         startPosY = startPosPx[1];
       }
       break;
     case 'z':
       {
-        const startPosPx = rotateCoordination2(szLeftPoint, center, angle);
+        const startPosPx = rotateCoordination2(values.szLeftPoint, values.center, angle);
         startPosX = startPosPx[0];
         startPosY = startPosPx[1];
       }
       break;
     case 'v':
-      startPosX = center[0];
-      startPosY = center[1];
+      startPosX = values.center[0];
+      startPosY = values.center[1];
       break;
     case 'V':
-      startPosX = APositions[turnPosOri - 1][0];
-      startPosY = APositions[turnPosOri - 1][1];
+      startPosX = values.APositions[turnPosOri - 1][0];
+      startPosY = values.APositions[turnPosOri - 1][1];
       break;
     case 'p':
       {
@@ -74,10 +62,10 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
         const pqAngle = 0.25 * (endPos >= 6 ? 14 - endPos : 6 - endPos);
         /** 圆弧终止的点（作为切点） */
         const startPosPx = rotateCoordination(
-          center[0] + qpCenterCircleR * cos((startAngle - pqAngle) * π),
-          center[1] + qpCenterCircleR * sin((startAngle - pqAngle) * π),
-          center[0],
-          center[1],
+          values.center[0] + values.qpCenterCircleR * cos((startAngle - pqAngle) * π),
+          values.center[1] + values.qpCenterCircleR * sin((startAngle - pqAngle) * π),
+          values.center[0],
+          values.center[1],
           angle
         );
         startPosX = startPosPx[0];
@@ -92,10 +80,10 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
         const pqAngle = 0.25 * (endPos <= 4 ? endPos + 4 : endPos - 4);
 
         const startPosPx = rotateCoordination(
-          center[0] + qpCenterCircleR * cos((startAngle + pqAngle) * π),
-          center[1] + qpCenterCircleR * sin((startAngle + pqAngle) * π),
-          center[0],
-          center[1],
+          values.center[0] + values.qpCenterCircleR * cos((startAngle + pqAngle) * π),
+          values.center[1] + values.qpCenterCircleR * sin((startAngle + pqAngle) * π),
+          values.center[0],
+          values.center[1],
           angle
         );
         startPosX = startPosPx[0];
@@ -108,10 +96,10 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
         const pqAngle = endPos === 4 ? 1 - ppPoints[endPos] + 1 + startAngle + 2 : 1 - ppPoints[endPos] + 1 + startAngle;
 
         const startPosPx = rotateCoordination(
-          qpRightCircleCenter[0] + qpLeftRighCircleR * cos((startAngle - pqAngle) * π),
-          qpRightCircleCenter[1] + qpLeftRighCircleR * sin((startAngle - pqAngle) * π),
-          center[0],
-          center[1],
+          values.qpRightCircleCenter[0] + values.qpLeftRighCircleR * cos((startAngle - pqAngle) * π),
+          values.qpRightCircleCenter[1] + values.qpLeftRighCircleR * sin((startAngle - pqAngle) * π),
+          values.center[0],
+          values.center[1],
           angle
         );
         startPosX = startPosPx[0];
@@ -124,10 +112,10 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
         const pqAngle = endPos === 7 ? qqPoints[endPos] - startAngle : 1 + qqPoints[endPos] + 1 - startAngle;
 
         const startPosPx = rotateCoordination(
-          qpLeftCircleCenter[0] + qpLeftRighCircleR * cos((startAngle + pqAngle) * π),
-          qpLeftCircleCenter[1] + qpLeftRighCircleR * sin((startAngle + pqAngle) * π),
-          center[0],
-          center[1],
+          values.qpLeftCircleCenter[0] + values.qpLeftRighCircleR * cos((startAngle + pqAngle) * π),
+          values.qpLeftCircleCenter[1] + values.qpLeftRighCircleR * sin((startAngle + pqAngle) * π),
+          values.center[0],
+          values.center[1],
           angle
         );
         startPosX = startPosPx[0];
@@ -185,9 +173,9 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
     let angle = 0;
 
     if (direction === 0) {
-      angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180 - 180;
+      angle = (atan2(values.APositions[endPosOri - 1][1] - startPosY, values.APositions[endPosOri - 1][0] - startPosX) / π) * 180 - 180;
     } else {
-      angle = (atan2(APositions[endPosOri - 1][1] - startPosY, APositions[endPosOri - 1][0] - startPosX) / π) * 180;
+      angle = (atan2(values.APositions[endPosOri - 1][1] - startPosY, values.APositions[endPosOri - 1][0] - startPosX) / π) * 180;
     }
 
     return {

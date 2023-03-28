@@ -1,13 +1,13 @@
 import { abs } from '../utils/math';
-import { maimaiJudgeLineR, maimaiSummonLineR, maimaiTapR } from '../const';
 import { getJudgeDirectionParams } from '../slideTracks/judgeDirection';
 // 仅仅用来计算分段数量
 import { section, section_wifi } from '../slideTracks/section';
 import { FlipMode } from '../utils/types/flipMode';
 import { analyse_note_original_data } from './noteStrAnalyser';
-import { Note, Beat, SlideTrack } from '../utils/note';
+import { Note, Beat, SlideTrack, SlideLine } from '../utils/note';
 import { NoteType } from '../utils/types/noteType';
 import { Sheet } from '../utils/sheet';
+import MaimaiValues from '../maimaiValues';
 
 /**
  * 读取maimaiDX谱面文件的inote属性
@@ -187,7 +187,6 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
         // 加入SLIDE TRACK
         if (foreType === NoteType.Slide) {
           res.slideTracks?.forEach((slideTrack: SlideTrack) => {
-            const sections = slideTrack.slideType === 'w' ? section_wifi(res.pos, slideTrack.endPos!) : section(slideTrack.slideType, res.pos, slideTrack.endPos!, slideTrack.turnPos);
             const tempSlideTrackNote: Note = {
               index: res.index,
               serial,
@@ -211,18 +210,8 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
               isStarTap: res.isStarTap,
               isNoTapSlide: res.isNoTapSlide,
               isNoTapNoTameTimeSlide: res.isNoTapNoTameTimeSlide,
-              sections,
-              sectionCount: slideTrack.slideType === 'w' ? 5 : sections?.length,
               isChain: slideTrack.isChain,
               slideLines: slideTrack.slideLines,
-              slideLineDirectionParams: slideTrack.isChain
-                ? getJudgeDirectionParams(
-                    slideTrack.slideLines![slideTrack.slideLines?.length! - 1].endPos ?? '',
-                    slideTrack.slideLines![slideTrack.slideLines?.length! - 1].pos ?? '',
-                    slideTrack.slideLines![slideTrack.slideLines?.length! - 1].turnPos ?? '',
-                    slideTrack.slideLines![slideTrack.slideLines?.length! - 1].slideType ?? ''
-                  )
-                : getJudgeDirectionParams(slideTrack.endPos ?? '', res.pos, slideTrack.turnPos ?? '', slideTrack.slideType ?? ''),
             };
 
             notesRes.push(tempSlideTrackNote);
@@ -337,6 +326,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
  * @returns
  */
 export const calculate_speed_related_params_for_notes = (
+  values: MaimaiValues,
   notesOri: Note[],
   tapMoveSpeed: number,
   tapEmergeSpeed: number,
@@ -362,6 +352,32 @@ export const calculate_speed_related_params_for_notes = (
   /** 为Notes计算浮现的时机 */
   const notes = notesOri;
   notes.forEach((note: Note, i: number) => {
+    // 为SLIDE TRACK计算和添加与控件尺寸有关的属性
+    if (note.type === NoteType.SlideTrack) {
+      const sections = note.slideType === 'w' ? section_wifi(note.pos, note.endPos!) : section(note.slideType, values, note.pos, note.endPos!, note.turnPos);
+      note.sections = sections;
+      note.sectionCount = note.slideType === 'w' ? 5 : sections?.length;
+      note.slideLineDirectionParams = note.isChain
+        ? getJudgeDirectionParams(
+            note.slideLines![note.slideLines?.length! - 1].endPos ?? '',
+            note.slideLines![note.slideLines?.length! - 1].pos ?? '',
+            note.slideLines![note.slideLines?.length! - 1].turnPos ?? '',
+            note.slideLines![note.slideLines?.length! - 1].slideType ?? '',
+            values
+          )
+        : getJudgeDirectionParams(note.endPos ?? '', note.pos, note.turnPos ?? '', note.slideType ?? '', values);
+
+      if (note.isChain) {
+        note.slideLines?.forEach((slideLine: SlideLine, slideLineIndex: number) => {
+          const sections_slideLine =
+            slideLine.slideType === 'w'
+              ? section_wifi(slideLineIndex === 0 ? note.pos : note.slideLines![slideLineIndex - 1].endPos!, slideLine.endPos!)
+              : section(slideLine.slideType, values, slideLineIndex === 0 ? note.pos : note.slideLines![slideLineIndex - 1].endPos!, slideLine.endPos!, slideLine.turnPos);
+          slideLine.sections = sections_slideLine;
+        });
+      }
+    }
+
     // 为TOUCH和TOUCH以外设置不同的速度
     let speed = 0;
     if (note.type === NoteType.Touch || note.type === NoteType.TouchHold) {
@@ -371,13 +387,13 @@ export const calculate_speed_related_params_for_notes = (
     }
 
     if (note.type === NoteType.SlideTrack) {
-      const emergingTime = (maimaiJudgeLineR - maimaiSummonLineR) / (tapMoveSpeed * speed);
+      const emergingTime = (values.maimaiJudgeLineR - values.maimaiSummonLineR) / (tapMoveSpeed * speed);
       notes[i].moveTime = note.time - note.remainTime!;
       notes[i].emergeTime = note.time - note.remainTime! - note.stopTime! - emergingTime + emergingTime * slideTrackOffset;
       notes[i].guideStarEmergeTime = note.time - note.remainTime! - note.stopTime!;
     } else {
-      const emergingTime = maimaiTapR / (tapEmergeSpeed * speed);
-      const movingTime = (maimaiJudgeLineR - maimaiSummonLineR) / (tapMoveSpeed * speed);
+      const emergingTime = values.maimaiTapR / (tapEmergeSpeed * speed);
+      const movingTime = (values.maimaiJudgeLineR - values.maimaiSummonLineR) / (tapMoveSpeed * speed);
       notes[i].moveTime = note.time - movingTime;
       notes[i].emergeTime = note.time - movingTime - emergingTime;
 

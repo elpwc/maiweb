@@ -41,7 +41,7 @@ export const analyse_slide_line = (oriData: string, startPos: string, currentBPM
   currentSlideTrackRes.turnPos = flipPos(turnPos, flipMode);
   currentSlideTrackRes.endPos = flipPos(endPos, flipMode);
 
-  currentSlideTrackRes.sections = section(currentSlideTrackRes.slideType, startPos, currentSlideTrackRes.endPos!, currentSlideTrackRes.turnPos);
+  //currentSlideTrackRes.sections = section(currentSlideTrackRes.slideType, startPos, currentSlideTrackRes.endPos!, currentSlideTrackRes.turnPos);
 
   return currentSlideTrackRes;
 };

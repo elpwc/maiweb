@@ -1,4 +1,3 @@
-import { gameRecord } from './global';
 import { NoteSound } from './resourceReaders/noteSoundReader';
 import { JudgeStatus, JudgeTimeStatus } from './utils/types/judgeStatus';
 import { Note } from './utils/note';
@@ -8,8 +7,41 @@ import { ShowingNoteProps } from './utils/showingNoteProps';
 /**  */
 const dx_score = [3, 2, 1, 0, 0];
 
-/** 控制TOUCH HOLD的储能音效开关 */
-const touchHoldSounds: { sound: HTMLAudioElement; serial: number }[] = [];
+export interface TouchHoldSoundsManagerUnit {
+  sound: HTMLAudioElement;
+  serial: number;
+}
+
+export class TouchHoldSoundsManager {
+  constructor() {
+    this.touchHoldSounds = [];
+  }
+
+  push = (item: Node, serial: number) => {
+    this.touchHoldSounds.push({ sound: item as HTMLAudioElement, serial: serial });
+  };
+
+  play = (touchHoldSoundIndex: number) => {
+    if (touchHoldSoundIndex >= 0 && this.touchHoldSounds.length > touchHoldSoundIndex) {
+      this.touchHoldSounds[touchHoldSoundIndex].sound.play();
+    }
+  };
+
+  playLast = () => {
+    if (this.touchHoldSounds.length > 0) {
+      this.touchHoldSounds[this.touchHoldSounds.length - 1].sound.play();
+    }
+  };
+
+  pause = (touchHoldSoundIndex: number) => {
+    if (touchHoldSoundIndex >= 0 && this.touchHoldSounds.length > touchHoldSoundIndex) {
+      this.touchHoldSounds[touchHoldSoundIndex].sound.pause();
+    }
+  };
+
+  /** 控制TOUCH HOLD的储能音效开关 */
+  touchHoldSounds: { sound: HTMLAudioElement; serial: number }[] = [];
+}
 
 /**
  * 更新计分
@@ -22,13 +54,15 @@ const touchHoldSounds: { sound: HTMLAudioElement; serial: number }[] = [];
  * @param soundControl 控制TOUCH HOLD积蓄声用
  */
 export const updateRecord = (
+  gameRecord: any,
   note: Note,
   props: ShowingNoteProps,
   basicEvaluation: number,
   exEvaluation: number,
   oldTheoreticalScore: number,
   soundOnly: boolean = false,
-  soundControl: boolean = true /* true: play, false: pause */
+  soundControl: boolean = true /* true: play, false: pause */,
+  touchHoldSoundsManager?: TouchHoldSoundsManager
 ) => {
   // combo 计算
   if (props.judgeStatus !== JudgeStatus.Miss) {
@@ -518,46 +552,47 @@ export const updateRecord = (
       if (soundOnly) {
         //NORMAL TAP
         if (!note.isShortHold) {
-          const touchHoldSoundIndex = touchHoldSounds.findIndex(s => {
-            return s.serial === note.serial;
-          });
-          console.log(touchHoldSounds, touchHoldSoundIndex);
+          const touchHoldSoundIndex =
+            touchHoldSoundsManager?.touchHoldSounds.findIndex(s => {
+              return s.serial === note.serial;
+            }) ?? -1;
+          console.log(touchHoldSoundsManager?.touchHoldSounds, touchHoldSoundIndex);
           switch (props.judgeStatus) {
             case JudgeStatus.CriticalPerfect:
             case JudgeStatus.Perfect:
               if (touchHoldSoundIndex !== -1) {
                 if (soundControl) {
-                  touchHoldSounds[touchHoldSoundIndex].sound.play();
+                  touchHoldSoundsManager?.play(touchHoldSoundIndex);
                 } else {
-                  touchHoldSounds[touchHoldSoundIndex].sound.pause();
+                  touchHoldSoundsManager?.pause(touchHoldSoundIndex);
                 }
               } else {
-                touchHoldSounds.push({ sound: NoteSound.touchhold_perfect.cloneNode() as HTMLAudioElement, serial: note.serial });
-                touchHoldSounds[touchHoldSounds.length - 1].sound.play();
+                touchHoldSoundsManager?.push(NoteSound.touchhold_perfect.cloneNode(), note.serial);
+                touchHoldSoundsManager?.playLast();
               }
               break;
             case JudgeStatus.Great:
               if (touchHoldSoundIndex !== -1) {
                 if (soundControl) {
-                  touchHoldSounds[touchHoldSoundIndex].sound.play();
+                  touchHoldSoundsManager?.play(touchHoldSoundIndex);
                 } else {
-                  touchHoldSounds[touchHoldSoundIndex].sound.pause();
+                  touchHoldSoundsManager?.pause(touchHoldSoundIndex);
                 }
               } else {
-                touchHoldSounds.push({ sound: NoteSound.touchhold_perfect.cloneNode() as HTMLAudioElement, serial: note.serial });
-                touchHoldSounds[touchHoldSounds.length - 1].sound.play();
+                touchHoldSoundsManager?.push(NoteSound.touchhold_perfect.cloneNode(), note.serial);
+                touchHoldSoundsManager?.playLast();
               }
               break;
             case JudgeStatus.Good:
               if (touchHoldSoundIndex !== -1) {
                 if (soundControl) {
-                  touchHoldSounds[touchHoldSoundIndex].sound.play();
+                  touchHoldSoundsManager?.play(touchHoldSoundIndex);
                 } else {
-                  touchHoldSounds[touchHoldSoundIndex].sound.pause();
+                  touchHoldSoundsManager?.pause(touchHoldSoundIndex);
                 }
               } else {
-                touchHoldSounds.push({ sound: NoteSound.touchhold_perfect.cloneNode() as HTMLAudioElement, serial: note.serial });
-                touchHoldSounds[touchHoldSounds.length - 1].sound.play();
+                touchHoldSoundsManager?.push(NoteSound.touchhold_perfect.cloneNode(), note.serial);
+                touchHoldSoundsManager?.playLast();
               }
               break;
           }

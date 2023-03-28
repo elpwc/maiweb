@@ -21,7 +21,7 @@ interface Animation {
 }
 
 export default class AnimationUtils {
-  constructor(virtualTime: VirtualTime) {
+  constructor(virtualTime: VirtualTime = new VirtualTime()) {
     this.initAnimations(virtualTime);
   }
 

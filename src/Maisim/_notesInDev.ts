@@ -12,7 +12,7 @@ E
 
 export const sheetdata2 = {
   notes: `(180)
-  {16}4,5,4,5,4,5,4,5,4b,,1h[1:4],
+  {16}1,2,3,4,5,6,7,8,
   E`,
   wholebpm: 114,
   first: 0,

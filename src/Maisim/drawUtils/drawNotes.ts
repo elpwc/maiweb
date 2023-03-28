@@ -1,39 +1,18 @@
 import { cos, sin, π } from '../utils/math';
-import {
-  center,
-  maimaiSummonLineR,
-  maimaiScreenR,
-  maimaiBR,
-  maimaiER,
-  touchMaxDistance,
-  maimaiTapR,
-  trackItemGap,
-  trackItemWidth,
-  trackItemHeight,
-  holdHeadHeight,
-  canvasWidth,
-  maimaiADTouchR,
-  maimaiJudgeLineR,
-  fireworkInnerCircleR,
-  canvasHeight,
-  maimaiR,
-  judgeDistance,
-  judgeResultShowTime,
-  judgeResultFadeOutDuration,
-} from '../const';
 import { getTrackProps } from '../slideTracks/tracks';
-import { APositions, trackLength } from '../slideTracks/_global';
 import { drawRotationImage, lineLen } from './_base';
 import { NoteIcon } from '../resourceReaders/noteIconReader';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { RegularStyles, SlideColor, TapStyles } from '../utils/types/noteStyles';
 import { JudgeIcon } from '../resourceReaders/judgeIconReader';
-import { getTouchCenterCoord } from '../areas';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/types/judgeStatus';
 import { Note, SectionInfo, SlideLine } from '../utils/note';
 import { NoteType } from '../utils/types/noteType';
 import { ShowingNoteProps } from '../utils/showingNoteProps';
-import { animationFactory } from '../global';
+import AnimationUtils from './animation';
+import MaimaiValues from '../maimaiValues';
+import { trackLength } from '../slideTracks/_global';
+import { getTouchCenterCoord } from '../areas';
 
 let tapIcon: HTMLImageElement;
 let tapEachIcon: HTMLImageElement;
@@ -217,6 +196,8 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
  * @param isEachPairFirst
  */
 export const drawNote = (
+  animationFactory: AnimationUtils,
+  values: MaimaiValues,
   ctx: CanvasRenderingContext2D,
   ctx_slideTrack: CanvasRenderingContext2D,
   note: Note,
@@ -246,35 +227,35 @@ export const drawNote = (
       // 数字开头的位置
       θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
       //console.log(note.pos, θ*180)
-      x = center[0] + (props.rho + maimaiSummonLineR) * Math.cos(θ);
-      y = center[1] + (props.rho + maimaiSummonLineR) * Math.sin(θ);
+      x = values.center[0] + (props.rho + values.maimaiSummonLineR) * Math.cos(θ);
+      y = values.center[1] + (props.rho + values.maimaiSummonLineR) * Math.sin(θ);
     } else {
       // 字母开头的位置（TOUCH）
       if (firstChar === 'A' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold)) {
         θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-        x = center[0] + maimaiScreenR * Math.cos(θ);
-        y = center[1] + maimaiScreenR * Math.sin(θ);
+        x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
+        y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
       } else if (firstChar === 'D' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold)) {
         θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-        x = center[0] + maimaiScreenR * Math.cos(θ);
-        y = center[1] + maimaiScreenR * Math.sin(θ);
+        x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
+        y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
       } else {
-        const touchCenterCoord = getTouchCenterCoord(note.pos);
+        const touchCenterCoord = getTouchCenterCoord(note.pos, values);
         x = touchCenterCoord[0];
         y = touchCenterCoord[1];
       }
     }
 
     if (note.type === NoteType.Hold) {
-      tx = center[0] + (props.tailRho + maimaiSummonLineR) * Math.cos(θ);
-      ty = center[1] + (props.tailRho + maimaiSummonLineR) * Math.sin(θ);
+      tx = values.center[0] + (props.tailRho + values.maimaiSummonLineR) * Math.cos(θ);
+      ty = values.center[1] + (props.tailRho + values.maimaiSummonLineR) * Math.sin(θ);
     }
 
     //console.log(props, ty )
 
     // // 画
     // ctx.beginPath();
-    // ctx.arc(x, y, maimaiTapR, 0, 2 * Math.PI);
+    // ctx.arc(x, y, values.maimaiTapR, 0, 2 * Math.PI);
 
     /** tapR修正 */
     let k = 0.542;
@@ -292,12 +273,12 @@ export const drawNote = (
         drawRotationImage(
           effectBackCtx!,
           EffectIcon.BreakLine,
-          center[0] - (props.rho + maimaiSummonLineR) / k2,
-          center[1] - (props.rho + maimaiSummonLineR) / k2,
-          ((props.rho + maimaiSummonLineR) / k2) * 2,
-          ((props.rho + maimaiSummonLineR) / k2) * 2,
-          center[0],
-          center[1],
+          values.center[0] - (props.rho + values.maimaiSummonLineR) / k2,
+          values.center[1] - (props.rho + values.maimaiSummonLineR) / k2,
+          ((props.rho + values.maimaiSummonLineR) / k2) * 2,
+          ((props.rho + values.maimaiSummonLineR) / k2) * 2,
+          values.center[0],
+          values.center[1],
           -22.5 + Number(note.pos) * 45
         );
       } else {
@@ -305,24 +286,24 @@ export const drawNote = (
           drawRotationImage(
             effectBackCtx!,
             EffectIcon.EachLine,
-            center[0] - (props.rho + maimaiSummonLineR) / k2,
-            center[1] - (props.rho + maimaiSummonLineR) / k2,
-            ((props.rho + maimaiSummonLineR) / k2) * 2,
-            ((props.rho + maimaiSummonLineR) / k2) * 2,
-            center[0],
-            center[1],
+            values.center[0] - (props.rho + values.maimaiSummonLineR) / k2,
+            values.center[1] - (props.rho + values.maimaiSummonLineR) / k2,
+            ((props.rho + values.maimaiSummonLineR) / k2) * 2,
+            ((props.rho + values.maimaiSummonLineR) / k2) * 2,
+            values.center[0],
+            values.center[1],
             -22.5 + Number(note.pos) * 45
           );
         } else {
           drawRotationImage(
             effectBackCtx!,
             lineImage,
-            center[0] - (props.rho + maimaiSummonLineR) / k2,
-            center[1] - (props.rho + maimaiSummonLineR) / k2,
-            ((props.rho + maimaiSummonLineR) / k2) * 2,
-            ((props.rho + maimaiSummonLineR) / k2) * 2,
-            center[0],
-            center[1],
+            values.center[0] - (props.rho + values.maimaiSummonLineR) / k2,
+            values.center[1] - (props.rho + values.maimaiSummonLineR) / k2,
+            ((props.rho + values.maimaiSummonLineR) / k2) * 2,
+            ((props.rho + values.maimaiSummonLineR) / k2) * 2,
+            values.center[0],
+            values.center[1],
             -22.5 + Number(note.pos) * 45
           );
         }
@@ -334,12 +315,12 @@ export const drawNote = (
         drawRotationImage(
           effectBackCtx!,
           eachPairLines[(note.eachPairDistance ?? 1) - 1],
-          center[0] - (props.rho + maimaiSummonLineR) / k3,
-          center[1] - (props.rho + maimaiSummonLineR) / k3,
-          ((props.rho + maimaiSummonLineR) / k3) * 2,
-          ((props.rho + maimaiSummonLineR) / k3) * 2,
-          center[0],
-          center[1],
+          values.center[0] - (props.rho + values.maimaiSummonLineR) / k3,
+          values.center[1] - (props.rho + values.maimaiSummonLineR) / k3,
+          ((props.rho + values.maimaiSummonLineR) / k3) * 2,
+          ((props.rho + values.maimaiSummonLineR) / k3) * 2,
+          values.center[0],
+          values.center[1],
           -22.5 - (note.eachPairDistance ?? 1) * 11.25 + Number(note.pos) * 45
         );
       }
@@ -413,7 +394,7 @@ export const drawNote = (
           0,
           0,
           image.width,
-          holdHeadHeight
+          values.holdHeadHeight
         );
         drawRotationImage(
           ctx,
@@ -429,9 +410,9 @@ export const drawNote = (
           0,
           0,
           image.width,
-          holdHeadHeight
+          values.holdHeadHeight
         );
-      } else if (props.tailRho <= maimaiJudgeLineR - maimaiSummonLineR) {
+      } else if (props.tailRho <= values.maimaiJudgeLineR - values.maimaiSummonLineR) {
         // 最外侧的HOLD头部
         drawRotationImage(
           ctx,
@@ -447,7 +428,7 @@ export const drawNote = (
           0,
           0,
           image.width,
-          holdHeadHeight
+          values.holdHeadHeight
         );
         drawRotationImage(
           ctx,
@@ -461,9 +442,9 @@ export const drawNote = (
           -22.5 + Number(note.pos) * 45,
           1,
           0,
-          holdHeadHeight,
+          values.holdHeadHeight,
           image.width,
-          image.height - 2 * holdHeadHeight
+          image.height - 2 * values.holdHeadHeight
         );
         drawRotationImage(
           ctx,
@@ -479,7 +460,7 @@ export const drawNote = (
           0,
           0,
           image.width,
-          holdHeadHeight
+          values.holdHeadHeight
         );
       }
     };
@@ -487,8 +468,8 @@ export const drawNote = (
     const drawTouchImage = (image: HTMLImageElement, imageCenter: HTMLImageElement) => {
       const centerx = x,
         centery = y;
-      let k = (0.5 * maimaiR) / 350,
-        centerk = (0.6 * maimaiR) / 350;
+      let k = (0.5 * values.maimaiR) / 350,
+        centerk = (0.6 * values.maimaiR) / 350;
 
       // 多重TOUCH线
       if ((note.innerTouchOverlap ?? 0) > 0) {
@@ -514,7 +495,18 @@ export const drawNote = (
 
       for (let i = 0; i < 4; i++) {
         // 从下方的叶片开始顺时针绘制
-        drawRotationImage(ctx, image, x - (image.width * k) / 2, y + touchMaxDistance - (6 * maimaiR) / 350 - props.rho, image.width * k, image.height * k, x, y, 90 * i, props.radius / maimaiTapR);
+        drawRotationImage(
+          ctx,
+          image,
+          x - (image.width * k) / 2,
+          y + values.touchMaxDistance - (6 * values.maimaiR) / 350 - props.rho,
+          image.width * k,
+          image.height * k,
+          x,
+          y,
+          90 * i,
+          props.radius / values.maimaiTapR
+        );
       }
       drawRotationImage(ctx, imageCenter, x - (imageCenter.width * centerk) / 2, y - (imageCenter.height * centerk) / 2, imageCenter.width * centerk, imageCenter.height * centerk);
       // if (props.touched) {
@@ -526,8 +518,8 @@ export const drawNote = (
       const centerx = x,
         centery = y;
 
-      let k = (0.5 * maimaiR) / 350,
-        centerk = (0.6 * maimaiR) / 350;
+      let k = (0.5 * values.maimaiR) / 350,
+        centerk = (0.6 * values.maimaiR) / 350;
 
       const touchHoldPieces = is_miss
         ? [NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss]
@@ -556,13 +548,13 @@ export const drawNote = (
             ctx,
             touchHoldPieces[i],
             x - (touchHoldPieces[i].width * k) / 2,
-            y + touchMaxDistance - (6 * maimaiR) / 350 - props.rho,
+            y + values.touchMaxDistance - (6 * values.maimaiR) / 350 - props.rho,
             touchHoldPieces[i].width * k,
             touchHoldPieces[i].height * k,
             x,
             y,
             135 + 90 * i,
-            props.radius / maimaiTapR
+            props.radius / values.maimaiTapR
           );
         }
         drawRotationImage(
@@ -580,13 +572,13 @@ export const drawNote = (
               ctx,
               touchHoldPieces[i],
               x - (touchHoldPieces[i].width * k) / 2,
-              y + touchMaxDistance - (6 * maimaiR) / 350 - props.rho,
+              y + values.touchMaxDistance - (6 * values.maimaiR) / 350 - props.rho,
               touchHoldPieces[i].width * k,
               touchHoldPieces[i].height * k,
               x,
               y,
               135 + 90 * i,
-              props.radius / maimaiTapR
+              props.radius / values.maimaiTapR
             );
           }
           drawRotationImage(
@@ -603,13 +595,13 @@ export const drawNote = (
               ctx,
               touchHoldPieces[i],
               x - (touchHoldPieces[i].width * k) / 2,
-              y + touchMaxDistance - (6 * maimaiR) / 350 - props.rho,
+              y + values.touchMaxDistance - (6 * values.maimaiR) / 350 - props.rho,
               touchHoldPieces[i].width * k,
               touchHoldPieces[i].height * k,
               x,
               y,
               135 + 90 * i,
-              props.radius / maimaiTapR
+              props.radius / values.maimaiTapR
             );
           }
           drawRotationImage(
@@ -675,19 +667,20 @@ export const drawNote = (
               if (/*如果沒有全部画完（-1表示最後一段也画了）*/ props.currentSectionIndex !== -1) {
                 // 间隔放置TRACK元素的时间
                 const trackItemGapTime =
-                  (trackItemGap * slideLine.remainTime!) /
-                  trackLength(slideLine.slideType!, Number(slideLine.pos), Number(slideLine.endPos), slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos));
+                  (values.trackItemGap * slideLine.remainTime!) /
+                  trackLength(slideLine.slideType!, values, Number(slideLine.pos), Number(slideLine.endPos), slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos));
 
                 // SLIDE分段信息
                 const sectionInfo = slideLine.sections as SectionInfo[];
 
                 // 画SLIDE TRACK
                 ctx_slideTrack.save();
-                ctx_slideTrack.translate(center[0], center[1]);
+                ctx_slideTrack.translate(values.center[0], values.center[1]);
                 ctx_slideTrack.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
                 // 得从後往前画
                 for (let i = slideLine.remainTime!; i >= sectionInfo![j === props.currentLineIndex ? props.currentSectionIndex : 0].start * slideLine.remainTime!; i -= trackItemGapTime) {
                   const slideData = getTrackProps(
+                    values,
                     slideLine.slideType!,
                     Number(slideLine.pos),
                     Number(slideLine.endPos),
@@ -702,12 +695,12 @@ export const drawNote = (
                   drawRotationImage(
                     ctx_slideTrack,
                     imageTrack,
-                    slideData.x - trackItemWidth / 2 - center[0],
-                    slideData.y - trackItemHeight / 2 - center[1],
-                    trackItemWidth,
-                    trackItemHeight,
-                    slideData.x - center[0],
-                    slideData.y - center[1],
+                    slideData.x - values.trackItemWidth / 2 - values.center[0],
+                    slideData.y - values.trackItemHeight / 2 - values.center[1],
+                    values.trackItemWidth,
+                    values.trackItemHeight,
+                    slideData.x - values.center[0],
+                    slideData.y - values.center[1],
                     slideData.direction,
                     props.radius
                   );
@@ -731,33 +724,33 @@ export const drawNote = (
                 // WIFI TRACK
 
                 // WIFI TRACK开始于screenR而不是judgeR
-                const startPoint = [center[0] + maimaiScreenR * cos((-5 / 8 + 1 / 4) * Math.PI), center[1] + maimaiScreenR * sin((-5 / 8 + 1 / 4) * Math.PI)];
+                const startPoint = [values.center[0] + values.maimaiScreenR * cos((-5 / 8 + 1 / 4) * Math.PI), values.center[1] + values.maimaiScreenR * sin((-5 / 8 + 1 / 4) * Math.PI)];
                 const getWifiTrackProps = (ct: number, rt: number): { x: number; y: number; direction: number }[] => {
                   return [
                     {
-                      x: startPoint[0] + (APositions[5][0] - startPoint[0]) * (ct / rt),
-                      y: startPoint[1] + (APositions[5][1] - startPoint[1]) * (ct / rt),
+                      x: startPoint[0] + (values.APositions[5][0] - startPoint[0]) * (ct / rt),
+                      y: startPoint[1] + (values.APositions[5][1] - startPoint[1]) * (ct / rt),
                       direction: 22.5 * 5 + 202.5,
                     },
                     {
-                      x: startPoint[0] + (APositions[4][0] - startPoint[0]) * (ct / rt),
-                      y: startPoint[1] + (APositions[4][1] - startPoint[1]) * (ct / rt),
+                      x: startPoint[0] + (values.APositions[4][0] - startPoint[0]) * (ct / rt),
+                      y: startPoint[1] + (values.APositions[4][1] - startPoint[1]) * (ct / rt),
                       direction: 22.5 * 4 + 202.5,
                     },
                     {
-                      x: 2 * APositions[0][0] - startPoint[0] + (APositions[3][0] - 2 * APositions[0][0] + startPoint[0]) * (ct / rt),
-                      y: startPoint[1] + (APositions[3][1] - startPoint[1]) * (ct / rt),
+                      x: 2 * values.APositions[0][0] - startPoint[0] + (values.APositions[3][0] - 2 * values.APositions[0][0] + startPoint[0]) * (ct / rt),
+                      y: startPoint[1] + (values.APositions[3][1] - startPoint[1]) * (ct / rt),
                       direction: 22.5 * 3 + 202.5,
                     },
                   ];
                 };
 
                 // 相邻两判定点的距离
-                const dist = lineLen(APositions[4][0], APositions[4][1], APositions[5][0], APositions[5][1]);
+                const dist = lineLen(values.APositions[4][0], values.APositions[4][1], values.APositions[5][0], values.APositions[5][1]);
 
                 // SLIDE TRACK
                 ctx_slideTrack.save();
-                ctx_slideTrack.translate(center[0], center[1]);
+                ctx_slideTrack.translate(values.center[0], values.center[1]);
                 ctx_slideTrack.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
                 // 得从後往前画
 
@@ -769,12 +762,12 @@ export const drawNote = (
                   drawRotationImage(
                     ctx_slideTrack,
                     wifiTrack![i - 1],
-                    slideData[0].x - center[0] - ((dist * i) / 12) * 0.076,
-                    slideData[0].y - center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
+                    slideData[0].x - values.center[0] - ((dist * i) / 12) * 0.076,
+                    slideData[0].y - values.center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
                     (dist * i) / 12,
                     ((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12,
-                    slideData[0].x - center[0],
-                    slideData[0].y - center[1],
+                    slideData[0].x - values.center[0],
+                    slideData[0].y - values.center[1],
                     22.534119524645373,
                     props.radius * 0.5
                   );
@@ -784,12 +777,12 @@ export const drawNote = (
                   drawRotationImage(
                     ctx_slideTrack,
                     wifiTrack![i - 1],
-                    slideData[2].x - (APositions[0][0] - APositions[7][0]) - center[0] - ((dist * i) / 12) * 0.076,
-                    slideData[2].y - center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
+                    slideData[2].x - (values.APositions[0][0] - values.APositions[7][0]) - values.center[0] - ((dist * i) / 12) * 0.076,
+                    slideData[2].y - values.center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
                     (dist * i) / 12,
                     ((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12,
-                    slideData[2].x - (APositions[0][0] - APositions[7][0]) - center[0],
-                    slideData[2].y - center[1],
+                    slideData[2].x - (values.APositions[0][0] - values.APositions[7][0]) - values.center[0],
+                    slideData[2].y - values.center[1],
                     -22.534119524645373,
                     props.radius * 0.5
                   );
@@ -809,10 +802,11 @@ export const drawNote = (
               console.log(props.currentGuideStarLineIndex, props.currentLineIndex);
               console.log(0);
               ctx.save();
-              ctx.translate(center[0], center[1]);
+              ctx.translate(values.center[0], values.center[1]);
               ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
 
               const guideStarData = getTrackProps(
+                values,
                 slideLine.slideType!,
                 Number(slideLine.pos),
                 Number(slideLine.endPos),
@@ -828,23 +822,24 @@ export const drawNote = (
               drawRotationImage(
                 ctx,
                 imageStar,
-                guideStarData.x - props.guideStarRadius! * 2 - center[0],
-                guideStarData.y - props.guideStarRadius! * 2 - center[1],
+                guideStarData.x - props.guideStarRadius! * 2 - values.center[0],
+                guideStarData.y - props.guideStarRadius! * 2 - values.center[1],
                 props.guideStarRadius! * 4,
                 props.guideStarRadius! * 4,
-                guideStarData.x - center[0],
-                guideStarData.y - center[1],
+                guideStarData.x - values.center[0],
+                guideStarData.y - values.center[1],
                 guideStarData.direction,
-                props.guideStarRadius! / maimaiTapR
+                props.guideStarRadius! / values.maimaiTapR
               );
               ctx.restore();
             } else {
               // 人体蜈蚣 WIFI GUIDE STAR
               ctx.save();
-              ctx.translate(center[0], center[1]);
+              ctx.translate(values.center[0], values.center[1]);
               ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
 
               const guideStarData = getTrackProps(
+                values,
                 slideLine.slideType!,
                 Number(slideLine.pos),
                 Number(slideLine.endPos),
@@ -860,14 +855,14 @@ export const drawNote = (
                 drawRotationImage(
                   ctx,
                   imageStar,
-                  wifiguide.x - props.guideStarRadius! * 2 - center[0],
-                  wifiguide.y - props.guideStarRadius! * 2 - center[1],
+                  wifiguide.x - props.guideStarRadius! * 2 - values.center[0],
+                  wifiguide.y - props.guideStarRadius! * 2 - values.center[1],
                   props.guideStarRadius! * 4,
                   props.guideStarRadius! * 4,
-                  wifiguide.x - center[0],
-                  wifiguide.y - center[1],
+                  wifiguide.x - values.center[0],
+                  wifiguide.y - values.center[1],
                   wifiguide.direction,
-                  props.guideStarRadius! / maimaiTapR
+                  props.guideStarRadius! / values.maimaiTapR
                 );
               });
 
@@ -881,18 +876,18 @@ export const drawNote = (
             if (/*如果沒有全部画完（-1表示最後一段也画了）*/ props.currentSectionIndex !== -1) {
               // 间隔放置TRACK元素的时间
               const trackItemGapTime =
-                (trackItemGap * note.remainTime!) / trackLength(note.slideType!, Number(note.pos), Number(note.endPos), note.turnPos === undefined ? undefined : Number(note.turnPos));
+                (values.trackItemGap * note.remainTime!) / trackLength(note.slideType!, values, Number(note.pos), Number(note.endPos), note.turnPos === undefined ? undefined : Number(note.turnPos));
 
               // SLIDE分段信息
               const sectionInfo = note.sections as SectionInfo[];
 
               // 画SLIDE TRACK
               ctx_slideTrack.save();
-              ctx_slideTrack.translate(center[0], center[1]);
+              ctx_slideTrack.translate(values.center[0], values.center[1]);
               ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
               // 得从後往前画
               for (let i = note.remainTime!; i >= sectionInfo![props.currentSectionIndex].start * note.remainTime!; i -= trackItemGapTime) {
-                const slideData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
+                const slideData = getTrackProps(values, note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
                   x: number;
                   y: number;
                   direction: number;
@@ -900,12 +895,12 @@ export const drawNote = (
                 drawRotationImage(
                   ctx_slideTrack,
                   imageTrack,
-                  slideData.x - trackItemWidth / 2 - center[0],
-                  slideData.y - trackItemHeight / 2 - center[1],
-                  trackItemWidth,
-                  trackItemHeight,
-                  slideData.x - center[0],
-                  slideData.y - center[1],
+                  slideData.x - values.trackItemWidth / 2 - values.center[0],
+                  slideData.y - values.trackItemHeight / 2 - values.center[1],
+                  values.trackItemWidth,
+                  values.trackItemHeight,
+                  slideData.x - values.center[0],
+                  slideData.y - values.center[1],
                   slideData.direction,
                   props.radius
                 );
@@ -915,10 +910,18 @@ export const drawNote = (
 
             // GUIDE STAR
             ctx.save();
-            ctx.translate(center[0], center[1]);
+            ctx.translate(values.center[0], values.center[1]);
             ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
 
-            const guideStarData = getTrackProps(note.slideType!, Number(note.pos), Number(note.endPos), props.rho, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
+            const guideStarData = getTrackProps(
+              values,
+              note.slideType!,
+              Number(note.pos),
+              Number(note.endPos),
+              props.rho,
+              note.remainTime!,
+              note.turnPos === undefined ? undefined : Number(note.turnPos)
+            ) as {
               x: number;
               y: number;
               direction: number;
@@ -926,14 +929,14 @@ export const drawNote = (
             drawRotationImage(
               ctx,
               imageStar,
-              guideStarData.x - props.guideStarRadius! * 2 - center[0],
-              guideStarData.y - props.guideStarRadius! * 2 - center[1],
+              guideStarData.x - props.guideStarRadius! * 2 - values.center[0],
+              guideStarData.y - props.guideStarRadius! * 2 - values.center[1],
               props.guideStarRadius! * 4,
               props.guideStarRadius! * 4,
-              guideStarData.x - center[0],
-              guideStarData.y - center[1],
+              guideStarData.x - values.center[0],
+              guideStarData.y - values.center[1],
               guideStarData.direction,
-              props.guideStarRadius! / maimaiTapR
+              props.guideStarRadius! / values.maimaiTapR
             );
             ctx.restore();
           } else {
@@ -948,33 +951,33 @@ export const drawNote = (
               // WIFI TRACK
 
               // WIFI TRACK开始于screenR而不是judgeR
-              const startPoint = [center[0] + maimaiScreenR * cos((-5 / 8 + 1 / 4) * Math.PI), center[1] + maimaiScreenR * sin((-5 / 8 + 1 / 4) * Math.PI)];
+              const startPoint = [values.center[0] + values.maimaiScreenR * cos((-5 / 8 + 1 / 4) * Math.PI), values.center[1] + values.maimaiScreenR * sin((-5 / 8 + 1 / 4) * Math.PI)];
               const getWifiTrackProps = (ct: number, rt: number): { x: number; y: number; direction: number }[] => {
                 return [
                   {
-                    x: startPoint[0] + (APositions[5][0] - startPoint[0]) * (ct / rt),
-                    y: startPoint[1] + (APositions[5][1] - startPoint[1]) * (ct / rt),
+                    x: startPoint[0] + (values.APositions[5][0] - startPoint[0]) * (ct / rt),
+                    y: startPoint[1] + (values.APositions[5][1] - startPoint[1]) * (ct / rt),
                     direction: 22.5 * 5 + 202.5,
                   },
                   {
-                    x: startPoint[0] + (APositions[4][0] - startPoint[0]) * (ct / rt),
-                    y: startPoint[1] + (APositions[4][1] - startPoint[1]) * (ct / rt),
+                    x: startPoint[0] + (values.APositions[4][0] - startPoint[0]) * (ct / rt),
+                    y: startPoint[1] + (values.APositions[4][1] - startPoint[1]) * (ct / rt),
                     direction: 22.5 * 4 + 202.5,
                   },
                   {
-                    x: 2 * APositions[0][0] - startPoint[0] + (APositions[3][0] - 2 * APositions[0][0] + startPoint[0]) * (ct / rt),
-                    y: startPoint[1] + (APositions[3][1] - startPoint[1]) * (ct / rt),
+                    x: 2 * values.APositions[0][0] - startPoint[0] + (values.APositions[3][0] - 2 * values.APositions[0][0] + startPoint[0]) * (ct / rt),
+                    y: startPoint[1] + (values.APositions[3][1] - startPoint[1]) * (ct / rt),
                     direction: 22.5 * 3 + 202.5,
                   },
                 ];
               };
 
               // 相邻两判定点的距离
-              const dist = lineLen(APositions[4][0], APositions[4][1], APositions[5][0], APositions[5][1]);
+              const dist = lineLen(values.APositions[4][0], values.APositions[4][1], values.APositions[5][0], values.APositions[5][1]);
 
               // SLIDE TRACK
               ctx_slideTrack.save();
-              ctx_slideTrack.translate(center[0], center[1]);
+              ctx_slideTrack.translate(values.center[0], values.center[1]);
               ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
               // 得从後往前画
 
@@ -986,12 +989,12 @@ export const drawNote = (
                 drawRotationImage(
                   ctx_slideTrack,
                   wifiTrack![i - 1],
-                  slideData[0].x - center[0] - ((dist * i) / 12) * 0.076,
-                  slideData[0].y - center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
+                  slideData[0].x - values.center[0] - ((dist * i) / 12) * 0.076,
+                  slideData[0].y - values.center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
                   (dist * i) / 12,
                   ((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12,
-                  slideData[0].x - center[0],
-                  slideData[0].y - center[1],
+                  slideData[0].x - values.center[0],
+                  slideData[0].y - values.center[1],
                   22.534119524645373,
                   props.radius * 0.5
                 );
@@ -1001,12 +1004,12 @@ export const drawNote = (
                 drawRotationImage(
                   ctx_slideTrack,
                   wifiTrack![i - 1],
-                  slideData[2].x - (APositions[0][0] - APositions[7][0]) - center[0] - ((dist * i) / 12) * 0.076,
-                  slideData[2].y - center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
+                  slideData[2].x - (values.APositions[0][0] - values.APositions[7][0]) - values.center[0] - ((dist * i) / 12) * 0.076,
+                  slideData[2].y - values.center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
                   (dist * i) / 12,
                   ((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12,
-                  slideData[2].x - (APositions[0][0] - APositions[7][0]) - center[0],
-                  slideData[2].y - center[1],
+                  slideData[2].x - (values.APositions[0][0] - values.APositions[7][0]) - values.center[0],
+                  slideData[2].y - values.center[1],
                   -22.534119524645373,
                   props.radius * 0.5
                 );
@@ -1016,10 +1019,11 @@ export const drawNote = (
 
               // GUIDE STAR
               ctx.save();
-              ctx.translate(center[0], center[1]);
+              ctx.translate(values.center[0], values.center[1]);
               ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
 
               const guideStarData = getTrackProps(
+                values,
                 note.slideType!,
                 Number(note.pos),
                 Number(note.endPos),
@@ -1035,14 +1039,14 @@ export const drawNote = (
                 drawRotationImage(
                   ctx,
                   imageStar,
-                  wifiguide.x - props.guideStarRadius! * 2 - center[0],
-                  wifiguide.y - props.guideStarRadius! * 2 - center[1],
+                  wifiguide.x - props.guideStarRadius! * 2 - values.center[0],
+                  wifiguide.y - props.guideStarRadius! * 2 - values.center[1],
                   props.guideStarRadius! * 4,
                   props.guideStarRadius! * 4,
-                  wifiguide.x - center[0],
-                  wifiguide.y - center[1],
+                  wifiguide.x - values.center[0],
+                  wifiguide.y - values.center[1],
                   wifiguide.direction,
-                  props.guideStarRadius! / maimaiTapR
+                  props.guideStarRadius! / values.maimaiTapR
                 );
               });
 
@@ -1092,7 +1096,7 @@ export const drawNote = (
 
         break;
       case NoteType.Hold:
-        if (props.isTouching || (!props.isTouching && props.rho < maimaiJudgeLineR - maimaiSummonLineR)) {
+        if (props.isTouching || (!props.isTouching && props.rho < values.maimaiJudgeLineR - values.maimaiSummonLineR)) {
           if (isEach) {
             if (note.isBreak) {
               drawHoldImage(holdBreakIcon, note.isShortHold);
@@ -1269,13 +1273,13 @@ export const drawNote = (
     // 显示判定
     const drawJudgeImage = (ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, w: number, h: number, centerX: number, centerY: number, r?: number) => {
       const key = 'judge' + note.serial;
-      const total = judgeResultShowTime + judgeResultFadeOutDuration;
+      const total = values.judgeResultShowTime + values.judgeResultFadeOutDuration;
       animationFactory.animation(key, total, (t: number) => {
         let alpha = 1;
         let scale = 1;
-        if (t < judgeResultShowTime) {
+        if (t < values.judgeResultShowTime) {
           // 出现时的缩小效果（暂定为持续 1/3 倍的显示时间并且仅用于 TAP 音符）
-          const shrinkDuration = judgeResultShowTime / 3;
+          const shrinkDuration = values.judgeResultShowTime / 3;
           if (note.type === NoteType.Tap) {
             if (t < shrinkDuration) {
               scale = 1 + 0.2 * (1 - t / shrinkDuration);
@@ -1285,7 +1289,7 @@ export const drawNote = (
           }
         } else {
           // 消失时的淡出效果
-          alpha = 1 - (t - judgeResultShowTime) / judgeResultFadeOutDuration;
+          alpha = 1 - (t - values.judgeResultShowTime) / values.judgeResultFadeOutDuration;
         }
         drawRotationImage(ctx, image, x + w * ((1 - scale) / 2), y + h * ((1 - scale) / 2), w * scale, h * scale, centerX, centerY, r, alpha);
       });
@@ -1560,11 +1564,11 @@ export const drawNote = (
 
       const k = 2.5,
         wifiK = 1.5;
-      const judgeIconHeight = maimaiTapR * 1 * k;
-      const judgeIconWidth = ((maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
+      const judgeIconHeight = values.maimaiTapR * 1 * k;
+      const judgeIconWidth = ((values.maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
 
-      x = APositions[lastLineEndPos - 1][0]; // center[0] - judgeIconWidth / 2;
-      y = APositions[lastLineEndPos - 1][1]; //center[1] - (maimaiJudgeLineR - judgeDistance + judgeIconHeight / 2);
+      x = values.APositions[lastLineEndPos - 1][0]; // values.center[0] - judgeIconWidth / 2;
+      y = values.APositions[lastLineEndPos - 1][1]; //values.center[1] - (values.maimaiJudgeLineR - values.judgeDistance + judgeIconHeight / 2);
 
       let angle = note.slideLineDirectionParams?.angle;
       if (lastLine.slideType === 'w') {
@@ -1604,59 +1608,59 @@ export const drawNote = (
       }
 
       const k = 1.5;
-      const judgeIconHeight = maimaiTapR * 1 * k;
-      const judgeIconWidth = ((maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
+      const judgeIconHeight = values.maimaiTapR * 1 * k;
+      const judgeIconWidth = ((values.maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
 
       const firstWord = note.pos.substring(0, 1);
       if (!isNaN(Number(firstWord))) {
         // 数字开头的位置
         θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
-        x = center[0] - judgeIconWidth / 2;
-        y = center[1] - (maimaiJudgeLineR - judgeDistance + judgeIconHeight / 2);
+        x = values.center[0] - judgeIconWidth / 2;
+        y = values.center[1] - (values.maimaiJudgeLineR - values.judgeDistance + judgeIconHeight / 2);
       } else {
         // 字母开头的位置（TOUCH）
         const touchPos = note.pos.substring(1, 2);
         switch (firstWord) {
           case 'C':
-            x = center[0];
-            y = center[1];
+            x = values.center[0];
+            y = values.center[1];
             break;
           case 'A':
             θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
             if (note.type === NoteType.Touch) {
-              x = center[0] + maimaiADTouchR * Math.cos(θ);
-              y = center[1] + maimaiADTouchR * Math.sin(θ);
+              x = values.center[0] + values.maimaiADTouchR * Math.cos(θ);
+              y = values.center[1] + values.maimaiADTouchR * Math.sin(θ);
             } else {
-              x = center[0] + maimaiScreenR * Math.cos(θ);
-              y = center[1] + maimaiScreenR * Math.sin(θ);
+              x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
+              y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
             }
             break;
           case 'B':
             θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-            x = center[0] + maimaiBR * Math.cos(θ);
-            y = center[1] + maimaiBR * Math.sin(θ);
+            x = values.center[0] + values.maimaiBR * Math.cos(θ);
+            y = values.center[1] + values.maimaiBR * Math.sin(θ);
             break;
           case 'D':
             θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
             if (note.type === NoteType.Touch) {
-              x = center[0] + maimaiADTouchR * Math.cos(θ);
-              y = center[1] + maimaiADTouchR * Math.sin(θ);
+              x = values.center[0] + values.maimaiADTouchR * Math.cos(θ);
+              y = values.center[1] + values.maimaiADTouchR * Math.sin(θ);
             } else {
-              x = center[0] + maimaiScreenR * Math.cos(θ);
-              y = center[1] + maimaiScreenR * Math.sin(θ);
+              x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
+              y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
             }
             break;
           case 'E':
             θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-            x = center[0] + maimaiER * Math.cos(θ);
-            y = center[1] + maimaiER * Math.sin(θ);
+            x = values.center[0] + values.maimaiER * Math.cos(θ);
+            y = values.center[1] + values.maimaiER * Math.sin(θ);
             break;
           default:
             break;
         }
       }
 
-      drawJudgeImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
+      drawJudgeImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, values.center[0], values.center[1], -22.5 + Number(note.pos) * 45);
 
       if (drawFastLast && props.judgeStatus !== JudgeStatus.CriticalPerfect && props.judgeStatus !== JudgeStatus.Miss) {
         if (props.judgeTime === JudgeTimeStatus.Fast) {
@@ -1666,25 +1670,25 @@ export const drawNote = (
         }
 
         const k = 1.5;
-        const fastlateIconHeight = maimaiTapR * 1 * k;
-        const fastlateIconWidth = ((maimaiTapR * 1) / fastlateImage.height) * fastlateImage.width * k;
+        const fastlateIconHeight = values.maimaiTapR * 1 * k;
+        const fastlateIconWidth = ((values.maimaiTapR * 1) / fastlateImage.height) * fastlateImage.width * k;
 
         const firstWord = note.pos.substring(0, 1);
         if (!isNaN(Number(firstWord))) {
           // 数字开头的位置
           θ = (-5 / 8 + (1 / 4) * Number(note.pos)) * Math.PI;
-          x = center[0] - fastlateIconWidth / 2;
-          y = center[1] - (maimaiJudgeLineR - judgeDistance * 2 + fastlateIconHeight / 2);
+          x = values.center[0] - fastlateIconWidth / 2;
+          y = values.center[1] - (values.maimaiJudgeLineR - values.judgeDistance * 2 + fastlateIconHeight / 2);
         }
 
-        drawJudgeImage(effectOverCtx, fastlateImage, x, y, fastlateIconWidth, fastlateIconHeight, center[0], center[1], -22.5 + Number(note.pos) * 45);
+        drawJudgeImage(effectOverCtx, fastlateImage, x, y, fastlateIconWidth, fastlateIconHeight, values.center[0], values.center[1], -22.5 + Number(note.pos) * 45);
       }
     }
 
     // // 特效
     // if(note.type === NoteType.Tap){
     // 	if(props.judgeStatus !== JudgeStatus.Miss){
-    // 		const effectWidth = maimaiTapR * 2 * ()
+    // 		const effectWidth = values.maimaiTapR * 2 * ()
     // 		drawRotationImage(effectOverCtx, EffectIcon.Hex, x, y, )
     // 	}
     // }
