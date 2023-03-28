@@ -32,38 +32,16 @@ export const initnotesounds = (onProgress: (amount: number, loaded: number, name
   const amount = 11;
   let loaded = 0;
   let volume = 0.05;
-  NoteSound.break1.src = break1_sound;
-  NoteSound.break1.volume = volume;
-  NoteSound.break1.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'break1'); }
-  NoteSound.break2.src = break2_sound;
-  NoteSound.break2.volume = volume;
-  NoteSound.break2.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'break2'); }
-  NoteSound.ex.src = ex_sound;
-  NoteSound.ex.volume = volume;
-  NoteSound.ex.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'ex'); }
-  NoteSound.firework.src = firework_sound;
-  NoteSound.firework.volume = volume;
-  NoteSound.firework.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'firework'); }
-  NoteSound.good.src = good_sound;
-  NoteSound.good.volume = volume;
-  NoteSound.good.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'good'); }
-  NoteSound.great.src = great_sound;
-  NoteSound.great.volume = volume;
-  NoteSound.great.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'great'); }
-  NoteSound.perfect.src = perfect_sound;
-  NoteSound.perfect.volume = volume;
-  NoteSound.perfect.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'perfect'); }
-  NoteSound.slide_track.src = slide_track_sound;
-  NoteSound.slide_track.volume = volume;
-  NoteSound.slide_track.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'slide_track'); }
-  NoteSound.tap.src = tap_sound;
-  NoteSound.tap.volume = volume;
-  NoteSound.tap.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'tap'); }
-  NoteSound.touch.src = touch_sound;
-  NoteSound.touch.volume = volume;
-  NoteSound.touch.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch'); }
-  NoteSound.touchhold_perfect.src = touchhold_perfect_sound;
-  NoteSound.touchhold_perfect.volume = volume;
-  NoteSound.touchhold_perfect.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touchhold_perfect'); }
+    if(NoteSound.break1.src === ''){ NoteSound.break1.src = break1_sound; NoteSound.break1.volume = volume; NoteSound.break1.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'break1'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'break1'); }
+    if(NoteSound.break2.src === ''){ NoteSound.break2.src = break2_sound; NoteSound.break2.volume = volume; NoteSound.break2.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'break2'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'break2'); }
+    if(NoteSound.ex.src === ''){ NoteSound.ex.src = ex_sound; NoteSound.ex.volume = volume; NoteSound.ex.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'ex'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'ex'); }
+    if(NoteSound.firework.src === ''){ NoteSound.firework.src = firework_sound; NoteSound.firework.volume = volume; NoteSound.firework.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'firework'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'firework'); }
+    if(NoteSound.good.src === ''){ NoteSound.good.src = good_sound; NoteSound.good.volume = volume; NoteSound.good.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'good'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'good'); }
+    if(NoteSound.great.src === ''){ NoteSound.great.src = great_sound; NoteSound.great.volume = volume; NoteSound.great.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'great'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'great'); }
+    if(NoteSound.perfect.src === ''){ NoteSound.perfect.src = perfect_sound; NoteSound.perfect.volume = volume; NoteSound.perfect.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'perfect'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'perfect'); }
+    if(NoteSound.slide_track.src === ''){ NoteSound.slide_track.src = slide_track_sound; NoteSound.slide_track.volume = volume; NoteSound.slide_track.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'slide_track'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'slide_track'); }
+    if(NoteSound.tap.src === ''){ NoteSound.tap.src = tap_sound; NoteSound.tap.volume = volume; NoteSound.tap.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'tap'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'tap'); }
+    if(NoteSound.touch.src === ''){ NoteSound.touch.src = touch_sound; NoteSound.touch.volume = volume; NoteSound.touch.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch'); }
+    if(NoteSound.touchhold_perfect.src === ''){ NoteSound.touchhold_perfect.src = touchhold_perfect_sound; NoteSound.touchhold_perfect.volume = volume; NoteSound.touchhold_perfect.oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touchhold_perfect'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touchhold_perfect'); }
   onload();
 };

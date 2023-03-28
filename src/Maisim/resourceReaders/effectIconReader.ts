@@ -47,42 +47,23 @@ export const EffectIcon = {
 export const initeffecticons = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {
   const amount = 19;
   let loaded = 0;
-  EffectIcon.BreakLine.src = BreakLine_icon;
-  EffectIcon.BreakLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakLine'); }
-  EffectIcon.Circle.src = Circle_icon;
-  EffectIcon.Circle.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Circle'); }
-  EffectIcon.EachLine.src = EachLine_icon;
-  EffectIcon.EachLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine'); }
-  EffectIcon.EachLine1.src = EachLine1_icon;
-  EffectIcon.EachLine1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine1'); }
-  EffectIcon.EachLine2.src = EachLine2_icon;
-  EffectIcon.EachLine2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine2'); }
-  EffectIcon.EachLine3.src = EachLine3_icon;
-  EffectIcon.EachLine3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine3'); }
-  EffectIcon.EachLine4.src = EachLine4_icon;
-  EffectIcon.EachLine4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine4'); }
-  EffectIcon.Firework.src = Firework_icon;
-  EffectIcon.Firework.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Firework'); }
-  EffectIcon.FireworkCenter.src = FireworkCenter_icon;
-  EffectIcon.FireworkCenter.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'FireworkCenter'); }
-  EffectIcon.FireworkInnerCircle.src = FireworkInnerCircle_icon;
-  EffectIcon.FireworkInnerCircle.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'FireworkInnerCircle'); }
-  EffectIcon.Hex.src = Hex_icon;
-  EffectIcon.Hex.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hex'); }
-  EffectIcon.mask.src = mask_icon;
-  EffectIcon.mask.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'mask'); }
-  EffectIcon.NormalLine.src = NormalLine_icon;
-  EffectIcon.NormalLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'NormalLine'); }
-  EffectIcon.SlideLine.src = SlideLine_icon;
-  EffectIcon.SlideLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'SlideLine'); }
-  EffectIcon.StarWhite.src = StarWhite_icon;
-  EffectIcon.StarWhite.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'StarWhite'); }
-  EffectIcon.StarYellow.src = StarYellow_icon;
-  EffectIcon.StarYellow.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'StarYellow'); }
-  EffectIcon.TouchEff.src = TouchEff_icon;
-  EffectIcon.TouchEff.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEff'); }
-  EffectIcon.TouchEffStar1.src = TouchEffStar1_icon;
-  EffectIcon.TouchEffStar1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEffStar1'); }
-  EffectIcon.TouchEffStar2.src = TouchEffStar2_icon;
-  EffectIcon.TouchEffStar2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEffStar2'); }
+  if(EffectIcon.BreakLine.src === ''){ EffectIcon.BreakLine.src = BreakLine_icon; EffectIcon.BreakLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakLine'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakLine'); }
+  if(EffectIcon.Circle.src === ''){ EffectIcon.Circle.src = Circle_icon; EffectIcon.Circle.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Circle'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Circle'); }
+  if(EffectIcon.EachLine.src === ''){ EffectIcon.EachLine.src = EachLine_icon; EffectIcon.EachLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine'); }
+  if(EffectIcon.EachLine1.src === ''){ EffectIcon.EachLine1.src = EachLine1_icon; EffectIcon.EachLine1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine1'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine1'); }
+  if(EffectIcon.EachLine2.src === ''){ EffectIcon.EachLine2.src = EachLine2_icon; EffectIcon.EachLine2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine2'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine2'); }
+  if(EffectIcon.EachLine3.src === ''){ EffectIcon.EachLine3.src = EachLine3_icon; EffectIcon.EachLine3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine3'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine3'); }
+  if(EffectIcon.EachLine4.src === ''){ EffectIcon.EachLine4.src = EachLine4_icon; EffectIcon.EachLine4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine4'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'EachLine4'); }
+  if(EffectIcon.Firework.src === ''){ EffectIcon.Firework.src = Firework_icon; EffectIcon.Firework.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Firework'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Firework'); }
+  if(EffectIcon.FireworkCenter.src === ''){ EffectIcon.FireworkCenter.src = FireworkCenter_icon; EffectIcon.FireworkCenter.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'FireworkCenter'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'FireworkCenter'); }
+  if(EffectIcon.FireworkInnerCircle.src === ''){ EffectIcon.FireworkInnerCircle.src = FireworkInnerCircle_icon; EffectIcon.FireworkInnerCircle.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'FireworkInnerCircle'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'FireworkInnerCircle'); }
+  if(EffectIcon.Hex.src === ''){ EffectIcon.Hex.src = Hex_icon; EffectIcon.Hex.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hex'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hex'); }
+  if(EffectIcon.mask.src === ''){ EffectIcon.mask.src = mask_icon; EffectIcon.mask.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'mask'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'mask'); }
+  if(EffectIcon.NormalLine.src === ''){ EffectIcon.NormalLine.src = NormalLine_icon; EffectIcon.NormalLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'NormalLine'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'NormalLine'); }
+  if(EffectIcon.SlideLine.src === ''){ EffectIcon.SlideLine.src = SlideLine_icon; EffectIcon.SlideLine.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'SlideLine'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'SlideLine'); }
+  if(EffectIcon.StarWhite.src === ''){ EffectIcon.StarWhite.src = StarWhite_icon; EffectIcon.StarWhite.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'StarWhite'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'StarWhite'); }
+  if(EffectIcon.StarYellow.src === ''){ EffectIcon.StarYellow.src = StarYellow_icon; EffectIcon.StarYellow.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'StarYellow'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'StarYellow'); }
+  if(EffectIcon.TouchEff.src === ''){ EffectIcon.TouchEff.src = TouchEff_icon; EffectIcon.TouchEff.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEff'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEff'); }
+  if(EffectIcon.TouchEffStar1.src === ''){ EffectIcon.TouchEffStar1.src = TouchEffStar1_icon; EffectIcon.TouchEffStar1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEffStar1'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEffStar1'); }
+  if(EffectIcon.TouchEffStar2.src === ''){ EffectIcon.TouchEffStar2.src = TouchEffStar2_icon; EffectIcon.TouchEffStar2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEffStar2'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'TouchEffStar2'); }
 };

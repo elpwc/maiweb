@@ -157,3 +157,6 @@ recordUpdater.ts  touchHoldSounds
 
 3.26
 宴会场添加utageComment属性
+
+3.29
+多个控件只在对一个HTMLAudioElement进行操作

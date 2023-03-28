@@ -281,276 +281,140 @@ export const NoteIcon = {
 export const initnotesicons = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {
   const amount = 136;
   let loaded = 0;
-  NoteIcon.BreakStar_00.src = BreakStar_00_icon;
-  NoteIcon.BreakStar_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_00'); }
-  NoteIcon.BreakStar_01.src = BreakStar_01_icon;
-  NoteIcon.BreakStar_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_01'); }
-  NoteIcon.BreakStar_Double_00.src = BreakStar_Double_00_icon;
-  NoteIcon.BreakStar_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_Double_00'); }
-  NoteIcon.BreakStar_Double_01.src = BreakStar_Double_01_icon;
-  NoteIcon.BreakStar_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_Double_01'); }
-  NoteIcon.Break_00.src = Break_00_icon;
-  NoteIcon.Break_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_00'); }
-  NoteIcon.Break_01.src = Break_01_icon;
-  NoteIcon.Break_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_01'); }
-  NoteIcon.Break_02.src = Break_02_icon;
-  NoteIcon.Break_02.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_02'); }
-  NoteIcon.Break_03.src = Break_03_icon;
-  NoteIcon.Break_03.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_03'); }
-  NoteIcon.Break_04.src = Break_04_icon;
-  NoteIcon.Break_04.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_04'); }
-  NoteIcon.Hold_00.src = Hold_00_icon;
-  NoteIcon.Hold_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_00'); }
-  NoteIcon.Hold_01.src = Hold_01_icon;
-  NoteIcon.Hold_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_01'); }
-  NoteIcon.Hold_Break_00.src = Hold_Break_00_icon;
-  NoteIcon.Hold_Break_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Break_00'); }
-  NoteIcon.Hold_Break_01.src = Hold_Break_01_icon;
-  NoteIcon.Hold_Break_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Break_01'); }
-  NoteIcon.Hold_Each_00.src = Hold_Each_00_icon;
-  NoteIcon.Hold_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Each_00'); }
-  NoteIcon.Hold_Each_01.src = Hold_Each_01_icon;
-  NoteIcon.Hold_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Each_01'); }
-  NoteIcon.Hold_Ex_00.src = Hold_Ex_00_icon;
-  NoteIcon.Hold_Ex_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00'); }
-  NoteIcon.Hold_Ex_00_break.src = Hold_Ex_00_break_icon;
-  NoteIcon.Hold_Ex_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_break'); }
-  NoteIcon.Hold_Ex_00_each.src = Hold_Ex_00_each_icon;
-  NoteIcon.Hold_Ex_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_each'); }
-  NoteIcon.Hold_Ex_00_pink.src = Hold_Ex_00_pink_icon;
-  NoteIcon.Hold_Ex_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_pink'); }
-  NoteIcon.Hold_Ex_01.src = Hold_Ex_01_icon;
-  NoteIcon.Hold_Ex_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01'); }
-  NoteIcon.Hold_Ex_01_break.src = Hold_Ex_01_break_icon;
-  NoteIcon.Hold_Ex_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_break'); }
-  NoteIcon.Hold_Ex_01_each.src = Hold_Ex_01_each_icon;
-  NoteIcon.Hold_Ex_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_each'); }
-  NoteIcon.Hold_Ex_01_pink.src = Hold_Ex_01_pink_icon;
-  NoteIcon.Hold_Ex_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_pink'); }
-  NoteIcon.Miss_00.src = Miss_00_icon;
-  NoteIcon.Miss_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Miss_00'); }
-  NoteIcon.Miss_01.src = Miss_01_icon;
-  NoteIcon.Miss_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Miss_01'); }
-  NoteIcon.Slide_00.src = Slide_00_icon;
-  NoteIcon.Slide_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_00'); }
-  NoteIcon.Slide_01.src = Slide_01_icon;
-  NoteIcon.Slide_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_01'); }
-  NoteIcon.Slide_Break_00.src = Slide_Break_00_icon;
-  NoteIcon.Slide_Break_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Break_00'); }
-  NoteIcon.Slide_Break_01.src = Slide_Break_01_icon;
-  NoteIcon.Slide_Break_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Break_01'); }
-  NoteIcon.Slide_Each_00.src = Slide_Each_00_icon;
-  NoteIcon.Slide_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Each_00'); }
-  NoteIcon.Slide_Each_01.src = Slide_Each_01_icon;
-  NoteIcon.Slide_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Each_01'); }
-  NoteIcon.Star_00.src = Star_00_icon;
-  NoteIcon.Star_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_00'); }
-  NoteIcon.Star_01.src = Star_01_icon;
-  NoteIcon.Star_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_01'); }
-  NoteIcon.Star_Double_00.src = Star_Double_00_icon;
-  NoteIcon.Star_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Double_00'); }
-  NoteIcon.Star_Double_01.src = Star_Double_01_icon;
-  NoteIcon.Star_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Double_01'); }
-  NoteIcon.Star_Each_00.src = Star_Each_00_icon;
-  NoteIcon.Star_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_00'); }
-  NoteIcon.Star_Each_01.src = Star_Each_01_icon;
-  NoteIcon.Star_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_01'); }
-  NoteIcon.Star_Each_Double_00.src = Star_Each_Double_00_icon;
-  NoteIcon.Star_Each_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_Double_00'); }
-  NoteIcon.Star_Each_Double_01.src = Star_Each_Double_01_icon;
-  NoteIcon.Star_Each_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_Double_01'); }
-  NoteIcon.Star_Ex_00_blue.src = Star_Ex_00_blue_icon;
-  NoteIcon.Star_Ex_00_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_blue'); }
-  NoteIcon.Star_Ex_00_break.src = Star_Ex_00_break_icon;
-  NoteIcon.Star_Ex_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_break'); }
-  NoteIcon.Star_Ex_00_each.src = Star_Ex_00_each_icon;
-  NoteIcon.Star_Ex_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_each'); }
-  NoteIcon.Star_Ex_00_pink.src = Star_Ex_00_pink_icon;
-  NoteIcon.Star_Ex_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_pink'); }
-  NoteIcon.Star_Ex_01_blue.src = Star_Ex_01_blue_icon;
-  NoteIcon.Star_Ex_01_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_blue'); }
-  NoteIcon.Star_Ex_01_break.src = Star_Ex_01_break_icon;
-  NoteIcon.Star_Ex_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_break'); }
-  NoteIcon.Star_Ex_01_each.src = Star_Ex_01_each_icon;
-  NoteIcon.Star_Ex_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_each'); }
-  NoteIcon.Star_Ex_01_pink.src = Star_Ex_01_pink_icon;
-  NoteIcon.Star_Ex_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_pink'); }
-  NoteIcon.Star_Ex_Double_00_blue.src = Star_Ex_Double_00_blue_icon;
-  NoteIcon.Star_Ex_Double_00_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_blue'); }
-  NoteIcon.Star_Ex_Double_00_break.src = Star_Ex_Double_00_break_icon;
-  NoteIcon.Star_Ex_Double_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_break'); }
-  NoteIcon.Star_Ex_Double_00_each.src = Star_Ex_Double_00_each_icon;
-  NoteIcon.Star_Ex_Double_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_each'); }
-  NoteIcon.Star_Ex_Double_00_pink.src = Star_Ex_Double_00_pink_icon;
-  NoteIcon.Star_Ex_Double_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_pink'); }
-  NoteIcon.Star_Ex_Double_01_blue.src = Star_Ex_Double_01_blue_icon;
-  NoteIcon.Star_Ex_Double_01_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_blue'); }
-  NoteIcon.Star_Ex_Double_01_break.src = Star_Ex_Double_01_break_icon;
-  NoteIcon.Star_Ex_Double_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_break'); }
-  NoteIcon.Star_Ex_Double_01_each.src = Star_Ex_Double_01_each_icon;
-  NoteIcon.Star_Ex_Double_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_each'); }
-  NoteIcon.Star_Ex_Double_01_pink.src = Star_Ex_Double_01_pink_icon;
-  NoteIcon.Star_Ex_Double_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_pink'); }
-  NoteIcon.Star_Pink_00.src = Star_Pink_00_icon;
-  NoteIcon.Star_Pink_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_00'); }
-  NoteIcon.Star_Pink_01.src = Star_Pink_01_icon;
-  NoteIcon.Star_Pink_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_01'); }
-  NoteIcon.Star_Pink_Double_00.src = Star_Pink_Double_00_icon;
-  NoteIcon.Star_Pink_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_Double_00'); }
-  NoteIcon.Star_Pink_Double_01.src = Star_Pink_Double_01_icon;
-  NoteIcon.Star_Pink_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_Double_01'); }
-  NoteIcon.Tap_00.src = Tap_00_icon;
-  NoteIcon.Tap_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_00'); }
-  NoteIcon.Tap_01.src = Tap_01_icon;
-  NoteIcon.Tap_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_01'); }
-  NoteIcon.Tap_02.src = Tap_02_icon;
-  NoteIcon.Tap_02.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_02'); }
-  NoteIcon.Tap_03.src = Tap_03_icon;
-  NoteIcon.Tap_03.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_03'); }
-  NoteIcon.Tap_04.src = Tap_04_icon;
-  NoteIcon.Tap_04.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_04'); }
-  NoteIcon.Tap_Each_00.src = Tap_Each_00_icon;
-  NoteIcon.Tap_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_00'); }
-  NoteIcon.Tap_Each_01.src = Tap_Each_01_icon;
-  NoteIcon.Tap_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_01'); }
-  NoteIcon.Tap_Each_02.src = Tap_Each_02_icon;
-  NoteIcon.Tap_Each_02.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_02'); }
-  NoteIcon.Tap_Each_03.src = Tap_Each_03_icon;
-  NoteIcon.Tap_Each_03.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_03'); }
-  NoteIcon.Tap_Each_04.src = Tap_Each_04_icon;
-  NoteIcon.Tap_Each_04.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_04'); }
-  NoteIcon.Tap_Ex_00_break.src = Tap_Ex_00_break_icon;
-  NoteIcon.Tap_Ex_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_break'); }
-  NoteIcon.Tap_Ex_00_each.src = Tap_Ex_00_each_icon;
-  NoteIcon.Tap_Ex_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_each'); }
-  NoteIcon.Tap_Ex_00_pink.src = Tap_Ex_00_pink_icon;
-  NoteIcon.Tap_Ex_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_pink'); }
-  NoteIcon.Tap_Ex_01_break.src = Tap_Ex_01_break_icon;
-  NoteIcon.Tap_Ex_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_break'); }
-  NoteIcon.Tap_Ex_01_each.src = Tap_Ex_01_each_icon;
-  NoteIcon.Tap_Ex_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_each'); }
-  NoteIcon.Tap_Ex_01_pink.src = Tap_Ex_01_pink_icon;
-  NoteIcon.Tap_Ex_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_pink'); }
-  NoteIcon.Tap_Ex_02_break.src = Tap_Ex_02_break_icon;
-  NoteIcon.Tap_Ex_02_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_break'); }
-  NoteIcon.Tap_Ex_02_each.src = Tap_Ex_02_each_icon;
-  NoteIcon.Tap_Ex_02_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_each'); }
-  NoteIcon.Tap_Ex_02_pink.src = Tap_Ex_02_pink_icon;
-  NoteIcon.Tap_Ex_02_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_pink'); }
-  NoteIcon.Tap_Ex_03_break.src = Tap_Ex_03_break_icon;
-  NoteIcon.Tap_Ex_03_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_break'); }
-  NoteIcon.Tap_Ex_03_each.src = Tap_Ex_03_each_icon;
-  NoteIcon.Tap_Ex_03_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_each'); }
-  NoteIcon.Tap_Ex_03_pink.src = Tap_Ex_03_pink_icon;
-  NoteIcon.Tap_Ex_03_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_pink'); }
-  NoteIcon.Tap_Ex_04_break.src = Tap_Ex_04_break_icon;
-  NoteIcon.Tap_Ex_04_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_break'); }
-  NoteIcon.Tap_Ex_04_each.src = Tap_Ex_04_each_icon;
-  NoteIcon.Tap_Ex_04_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_each'); }
-  NoteIcon.Tap_Ex_04_pink.src = Tap_Ex_04_pink_icon;
-  NoteIcon.Tap_Ex_04_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_pink'); }
-  NoteIcon.touch.src = touch_icon;
-  NoteIcon.touch.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch'); }
-  NoteIcon.touch_center.src = touch_center_icon;
-  NoteIcon.touch_center.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_center'); }
-  NoteIcon.touch_each.src = touch_each_icon;
-  NoteIcon.touch_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each'); }
-  NoteIcon.touch_each_center.src = touch_each_center_icon;
-  NoteIcon.touch_each_center.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_center'); }
-  NoteIcon.touch_each_three.src = touch_each_three_icon;
-  NoteIcon.touch_each_three.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_three'); }
-  NoteIcon.touch_each_two.src = touch_each_two_icon;
-  NoteIcon.touch_each_two.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_two'); }
-  NoteIcon.touch_hold_1.src = touch_hold_1_icon;
-  NoteIcon.touch_hold_1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_1'); }
-  NoteIcon.touch_hold_2.src = touch_hold_2_icon;
-  NoteIcon.touch_hold_2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_2'); }
-  NoteIcon.touch_hold_3.src = touch_hold_3_icon;
-  NoteIcon.touch_hold_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_3'); }
-  NoteIcon.touch_hold_4.src = touch_hold_4_icon;
-  NoteIcon.touch_hold_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_4'); }
-  NoteIcon.touch_hold_center_miss.src = touch_hold_center_miss_icon;
-  NoteIcon.touch_hold_center_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_center_miss'); }
-  NoteIcon.touch_hold_gage.src = touch_hold_gage_icon;
-  NoteIcon.touch_hold_gage.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage'); }
-  NoteIcon.touch_hold_gage_miss.src = touch_hold_gage_miss_icon;
-  NoteIcon.touch_hold_gage_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss'); }
-  NoteIcon.touch_hold_miss.src = touch_hold_miss_icon;
-  NoteIcon.touch_hold_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_miss'); }
-  NoteIcon.touch_hold_three.src = touch_hold_three_icon;
-  NoteIcon.touch_hold_three.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_three'); }
-  NoteIcon.touch_hold_two.src = touch_hold_two_icon;
-  NoteIcon.touch_hold_two.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_two'); }
-  NoteIcon.touch_just.src = touch_just_icon;
-  NoteIcon.touch_just.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_just'); }
-  NoteIcon.touch_three.src = touch_three_icon;
-  NoteIcon.touch_three.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_three'); }
-  NoteIcon.touch_two.src = touch_two_icon;
-  NoteIcon.touch_two.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_two'); }
-  NoteIcon.wifi_0.src = wifi_0_icon;
-  NoteIcon.wifi_0.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_0'); }
-  NoteIcon.wifi_1.src = wifi_1_icon;
-  NoteIcon.wifi_1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_1'); }
-  NoteIcon.wifi_10.src = wifi_10_icon;
-  NoteIcon.wifi_10.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_10'); }
-  NoteIcon.wifi_2.src = wifi_2_icon;
-  NoteIcon.wifi_2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_2'); }
-  NoteIcon.wifi_3.src = wifi_3_icon;
-  NoteIcon.wifi_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_3'); }
-  NoteIcon.wifi_4.src = wifi_4_icon;
-  NoteIcon.wifi_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_4'); }
-  NoteIcon.wifi_5.src = wifi_5_icon;
-  NoteIcon.wifi_5.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_5'); }
-  NoteIcon.wifi_6.src = wifi_6_icon;
-  NoteIcon.wifi_6.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_6'); }
-  NoteIcon.wifi_7.src = wifi_7_icon;
-  NoteIcon.wifi_7.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_7'); }
-  NoteIcon.wifi_8.src = wifi_8_icon;
-  NoteIcon.wifi_8.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_8'); }
-  NoteIcon.wifi_9.src = wifi_9_icon;
-  NoteIcon.wifi_9.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_9'); }
-  NoteIcon.wifi_break_0.src = wifi_break_0_icon;
-  NoteIcon.wifi_break_0.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_0'); }
-  NoteIcon.wifi_break_1.src = wifi_break_1_icon;
-  NoteIcon.wifi_break_1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_1'); }
-  NoteIcon.wifi_break_10.src = wifi_break_10_icon;
-  NoteIcon.wifi_break_10.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_10'); }
-  NoteIcon.wifi_break_2.src = wifi_break_2_icon;
-  NoteIcon.wifi_break_2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_2'); }
-  NoteIcon.wifi_break_3.src = wifi_break_3_icon;
-  NoteIcon.wifi_break_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_3'); }
-  NoteIcon.wifi_break_4.src = wifi_break_4_icon;
-  NoteIcon.wifi_break_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_4'); }
-  NoteIcon.wifi_break_5.src = wifi_break_5_icon;
-  NoteIcon.wifi_break_5.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_5'); }
-  NoteIcon.wifi_break_6.src = wifi_break_6_icon;
-  NoteIcon.wifi_break_6.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_6'); }
-  NoteIcon.wifi_break_7.src = wifi_break_7_icon;
-  NoteIcon.wifi_break_7.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_7'); }
-  NoteIcon.wifi_break_8.src = wifi_break_8_icon;
-  NoteIcon.wifi_break_8.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_8'); }
-  NoteIcon.wifi_break_9.src = wifi_break_9_icon;
-  NoteIcon.wifi_break_9.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_9'); }
-  NoteIcon.wifi_each_0.src = wifi_each_0_icon;
-  NoteIcon.wifi_each_0.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_0'); }
-  NoteIcon.wifi_each_1.src = wifi_each_1_icon;
-  NoteIcon.wifi_each_1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_1'); }
-  NoteIcon.wifi_each_10.src = wifi_each_10_icon;
-  NoteIcon.wifi_each_10.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_10'); }
-  NoteIcon.wifi_each_2.src = wifi_each_2_icon;
-  NoteIcon.wifi_each_2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_2'); }
-  NoteIcon.wifi_each_3.src = wifi_each_3_icon;
-  NoteIcon.wifi_each_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_3'); }
-  NoteIcon.wifi_each_4.src = wifi_each_4_icon;
-  NoteIcon.wifi_each_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_4'); }
-  NoteIcon.wifi_each_5.src = wifi_each_5_icon;
-  NoteIcon.wifi_each_5.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_5'); }
-  NoteIcon.wifi_each_6.src = wifi_each_6_icon;
-  NoteIcon.wifi_each_6.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_6'); }
-  NoteIcon.wifi_each_7.src = wifi_each_7_icon;
-  NoteIcon.wifi_each_7.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_7'); }
-  NoteIcon.wifi_each_8.src = wifi_each_8_icon;
-  NoteIcon.wifi_each_8.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_8'); }
-  NoteIcon.wifi_each_9.src = wifi_each_9_icon;
-  NoteIcon.wifi_each_9.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_9'); }
+  if(NoteIcon.BreakStar_00.src === ''){ NoteIcon.BreakStar_00.src = BreakStar_00_icon; NoteIcon.BreakStar_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_00'); }
+  if(NoteIcon.BreakStar_01.src === ''){ NoteIcon.BreakStar_01.src = BreakStar_01_icon; NoteIcon.BreakStar_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_01'); }
+  if(NoteIcon.BreakStar_Double_00.src === ''){ NoteIcon.BreakStar_Double_00.src = BreakStar_Double_00_icon; NoteIcon.BreakStar_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_Double_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_Double_00'); }
+  if(NoteIcon.BreakStar_Double_01.src === ''){ NoteIcon.BreakStar_Double_01.src = BreakStar_Double_01_icon; NoteIcon.BreakStar_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_Double_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_Double_01'); }
+  if(NoteIcon.Break_00.src === ''){ NoteIcon.Break_00.src = Break_00_icon; NoteIcon.Break_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_00'); }
+  if(NoteIcon.Break_01.src === ''){ NoteIcon.Break_01.src = Break_01_icon; NoteIcon.Break_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_01'); }
+  if(NoteIcon.Break_02.src === ''){ NoteIcon.Break_02.src = Break_02_icon; NoteIcon.Break_02.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_02'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_02'); }
+  if(NoteIcon.Break_03.src === ''){ NoteIcon.Break_03.src = Break_03_icon; NoteIcon.Break_03.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_03'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_03'); }
+  if(NoteIcon.Break_04.src === ''){ NoteIcon.Break_04.src = Break_04_icon; NoteIcon.Break_04.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_04'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Break_04'); }
+  if(NoteIcon.Hold_00.src === ''){ NoteIcon.Hold_00.src = Hold_00_icon; NoteIcon.Hold_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_00'); }
+  if(NoteIcon.Hold_01.src === ''){ NoteIcon.Hold_01.src = Hold_01_icon; NoteIcon.Hold_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_01'); }
+  if(NoteIcon.Hold_Break_00.src === ''){ NoteIcon.Hold_Break_00.src = Hold_Break_00_icon; NoteIcon.Hold_Break_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Break_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Break_00'); }
+  if(NoteIcon.Hold_Break_01.src === ''){ NoteIcon.Hold_Break_01.src = Hold_Break_01_icon; NoteIcon.Hold_Break_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Break_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Break_01'); }
+  if(NoteIcon.Hold_Each_00.src === ''){ NoteIcon.Hold_Each_00.src = Hold_Each_00_icon; NoteIcon.Hold_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Each_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Each_00'); }
+  if(NoteIcon.Hold_Each_01.src === ''){ NoteIcon.Hold_Each_01.src = Hold_Each_01_icon; NoteIcon.Hold_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Each_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Each_01'); }
+  if(NoteIcon.Hold_Ex_00.src === ''){ NoteIcon.Hold_Ex_00.src = Hold_Ex_00_icon; NoteIcon.Hold_Ex_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00'); }
+  if(NoteIcon.Hold_Ex_00_break.src === ''){ NoteIcon.Hold_Ex_00_break.src = Hold_Ex_00_break_icon; NoteIcon.Hold_Ex_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_break'); }
+  if(NoteIcon.Hold_Ex_00_each.src === ''){ NoteIcon.Hold_Ex_00_each.src = Hold_Ex_00_each_icon; NoteIcon.Hold_Ex_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_each'); }
+  if(NoteIcon.Hold_Ex_00_pink.src === ''){ NoteIcon.Hold_Ex_00_pink.src = Hold_Ex_00_pink_icon; NoteIcon.Hold_Ex_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_00_pink'); }
+  if(NoteIcon.Hold_Ex_01.src === ''){ NoteIcon.Hold_Ex_01.src = Hold_Ex_01_icon; NoteIcon.Hold_Ex_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01'); }
+  if(NoteIcon.Hold_Ex_01_break.src === ''){ NoteIcon.Hold_Ex_01_break.src = Hold_Ex_01_break_icon; NoteIcon.Hold_Ex_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_break'); }
+  if(NoteIcon.Hold_Ex_01_each.src === ''){ NoteIcon.Hold_Ex_01_each.src = Hold_Ex_01_each_icon; NoteIcon.Hold_Ex_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_each'); }
+  if(NoteIcon.Hold_Ex_01_pink.src === ''){ NoteIcon.Hold_Ex_01_pink.src = Hold_Ex_01_pink_icon; NoteIcon.Hold_Ex_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Hold_Ex_01_pink'); }
+  if(NoteIcon.Miss_00.src === ''){ NoteIcon.Miss_00.src = Miss_00_icon; NoteIcon.Miss_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Miss_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Miss_00'); }
+  if(NoteIcon.Miss_01.src === ''){ NoteIcon.Miss_01.src = Miss_01_icon; NoteIcon.Miss_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Miss_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Miss_01'); }
+  if(NoteIcon.Slide_00.src === ''){ NoteIcon.Slide_00.src = Slide_00_icon; NoteIcon.Slide_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_00'); }
+  if(NoteIcon.Slide_01.src === ''){ NoteIcon.Slide_01.src = Slide_01_icon; NoteIcon.Slide_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_01'); }
+  if(NoteIcon.Slide_Break_00.src === ''){ NoteIcon.Slide_Break_00.src = Slide_Break_00_icon; NoteIcon.Slide_Break_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Break_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Break_00'); }
+  if(NoteIcon.Slide_Break_01.src === ''){ NoteIcon.Slide_Break_01.src = Slide_Break_01_icon; NoteIcon.Slide_Break_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Break_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Break_01'); }
+  if(NoteIcon.Slide_Each_00.src === ''){ NoteIcon.Slide_Each_00.src = Slide_Each_00_icon; NoteIcon.Slide_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Each_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Each_00'); }
+  if(NoteIcon.Slide_Each_01.src === ''){ NoteIcon.Slide_Each_01.src = Slide_Each_01_icon; NoteIcon.Slide_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Each_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Each_01'); }
+  if(NoteIcon.Star_00.src === ''){ NoteIcon.Star_00.src = Star_00_icon; NoteIcon.Star_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_00'); }
+  if(NoteIcon.Star_01.src === ''){ NoteIcon.Star_01.src = Star_01_icon; NoteIcon.Star_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_01'); }
+  if(NoteIcon.Star_Double_00.src === ''){ NoteIcon.Star_Double_00.src = Star_Double_00_icon; NoteIcon.Star_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Double_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Double_00'); }
+  if(NoteIcon.Star_Double_01.src === ''){ NoteIcon.Star_Double_01.src = Star_Double_01_icon; NoteIcon.Star_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Double_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Double_01'); }
+  if(NoteIcon.Star_Each_00.src === ''){ NoteIcon.Star_Each_00.src = Star_Each_00_icon; NoteIcon.Star_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_00'); }
+  if(NoteIcon.Star_Each_01.src === ''){ NoteIcon.Star_Each_01.src = Star_Each_01_icon; NoteIcon.Star_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_01'); }
+  if(NoteIcon.Star_Each_Double_00.src === ''){ NoteIcon.Star_Each_Double_00.src = Star_Each_Double_00_icon; NoteIcon.Star_Each_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_Double_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_Double_00'); }
+  if(NoteIcon.Star_Each_Double_01.src === ''){ NoteIcon.Star_Each_Double_01.src = Star_Each_Double_01_icon; NoteIcon.Star_Each_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_Double_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Each_Double_01'); }
+  if(NoteIcon.Star_Ex_00_blue.src === ''){ NoteIcon.Star_Ex_00_blue.src = Star_Ex_00_blue_icon; NoteIcon.Star_Ex_00_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_blue'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_blue'); }
+  if(NoteIcon.Star_Ex_00_break.src === ''){ NoteIcon.Star_Ex_00_break.src = Star_Ex_00_break_icon; NoteIcon.Star_Ex_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_break'); }
+  if(NoteIcon.Star_Ex_00_each.src === ''){ NoteIcon.Star_Ex_00_each.src = Star_Ex_00_each_icon; NoteIcon.Star_Ex_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_each'); }
+  if(NoteIcon.Star_Ex_00_pink.src === ''){ NoteIcon.Star_Ex_00_pink.src = Star_Ex_00_pink_icon; NoteIcon.Star_Ex_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_00_pink'); }
+  if(NoteIcon.Star_Ex_01_blue.src === ''){ NoteIcon.Star_Ex_01_blue.src = Star_Ex_01_blue_icon; NoteIcon.Star_Ex_01_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_blue'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_blue'); }
+  if(NoteIcon.Star_Ex_01_break.src === ''){ NoteIcon.Star_Ex_01_break.src = Star_Ex_01_break_icon; NoteIcon.Star_Ex_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_break'); }
+  if(NoteIcon.Star_Ex_01_each.src === ''){ NoteIcon.Star_Ex_01_each.src = Star_Ex_01_each_icon; NoteIcon.Star_Ex_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_each'); }
+  if(NoteIcon.Star_Ex_01_pink.src === ''){ NoteIcon.Star_Ex_01_pink.src = Star_Ex_01_pink_icon; NoteIcon.Star_Ex_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_01_pink'); }
+  if(NoteIcon.Star_Ex_Double_00_blue.src === ''){ NoteIcon.Star_Ex_Double_00_blue.src = Star_Ex_Double_00_blue_icon; NoteIcon.Star_Ex_Double_00_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_blue'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_blue'); }
+  if(NoteIcon.Star_Ex_Double_00_break.src === ''){ NoteIcon.Star_Ex_Double_00_break.src = Star_Ex_Double_00_break_icon; NoteIcon.Star_Ex_Double_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_break'); }
+  if(NoteIcon.Star_Ex_Double_00_each.src === ''){ NoteIcon.Star_Ex_Double_00_each.src = Star_Ex_Double_00_each_icon; NoteIcon.Star_Ex_Double_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_each'); }
+  if(NoteIcon.Star_Ex_Double_00_pink.src === ''){ NoteIcon.Star_Ex_Double_00_pink.src = Star_Ex_Double_00_pink_icon; NoteIcon.Star_Ex_Double_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_00_pink'); }
+  if(NoteIcon.Star_Ex_Double_01_blue.src === ''){ NoteIcon.Star_Ex_Double_01_blue.src = Star_Ex_Double_01_blue_icon; NoteIcon.Star_Ex_Double_01_blue.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_blue'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_blue'); }
+  if(NoteIcon.Star_Ex_Double_01_break.src === ''){ NoteIcon.Star_Ex_Double_01_break.src = Star_Ex_Double_01_break_icon; NoteIcon.Star_Ex_Double_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_break'); }
+  if(NoteIcon.Star_Ex_Double_01_each.src === ''){ NoteIcon.Star_Ex_Double_01_each.src = Star_Ex_Double_01_each_icon; NoteIcon.Star_Ex_Double_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_each'); }
+  if(NoteIcon.Star_Ex_Double_01_pink.src === ''){ NoteIcon.Star_Ex_Double_01_pink.src = Star_Ex_Double_01_pink_icon; NoteIcon.Star_Ex_Double_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Ex_Double_01_pink'); }
+  if(NoteIcon.Star_Pink_00.src === ''){ NoteIcon.Star_Pink_00.src = Star_Pink_00_icon; NoteIcon.Star_Pink_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_00'); }
+  if(NoteIcon.Star_Pink_01.src === ''){ NoteIcon.Star_Pink_01.src = Star_Pink_01_icon; NoteIcon.Star_Pink_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_01'); }
+  if(NoteIcon.Star_Pink_Double_00.src === ''){ NoteIcon.Star_Pink_Double_00.src = Star_Pink_Double_00_icon; NoteIcon.Star_Pink_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_Double_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_Double_00'); }
+  if(NoteIcon.Star_Pink_Double_01.src === ''){ NoteIcon.Star_Pink_Double_01.src = Star_Pink_Double_01_icon; NoteIcon.Star_Pink_Double_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_Double_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Pink_Double_01'); }
+  if(NoteIcon.Tap_00.src === ''){ NoteIcon.Tap_00.src = Tap_00_icon; NoteIcon.Tap_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_00'); }
+  if(NoteIcon.Tap_01.src === ''){ NoteIcon.Tap_01.src = Tap_01_icon; NoteIcon.Tap_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_01'); }
+  if(NoteIcon.Tap_02.src === ''){ NoteIcon.Tap_02.src = Tap_02_icon; NoteIcon.Tap_02.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_02'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_02'); }
+  if(NoteIcon.Tap_03.src === ''){ NoteIcon.Tap_03.src = Tap_03_icon; NoteIcon.Tap_03.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_03'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_03'); }
+  if(NoteIcon.Tap_04.src === ''){ NoteIcon.Tap_04.src = Tap_04_icon; NoteIcon.Tap_04.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_04'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_04'); }
+  if(NoteIcon.Tap_Each_00.src === ''){ NoteIcon.Tap_Each_00.src = Tap_Each_00_icon; NoteIcon.Tap_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_00'); }
+  if(NoteIcon.Tap_Each_01.src === ''){ NoteIcon.Tap_Each_01.src = Tap_Each_01_icon; NoteIcon.Tap_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_01'); }
+  if(NoteIcon.Tap_Each_02.src === ''){ NoteIcon.Tap_Each_02.src = Tap_Each_02_icon; NoteIcon.Tap_Each_02.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_02'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_02'); }
+  if(NoteIcon.Tap_Each_03.src === ''){ NoteIcon.Tap_Each_03.src = Tap_Each_03_icon; NoteIcon.Tap_Each_03.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_03'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_03'); }
+  if(NoteIcon.Tap_Each_04.src === ''){ NoteIcon.Tap_Each_04.src = Tap_Each_04_icon; NoteIcon.Tap_Each_04.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_04'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Each_04'); }
+  if(NoteIcon.Tap_Ex_00_break.src === ''){ NoteIcon.Tap_Ex_00_break.src = Tap_Ex_00_break_icon; NoteIcon.Tap_Ex_00_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_break'); }
+  if(NoteIcon.Tap_Ex_00_each.src === ''){ NoteIcon.Tap_Ex_00_each.src = Tap_Ex_00_each_icon; NoteIcon.Tap_Ex_00_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_each'); }
+  if(NoteIcon.Tap_Ex_00_pink.src === ''){ NoteIcon.Tap_Ex_00_pink.src = Tap_Ex_00_pink_icon; NoteIcon.Tap_Ex_00_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_00_pink'); }
+  if(NoteIcon.Tap_Ex_01_break.src === ''){ NoteIcon.Tap_Ex_01_break.src = Tap_Ex_01_break_icon; NoteIcon.Tap_Ex_01_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_break'); }
+  if(NoteIcon.Tap_Ex_01_each.src === ''){ NoteIcon.Tap_Ex_01_each.src = Tap_Ex_01_each_icon; NoteIcon.Tap_Ex_01_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_each'); }
+  if(NoteIcon.Tap_Ex_01_pink.src === ''){ NoteIcon.Tap_Ex_01_pink.src = Tap_Ex_01_pink_icon; NoteIcon.Tap_Ex_01_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_01_pink'); }
+  if(NoteIcon.Tap_Ex_02_break.src === ''){ NoteIcon.Tap_Ex_02_break.src = Tap_Ex_02_break_icon; NoteIcon.Tap_Ex_02_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_break'); }
+  if(NoteIcon.Tap_Ex_02_each.src === ''){ NoteIcon.Tap_Ex_02_each.src = Tap_Ex_02_each_icon; NoteIcon.Tap_Ex_02_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_each'); }
+  if(NoteIcon.Tap_Ex_02_pink.src === ''){ NoteIcon.Tap_Ex_02_pink.src = Tap_Ex_02_pink_icon; NoteIcon.Tap_Ex_02_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_02_pink'); }
+  if(NoteIcon.Tap_Ex_03_break.src === ''){ NoteIcon.Tap_Ex_03_break.src = Tap_Ex_03_break_icon; NoteIcon.Tap_Ex_03_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_break'); }
+  if(NoteIcon.Tap_Ex_03_each.src === ''){ NoteIcon.Tap_Ex_03_each.src = Tap_Ex_03_each_icon; NoteIcon.Tap_Ex_03_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_each'); }
+  if(NoteIcon.Tap_Ex_03_pink.src === ''){ NoteIcon.Tap_Ex_03_pink.src = Tap_Ex_03_pink_icon; NoteIcon.Tap_Ex_03_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_03_pink'); }
+  if(NoteIcon.Tap_Ex_04_break.src === ''){ NoteIcon.Tap_Ex_04_break.src = Tap_Ex_04_break_icon; NoteIcon.Tap_Ex_04_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_break'); }
+  if(NoteIcon.Tap_Ex_04_each.src === ''){ NoteIcon.Tap_Ex_04_each.src = Tap_Ex_04_each_icon; NoteIcon.Tap_Ex_04_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_each'); }
+  if(NoteIcon.Tap_Ex_04_pink.src === ''){ NoteIcon.Tap_Ex_04_pink.src = Tap_Ex_04_pink_icon; NoteIcon.Tap_Ex_04_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_pink'); }
+  if(NoteIcon.touch.src === ''){ NoteIcon.touch.src = touch_icon; NoteIcon.touch.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch'); }
+  if(NoteIcon.touch_center.src === ''){ NoteIcon.touch_center.src = touch_center_icon; NoteIcon.touch_center.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_center'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_center'); }
+  if(NoteIcon.touch_each.src === ''){ NoteIcon.touch_each.src = touch_each_icon; NoteIcon.touch_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each'); }
+  if(NoteIcon.touch_each_center.src === ''){ NoteIcon.touch_each_center.src = touch_each_center_icon; NoteIcon.touch_each_center.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_center'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_center'); }
+  if(NoteIcon.touch_each_three.src === ''){ NoteIcon.touch_each_three.src = touch_each_three_icon; NoteIcon.touch_each_three.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_three'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_three'); }
+  if(NoteIcon.touch_each_two.src === ''){ NoteIcon.touch_each_two.src = touch_each_two_icon; NoteIcon.touch_each_two.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_two'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_two'); }
+  if(NoteIcon.touch_hold_1.src === ''){ NoteIcon.touch_hold_1.src = touch_hold_1_icon; NoteIcon.touch_hold_1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_1'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_1'); }
+  if(NoteIcon.touch_hold_2.src === ''){ NoteIcon.touch_hold_2.src = touch_hold_2_icon; NoteIcon.touch_hold_2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_2'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_2'); }
+  if(NoteIcon.touch_hold_3.src === ''){ NoteIcon.touch_hold_3.src = touch_hold_3_icon; NoteIcon.touch_hold_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_3'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_3'); }
+  if(NoteIcon.touch_hold_4.src === ''){ NoteIcon.touch_hold_4.src = touch_hold_4_icon; NoteIcon.touch_hold_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_4'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_4'); }
+  if(NoteIcon.touch_hold_center_miss.src === ''){ NoteIcon.touch_hold_center_miss.src = touch_hold_center_miss_icon; NoteIcon.touch_hold_center_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_center_miss'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_center_miss'); }
+  if(NoteIcon.touch_hold_gage.src === ''){ NoteIcon.touch_hold_gage.src = touch_hold_gage_icon; NoteIcon.touch_hold_gage.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage'); }
+  if(NoteIcon.touch_hold_gage_miss.src === ''){ NoteIcon.touch_hold_gage_miss.src = touch_hold_gage_miss_icon; NoteIcon.touch_hold_gage_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss'); }
+  if(NoteIcon.touch_hold_miss.src === ''){ NoteIcon.touch_hold_miss.src = touch_hold_miss_icon; NoteIcon.touch_hold_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_miss'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_miss'); }
+  if(NoteIcon.touch_hold_three.src === ''){ NoteIcon.touch_hold_three.src = touch_hold_three_icon; NoteIcon.touch_hold_three.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_three'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_three'); }
+  if(NoteIcon.touch_hold_two.src === ''){ NoteIcon.touch_hold_two.src = touch_hold_two_icon; NoteIcon.touch_hold_two.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_two'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_two'); }
+  if(NoteIcon.touch_just.src === ''){ NoteIcon.touch_just.src = touch_just_icon; NoteIcon.touch_just.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_just'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_just'); }
+  if(NoteIcon.touch_three.src === ''){ NoteIcon.touch_three.src = touch_three_icon; NoteIcon.touch_three.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_three'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_three'); }
+  if(NoteIcon.touch_two.src === ''){ NoteIcon.touch_two.src = touch_two_icon; NoteIcon.touch_two.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_two'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_two'); }
+  if(NoteIcon.wifi_0.src === ''){ NoteIcon.wifi_0.src = wifi_0_icon; NoteIcon.wifi_0.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_0'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_0'); }
+  if(NoteIcon.wifi_1.src === ''){ NoteIcon.wifi_1.src = wifi_1_icon; NoteIcon.wifi_1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_1'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_1'); }
+  if(NoteIcon.wifi_10.src === ''){ NoteIcon.wifi_10.src = wifi_10_icon; NoteIcon.wifi_10.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_10'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_10'); }
+  if(NoteIcon.wifi_2.src === ''){ NoteIcon.wifi_2.src = wifi_2_icon; NoteIcon.wifi_2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_2'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_2'); }
+  if(NoteIcon.wifi_3.src === ''){ NoteIcon.wifi_3.src = wifi_3_icon; NoteIcon.wifi_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_3'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_3'); }
+  if(NoteIcon.wifi_4.src === ''){ NoteIcon.wifi_4.src = wifi_4_icon; NoteIcon.wifi_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_4'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_4'); }
+  if(NoteIcon.wifi_5.src === ''){ NoteIcon.wifi_5.src = wifi_5_icon; NoteIcon.wifi_5.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_5'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_5'); }
+  if(NoteIcon.wifi_6.src === ''){ NoteIcon.wifi_6.src = wifi_6_icon; NoteIcon.wifi_6.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_6'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_6'); }
+  if(NoteIcon.wifi_7.src === ''){ NoteIcon.wifi_7.src = wifi_7_icon; NoteIcon.wifi_7.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_7'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_7'); }
+  if(NoteIcon.wifi_8.src === ''){ NoteIcon.wifi_8.src = wifi_8_icon; NoteIcon.wifi_8.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_8'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_8'); }
+  if(NoteIcon.wifi_9.src === ''){ NoteIcon.wifi_9.src = wifi_9_icon; NoteIcon.wifi_9.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_9'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_9'); }
+  if(NoteIcon.wifi_break_0.src === ''){ NoteIcon.wifi_break_0.src = wifi_break_0_icon; NoteIcon.wifi_break_0.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_0'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_0'); }
+  if(NoteIcon.wifi_break_1.src === ''){ NoteIcon.wifi_break_1.src = wifi_break_1_icon; NoteIcon.wifi_break_1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_1'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_1'); }
+  if(NoteIcon.wifi_break_10.src === ''){ NoteIcon.wifi_break_10.src = wifi_break_10_icon; NoteIcon.wifi_break_10.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_10'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_10'); }
+  if(NoteIcon.wifi_break_2.src === ''){ NoteIcon.wifi_break_2.src = wifi_break_2_icon; NoteIcon.wifi_break_2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_2'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_2'); }
+  if(NoteIcon.wifi_break_3.src === ''){ NoteIcon.wifi_break_3.src = wifi_break_3_icon; NoteIcon.wifi_break_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_3'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_3'); }
+  if(NoteIcon.wifi_break_4.src === ''){ NoteIcon.wifi_break_4.src = wifi_break_4_icon; NoteIcon.wifi_break_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_4'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_4'); }
+  if(NoteIcon.wifi_break_5.src === ''){ NoteIcon.wifi_break_5.src = wifi_break_5_icon; NoteIcon.wifi_break_5.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_5'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_5'); }
+  if(NoteIcon.wifi_break_6.src === ''){ NoteIcon.wifi_break_6.src = wifi_break_6_icon; NoteIcon.wifi_break_6.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_6'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_6'); }
+  if(NoteIcon.wifi_break_7.src === ''){ NoteIcon.wifi_break_7.src = wifi_break_7_icon; NoteIcon.wifi_break_7.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_7'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_7'); }
+  if(NoteIcon.wifi_break_8.src === ''){ NoteIcon.wifi_break_8.src = wifi_break_8_icon; NoteIcon.wifi_break_8.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_8'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_8'); }
+  if(NoteIcon.wifi_break_9.src === ''){ NoteIcon.wifi_break_9.src = wifi_break_9_icon; NoteIcon.wifi_break_9.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_9'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_break_9'); }
+  if(NoteIcon.wifi_each_0.src === ''){ NoteIcon.wifi_each_0.src = wifi_each_0_icon; NoteIcon.wifi_each_0.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_0'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_0'); }
+  if(NoteIcon.wifi_each_1.src === ''){ NoteIcon.wifi_each_1.src = wifi_each_1_icon; NoteIcon.wifi_each_1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_1'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_1'); }
+  if(NoteIcon.wifi_each_10.src === ''){ NoteIcon.wifi_each_10.src = wifi_each_10_icon; NoteIcon.wifi_each_10.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_10'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_10'); }
+  if(NoteIcon.wifi_each_2.src === ''){ NoteIcon.wifi_each_2.src = wifi_each_2_icon; NoteIcon.wifi_each_2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_2'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_2'); }
+  if(NoteIcon.wifi_each_3.src === ''){ NoteIcon.wifi_each_3.src = wifi_each_3_icon; NoteIcon.wifi_each_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_3'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_3'); }
+  if(NoteIcon.wifi_each_4.src === ''){ NoteIcon.wifi_each_4.src = wifi_each_4_icon; NoteIcon.wifi_each_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_4'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_4'); }
+  if(NoteIcon.wifi_each_5.src === ''){ NoteIcon.wifi_each_5.src = wifi_each_5_icon; NoteIcon.wifi_each_5.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_5'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_5'); }
+  if(NoteIcon.wifi_each_6.src === ''){ NoteIcon.wifi_each_6.src = wifi_each_6_icon; NoteIcon.wifi_each_6.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_6'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_6'); }
+  if(NoteIcon.wifi_each_7.src === ''){ NoteIcon.wifi_each_7.src = wifi_each_7_icon; NoteIcon.wifi_each_7.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_7'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_7'); }
+  if(NoteIcon.wifi_each_8.src === ''){ NoteIcon.wifi_each_8.src = wifi_each_8_icon; NoteIcon.wifi_each_8.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_8'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_8'); }
+  if(NoteIcon.wifi_each_9.src === ''){ NoteIcon.wifi_each_9.src = wifi_each_9_icon; NoteIcon.wifi_each_9.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_9'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_9'); }
 };

@@ -41,8 +41,8 @@ function App() {
             setGameState={e => {
               setGameState(e);
             }}
-            w={200}
-            h={200}
+            w={400}
+            h={400}
             l={0}
             t={0}
             tapStyle={TapStyles.Concise}
@@ -69,50 +69,17 @@ function App() {
             lightStatus={[]}
           />
         </div>
-        <div></div>
-        <div style={{ display: 'flex' }}>
-          <Maisim
+        <div>
+
+        <Maisim
             id="2"
             gameState={gameState2}
             setGameState={e => {
               setGameState2(e);
             }}
-            w={150}
-            h={150}
-            l={300}
-            t={0}
-            tapStyle={TapStyles.Concise}
-            holdStyle={RegularStyles.Concise}
-            slideStyle={RegularStyles.Concise}
-            slideColor={SlideColor.Blue}
-            doShowEffect={true}
-            isAuto={true}
-            doShowKeys={true}
-            centerText={0}
-            sheet={sheetdata2.notes}
-            sheetProps={{ first: sheetdata2.first, wholeBPM: sheetdata2.wholebpm }}
-            onPlayStart={function (): void {}}
-            onGameRecordChange={function (gameRecord: object): void {}}
-            onPlayFinish={function (): void {}}
-            uiContent={undefined}
-            doShowUIContent={true}
-            onScreenPressDown={function (key: string): void {
-              setkey(key);
-            }}
-            onScreenPressUp={function (key: string): void {
-              setkey('');
-            }}
-            lightStatus={[]}
-          />
-          <Maisim
-            id="3"
-            gameState={gameState3}
-            setGameState={e => {
-              setGameState3(e);
-            }}
-            w={winHeight > winWidth ? winWidth : winHeight}
-            h={winHeight > winWidth ? winWidth : winHeight}
-            l={(winHeight > winWidth ? winWidth : winHeight) * 0.78 * 0.3 + 700}
+            w={400}
+            h={400}
+            l={500}
             t={0}
             tapStyle={TapStyles.Concise}
             holdStyle={RegularStyles.Concise}
@@ -138,6 +105,7 @@ function App() {
             lightStatus={[]}
           />
         </div>
+
       </div>
     </div>
   );

@@ -204,9 +204,9 @@ export default function Maisim(
 
   //#endregion Global
 
-  const SongTrack = new Audio();
-  SongTrack.volume = 0.5;
-  SongTrack.src = testsong_taiyoukei;
+  const SongTrack: React.MutableRefObject<HTMLAudioElement> = useRef(new Audio());
+  SongTrack.current.volume = 0.5;
+  SongTrack.current.src = testsong_taiyoukei;
 
   /** 读入数据和更新绘制信息的Timer */
   const timer_readAndUpdate: React.MutableRefObject<string | number | NodeJS.Timer | undefined> = useRef(undefined);
@@ -261,7 +261,7 @@ export default function Maisim(
   /** 启动绘制器 */
   const starttimer = () => {
     readSheet();
-    console.log(id, 123)
+    console.log(id, 123);
     if (currentSheet.current) {
       showingNotes.current = [];
       nextNoteIndex.current = 0;
@@ -269,12 +269,12 @@ export default function Maisim(
       // console.log({ advancedTime.current })
       setTimeout(
         () => {
-          SongTrack.play();
+          SongTrack.current.play();
         },
         advancedTime.current / virtualTime.current.speedFactor // 苟且做法（无法动态调整 timeout 的速度）
       );
 
-      const duration = advancedTime.current + SongTrack.duration * 1000;
+      const duration = advancedTime.current + SongTrack.current.duration * 1000;
       // console.log({ duration: duration/1000 })
 
       //console.log(currentSheet.beats5?.beat);
@@ -301,7 +301,7 @@ export default function Maisim(
   };
 
   const changeSongTrackPlaybackrate = (rate: number) => {
-    SongTrack.playbackRate = rate;
+    SongTrack.current.playbackRate = rate;
   };
   const seekSongTrack = (progress: number): boolean => {
     let duration = virtualTime.current.duration;
@@ -309,14 +309,14 @@ export default function Maisim(
     if (time < advancedTime.current) {
       return false;
     } else {
-      SongTrack.currentTime = (time - advancedTime.current) / 1000;
+      SongTrack.current.currentTime = (time - advancedTime.current) / 1000;
       return true;
     }
   };
   const handleSongTrackFinish = (callback: () => void): (() => void) => {
-    SongTrack.addEventListener('ended', callback);
+    SongTrack.current.addEventListener('ended', callback);
     return () => {
-      SongTrack.removeEventListener('ended', callback);
+      SongTrack.current.removeEventListener('ended', callback);
     };
   };
 
@@ -365,7 +365,7 @@ export default function Maisim(
   const finish = () => {
     clearInterval(timer_readAndUpdate.current);
     clearInterval(timer_draw.current);
-    SongTrack.pause();
+    SongTrack.current.pause();
     seekSongTrack(0);
     virtualTime.current = new VirtualTime();
     initAnimation();
@@ -416,7 +416,7 @@ export default function Maisim(
             if (isAuto) {
               if (newNote.rho >= maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR) {
                 judge(
-                  maimaiValues.current,
+                  gameRecord.current,
                   touchHoldSoundsManager.current,
                   showingNotes.current,
                   maimaiValues.current.timerPeriod,
@@ -478,7 +478,7 @@ export default function Maisim(
             if (isAuto) {
               if (!note.touched && newNote.rho >= maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR) {
                 judge(
-                  maimaiValues.current,
+                  gameRecord.current,
                   touchHoldSoundsManager.current,
                   showingNotes.current,
                   maimaiValues.current.timerPeriod,
@@ -518,7 +518,7 @@ export default function Maisim(
                 if (isAuto) {
                   if (!note.touched && newNote.rho >= maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR) {
                     judge(
-                      maimaiValues.current,
+                      gameRecord.current,
                       touchHoldSoundsManager.current,
                       showingNotes.current,
                       maimaiValues.current.timerPeriod,
@@ -582,7 +582,7 @@ export default function Maisim(
             if (isAuto || doEnableKeyboard) {
               if (currentTime.current >= noteIns.time!) {
                 judge(
-                  maimaiValues.current,
+                  gameRecord.current,
                   touchHoldSoundsManager.current,
                   showingNotes.current,
                   maimaiValues.current.timerPeriod,
@@ -647,7 +647,7 @@ export default function Maisim(
               if (newNote.rho >= maimaiValues.current.touchMaxDistance) {
                 //if (currentTime.current >= noteIns.time! -  maimaiValues.current.timerPeriod * 5) {
                 judge(
-                  maimaiValues.current,
+                  gameRecord.current,
                   touchHoldSoundsManager.current,
                   showingNotes.current,
                   maimaiValues.current.timerPeriod,
@@ -831,7 +831,7 @@ export default function Maisim(
             if (isAuto) {
               if (newNote.rho >= maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR) {
                 judge(
-                  maimaiValues.current,
+                  gameRecord.current,
                   touchHoldSoundsManager.current,
                   showingNotes.current,
                   maimaiValues.current.timerPeriod,
@@ -1013,14 +1013,14 @@ export default function Maisim(
             }
 
             // HOLD和TOUCH HOLD的真判定（修正後的
-            updateRecord(maimaiValues.current, noteIns, note, currentSheet.current!.basicEvaluation, currentSheet.current!.exEvaluation, currentSheet.current!.oldTheoreticalScore);
+            updateRecord(gameRecord.current, noteIns, note, currentSheet.current!.basicEvaluation, currentSheet.current!.exEvaluation, currentSheet.current!.oldTheoreticalScore);
 
             note.status = -3;
 
             // 停掉可能的TOUCH HOLD声音
             if (noteIns.type === NoteType.TouchHold) {
               updateRecord(
-                maimaiValues.current,
+                gameRecord.current,
                 noteIns,
                 note,
                 currentSheet.current!.basicEvaluation,
@@ -1189,7 +1189,7 @@ export default function Maisim(
   //#region 指针事件 MouseEvent
   const onMouseDown = (e: Event) => {
     // @ts-ignore
-    const area = whichArea(e.offsetX, e.offsetY);
+    const area = areaFactory.current.whichArea(e.offsetX, e.offsetY);
     if (area) {
       currentTouchingArea.current.push({
         area,
@@ -1217,7 +1217,7 @@ export default function Maisim(
   };
   const onMouseUp = (e: Event) => {
     // @ts-ignore
-    const area = whichArea(e.offsetX, e.offsetY);
+    const area = areaFactory.current.whichArea(e.offsetX, e.offsetY);
     if (area) {
       currentTouchingArea.current = currentTouchingArea.current.filter(ta => {
         return ta.area.name !== area.name;
@@ -1239,7 +1239,7 @@ export default function Maisim(
 
     for (let i = 0; i < touches.length; i++) {
       // @ts-ignore
-      const area = whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
+      const area = areaFactory.current.whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
       if (area) {
         if (
           currentTouchingArea.current.find(ta => {
@@ -1266,7 +1266,7 @@ export default function Maisim(
 
     for (let i = 0; i < touches.length; i++) {
       // @ts-ignore
-      const area = whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
+      const area = areaFactory.current.whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
       if (area) {
         currentTouchingArea.current = currentTouchingArea.current.filter(ta => {
           return ta.area.name !== area.name;
@@ -1286,7 +1286,7 @@ export default function Maisim(
 
     for (let i = 0; i < touches.length; i++) {
       // @ts-ignore
-      const area = whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
+      const area = areaFactory.current.whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
       if (area) {
         currentTouchingArea.current = currentTouchingArea.current.filter(ta => {
           return ta.area.name !== area.name;
@@ -1305,7 +1305,7 @@ export default function Maisim(
 
     for (let i = 0; i < touches.length; i++) {
       // @ts-ignore
-      const area = whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
+      const area = areaFactory.current.whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
       if (area) {
         currentTouchingArea.current = currentTouchingArea.current.filter(ta => {
           return ta.area.name !== area.name;
@@ -1326,7 +1326,7 @@ export default function Maisim(
 
     for (let i = 0; i < touches.length; i++) {
       // @ts-ignore
-      const area = whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
+      const area = areaFactory.current.whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
       if (area) {
         if (
           tempTouchingArea.find(ta => {
@@ -1496,10 +1496,10 @@ export default function Maisim(
   //#region useEffect
   useEffect(() => {
     initResources(
-      (type: string, amount: number, loaded: number, name: string) => {
+      async (type: string, amount: number, loaded: number, name: string) => {
         setloadMsg(`Loading:${type} ${loaded}/${amount} ${name}`);
       },
-      () => {
+      async () => {
         // 首次完成加载後
         setloadMsg('');
         initCtx();
@@ -1539,6 +1539,7 @@ export default function Maisim(
 
   // 初始化动画
   useEffect(() => {
+    initAnimation();
     maimaiValues.current = new MaimaiValues(w, h);
   }, []);
 
@@ -1681,7 +1682,6 @@ export default function Maisim(
               //testmusic.play();
               if (gameState === GameState.Begin) {
                 starttimer();
-                initAnimation();
                 setGameState?.(GameState.Play);
                 console.log(114);
               } else if (gameState === GameState.Play) {
@@ -1689,13 +1689,13 @@ export default function Maisim(
                 virtualTime.current.pause();
                 clearInterval(timer_readAndUpdate.current);
                 clearInterval(timer_draw.current);
-                SongTrack.pause();
+                SongTrack.current.pause();
                 setGameState?.(GameState.Pause);
               } else if (gameState === GameState.Pause) {
                 virtualTime.current.resume();
                 timer_readAndUpdate.current = setInterval(reader_and_updater, maimaiValues.current.timerPeriod);
                 timer_draw.current = setInterval(drawer, maimaiValues.current.timerPeriod);
-                SongTrack.play();
+                SongTrack.current.play();
                 setGameState?.(GameState.Play);
               } else {
               }

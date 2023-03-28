@@ -69,9 +69,11 @@ def effectsIcons():
     fo.write("  const amount = " + str(len(iconNames)) + ";\n")
     fo.write("  let loaded = 0;\n")
     for name in iconNames:
-        fo.write("  EffectIcon." + name + ".src = " + name + "_icon;\n")
-        fo.write("  EffectIcon." + name +
-                 ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
+        fo.write("  if(EffectIcon." + name + ".src === ''){ EffectIcon." + name + ".src = " + name + "_icon; EffectIcon." + name +
+                 ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
+        # fo.write("  EffectIcon." + name + ".src = " + name + "_icon;\n")
+        # fo.write("  EffectIcon." + name +
+        #          ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
     fo.write("};\n")
     fo.close()
 
@@ -108,9 +110,11 @@ def notesIcons():
     fo.write("  const amount = " + str(len(iconNames)) + ";\n")
     fo.write("  let loaded = 0;\n")
     for name in iconNames:
-        fo.write("  NoteIcon." + name + ".src = " + name + "_icon;\n")
-        fo.write("  NoteIcon." + name +
-                 ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
+        fo.write("  if(NoteIcon." + name + ".src === ''){ NoteIcon." + name + ".src = " + name + "_icon; NoteIcon." + name +
+                 ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
+        # fo.write("  NoteIcon." + name + ".src = " + name + "_icon;\n")
+        # fo.write("  NoteIcon." + name +
+        #          ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
     fo.write("};\n")
     fo.close()
 
@@ -147,9 +151,11 @@ def judgeIcons():
     fo.write("  const amount = " + str(len(iconNames)) + ";\n")
     fo.write("  let loaded = 0;\n")
     for name in iconNames:
-        fo.write("  JudgeIcon." + name + ".src = " + name + "_icon;\n")
-        fo.write("  JudgeIcon." + name +
-                 ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
+        fo.write("  if(JudgeIcon." + name + ".src === ''){ JudgeIcon." + name + ".src = " + name + "_icon; JudgeIcon." + name +
+                 ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
+        # fo.write("  JudgeIcon." + name + ".src = " + name + "_icon;\n")
+        # fo.write("  JudgeIcon." + name +
+        #          ".onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
     fo.write("};\n")
     fo.close()
 
@@ -187,10 +193,12 @@ def notesSounds():
     fo.write("  let loaded = 0;\n")
     fo.write("  let volume = 0.05;\n")
     for name in soundNames:
-        fo.write("  NoteSound." + name + ".src = " + name + "_sound;\n")
-        fo.write("  NoteSound." + name + ".volume = volume;\n")
-        fo.write("  NoteSound." + name +
-                 ".oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
+        fo.write("    if(NoteSound." + name + ".src === ''){ NoteSound." + name + ".src = " + name + "_sound; NoteSound." + name + ".volume = volume; NoteSound." + name +
+                 ".oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
+        # fo.write("  NoteSound." + name + ".src = " + name + "_sound;\n")
+        # fo.write("  NoteSound." + name + ".volume = volume;\n")
+        # fo.write("  NoteSound." + name +
+        #          ".oncanplaythrough = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, '" + name + "'); }\n")
 
     fo.write("  onload();\n")
     fo.write("};\n")
