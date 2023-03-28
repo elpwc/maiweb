@@ -41,8 +41,8 @@ function App() {
             setGameState={e => {
               setGameState(e);
             }}
-            w={400}
-            h={400}
+            w={600}
+            h={600}
             l={0}
             t={0}
             tapStyle={TapStyles.Concise}
@@ -79,7 +79,7 @@ function App() {
             }}
             w={400}
             h={400}
-            l={500}
+            l={800}
             t={0}
             tapStyle={TapStyles.Concise}
             holdStyle={RegularStyles.Concise}
