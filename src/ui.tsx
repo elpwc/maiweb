@@ -5,6 +5,7 @@ import { findAllUser } from "./services/api/findAllUser";
 import { findOneUser } from "./services/api/findOneUser";
 import { inviteAuth } from "./services/api/inviteAuth";
 import { loginAuth } from "./services/api/loginAuth";
+import { registerAuth } from "./services/api/registerAuth";
 import { updateUser } from "./services/api/updateUser";
 import { uploadPictureApp } from "./services/api/uploadPictureApp";
 
@@ -144,9 +145,62 @@ function Modal(props: { name: ModalName, title: string, children: JSX.Element|JS
 }
 
 function RegisterModal(): JSX.Element {
-    // TODO
-    return <Modal name="register" title={'Register'}>
-        <h1>Sign Up</h1>
+    let ctx = useContext(Context);
+    let [pending, setPending] = useState(false);
+    let codeInputRef = useRef<HTMLInputElement>(null);
+    let emailInputRef = useRef<HTMLInputElement>(null);
+    let nameInputRef = useRef<HTMLInputElement>(null);
+    let passwordInputRef = useRef<HTMLInputElement>(null);
+    let passwordConfirmRef = useRef<HTMLInputElement>(null);
+    let register = async () => {
+        let codeInput = codeInputRef.current!;
+        let emailInput = emailInputRef.current!;
+        let nameInput = nameInputRef.current!;
+        let passwordInput = passwordInputRef.current!;
+        let passwordConfirm = passwordConfirmRef.current!;
+        if (pending) {
+            return;
+        }
+        if (passwordInput.value != passwordConfirm.value) {
+            alert('Password inputs are not consistent.');
+            return;
+        }
+        setPending(true);
+        try {
+            let user = await registerAuth({
+                invitationCode: codeInput.value,
+                email: emailInput.value,
+                name: nameInput.value,
+                password: passwordInput.value
+            });
+            codeInput.value = '';
+            emailInput.value = '';
+            nameInput.value = '';
+            passwordInput.value = '';
+            passwordConfirm.value = '';
+            ctx.setState({ ...ctx.state, user, currentModal: null });
+            writeSavedUser(user);
+        } catch(err) {
+            showError(err);
+        } finally {
+            setPending(false);
+        }
+    };
+    return <Modal name="register" title={'Register'} closeGuard={() => !pending}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px 20px' }}>
+            <table><tbody>
+                <tr><td>InviteCode:</td><td><input ref={codeInputRef} type="text"></input></td></tr>
+                <tr><td>Email:</td><td><input ref={emailInputRef} type="email"></input></td></tr>
+                <tr><td>Name:</td><td><input ref={nameInputRef} type="text"></input></td></tr>
+                <tr><td>Pasword:</td><td><input ref={passwordInputRef} type="password"></input></td></tr>
+                <tr><td>Confirm:</td><td><input ref={passwordConfirmRef} type="password" onKeyDown={(ev) => { if(ev.key == 'Enter') { register(); } }}></input></td></tr>
+            </tbody></table>
+            <div style={{ textAlign: 'center' }}>
+                <SubmitLink pending={pending} onClick={() => { register() }}>
+                    Register
+                </SubmitLink>
+            </div>
+        </div>
     </Modal>
 }
 function LoginModal(): JSX.Element {
