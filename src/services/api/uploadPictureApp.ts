@@ -2,8 +2,8 @@
 /* eslint-disable */
 import request from '../../utils/request';
 
-/** 此处后端没有提供注释 POST /upload-avatar */
-export async function uploadAvatarApp(body: {}, file?: File, options?: { [key: string]: any }) {
+/** 此处后端没有提供注释 POST /upload-picture */
+export async function uploadPictureApp(body: {}, file?: File, options?: { [key: string]: any }) {
   const formData = new FormData();
 
   if (file) {
@@ -21,9 +21,10 @@ export async function uploadAvatarApp(body: {}, file?: File, options?: { [key: s
     }
   });
 
-  return request<string>('/upload-avatar', {
+  return request<string>('/upload-picture', {
     method: 'POST',
     data: formData,
+    // requestType: 'form',
     ...(options || {}),
   });
 }

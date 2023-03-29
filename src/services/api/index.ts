@@ -3,8 +3,8 @@
 // API 更新时间：
 // API 唯一标识：
 import * as uploadsApp from './uploadsApp';
-import * as uploadAvatarApp from './uploadAvatarApp';
-import * as uploadSongApp from './uploadSongApp';
+import * as uploadPictureApp from './uploadPictureApp';
+import * as uploadMusicApp from './uploadMusicApp';
 import * as linkTestApp from './linkTestApp';
 import * as findAllSong from './findAllSong';
 import * as createSong from './createSong';
@@ -29,8 +29,8 @@ import * as requestPasswordResetAuth from './requestPasswordResetAuth';
 import * as resetPasswordAuth from './resetPasswordAuth';
 export default {
   uploadsApp,
-  uploadAvatarApp,
-  uploadSongApp,
+  uploadPictureApp,
+  uploadMusicApp,
   linkTestApp,
   findAllSong,
   createSong,

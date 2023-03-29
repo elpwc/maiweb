@@ -19,7 +19,8 @@ declare namespace API {
 
   type CreateSongDto = {
     name: string;
-    file: string;
+    musicFileName: string;
+    iconFileName: string;
     artist: string;
     copyright: string;
     genre: number;
@@ -173,7 +174,8 @@ declare namespace API {
 
   type UpdateSongDto = {
     name?: string;
-    file?: string;
+    musicFileName?: string;
+    iconFileName?: string;
     artist?: string;
     copyright?: string;
     genre?: number;

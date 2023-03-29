@@ -6,7 +6,7 @@ import { findOneUser } from "./services/api/findOneUser";
 import { inviteAuth } from "./services/api/inviteAuth";
 import { loginAuth } from "./services/api/loginAuth";
 import { updateUser } from "./services/api/updateUser";
-import { uploadAvatarApp } from "./services/api/uploadAvatarApp";
+import { uploadPictureApp } from "./services/api/uploadPictureApp";
 
 const User = 0;
 const Mod = 5;
@@ -256,7 +256,7 @@ function ProfileModal(): JSX.Element {
                         <div style={{ width: '64px', height: '64px' }}>
                             <img src={avatarUrl(userInfo.avatarFileName)} style={{ width: '100%', height: '100%' }} />
                         </div>
-                        <div>
+                        <div style={{ marginLeft: '5px' }}>
                             <div style={{ fontSize: '110%', fontWeight: 'bold' }}>{userInfo.name}</div>
                             <div style={{ fontSize: '90%', color: 'gray' }}>UID {userInfo.id}{ (userInfo.authLevel == Admin)? ' (admin)': (userInfo.authLevel == Mod)? ' (mod)': '' }</div>
                             <div style={{ fontSize: '90%', color: 'gray' }}>registered {(new Date(userInfo.createTime)).toDateString()}</div>
@@ -326,7 +326,7 @@ function ProfileEditModal(): JSX.Element {
         let file = avatarFileInputRef.current!.files![0];
         try {
             let blobUrl = URL.createObjectURL(file);
-            let fileName = await uploadAvatarApp({}, file, { token: ctx.state.user!.sessionToken });
+            let fileName = await uploadPictureApp({}, file, { token: ctx.state.user!.sessionToken });
             avatarImageRef.current!.src = blobUrl;
             setAvatarFileName(fileName);
             setDirty(true);
@@ -473,7 +473,7 @@ function UsersModal(): JSX.Element {
         } else {
             setUsers([]);
         }
-    }, [ctx.state.currentModal])
+    }, [ctx.state.currentModal]);
     return <Modal name="users" title="Users" closeGuard={() => !pending}>
         <div style={{ minWidth: (ctx.state.layout == 'landscape')? '30vw': '75vw', maxHeight: '65vh', overflow: 'auto' }}>
             { (users.length == 0)? <h1>Loading...</h1>:

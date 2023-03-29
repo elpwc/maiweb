@@ -2,8 +2,8 @@
 /* eslint-disable */
 import request from '../../utils/request';
 
-/** 此处后端没有提供注释 POST /upload-song */
-export async function uploadSongApp(body: {}, file?: File, options?: { [key: string]: any }) {
+/** 此处后端没有提供注释 POST /upload-music */
+export async function uploadMusicApp(body: {}, file?: File, options?: { [key: string]: any }) {
   const formData = new FormData();
 
   if (file) {
@@ -21,9 +21,10 @@ export async function uploadSongApp(body: {}, file?: File, options?: { [key: str
     }
   });
 
-  return request<string>('/upload-song', {
+  return request<string>('/upload-music', {
     method: 'POST',
     data: formData,
+    // requestType: 'form',
     ...(options || {}),
   });
 }
