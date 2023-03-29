@@ -616,7 +616,7 @@ function NotesEditModal(): JSX.Element {
                         let notes = await findOneNotes({ id: String(notesId) }, { token: ctx.state.user!.sessionToken });
                         setAllSongs(songs);
                         setId(notesId);
-                        setNotes({ songId: notes.song.id, designer: notes.designer, difficulty: notes.difficulty, lv: notes.lv, lv_base: notes.lv_base, is_dx: notes.is_dx, is_official: notes.is_official, is_private: notes.is_private, utage_genre: notes.utage_genre, notes: notes.notes });
+                        setNotes({ songId: notes.song.id, title: notes.title, designer: notes.designer, difficulty: notes.difficulty, lv: notes.lv, lv_base: notes.lv_base, is_dx: notes.is_dx, is_official: notes.is_official, is_private: notes.is_private, utage_genre: notes.utage_genre, notes: notes.notes });
                         setDirty(false);
                     } catch(err) {
                         showError(err);
@@ -628,7 +628,7 @@ function NotesEditModal(): JSX.Element {
                         let songs = await findAllSong({}, { token: ctx.state.user!.sessionToken });
                         setAllSongs(songs);
                         setId(null);
-                        setNotes({ songId: -1, designer: '', difficulty: 0, lv: '1', lv_base: 1, is_dx: true, is_official: true, is_private: false, utage_genre: 0, notes: '' });
+                        setNotes({ songId: -1, title: '', designer: '', difficulty: 0, lv: '1', lv_base: 1, is_dx: true, is_official: true, is_private: false, utage_genre: 0, notes: '' });
                         setDirty(false);
                     } catch(err) {
                         showError(err);
@@ -669,6 +669,7 @@ function NotesEditModal(): JSX.Element {
             <table style={{ marginTop: '10px' }}><tbody>
                 <tr><td>Song:</td><td><select value={notes.songId} onChange={writeValueTo('songId')} style={{ maxWidth: (ctx.state.layout == 'landscape')? '30vw': '50vw' }}>{ [<option key={-1} value={-1}>--- Select Song ---</option>, ...allSongs.map(song => <option key={song.id} value={song.id}>{song.name}</option>)] }</select></td></tr>
                 <tr><td>DX:</td><td><input type="checkbox" checked={notes.is_dx} onChange={writeValueTo('is_dx')}></input></td></tr>
+                <tr><td>Title:</td><td><input type="text" value={notes.title} onChange={writeValueTo('title')} style={{ boxSizing: 'border-box', width: '100%' }}></input></td></tr>
                 <tr><td>Designer:</td><td><input type="text" value={notes.designer} onChange={writeValueTo('designer')} style={{ boxSizing: 'border-box', width: '100%' }}></input></td></tr>
                 <tr><td>Difficulty:</td><td><select value={notes.difficulty} onChange={writeValueTo('difficulty')}>{DifficultyList.map((difficulty,i) => <option key={i} value={i}>{difficulty}</option>)}</select></td></tr>
                 <tr><td>Level:</td><td><select value={notes.lv} onChange={writeValueToLevel}>{Array.from((function*() { for(let i=1;i<=15;i++) { yield `${i}`; yield `${i}+` } })()).map(lv => <option key={lv} value={lv}>{lv}</option>)}</select></td></tr>

@@ -3,6 +3,7 @@ declare namespace API {
     lv: string;
     designer: string;
     lv_base: number;
+    title: string;
     notes: string;
     difficulty: number;
     is_dx: boolean;
@@ -82,6 +83,7 @@ declare namespace API {
 
   type Notes = {
     id: number;
+    title: string;
     lv: string;
     designer: string;
     lv_base: number;
@@ -161,6 +163,7 @@ declare namespace API {
     lv?: string;
     designer?: string;
     lv_base?: number;
+    title?: string;
     notes?: string;
     difficulty?: number;
     is_dx?: boolean;
