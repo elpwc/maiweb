@@ -51,6 +51,8 @@ export default function Maisim(
 
     /** 是否显示特效 */
     doShowEffect = true,
+    /** 是否显示判定 */
+    doShowJudgement = true,
     /** 自动 */
     isAuto,
     /** 自动的模式 */
@@ -466,7 +468,7 @@ export default function Maisim(
           } else if (newNote.status === 2) {
             // move
 
-            if (newNote.isTouching) {
+            if (doShowEffect && newNote.isTouching) {
               JudgeEffectAnimation_Circle(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, note.noteIndex);
             }
 
@@ -545,7 +547,7 @@ export default function Maisim(
               ((currentTime.current - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) *
               (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
-            if (newNote.isTouching) {
+            if (doShowEffect &&newNote.isTouching) {
               JudgeEffectAnimation_Circle(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, note.noteIndex);
             }
 
@@ -609,7 +611,7 @@ export default function Maisim(
 
             newNote.tailRho = ((currentTime.current - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
 
-            if (newNote.isTouching) {
+            if (doShowEffect &&newNote.isTouching) {
               JudgeEffectAnimation_Circle(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, note.noteIndex);
             }
 
@@ -934,7 +936,7 @@ export default function Maisim(
           }
 
           // 判定特效
-          if (note.judgeStatus !== JudgeStatus.Miss) {
+          if (doShowEffect && note.judgeStatus !== JudgeStatus.Miss) {
             if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide) {
               // 特效图像
               JudgeEffectAnimation_Hex_or_Star(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
@@ -948,7 +950,8 @@ export default function Maisim(
           if ((isAuto && autoType === AutoType.Directly) || doEnableKeyboard) {
             note.judgeStatus = JudgeStatus.CriticalPerfect;
           }
-          if (note.judgeStatus !== JudgeStatus.Miss) {
+          // 判定特效
+          if (doShowEffect &&note.judgeStatus !== JudgeStatus.Miss) {
             JudgeEffectAnimation_Touch(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos);
             if (noteIns.hasFirework) {
               fireworkAt(maimaiValues.current, noteIns.pos, ctx_effect_back.current, animationFactory.current);
@@ -967,7 +970,7 @@ export default function Maisim(
           }
 
           // 特效图像
-          if (note.touched) {
+          if (doShowEffect &&note.touched) {
             JudgeEffectAnimation_Hex_or_Star(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
           }
 
@@ -1131,7 +1134,7 @@ export default function Maisim(
         currentSheet.current!.notes[note.noteIndex]!,
         note.isEach,
         note,
-        true,
+        true,doShowJudgement,
         ctx_effect_back.current,
         ctx_effect_over.current,
         tapStyle,

@@ -25,6 +25,8 @@ export interface MaisimProps {
 
   /** 显示特效 */
   doShowEffect?: boolean;
+  /** 显示判定 */
+  doShowJudgement?: boolean;
   /** 自动 */
   isAuto: boolean;
   /** 自动的模式 */
