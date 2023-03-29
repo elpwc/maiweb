@@ -6,6 +6,7 @@ import { findOneUser } from "./services/api/findOneUser";
 import { inviteAuth } from "./services/api/inviteAuth";
 import { loginAuth } from "./services/api/loginAuth";
 import { registerAuth } from "./services/api/registerAuth";
+import { setBannedAuth } from "./services/api/setBannedAuth";
 import { updateUser } from "./services/api/updateUser";
 import { uploadPictureApp } from "./services/api/uploadPictureApp";
 
@@ -45,8 +46,10 @@ function showError(err: any) {
         } else {
             alert(err.data.message || err.statusText);
         }
-    } else {
+    } else if (err.statusText) {
         alert(err.statusText);
+    } else {
+        alert(err);
     }
 }
 function readSavedUser(): null|API.WhoamiDto {
@@ -102,10 +105,13 @@ function SubmitLink(props: { onClick: () => void, children: string|JSX.Element, 
     </Link>
 }
 function FileInputWrapper(props: { children: JSX.Element, pending: boolean }): JSX.Element {
-    return <label className="fileInputWrapper">
-        <span className={props.pending? '': 'appearLikeLink'}>{props.pending? 'uploading...': 'Choose File...'}</span>
-        {props.children}
-    </label>
+    return <>
+        <label className="fileInputWrapper" style={{ display: props.pending? 'none': undefined }}>
+            <span className="appearLikeLink">Choose File...</span>
+            {props.children}
+        </label>
+        { props.pending? <span>uploading...</span>: <></> }
+    </>
 }
 
 function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.Element|JSX.Element[] }): JSX.Element {
@@ -158,9 +164,6 @@ function RegisterModal(): JSX.Element {
         let nameInput = nameInputRef.current!;
         let passwordInput = passwordInputRef.current!;
         let passwordConfirm = passwordConfirmRef.current!;
-        if (pending) {
-            return;
-        }
         if (passwordInput.value != passwordConfirm.value) {
             alert('Password inputs are not consistent.');
             return;
@@ -211,9 +214,6 @@ function LoginModal(): JSX.Element {
     let login = async () => {
         let emailInput = emailInputRef.current!;
         let passwordInput = passwordInputRef.current!;
-        if (pending) {
-            return;
-        }
         setPending(true);
         try {
             let user = await loginAuth({
@@ -299,7 +299,21 @@ function ProfileModal(): JSX.Element {
             argument: userInfo!
         }})
     };
-    // TODO: relations, ban/unban
+    let setBanned = async (banned: boolean) => {
+        setPending(true);
+        try {
+            await setBannedAuth(
+                { id: userInfo!.id, banned },
+                { token: ctx.state.user!.sessionToken }
+            );
+            setUserInfo({ ...userInfo!, banned });
+        } catch(err) {
+            showError(err);
+        } finally {
+            setPending(false);
+        }
+    }
+    // TODO: relations(songs,notes,playrecords)
     return <Modal name={'profile'} title={'Profile'} closeGuard={() => !pending}>
         <div style={{ minWidth: (ctx.state.layout == 'landscape')? '40vw': '80vw', maxHeight: '60vh', overflow: 'auto', margin: '10px 0px' }}>
             {(userInfo == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
@@ -321,7 +335,7 @@ function ProfileModal(): JSX.Element {
                         { (userInfo.banned)?
                             <div style={{ color: 'red' }}>[Banned]</div>: <></> }
                         { ((ctx.state.user!.authLevel == Mod || ctx.state.user!.authLevel == Admin) && (userInfo.id != ctx.state.user!.id) && (userInfo.authLevel == User))?
-                            (userInfo.banned? <Link onClick={() => {}}>Unban</Link>: <Link onClick={() => {}}>Ban</Link>): <></> }
+                            (userInfo.banned? <SubmitLink pending={pending} onClick={() => {setBanned(false);}}>Unban</SubmitLink>: <SubmitLink pending={pending} onClick={() => {setBanned(true);}}>Ban</SubmitLink>): <></> }
                     </div>
                 </div>
                 <div style={{ fontSize: '90%', padding: '5px 10px', margin: '5px 0px', backgroundColor: 'hsl(0,0%,94%)', color: 'hsl(0,0%,35%)' }}>{ userInfo.bio || '(bio is not set)' }</div>
@@ -372,9 +386,6 @@ function ProfileEditModal(): JSX.Element {
         }
     }, [userInfo])
     let handleAvatarChange = async () => {
-        if (pending) {
-            return;
-        }
         setUploadPending(true);
         let file = avatarFileInputRef.current!.files![0];
         try {
@@ -393,9 +404,6 @@ function ProfileEditModal(): JSX.Element {
         setDirty(true);
     }
     let submit = async () => {
-        if (pending) {
-            return;
-        }
         setSubmitPending(true);
         let userId = userInfo!.id;
         let name = nameInputRef.current!.value;
