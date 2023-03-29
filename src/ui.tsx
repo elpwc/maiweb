@@ -1,14 +1,18 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import appconfig from "./appconfig";
+import { createNotes } from "./services/api/createNotes";
 import { createSong } from "./services/api/createSong";
+import { findAllSong } from "./services/api/findAllSong";
 import { findAllUser } from "./services/api/findAllUser";
+import { findOneNotes } from "./services/api/findOneNotes";
 import { findOneSong } from "./services/api/findOneSong";
 import { findOneUser } from "./services/api/findOneUser";
 import { inviteAuth } from "./services/api/inviteAuth";
 import { loginAuth } from "./services/api/loginAuth";
 import { registerAuth } from "./services/api/registerAuth";
 import { setBannedAuth } from "./services/api/setBannedAuth";
+import { updateNotes } from "./services/api/updateNotes";
 import { updateSong } from "./services/api/updateSong";
 import { updateUser } from "./services/api/updateUser";
 import { uploadMusicApp } from "./services/api/uploadMusicApp";
@@ -18,7 +22,8 @@ const User = 0;
 const Mod = 5;
 const Admin = 10;
 
-const GenreList = ['pops & anime', 'niconico & vocaloid', 'touhou project', 'maimai'];
+const GenreList = ['POPS＆アニメ', 'niconico＆ボーカロイド', '東方Project', 'ゲーム＆バラエティ', 'maimai', 'オンゲキ＆CHUNITHM'];
+const DifficultyList = ['EASY','BASIC','ADVANCED','EXPERT','MASTER','Re:MASTER'];
 
 interface State {
     layout: 'landscape'|'portrait',
@@ -93,6 +98,21 @@ function formCloseGuard(pending: boolean, dirty: boolean): () => boolean {
         }
         return true;
     }
+}
+function valueWriter<T>(obj: T|null, setObj: (newState: T|null) => void, setDirty: (dirty: boolean) => void) {
+    return (key: keyof T) => (ev: React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLSelectElement>|React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (typeof obj![key] == 'number') {
+            let value = Number(ev.target.value);
+            setObj({ ...obj!, [key]: value });
+        } else if (typeof obj![key] == 'boolean') {
+            let value = (ev.target as HTMLInputElement).checked;
+            setObj({ ...obj!, [key]: value });
+        } else if (typeof obj![key] == 'string') {
+            let value = ev.target.value;
+            setObj({ ...obj!, [key]: value });
+        }
+        setDirty(true);
+    };
 }
 
 function Link(props: { onClick: () => void, children: string|JSX.Element, style?: React.CSSProperties, enabled?: boolean }): JSX.Element {
@@ -359,7 +379,13 @@ function ProfileModal(): JSX.Element {
                     </div>
                     <div style={{ marginBottom: '5px' }}>
                         <div><b>◆ Notes</b></div>
-                        <div>...</div>
+                        <div>{ userInfo.uploadedNotes.map((notes_) => {
+                            let notes = notes_ as any as API.Notes;
+                            let title = `${notes.id}`;
+                            return <div key={notes.id}>
+                                { (userInfo!.id == ctx.state.user!.id)? <LinkToModal name="notes_edit" argument={notes.id}>{title}</LinkToModal>: <span>{title}</span> }
+                            </div>
+                        }) }</div>
                     </div>
                     <div style={{ marginBottom: '5px' }}>
                         <div><b>◆ Records</b></div>
@@ -484,10 +510,7 @@ function SongEditModal(): JSX.Element {
                 (async () => {
                     setLoadPending(true);
                     try {
-                        let song = await findOneSong(
-                            { id: String(songId) },
-                            { token: ctx.state.user!.sessionToken }
-                        );
+                        let song = await findOneSong({ id: String(songId) }, { token: ctx.state.user!.sessionToken });
                         setId(songId);
                         setSong({ name: song.name, musicFileName: song.musicFileName, iconFileName: song.iconFileName, artist: song.artist, copyright: song.copyright, genre: song.genre, version: song.version, is_private: song.is_private });
                         setDirty(false);
@@ -548,19 +571,7 @@ function SongEditModal(): JSX.Element {
             setSubmitPending(false);
         }
     };
-    let writeValueTo = (key: keyof API.CreateSongDto) => (ev: React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLSelectElement>) => {
-        if (typeof song![key] == 'number') {
-            let value = Number(ev.target.value);
-            setSong({ ...song!, [key]: value });
-        } else if (typeof song![key] == 'boolean') {
-            let value = (ev.target as HTMLInputElement).checked;
-            setSong({ ...song!, [key]: value });
-        } else if (typeof song![key] == 'string') {
-            let value = ev.target.value;
-            setSong({ ...song!, [key]: value });
-        }
-        setDirty(true);
-    };
+    let writeValueTo = valueWriter(song, setSong, setDirty);
     return <Modal name="song_edit" title={(id == null)? 'Add New Song': 'Edit Song'} closeGuard={formCloseGuard(pending, dirty)}>
         { (song == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
         <div>
@@ -586,9 +597,89 @@ function SongEditModal(): JSX.Element {
     </Modal>
 }
 function NotesEditModal(): JSX.Element {
-    // TODO
-    return <Modal name="notes_edit" title="Add New Notes">
-        <h1>Notes Info</h1>
+    let ctx = useContext(Context);
+    let [loadPending, setLoadPending] = useState(false);
+    let [submitPending, setSubmitPending] = useState(false);
+    let pending = loadPending || submitPending;
+    let [dirty, setDirty] = useState(false);
+    let [id, setId] = useState<null|number>(null);
+    let [notes, setNotes] = useState<null|API.CreateNotesDto>(null);
+    let [allSongs, setAllSongs] = useState<API.Song[]>([]);
+    useEffect(() => {
+        if (ctx.state.currentModal?.name == 'notes_edit') {
+            let notesId: undefined|number = ctx.state.currentModal.argument;
+            (async () => {
+                setLoadPending(true);
+                if (notesId != undefined) {
+                    try {
+                        let songs = await findAllSong({}, { token: ctx.state.user!.sessionToken });
+                        let notes = await findOneNotes({ id: String(notesId) }, { token: ctx.state.user!.sessionToken });
+                        setAllSongs(songs);
+                        setId(notesId);
+                        setNotes({ songId: notes.song.id, designer: notes.designer, difficulty: notes.difficulty, lv: notes.lv, lv_base: notes.lv_base, is_dx: notes.is_dx, is_official: notes.is_official, is_private: notes.is_private, utage_genre: notes.utage_genre, notes: notes.notes });
+                        setDirty(false);
+                    } catch(err) {
+                        showError(err);
+                    } finally {
+                        setLoadPending(false);
+                    }
+                } else {
+                    try {
+                        let songs = await findAllSong({}, { token: ctx.state.user!.sessionToken });
+                        setAllSongs(songs);
+                        setId(null);
+                        setNotes({ songId: -1, designer: '', difficulty: 0, lv: '1', lv_base: 1, is_dx: true, is_official: true, is_private: false, utage_genre: 0, notes: '' });
+                        setDirty(false);
+                    } catch(err) {
+                        showError(err);
+                    } finally {
+                        setLoadPending(false);
+                    }
+                }
+            })();
+        } else {
+            setId(null);
+            setNotes(null);
+        }
+    }, [ctx.state.currentModal]);
+    let submit = async () => {
+        setSubmitPending(true);
+        try {
+            if (id == null) {
+                await createNotes(notes!, { token: ctx.state.user!.sessionToken });
+            } else {
+                await updateNotes({ id: String(id) }, notes!, { token: ctx.state.user!.sessionToken });
+            }
+            ctx.setState({ ...ctx.state, currentModal: {name:'profile',argument:ctx.state.user!.id} });
+        } catch(err) {
+            showError(err);
+        } finally {
+            setSubmitPending(false);
+        }
+    };
+    let writeValueTo = valueWriter(notes, setNotes, setDirty);
+    let writeValueToLevel = (ev: React.ChangeEvent<HTMLSelectElement>) => {
+        let lv = ev.target.value;
+        let lv_base = Number(lv.replace('+', ''));
+        setNotes({ ...notes!, lv, lv_base });
+    };
+    return <Modal name="notes_edit" title={(id == null)? 'Add New Notes': 'Edit Notes'} closeGuard={formCloseGuard(pending, dirty)}>
+        { (notes == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
+        <div>
+            <table style={{ marginTop: '10px' }}><tbody>
+                <tr><td>Song:</td><td><select value={notes.songId} onChange={writeValueTo('songId')} style={{ maxWidth: (ctx.state.layout == 'landscape')? '30vw': '50vw' }}>{ [<option key={-1} value={-1}>--- Select Song ---</option>, ...allSongs.map(song => <option key={song.id} value={song.id}>{song.name}</option>)] }</select></td></tr>
+                <tr><td>DX:</td><td><input type="checkbox" checked={notes.is_dx} onChange={writeValueTo('is_dx')}></input></td></tr>
+                <tr><td>Designer:</td><td><input type="text" value={notes.designer} onChange={writeValueTo('designer')} style={{ boxSizing: 'border-box', width: '100%' }}></input></td></tr>
+                <tr><td>Difficulty:</td><td><select value={notes.difficulty} onChange={writeValueTo('difficulty')}>{DifficultyList.map((difficulty,i) => <option key={i} value={i}>{difficulty}</option>)}</select></td></tr>
+                <tr><td>Level:</td><td><select value={notes.lv} onChange={writeValueToLevel}>{Array.from((function*() { for(let i=1;i<=15;i++) { yield `${i}`; yield `${i}+` } })()).map(lv => <option key={lv} value={lv}>{lv}</option>)}</select></td></tr>
+                <tr><td>Notes:</td><td><textarea value={notes.notes} onChange={writeValueTo('notes')} style={{ boxSizing: 'border-box', width: '100%', resize: 'none' }}></textarea></td></tr>
+                <tr><td>Official:</td><td><input type="checkbox" checked={notes.is_official} onChange={writeValueTo('is_official')}></input></td></tr>
+                <tr><td>Private:</td><td><input type="checkbox" checked={notes.is_private} onChange={writeValueTo('is_private')}></input></td></tr>
+            </tbody></table>
+            <div style={{ textAlign: 'center', padding: '5px 0px' }}>
+                <SubmitLink pending={submitPending} onClick={() => {submit()}}>{(id == null)? 'Submit': 'Apply Changes'}</SubmitLink>
+            </div>
+        </div>}
     </Modal>
 }
 function InviteModal(): JSX.Element {
