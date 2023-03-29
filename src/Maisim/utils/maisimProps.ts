@@ -4,18 +4,16 @@ import { BackgroundType } from './types/backgroundType';
 import { FlipMode } from './types/flipMode';
 import { ScoreCalculationType } from './types/judgeStatus';
 import { TapStyles, RegularStyles, SlideColor } from './types/noteStyles';
-import { Sheet, SheetSecondaryProps } from './sheet';
+import {  SheetSecondaryProps } from './sheet';
 
 export interface MaisimProps {
   /** 唯一标识，当有多个Maisim时，请为每个Maisim分配不同的id */
   id: string;
 
+  /** 宽度 */
   w: number;
+  /** 高度 */
   h: number;
-
-  /** 以下两个是为了计算按下的偏移 */
-  t: number;
-  l: number;
 
   tapStyle?: TapStyles;
   holdStyle?: RegularStyles;

@@ -1,6 +1,5 @@
-import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import React, {  useEffect, useRef, useState } from 'react';
 import './index.css';
-
 import { TouchArea } from './utils/touchArea';
 import { drawNote, updateIcons } from './drawUtils/drawNotes';
 import { Area, AreaUtils } from './areas';
@@ -15,7 +14,7 @@ import testsong_taiyoukei from './resource/sound/track/太陽系デスコ.mp3';
 import testbgi from './resource/maimai_img/ui/UI_Chara_105810.png';
 import { uiIcon } from './resourceReaders/uiIconReader';
 import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star, JudgeEffectAnimation_Touch } from './drawUtils/judgeEffectAnimations';
-import { calculate_speed_related_params_for_notes, read_inote } from './maiReader/inoteReader';
+import { calculate_speed_related_params_for_notes } from './maiReader/inoteReader';
 import { VirtualTime } from './drawUtils/virtualTime';
 import { fireworkAt } from './drawUtils/firework';
 import { AutoType } from './utils/types/autoType';
@@ -41,10 +40,6 @@ export default function Maisim(
     id = '',
     w,
     h,
-
-    /** 以下两个是为了计算按下的偏移 */
-    t,
-    l,
 
     tapStyle = TapStyles.Concise,
     holdStyle = RegularStyles.Concise,
@@ -1461,7 +1456,7 @@ export default function Maisim(
 
   //设置事件处理程序
   function initEvent() {
-    const el = document.getElementsByClassName('canvasEvent')[0];
+    const el = document.getElementsByClassName('canvasEvent' + id)[0];
     el.addEventListener('mousedown', onMouseDown, false);
     el.addEventListener('mouseup', onMouseUp, false);
     el.addEventListener('touchstart', onTouchStart, false);
@@ -1597,13 +1592,7 @@ export default function Maisim(
   }, []);
 
   return (
-    <div
-      className="maisim"
-      style={{
-        left: `${l}px`,
-        top: `${t}px`,
-      }}
-    >
+    <div className="maisim" style={{}}>
       <div className="canvasContainer">
         <div className="bottomContainer" style={{ height: canvasH, width: canvasW }}>
           {/** 背景图 */}

@@ -35,16 +35,15 @@ function App() {
     <div className="App">
       <div className="mainContainer">
         <div>
+          <button>123123</button>
           <Maisim
             id="1"
             gameState={gameState}
             setGameState={e => {
               setGameState(e);
             }}
-            w={600}
-            h={600}
-            l={0}
-            t={0}
+            w={400}
+            h={400}
             tapStyle={TapStyles.Concise}
             holdStyle={RegularStyles.Concise}
             slideStyle={RegularStyles.Concise}
@@ -68,19 +67,15 @@ function App() {
             }}
             lightStatus={[]}
           />
-        </div>
-        <div>
-
-        <Maisim
+          <button>1232323123</button>
+          <Maisim
             id="2"
             gameState={gameState2}
             setGameState={e => {
               setGameState2(e);
             }}
-            w={400}
-            h={400}
-            l={800}
-            t={0}
+            w={600}
+            h={600}
             tapStyle={TapStyles.Concise}
             holdStyle={RegularStyles.Concise}
             slideStyle={RegularStyles.Concise}
@@ -105,7 +100,7 @@ function App() {
             lightStatus={[]}
           />
         </div>
-
+        <div></div>
       </div>
     </div>
   );

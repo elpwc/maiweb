@@ -1,14 +1,12 @@
 .maisim {
-  position: absolute;
+  position: relative;
+}
+
+.canvasContainer {
+  position: relative;
 }
 
 .canvasContainer > canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.canvasContainer > div {
   position: absolute;
   top: 0;
   left: 0;
@@ -25,6 +23,9 @@ canvas {
 }
 
 .bottomContainer {
+  position: relative;
+  top: 0;
+  left: 0;
   z-index: -100;
   background-color: black;
 }
@@ -64,6 +65,9 @@ canvas {
 }
 
 .uiContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
   z-index: 28;
 }
 
