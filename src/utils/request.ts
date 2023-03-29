@@ -45,6 +45,9 @@ service.interceptors.response.use(
     return res;
   },
   err => {
+    if (!(err.response)) {
+      throw err;
+    }
     const errResponse = err.response;
     console.log('Oops! ', errResponse);
 

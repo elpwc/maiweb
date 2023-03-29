@@ -144,7 +144,9 @@ declare namespace API {
 
   type Song = {
     id: number;
+    musicFileName: string;
     name: string;
+    iconFileName: string;
     artist: string;
     copyright: string;
     genre: number;

@@ -1,18 +1,24 @@
-import { createContext, useState, useContext, useEffect, useRef } from "react";
+import React, { createContext, useState, useContext, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import appconfig from "./appconfig";
+import { createSong } from "./services/api/createSong";
 import { findAllUser } from "./services/api/findAllUser";
+import { findOneSong } from "./services/api/findOneSong";
 import { findOneUser } from "./services/api/findOneUser";
 import { inviteAuth } from "./services/api/inviteAuth";
 import { loginAuth } from "./services/api/loginAuth";
 import { registerAuth } from "./services/api/registerAuth";
 import { setBannedAuth } from "./services/api/setBannedAuth";
+import { updateSong } from "./services/api/updateSong";
 import { updateUser } from "./services/api/updateUser";
+import { uploadMusicApp } from "./services/api/uploadMusicApp";
 import { uploadPictureApp } from "./services/api/uploadPictureApp";
 
 const User = 0;
 const Mod = 5;
 const Admin = 10;
+
+const GenreList = ['pops & anime', 'niconico & vocaloid', 'touhou project', 'maimai'];
 
 interface State {
     layout: 'landscape'|'portrait',
@@ -40,7 +46,9 @@ const Context = createContext<{
 }>(null as any);
 
 function showError(err: any) {
-    if (err.data) {
+    if (err.message) {
+        alert(err.message)
+    } else if (err.data) {
         if (err.data.message instanceof Array) {
             alert(err.data.message[0]);
         } else {
@@ -342,7 +350,12 @@ function ProfileModal(): JSX.Element {
                 <div>
                     <div style={{ marginBottom: '5px' }}>
                         <div><b>◆ Songs</b></div>
-                        <div>...</div>
+                        <div>{ userInfo.uploadedSongs.map((song_) => {
+                            let song = song_ as any as API.Song;
+                            return <div key={song.id}>
+                                { (userInfo!.id == ctx.state.user!.id)? <LinkToModal name="song_edit" argument={song.id}>{song.name}</LinkToModal>: <span>{song.name}</span> }
+                            </div>
+                        }) }</div>
                     </div>
                     <div style={{ marginBottom: '5px' }}>
                         <div><b>◆ Notes</b></div>
@@ -455,9 +468,121 @@ function ProfileEditModal(): JSX.Element {
     </Modal>
 }
 function SongEditModal(): JSX.Element {
-    // TODO
-    return <Modal name="song_edit" title="Add New Song">
-        <h1>Song Info</h1>
+    let ctx = useContext(Context);
+    let [loadPending, setLoadPending] = useState(false);
+    let [musicUploadPending, setMusicUploadPending] = useState(false);
+    let [iconUploadPending, setIconUploadPending] = useState(false);
+    let [submitPending, setSubmitPending] = useState(false);
+    let pending = loadPending || musicUploadPending || iconUploadPending || submitPending;
+    let [dirty, setDirty] = useState(false);
+    let [id, setId] = useState<null|number>(null);
+    let [song, setSong] = useState<null|API.CreateSongDto>(null);
+    useEffect(() => {
+        if (ctx.state.currentModal?.name == 'song_edit') {
+            let songId: undefined|number = ctx.state.currentModal.argument;
+            if (songId != undefined) {
+                (async () => {
+                    setLoadPending(true);
+                    try {
+                        let song = await findOneSong(
+                            { id: String(songId) },
+                            { token: ctx.state.user!.sessionToken }
+                        );
+                        setId(songId);
+                        setSong({ name: song.name, musicFileName: song.musicFileName, iconFileName: song.iconFileName, artist: song.artist, copyright: song.copyright, genre: song.genre, version: song.version, is_private: song.is_private });
+                        setDirty(false);
+                    } catch(err) {
+                        showError(err);
+                    } finally {
+                        setLoadPending(false);
+                    }
+                })();
+            } else {
+                setId(null);
+                setSong({ name: '', musicFileName: '', iconFileName: '', artist: '', copyright: '', genre: 0, version: 0, is_private: false });
+                setDirty(false);
+            }
+        } else {
+            setId(null);
+            setSong(null);
+        }
+    }, [ctx.state.currentModal]);
+    let changeMusic = async (ev: React.ChangeEvent<HTMLInputElement>) => {
+        setMusicUploadPending(true);
+        let file = ev.target.files![0]!;
+        try {
+            let musicFileName = await uploadMusicApp({}, file, { token: ctx.state.user!.sessionToken });
+            setSong({ ...song!, musicFileName });
+            setDirty(true);
+        } catch(err) {
+            showError(err);
+        } finally {
+            setMusicUploadPending(false);
+        }
+    };
+    let changeIcon = async (ev: React.ChangeEvent<HTMLInputElement>) => {
+        setIconUploadPending(true);
+        let file = ev.target.files![0]!;
+        try {
+            let iconFileName = await uploadPictureApp({}, file, { token: ctx.state.user!.sessionToken });
+            setSong({ ...song!, iconFileName });
+            setDirty(true);
+        } catch(err) {
+            showError(err);
+        } finally {
+            setIconUploadPending(false);
+        }
+    };
+    let submit = async () => {
+        setSubmitPending(true);
+        try {
+            if (id == null) {
+                await createSong(song!, { token: ctx.state.user!.sessionToken });
+            } else {
+                await updateSong({ id: String(id) }, song!, { token: ctx.state.user!.sessionToken });
+            }
+            ctx.setState({ ...ctx.state, currentModal: {name:'profile',argument:ctx.state.user!.id} });
+        } catch(err) {
+            showError(err);
+        } finally {
+            setSubmitPending(false);
+        }
+    };
+    let writeValueTo = (key: keyof API.CreateSongDto) => (ev: React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLSelectElement>) => {
+        if (typeof song![key] == 'number') {
+            let value = Number(ev.target.value);
+            setSong({ ...song!, [key]: value });
+        } else if (typeof song![key] == 'boolean') {
+            let value = (ev.target as HTMLInputElement).checked;
+            setSong({ ...song!, [key]: value });
+        } else if (typeof song![key] == 'string') {
+            let value = ev.target.value;
+            setSong({ ...song!, [key]: value });
+        }
+        setDirty(true);
+    };
+    return <Modal name="song_edit" title={(id == null)? 'Add New Song': 'Edit Song'} closeGuard={formCloseGuard(pending, dirty)}>
+        { (song == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
+        <div>
+            <table style={{ marginTop: '10px' }}><tbody>
+                <tr><td>Music:</td><td>
+                    { song.musicFileName? <div><audio src={`${appconfig.apiBaseURL}/api/v1/uploads/${song.musicFileName}`} controls={true} /></div>: <></> }
+                    <FileInputWrapper pending={musicUploadPending}><input type="file" accept=".mp3" onChange={changeMusic}></input></FileInputWrapper>
+                </td></tr>
+                <tr><td>Icon:</td><td>
+                    { song.iconFileName? <div><img src={`${appconfig.apiBaseURL}/api/v1/uploads/${song.iconFileName}`} style={{ width: '32px', height: '32px' }} /></div>: <></> }
+                    <FileInputWrapper pending={iconUploadPending}><input type="file" accept=".png,.gif,.jpg" onChange={changeIcon}></input></FileInputWrapper>
+                </td></tr>
+                <tr><td>Name:</td><td><input type="text" value={song.name} onChange={writeValueTo('name')} style={{ boxSizing: 'border-box', width: '100%' }}></input></td></tr>
+                <tr><td>Artist:</td><td><input type="text" value={song.artist} onChange={writeValueTo('artist')} style={{ boxSizing: 'border-box', width: '100%' }}></input></td></tr>
+                <tr><td>Copyright:</td><td><input type="text" value={song.copyright} onChange={writeValueTo('copyright')} style={{ boxSizing: 'border-box', width: '100%' }}></input></td></tr>
+                <tr><td>Genre:</td><td><select value={song.genre} onChange={writeValueTo('genre')}>{GenreList.map((genre,i) => <option key={i} value={i}>{genre}</option>)}</select></td></tr>
+                <tr><td>Private:</td><td><input type="checkbox" checked={song.is_private} onChange={writeValueTo('is_private')}></input></td></tr>
+            </tbody></table>
+            <div style={{ textAlign: 'center', padding: '5px 0px' }}>
+                <SubmitLink pending={submitPending} onClick={() => {submit()}}>{(id == null)? 'Submit': 'Apply Changes'}</SubmitLink>
+            </div>
+        </div>}
     </Modal>
 }
 function NotesEditModal(): JSX.Element {
