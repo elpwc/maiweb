@@ -205,8 +205,7 @@ function MenuModal(): JSX.Element {
     ];
     return <Modal name={'menu'} title={'Menu'}>
         <div>{ items.map(([name,title,admin]) =>
-            (admin && ctx.state.user!.authLevel != Admin)? <></>:
-            <LinkToModal name={name} key={name}>
+            <LinkToModal name={name} key={name} style={{ display: (admin && ctx.state.user?.authLevel != Admin)? 'none': 'block' }} >
                 <div className="menuItem" style={{ minWidth: (ctx.state.layout == 'landscape')? '30vw': '60vw', textAlign: 'center', padding: '8px 0px', margin: '8px 0px' }}>
                     {title}
                 </div>
