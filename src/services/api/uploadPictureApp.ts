@@ -24,7 +24,7 @@ export async function uploadPictureApp(body: {}, file?: File, options?: { [key: 
   return request<string>('/upload-picture', {
     method: 'POST',
     data: formData,
-    // requestType: 'form',
+    requestType: 'form',
     ...(options || {}),
   });
 }

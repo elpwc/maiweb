@@ -82,6 +82,7 @@ interface RequestOptions {
   paramsSerializer?: (params: object) => string;
   timeout?: number;
   timeoutMessage?: string;
+  requestType?: 'form';
   token?: string;
 }
 
@@ -103,7 +104,7 @@ const request = <T = any>(url: string, options?: RequestOptions): Promise<T> => 
   if (options?.token) {
     headers['X-Auth-Token'] = options.token;
   }
-  if (options?.data && options.data instanceof FormData) {
+  if (options?.data && (options.data instanceof FormData || options.requestType == 'form')) {
     headers['Content-Type'] = 'multipart/form-data';
   }
   return new Promise((resolve: (value: T) => void, reject: (error: any) => void) => {
