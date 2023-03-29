@@ -18,9 +18,6 @@ function App() {
   const [showEditor, setshowEditor]: [boolean, any] = useState(false);
   const [currentnotes, setcurrentnotes]: [string, any] = useState('');
 
-  const beginRef = useRef(null);
-  const selectRef = useRef(null);
-
   useEffect(() => {
     window.addEventListener('resize', e => {
       setwinHeight((e.target as Window).innerHeight);
@@ -47,8 +44,8 @@ function App() {
             holdStyle={RegularStyles.Classic}
             slideStyle={RegularStyles.Classic}
             slideColor={SlideColor.Pink}
-            doShowEffect={false}
-            doShowJudgement={false}
+            doShowEffect={true}
+            doShowJudgement={true}
             isAuto={true}
             doShowKeys={true}
             centerText={0}
@@ -67,11 +64,8 @@ function App() {
             }}
             lightStatus={[]}
           />
-
         </div>
-        <div>
-
-        </div>
+        <div></div>
       </div>
     </div>
   );

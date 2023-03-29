@@ -2,8 +2,8 @@ import { lineLen } from './drawUtils/_base';
 import { cos, sin, π } from './utils/math';
 
 export default class MaimaiValues {
-  constructor(canvasWidth: number = 800, canvasHeight: number = 800) {
-    this.update(canvasWidth, canvasHeight);
+  constructor(canvasWidth: number = 800, canvasHeight: number = 800, doShowKeys: boolean = true) {
+    this.update(canvasWidth, canvasHeight, doShowKeys);
   }
 
   canvasWidth = 800;
@@ -20,7 +20,8 @@ export default class MaimaiValues {
   maimaiBR = this.maimaiScreenR * 0.418;
   maimaiER = this.maimaiScreenR * 0.574;
 
-  touchMaxDistance = this.maimaiTapR * 0.6;
+  /** TOUCH叶片距离中心的起始距离 */
+  touchMaxDistance = this.maimaiTapR * 0.4;
 
   /** AD区的TOUCH的位置 */
   maimaiADTouchR = this.maimaiJudgeLineR * 0.875;
@@ -33,7 +34,7 @@ export default class MaimaiValues {
   fireworkInnerCircleR: number = this.maimaiJudgeLineR * 0.4138;
 
   // 轨迹
-  trackItemGap: number = (25 * this.maimaiR) / 350;
+  trackItemGap: number = (28 * this.maimaiScreenR) / 350;
   trackItemWidth: number = this.maimaiTapR * 1.5;
   trackItemHeight: number = this.maimaiTapR * 2;
 
@@ -99,24 +100,24 @@ export default class MaimaiValues {
   // pp右圆圆心角度
   qpRightCircleCenterAngle = 0;
 
-  update = (w: number, h: number) => {
+  update = (w: number, h: number, doShowKeys: boolean = true) => {
     this.canvasWidth = w;
     this.canvasHeight = h;
     this.center = [this.canvasWidth / 2, this.canvasHeight / 2];
     this.maimaiR = this.canvasWidth / 2;
-    this.maimaiScreenR = this.maimaiR * 0.78;
+    this.maimaiScreenR = doShowKeys ? this.maimaiR * 0.78 : this.maimaiR;
     this.maimaiJudgeLineR = this.maimaiScreenR * 0.885;
     this.maimaiSummonLineR = this.maimaiScreenR * 0.22;
     this.maimaiTapR = (this.maimaiScreenR / 9) * 0.8;
     this.maimaiBR = this.maimaiScreenR * 0.418;
     this.maimaiER = this.maimaiScreenR * 0.574;
-    this.touchMaxDistance = this.maimaiTapR * 0.6;
+    this.touchMaxDistance = this.maimaiTapR * 0.5;
 
     this.maimaiADTouchR = this.maimaiJudgeLineR * 0.875;
 
     this.fireworkInnerCircleR = this.maimaiJudgeLineR * 0.4138;
 
-    this.trackItemGap = (25 * this.maimaiR) / 350;
+    this.trackItemGap = (31 * this.maimaiScreenR) / 350;
     this.trackItemWidth = this.maimaiTapR * 1.5;
     this.trackItemHeight = this.maimaiTapR * 2;
 

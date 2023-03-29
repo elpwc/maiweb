@@ -186,8 +186,8 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
 
 /**
  * 绘制一个Note
- * @param animationFactory 
- * @param values 
+ * @param animationFactory
+ * @param values
  * @param ctx 绘制Note的图层
  * @param ctx_slideTrack 绘制SLIDE TRACK的图层
  * @param note Note
@@ -195,13 +195,13 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
  * @param props 当前的Note状态
  * @param doDrawEachLine 是否绘制Each黄线
  * @param doShowJudgement 是否显示判定
- * @param effectBackCtx 
- * @param effectOverCtx 
- * @param tapStyle 
- * @param holdStyle 
- * @param slideStyle 
- * @param slideColor 
- * @param drawFastLast 
+ * @param effectBackCtx
+ * @param effectOverCtx
+ * @param tapStyle
+ * @param holdStyle
+ * @param slideStyle
+ * @param slideColor
+ * @param drawFastLast
  */
 export const drawNote = (
   animationFactory: AnimationUtils,
@@ -477,8 +477,8 @@ export const drawNote = (
     const drawTouchImage = (image: HTMLImageElement, imageCenter: HTMLImageElement) => {
       const centerx = x,
         centery = y;
-      let k = (0.5 * values.maimaiR) / 350,
-        centerk = (0.6 * values.maimaiR) / 350;
+      let k = (0.65 * values.maimaiScreenR) / 350,
+        centerk = (0.8 * values.maimaiScreenR) / 350;
 
       // 多重TOUCH线
       if ((note.innerTouchOverlap ?? 0) > 0) {
@@ -508,7 +508,7 @@ export const drawNote = (
           ctx,
           image,
           x - (image.width * k) / 2,
-          y + values.touchMaxDistance - (6 * values.maimaiR) / 350 - props.rho,
+          y + values.touchMaxDistance - (6.5 * values.maimaiScreenR) / 350 - props.rho,
           image.width * k,
           image.height * k,
           x,
@@ -517,7 +517,8 @@ export const drawNote = (
           props.radius / values.maimaiTapR
         );
       }
-      drawRotationImage(ctx, imageCenter, x - (imageCenter.width * centerk) / 2, y - (imageCenter.height * centerk) / 2, imageCenter.width * centerk, imageCenter.height * centerk);
+      // 中心点
+      drawRotationImage(ctx, imageCenter, x - (imageCenter.width * k) / 2, y - (imageCenter.height * k) / 2, imageCenter.width * k, imageCenter.height * k);
       // if (props.touched) {
       // 	drawRotationImage(ctx, NoteIcon.touch_just, x - (NoteIcon.touch_just.width ) / 2, y - (NoteIcon.touch_just.height ) / 2, NoteIcon.touch_just.width , NoteIcon.touch_just.height );
       // }
@@ -527,8 +528,8 @@ export const drawNote = (
       const centerx = x,
         centery = y;
 
-      let k = (0.5 * values.maimaiR) / 350,
-        centerk = (0.6 * values.maimaiR) / 350;
+      let k = (0.65 * values.maimaiScreenR) / 350,
+        centerk = (0.8 * values.maimaiScreenR) / 350;
 
       const touchHoldPieces = is_miss
         ? [NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss]
@@ -557,7 +558,7 @@ export const drawNote = (
             ctx,
             touchHoldPieces[i],
             x - (touchHoldPieces[i].width * k) / 2,
-            y + values.touchMaxDistance - (6 * values.maimaiR) / 350 - props.rho,
+            y + values.touchMaxDistance - (6.5 * values.maimaiScreenR) / 350 - props.rho,
             touchHoldPieces[i].width * k,
             touchHoldPieces[i].height * k,
             x,
@@ -581,7 +582,7 @@ export const drawNote = (
               ctx,
               touchHoldPieces[i],
               x - (touchHoldPieces[i].width * k) / 2,
-              y + values.touchMaxDistance - (6 * values.maimaiR) / 350 - props.rho,
+              y + values.touchMaxDistance - (6.5 * values.maimaiScreenR) / 350 - props.rho,
               touchHoldPieces[i].width * k,
               touchHoldPieces[i].height * k,
               x,
@@ -604,7 +605,7 @@ export const drawNote = (
               ctx,
               touchHoldPieces[i],
               x - (touchHoldPieces[i].width * k) / 2,
-              y + values.touchMaxDistance - (6 * values.maimaiR) / 350 - props.rho,
+              y + values.touchMaxDistance - (6.5 * values.maimaiScreenR) / 350 - props.rho,
               touchHoldPieces[i].width * k,
               touchHoldPieces[i].height * k,
               x,
@@ -1280,7 +1281,7 @@ export const drawNote = (
     }
   } else if (props.status === -3) {
     // 显示判定
-    if(doShowJudgement){
+    if (doShowJudgement) {
       const drawJudgeImage = (ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, w: number, h: number, centerX: number, centerY: number, r?: number) => {
         const key = 'judge' + note.serial;
         const total = values.judgeResultShowTime + values.judgeResultFadeOutDuration;
@@ -1304,18 +1305,18 @@ export const drawNote = (
           drawRotationImage(ctx, image, x + w * ((1 - scale) / 2), y + h * ((1 - scale) / 2), w * scale, h * scale, centerX, centerY, r, alpha);
         });
       };
-  
+
       let θ = 0,
         // Note所在的坐标
         x = 0,
         y = 0;
-  
+
       let judgeImage: HTMLImageElement = JudgeIcon.UI_GAM_Break;
       let fastlateImage: HTMLImageElement;
-  
+
       if (note.type === NoteType.SlideTrack) {
         // SLIDE TRACK的环形判定显示
-  
+
         // 拿到SLIDE TRACK的结束点
         let lastLine: SlideLine;
         if (note.isChain) {
@@ -1323,11 +1324,11 @@ export const drawNote = (
         } else {
           lastLine = note;
         }
-  
+
         let lastLineDirection = note.slideLineDirectionParams?.direction;
         let lastLineEndPos = Number(lastLine.endPos);
         let lastLineStartPos = Number(lastLine.pos);
-  
+
         switch (note.slideLineDirectionParams?.image) {
           case 0:
             // 直线
@@ -1410,7 +1411,7 @@ export const drawNote = (
             break;
           case 1:
             // 弯曲
-  
+
             switch (lastLineDirection) {
               case 0:
                 //向左
@@ -1488,7 +1489,7 @@ export const drawNote = (
                 break;
             }
             break;
-  
+
           case 2:
             // 扇形
             switch (lastLineDirection) {
@@ -1571,15 +1572,15 @@ export const drawNote = (
           default:
             break;
         }
-  
+
         const k = 2.5,
           wifiK = 1.5;
         const judgeIconHeight = values.maimaiTapR * 1 * k;
         const judgeIconWidth = ((values.maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
-  
+
         x = values.APositions[lastLineEndPos - 1][0]; // values.center[0] - judgeIconWidth / 2;
         y = values.APositions[lastLineEndPos - 1][1]; //values.center[1] - (values.maimaiJudgeLineR - values.judgeDistance + judgeIconHeight / 2);
-  
+
         let angle = note.slideLineDirectionParams?.angle;
         if (lastLine.slideType === 'w') {
           if (lastLineDirection === 1) {
@@ -1598,7 +1599,7 @@ export const drawNote = (
         }
       } else {
         // 一般的Note的判定显示
-  
+
         switch (props.judgeStatus) {
           case JudgeStatus.CriticalPerfect:
             judgeImage = note.isBreak ? JudgeIcon.UI_GAM_Critical_Break : JudgeIcon.UI_GAM_Critical;
@@ -1616,11 +1617,11 @@ export const drawNote = (
             judgeImage = JudgeIcon.UI_GAM_Miss;
             break;
         }
-  
+
         const k = 1.5;
         const judgeIconHeight = values.maimaiTapR * 1 * k;
         const judgeIconWidth = ((values.maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
-  
+
         const firstWord = note.pos.substring(0, 1);
         if (!isNaN(Number(firstWord))) {
           // 数字开头的位置
@@ -1669,20 +1670,20 @@ export const drawNote = (
               break;
           }
         }
-  
+
         drawJudgeImage(effectOverCtx, judgeImage, x, y, judgeIconWidth, judgeIconHeight, values.center[0], values.center[1], -22.5 + Number(note.pos) * 45);
-  
+
         if (drawFastLast && props.judgeStatus !== JudgeStatus.CriticalPerfect && props.judgeStatus !== JudgeStatus.Miss) {
           if (props.judgeTime === JudgeTimeStatus.Fast) {
             fastlateImage = JudgeIcon.UI_GAM_Fast;
           } else {
             fastlateImage = JudgeIcon.UI_GAM_Late;
           }
-  
+
           const k = 1.5;
           const fastlateIconHeight = values.maimaiTapR * 1 * k;
           const fastlateIconWidth = ((values.maimaiTapR * 1) / fastlateImage.height) * fastlateImage.width * k;
-  
+
           const firstWord = note.pos.substring(0, 1);
           if (!isNaN(Number(firstWord))) {
             // 数字开头的位置
@@ -1690,11 +1691,11 @@ export const drawNote = (
             x = values.center[0] - fastlateIconWidth / 2;
             y = values.center[1] - (values.maimaiJudgeLineR - values.judgeDistance * 2 + fastlateIconHeight / 2);
           }
-  
+
           drawJudgeImage(effectOverCtx, fastlateImage, x, y, fastlateIconWidth, fastlateIconHeight, values.center[0], values.center[1], -22.5 + Number(note.pos) * 45);
         }
       }
-  
+
       // // 特效
       // if(note.type === NoteType.Tap){
       // 	if(props.judgeStatus !== JudgeStatus.Miss){
@@ -1703,6 +1704,5 @@ export const drawNote = (
       // 	}
       // }
     }
-    }
-
+  }
 };

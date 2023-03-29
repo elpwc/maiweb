@@ -1,4 +1,4 @@
-import React, {  useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './index.css';
 import { TouchArea } from './utils/touchArea';
 import { drawNote, updateIcons } from './drawUtils/drawNotes';
@@ -252,13 +252,12 @@ export default function Maisim(
     const el: HTMLCanvasElement = document.getElementsByClassName('canvasOver' + id)[0] as HTMLCanvasElement;
     const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
-    drawOutRing(maimaiValues.current, areaFactory.current.keys, ctx);
+    drawOutRing(maimaiValues.current, doShowKeys, areaFactory.current.keys, ctx);
   };
 
   /** 启动绘制器 */
   const starttimer = () => {
     readSheet();
-    console.log(id, 123);
     if (currentSheet.current) {
       showingNotes.current = [];
       nextNoteIndex.current = 0;
@@ -547,7 +546,7 @@ export default function Maisim(
               ((currentTime.current - noteIns.moveTime! - noteIns.remainTime!) / (noteIns.time! - noteIns.moveTime!)) *
               (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
-            if (doShowEffect &&newNote.isTouching) {
+            if (doShowEffect && newNote.isTouching) {
               JudgeEffectAnimation_Circle(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, note.noteIndex);
             }
 
@@ -611,7 +610,7 @@ export default function Maisim(
 
             newNote.tailRho = ((currentTime.current - noteIns.time!) / noteIns.remainTime!) * 2 * Math.PI;
 
-            if (doShowEffect &&newNote.isTouching) {
+            if (doShowEffect && newNote.isTouching) {
               JudgeEffectAnimation_Circle(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, note.noteIndex);
             }
 
@@ -951,7 +950,7 @@ export default function Maisim(
             note.judgeStatus = JudgeStatus.CriticalPerfect;
           }
           // 判定特效
-          if (doShowEffect &&note.judgeStatus !== JudgeStatus.Miss) {
+          if (doShowEffect && note.judgeStatus !== JudgeStatus.Miss) {
             JudgeEffectAnimation_Touch(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos);
             if (noteIns.hasFirework) {
               fireworkAt(maimaiValues.current, noteIns.pos, ctx_effect_back.current, animationFactory.current);
@@ -970,7 +969,7 @@ export default function Maisim(
           }
 
           // 特效图像
-          if (doShowEffect &&note.touched) {
+          if (doShowEffect && note.touched) {
             JudgeEffectAnimation_Hex_or_Star(maimaiValues.current, animationFactory.current, ctx_effect_over.current, noteIns.pos, noteIns.isBreak ? 'star' : 'hex');
           }
 
@@ -1134,7 +1133,8 @@ export default function Maisim(
         currentSheet.current!.notes[note.noteIndex]!,
         note.isEach,
         note,
-        true,doShowJudgement,
+        true,
+        doShowJudgement,
         ctx_effect_back.current,
         ctx_effect_over.current,
         tapStyle,
@@ -1503,8 +1503,12 @@ export default function Maisim(
         initCtx();
         initEvent();
 
+        // 画外部遮罩和外键底色
         drawOver();
-        timer_drawkeys.current = setInterval(drawKeys, maimaiValues.current.timerPeriod);
+
+        if (doShowKeys) {
+          timer_drawkeys.current = setInterval(drawKeys, maimaiValues.current.timerPeriod);
+        }
 
         // 计算用
         //ppqqAnglCalc();
@@ -1517,13 +1521,13 @@ export default function Maisim(
 
   useEffect(() => {
     console.log(w, h);
-    maimaiValues.current = new MaimaiValues(w, h);
+    maimaiValues.current = new MaimaiValues(w, h, doShowKeys);
     setCanvasH(h);
     setCanvasW(w);
 
     setTimeout(() => {
       areaFactory.current = new AreaUtils(maimaiValues.current);
-      drawOver();
+      //drawOver();
     }, 50);
   }, [w, h]);
 
@@ -1533,12 +1537,12 @@ export default function Maisim(
 
   //#endregion useEffect
 
-  const judgeLineK = 0.88;
+  const judgeLineK = 0.89;
 
   // 初始化动画
   useEffect(() => {
     initAnimation();
-    maimaiValues.current = new MaimaiValues(w, h);
+    maimaiValues.current = new MaimaiValues(w, h, doShowKeys);
   }, []);
 
   // 变速相关
