@@ -76,6 +76,8 @@ export default function Maisim(
     backgroundAnime = undefined,
     /** 背景色 */
     backgroundColor = '#000000',
+    /** 背景亮度 */
+    backgroundLightness = 0.7,
 
     gameState,
     setGameState = undefined,
@@ -1601,6 +1603,12 @@ export default function Maisim(
     });
   }, []);
 
+  // 控制backgroundLightness大小在范围内
+  useEffect(() => {
+    if (backgroundLightness < 0) backgroundLightness = 0;
+    if (backgroundLightness > 1) backgroundLightness = 1;
+  }, [backgroundLightness]);
+
   return (
     <div className="maisim" style={{}}>
       <div className="canvasContainer">
@@ -1641,7 +1649,7 @@ export default function Maisim(
           )}
 
           {/** 半透明遮罩 */}
-          <div className="bottomItem transperantDiv" style={{ height: canvasH, width: canvasW, opacity: 0.7 }}></div>
+          <div className="bottomItem transperantDiv" style={{ height: canvasH, width: canvasW, opacity: backgroundLightness }}></div>
           {/** 判定线 */}
           <img
             alt="judgeline"

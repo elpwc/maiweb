@@ -4,7 +4,7 @@ import { BackgroundType } from './types/backgroundType';
 import { FlipMode } from './types/flipMode';
 import { ScoreCalculationType } from './types/judgeStatus';
 import { TapStyles, RegularStyles, SlideColor } from './types/noteStyles';
-import {  SheetSecondaryProps } from './sheet';
+import { SheetSecondaryProps } from './sheet';
 
 export interface MaisimProps {
   /** 唯一标识，当有多个Maisim时，请为每个Maisim分配不同的id */
@@ -52,6 +52,8 @@ export interface MaisimProps {
   backgroundAnime?: string;
   /** 背景色 */
   backgroundColor?: string;
+  /** 背景亮度 0~1 */
+  backgroundLightness?: number;
 
   gameState: GameState;
   setGameState?: (gameState: GameState) => void;
