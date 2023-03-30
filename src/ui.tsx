@@ -549,16 +549,18 @@ function SongModal(): JSX.Element {
                     </div>
                 </div>
             </div>
-            <table style={{ marginTop: '8px', fontSize: '80%' }}>{ ((song as any).notes as API.Notes[]).map(notes => (
-                <tr>
+            <table style={{ marginTop: '8px', fontSize: '80%' }}><tbody>{ ((song as any).notes as API.Notes[]).map(notes => (
+                <tr key={notes.id}>
                     <td><div style={{ width: '20px', height: '20px', color: 'white', fontWeight: 'bold', display: 'inline-flex', justifyContent: 'center', alignItems: 'center', backgroundColor: DifficultyColorList[notes.difficulty] }}><div>{notes.lv_base}</div></div> {(Number(notes.lv) === notes.lv_base)? `${notes.lv_base}.0`: notes.lv}</td>
-                    <td><LinkToModal name="notes" argument={notes.id}><span>[{notes.id}]{notes.title? ` ${notes.title}`: ''}</span></LinkToModal></td>
+                    <td><LinkToModal name="notes" argument={notes.id}><span>[ID:{notes.id}]{notes.title? ` ${notes.title}`: ''}</span></LinkToModal></td>
                     <td>{notes.is_official? <span style={{ color: 'red' }}>[offical]</span>: <></>}</td>
-                    <td>{notes.is_dx? <span style={{ color: 'orange' }}>[dx]</span>: <></>}</td>
-                    <td>by ({notes.designer})</td>
-                    <td>added {(new Date(notes.createtime)).toDateString()}</td>
+                    <td>{notes.is_dx? <span style={{ color: 'orange' }}>[dx]</span>: <span style={{ color: 'gray' }}>[std]</span>}</td>
+                    <td>
+                        <LinkToModal name="profile" argument={(notes.uploader as API.UserInfoDto).id}>{(notes.uploader as API.UserInfoDto).name}</LinkToModal>
+                        {' '}added {(new Date(notes.createtime)).toDateString()}
+                    </td>
                 </tr>
-            ))}</table>
+            ))}</tbody></table>
         </div>}
     </Modal>
 }
@@ -708,7 +710,7 @@ function NotesModal(): JSX.Element {
                     <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '18px' }}>
                         { notes.is_official? <div style={{ fontSize: '90%', marginRight: '5px', color: 'red' }}>[Official]</div>: <></> }
                         { notes.is_dx? <div style={{ fontSize: '90%', marginRight: '5px', color: 'orange' }}>[DX]</div>: <></> }
-                        <div style={{ fontSize: '90%' }}>[ID:{notes.id}]{notes.title? ` ${notes.title}`: ''} ({notes.designer})</div>
+                        <div style={{ fontSize: '90%' }}>[ID:{notes.id}]{notes.title? ` ${notes.title}`: ''}</div>
                     </div>
                 </div>
             </div>
