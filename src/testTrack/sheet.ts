@@ -1,16 +1,5 @@
 /** 测试用谱面 */
-export const sheetdata = `
-&title=sweet little sister
-&wholebpm=168
-&first=0
-&lv_5=11
-&inote_5=
-(180)
-{16}4,5,4,5,4,5,4,5,4b,,1h[1:4],
-E
-`;
-
-export const sheetdata2 = {
+export const sheetdata = {
   notes: `(100)
   {64}E8,A8/B8/E1/D1,A1/B1/E2/D2,A2/B2/E3/D3,A3/B3/E4/D4,,,,,,,,
   E7,A7/B7/E8/D8,A8/B8/E1/D1,A1/B1/E2/D2,A2/B2/E3/D3,,,,,,,,

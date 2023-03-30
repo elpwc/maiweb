@@ -84,15 +84,14 @@ export default function Maisim(
     onPlayStart = undefined,
     onGameRecordChange = undefined,
     onPlayFinish = undefined,
+    /** 屏幕/按钮点击事件 */
+    onScreenPressDown = undefined,
+    onScreenPressUp = undefined,
 
     /** 是否显示UI遮盖层 */
     doShowUIContent = false,
     /** UI遮盖层 */
     uiContent = undefined,
-
-    /** 屏幕/按钮点击事件 */
-    onScreenPressDown = undefined,
-    onScreenPressUp = undefined,
 
     /** 按钮灯光控制 */
     lightStatus = [],
