@@ -376,8 +376,6 @@ function ProfileModal(): JSX.Element {
                             let song = song_ as any as API.Song;
                             return <div key={song.id}>
                                 <LinkToModal name="song" argument={song.id}>{song.name}</LinkToModal>
-                                {' '}
-                                { (userInfo!.id == ctx.state.user!.id)? <LinkToModal name="song_edit" argument={song.id}>Edit</LinkToModal>: <></> }
                             </div>
                         }) }</div>
                     </div>
@@ -385,11 +383,8 @@ function ProfileModal(): JSX.Element {
                         <div><b>◆ Notes</b></div>
                         <div>{ userInfo.uploadedNotes.map((notes_) => {
                             let notes = notes_ as any as API.Notes;
-                            let title = `[${notes.id}]`;
                             return <div key={notes.id}>
-                                <LinkToModal name="notes" argument={notes.id}>{title}</LinkToModal>
-                                {' '}
-                                { (userInfo!.id == ctx.state.user!.id)? <LinkToModal name="notes_edit" argument={notes.id}>Edit</LinkToModal>: <></> }
+                                <LinkToModal name="notes" argument={notes.id}><span>[ID:{notes.id}]{' '}{notes.song.name}{' ('}{DifficultyList[notes.difficulty]}{' '}{notes.lv}{')'}</span></LinkToModal>
                             </div>
                         }) }</div>
                     </div>
