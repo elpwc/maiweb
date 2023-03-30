@@ -19,7 +19,6 @@ import Outline_11_icon from '../resource/maimai_img/ui/Outline_11.png';
 import Outline_12_icon from '../resource/maimai_img/ui/Outline_12.png';
 import UI_ADV_Img_LogoMaimaiDX_icon from '../resource/maimai_img/ui/UI_ADV_Img_LogoMaimaiDX.png';
 import UI_ADV_Img_PromoChara_icon from '../resource/maimai_img/ui/UI_ADV_Img_PromoChara.png';
-import UI_Chara_105810_icon from '../resource/maimai_img/ui/UI_Chara_105810.png';
 import UI_CMN_CloudBase_01_icon from '../resource/maimai_img/ui/UI_CMN_CloudBase_01.png';
 import UI_CMN_CloudBase_02_icon from '../resource/maimai_img/ui/UI_CMN_CloudBase_02.png';
 import UI_CMN_CloudBase_03_icon from '../resource/maimai_img/ui/UI_CMN_CloudBase_03.png';
@@ -44,7 +43,6 @@ export const uiIcon = {
     Outline_12: Outline_12_icon,
     UI_ADV_Img_LogoMaimaiDX: UI_ADV_Img_LogoMaimaiDX_icon,
     UI_ADV_Img_PromoChara: UI_ADV_Img_PromoChara_icon,
-    UI_Chara_105810: UI_Chara_105810_icon,
     UI_CMN_CloudBase_01: UI_CMN_CloudBase_01_icon,
     UI_CMN_CloudBase_02: UI_CMN_CloudBase_02_icon,
     UI_CMN_CloudBase_03: UI_CMN_CloudBase_03_icon,

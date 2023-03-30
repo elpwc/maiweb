@@ -7,6 +7,10 @@ import { Area } from './Maisim/areas';
 import NotesEditor from './NotesEditor';
 import HeadScreen from './HeadScreen';
 import { sheetdata2 } from './Maisim/_notesInDev';
+import testtrack from './testTrack/track.mp3';
+import testbgi from './testTrack/header.png';
+import testbga from './testTrack/pv.mp4';
+import { BackgroundType } from './Maisim/utils/types/backgroundType';
 
 function App() {
   const [gameState, setGameState] = useState(GameState.Begin);
@@ -50,6 +54,11 @@ function App() {
             isAuto={true}
             doShowKeys={false}
             centerText={0}
+            track={testtrack}
+            backgroundType={BackgroundType.Color}
+            backgroundImage={testbgi}
+            backgroundAnime={testbga}
+            backgroundColor={'#136594'}
             sheet={sheetdata2.notes}
             sheetProps={{ first: sheetdata2.first, wholeBPM: sheetdata2.wholebpm }}
             onPlayStart={function (): void {}}

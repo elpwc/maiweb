@@ -10,8 +10,6 @@ import { abs, cos, sin, sqrt, π } from './utils/math';
 import { judge, judge_up } from './judge';
 import { TouchHoldSoundsManager, updateRecord } from './recordUpdater';
 import { NoteSound } from './resourceReaders/noteSoundReader';
-import testsong_taiyoukei from './resource/sound/track/太陽系デスコ.mp3';
-import testbgi from './resource/maimai_img/ui/UI_Chara_105810.png';
 import { uiIcon } from './resourceReaders/uiIconReader';
 import { JudgeEffectAnimation_Circle, JudgeEffectAnimation_Hex_or_Star, JudgeEffectAnimation_Touch } from './drawUtils/judgeEffectAnimations';
 import { calculate_speed_related_params_for_notes } from './maiReader/inoteReader';
@@ -205,7 +203,9 @@ export default function Maisim(
 
   const SongTrack: React.MutableRefObject<HTMLAudioElement> = useRef(new Audio());
   SongTrack.current.volume = 0.5;
-  SongTrack.current.src = testsong_taiyoukei;
+  SongTrack.current.src = track ?? '';
+
+  const BGA: React.LegacyRef<HTMLVideoElement> = useRef(null);
 
   /** 读入数据和更新绘制信息的Timer */
   const timer_readAndUpdate: React.MutableRefObject<string | number | NodeJS.Timer | undefined> = useRef(undefined);
@@ -254,7 +254,7 @@ export default function Maisim(
     const el: HTMLCanvasElement = document.getElementsByClassName('canvasOver' + id)[0] as HTMLCanvasElement;
     const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
-    drawOutRing(maimaiValues.current, doShowKeys, outerColor,areaFactory.current.keys, ctx);
+    drawOutRing(maimaiValues.current, doShowKeys, outerColor, areaFactory.current.keys, ctx);
   };
 
   /** 启动绘制器 */
@@ -268,6 +268,7 @@ export default function Maisim(
       setTimeout(
         () => {
           SongTrack.current.play();
+          BGA.current!.play();
         },
         advancedTime.current / virtualTime.current.speedFactor // 苟且做法（无法动态调整 timeout 的速度）
       );
@@ -1603,30 +1604,42 @@ export default function Maisim(
   return (
     <div className="maisim" style={{}}>
       <div className="canvasContainer">
-        <div className="bottomContainer" style={{ height: canvasH, width: canvasW }}>
+        <div className="bottomContainer" style={{ height: canvasH, width: canvasW, backgroundColor: backgroundType === BackgroundType.Color ? backgroundColor : '#000000' }}>
           {/** 背景图 */}
-          <img
-            alt="background"
-            className="bottomItem bgi"
-            src={testbgi}
-            style={{
-              top: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
-              left: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
-              height: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
-              width: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
-            }}
-          />
+          {backgroundType === BackgroundType.Image ? (
+            <img
+              alt="background"
+              className="bottomItem bgi"
+              src={backgroundImage ?? ''}
+              style={{
+                top: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+                left: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+                height: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
+                width: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
+              }}
+            />
+          ) : (
+            <></>
+          )}
+
           {/** bga */}
-          <video
-            className="bottomItem bga"
-            src=""
-            style={{
-              top: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
-              left: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
-              height: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
-              width: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
-            }}
-          />
+          {backgroundType === BackgroundType.Video ? (
+            <video
+              ref={BGA}
+              className="bottomItem bga"
+              src={backgroundAnime ?? ''}
+              autoPlay={false}
+              style={{
+                top: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+                left: maimaiValues.current.maimaiR - maimaiValues.current.maimaiJudgeLineR / judgeLineK,
+                height: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
+                width: (maimaiValues.current.maimaiJudgeLineR / judgeLineK) * 2,
+              }}
+            />
+          ) : (
+            <></>
+          )}
+
           {/** 半透明遮罩 */}
           <div className="bottomItem transperantDiv" style={{ height: canvasH, width: canvasW, opacity: 0.7 }}></div>
           {/** 判定线 */}
@@ -1694,6 +1707,7 @@ export default function Maisim(
                 timer_readAndUpdate.current = setInterval(reader_and_updater, maimaiValues.current.timerPeriod);
                 timer_draw.current = setInterval(drawer, maimaiValues.current.timerPeriod);
                 SongTrack.current.play();
+                BGA.current!.play();
                 setGameState?.(GameState.Play);
               } else {
               }

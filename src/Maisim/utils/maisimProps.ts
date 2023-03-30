@@ -43,13 +43,13 @@ export interface MaisimProps {
   /** 谱面属性 */
   sheetProps?: SheetSecondaryProps;
   /** 曲 */
-  track?: HTMLAudioElement;
+  track?: string;
   /** 背景显示方式 */
   backgroundType?: BackgroundType;
   /** 背景图 */
-  backgroundImage?: HTMLImageElement;
+  backgroundImage?: string;
   /** BGA */
-  backgroundAnime?: HTMLVideoElement;
+  backgroundAnime?: string;
   /** 背景色 */
   backgroundColor?: string;
 
