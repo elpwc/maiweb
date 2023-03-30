@@ -39,6 +39,8 @@ export default function Maisim(
     w,
     h,
 
+    style = {},
+
     tapStyle = TapStyles.Concise,
     holdStyle = RegularStyles.Concise,
     slideStyle = RegularStyles.Concise,
@@ -1627,7 +1629,7 @@ export default function Maisim(
   }, [backgroundLightness]);
 
   return (
-    <div className="maisim" style={{}}>
+    <div className="maisim" style={style}>
       <div className="canvasContainer">
         <div className="bottomContainer" style={{ height: canvasH, width: canvasW, backgroundColor: backgroundType === BackgroundType.Color ? backgroundColor : '#000000' }}>
           {/** 背景图 */}

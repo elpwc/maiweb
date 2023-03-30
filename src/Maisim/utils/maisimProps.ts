@@ -15,6 +15,8 @@ export interface MaisimProps {
   /** 高度 */
   h: number;
 
+  style?: React.CSSProperties | undefined;
+
   tapStyle?: TapStyles;
   holdStyle?: RegularStyles;
   slideStyle?: RegularStyles;

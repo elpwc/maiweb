@@ -26,66 +26,66 @@ canvas {
   position: relative;
   top: 0;
   left: 0;
-  z-index: -100;
+  z-index: 1000;
   background-color: black;
 }
 
 .bottomContainer .bgi {
-  z-index: -90;
+  z-index: 1010;
 }
 .bottomContainer .bga {
-  z-index: -80;
+  z-index: 1020;
 }
 .bottomContainer .transperantDiv {
-  z-index: -70;
+  z-index: 1030;
   background-color: black;
 }
 .bottomContainer .judgeLine {
-  z-index: -60;
+  z-index: 1040;
 }
 
 .canvasGameRecord {
-  z-index: 0;
+  z-index: 2000;
 }
 
 .canvasEffectBack {
-  z-index: 5;
+  z-index: 2010;
 }
 
 .canvasSlideTrack {
-  z-index: 10;
+  z-index: 2020;
 }
 
 .canvasNotes {
-  z-index: 20;
+  z-index: 2030;
 }
 
 .canvasEffectOver {
-  z-index: 25;
+  z-index: 2040;
 }
 
 .uiContainer {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 28;
+  z-index: 2050;
 }
 
 .canvasOver {
-  z-index: 30;
+  z-index: 2060;
 }
 
 .canvasKeys {
-  z-index: 40;
+  z-index: 2070;
 }
 
 .canvasEvent {
-  z-index: 114513;
+  z-index: 114514;
 }
 
 .maisimLoadMsg {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 114514;
+  z-index: 1919810;
 }
