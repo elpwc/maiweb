@@ -526,16 +526,19 @@ function SongModal(): JSX.Element {
         { (song == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
         <div style={{ marginTop: '10px', maxHeight: '60vh', maxWidth: '80vw', minWidth: (ctx.state.layout == 'landscape')? undefined: '70vw' }}>
             <div>
-                <audio controls={true} src={`${appconfig.apiBaseURL}/api/v1/uploads/${song.musicFileName}`} />
+                <audio controls={true} src={`${appconfig.apiBaseURL}/api/v1/uploads/${song.musicFileName}`} style={{ width: '100%' }} />
             </div>
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
                 <div style={{ width: '64px', height: '64px' }}>
                     { song.iconFileName? <img src={`${appconfig.apiBaseURL}/api/v1/uploads/${song.iconFileName}`} style={{ width: '100%', height: '100%' }} />: <></> }
                 </div>
-                <div style={{ marginLeft: '10px' }}>
+                <div style={{ marginLeft: '10px', flexGrow: '1' }}>
                     <div style={{ fontSize: '110%', fontWeight: 'bold' }}>{ song.name }</div>
                     <div style={{ fontSize: '90%' }}>{ song.artist }</div>
                 </div>
+            { (uploader.id == ctx.state.user!.id)? <div style={{ marginLeft: '10px' }}>
+                <LinkToModal name="song_edit" argument={song.id}>Edit...</LinkToModal>
+            </div>: <></> }
             </div>
             <div style={{ marginTop: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
