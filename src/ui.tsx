@@ -24,6 +24,7 @@ const Admin = 10;
 
 const GenreList = ['POPS＆アニメ', 'niconico＆ボーカロイド', '東方Project', 'ゲーム＆バラエティ', 'maimai', 'オンゲキ＆CHUNITHM'];
 const DifficultyList = ['EASY','BASIC','ADVANCED','EXPERT','MASTER','Re:MASTER'];
+const DifficultyColorList = ['#81C0EF', '#6FE163', '#F8DF3A', '#FF828E', '#C27FF4', '#FEFEFE'];
 
 interface State {
     layout: 'landscape'|'portrait',
@@ -148,7 +149,7 @@ function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.
     </div>
 }
 
-type ModalName = 'register'|'login'|'menu'|'profile'|'profile_edit'|'song_edit'|'notes_edit'|'invite'|'users'|'filters';
+type ModalName = 'register'|'login'|'menu'|'profile'|'profile_edit'|'song'|'song_edit'|'notes'|'notes_edit'|'invite'|'users'|'filters';
 interface Modal { name: ModalName, argument?: any };
 function LinkToModal(props: { name: ModalName, argument?: any, children: string|JSX.Element, style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
@@ -258,6 +259,7 @@ function LoginModal(): JSX.Element {
             setPending(false);
         }
     };
+    // TODO: reset password
     return <Modal name={'login'} title={'Login'} closeGuard={() => !pending}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px 20px' }}>
             <table><tbody>
@@ -373,7 +375,9 @@ function ProfileModal(): JSX.Element {
                         <div>{ userInfo.uploadedSongs.map((song_) => {
                             let song = song_ as any as API.Song;
                             return <div key={song.id}>
-                                { (userInfo!.id == ctx.state.user!.id)? <LinkToModal name="song_edit" argument={song.id}>{song.name}</LinkToModal>: <span>{song.name}</span> }
+                                <LinkToModal name="song" argument={song.id}>{song.name}</LinkToModal>
+                                {' '}
+                                { (userInfo!.id == ctx.state.user!.id)? <LinkToModal name="song_edit" argument={song.id}>Edit</LinkToModal>: <></> }
                             </div>
                         }) }</div>
                     </div>
@@ -381,9 +385,11 @@ function ProfileModal(): JSX.Element {
                         <div><b>◆ Notes</b></div>
                         <div>{ userInfo.uploadedNotes.map((notes_) => {
                             let notes = notes_ as any as API.Notes;
-                            let title = `${notes.id}`;
+                            let title = `[${notes.id}]`;
                             return <div key={notes.id}>
-                                { (userInfo!.id == ctx.state.user!.id)? <LinkToModal name="notes_edit" argument={notes.id}>{title}</LinkToModal>: <span>{title}</span> }
+                                <LinkToModal name="notes" argument={notes.id}>{title}</LinkToModal>
+                                {' '}
+                                { (userInfo!.id == ctx.state.user!.id)? <LinkToModal name="notes_edit" argument={notes.id}>Edit</LinkToModal>: <></> }
                             </div>
                         }) }</div>
                     </div>
@@ -493,6 +499,66 @@ function ProfileEditModal(): JSX.Element {
         </div>
     </Modal>
 }
+function SongModal(): JSX.Element {
+    let ctx = useContext(Context);
+    let [pending, setPending] = useState(false);
+    let [song, setSong] = useState<null|API.Song>(null);
+    let uploader = (song?.uploader as API.UserInfoDto);
+    useEffect(() => {
+        if (ctx.state.currentModal?.name == 'song') {
+            let songId = ctx.state.currentModal.argument!;
+            (async () => {
+                setPending(true);
+                try {
+                    let song = await findOneSong({ id: songId }, { token: ctx.state.user!.sessionToken });
+                    setSong(song);
+                } catch(err) {
+                    showError(err);
+                } finally {
+                    setPending(false);
+                }
+            })();
+        } else {
+            setSong(null);
+        }
+    }, [ctx.state.currentModal]);
+    return <Modal name={'song'} title={'Song'} closeGuard={() => !pending}>
+        { (song == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
+        <div style={{ marginTop: '10px', maxHeight: '60vh', maxWidth: '80vw', minWidth: (ctx.state.layout == 'landscape')? undefined: '70vw' }}>
+            <div>
+                <audio controls={true} src={`${appconfig.apiBaseURL}/api/v1/uploads/${song.musicFileName}`} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
+                <div style={{ width: '64px', height: '64px' }}>
+                    { song.iconFileName? <img src={`${appconfig.apiBaseURL}/api/v1/uploads/${song.iconFileName}`} style={{ width: '100%', height: '100%' }} />: <></> }
+                </div>
+                <div style={{ marginLeft: '10px' }}>
+                    <div style={{ fontSize: '110%', fontWeight: 'bold' }}>{ song.name }</div>
+                    <div style={{ fontSize: '90%' }}>{ song.artist }</div>
+                </div>
+            </div>
+            <div style={{ marginTop: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img src={avatarUrl(uploader.avatarFileName)} style={{ width: '20x', height: '20px' }} />
+                    <div style={{ fontSize: '80%' }}>
+                        <LinkToModal name="profile" argument={uploader.id}>{uploader.name}</LinkToModal>
+                        {' '}added{' '}{(new Date(song.createtime)).toDateString()}
+                    </div>
+                </div>
+            </div>
+            <table style={{ marginTop: '8px', fontSize: '80%' }}>{ ((song as any).notes as API.Notes[]).map(notes => (
+                <tr>
+                    <td><div style={{ width: '20px', height: '20px', color: 'white', fontWeight: 'bold', display: 'inline-flex', justifyContent: 'center', alignItems: 'center', backgroundColor: DifficultyColorList[notes.difficulty] }}><div>{notes.lv_base}</div></div> {(Number(notes.lv) === notes.lv_base)? `${notes.lv_base}.0`: notes.lv}</td>
+                    <td><LinkToModal name="notes" argument={notes.id}><span>[{notes.id}]{notes.title? ` ${notes.title}`: ''}</span></LinkToModal></td>
+                    <td>{notes.is_official? <span style={{ color: 'red' }}>[offical]</span>: <></>}</td>
+                    <td>{notes.is_dx? <span style={{ color: 'orange' }}>[dx]</span>: <></>}</td>
+                    <td>by ({notes.designer})</td>
+                    <td>added {(new Date(notes.createtime)).toDateString()}</td>
+                </tr>
+            ))}</table>
+        </div>}
+    </Modal>
+}
 function SongEditModal(): JSX.Element {
     let ctx = useContext(Context);
     let [loadPending, setLoadPending] = useState(false);
@@ -559,12 +625,14 @@ function SongEditModal(): JSX.Element {
     let submit = async () => {
         setSubmitPending(true);
         try {
+            let newId = id;
             if (id == null) {
-                await createSong(song!, { token: ctx.state.user!.sessionToken });
+                let res = await createSong(song!, { token: ctx.state.user!.sessionToken });
+                newId = res.id;
             } else {
                 await updateSong({ id: String(id) }, song!, { token: ctx.state.user!.sessionToken });
             }
-            ctx.setState({ ...ctx.state, currentModal: {name:'profile',argument:ctx.state.user!.id} });
+            ctx.setState({ ...ctx.state, currentModal: {name:'song',argument:newId!} });
         } catch(err) {
             showError(err);
         } finally {
@@ -592,6 +660,73 @@ function SongEditModal(): JSX.Element {
             </tbody></table>
             <div style={{ textAlign: 'center', padding: '5px 0px' }}>
                 <SubmitLink pending={submitPending} onClick={() => {submit()}}>{(id == null)? 'Submit': 'Apply Changes'}</SubmitLink>
+            </div>
+        </div>}
+    </Modal>
+}
+function NotesModal(): JSX.Element {
+    let ctx = useContext(Context);
+    let [pending, setPending] = useState(false);
+    let [notes, setNotes] = useState<null|API.Notes>(null);
+    let uploader = (notes?.uploader as API.UserInfoDto);
+    useEffect(() => {
+        if (ctx.state.currentModal?.name == 'notes') {
+            let notesId: number = ctx.state.currentModal.argument!;
+            (async () => {
+                setPending(true);
+                try {
+                    let notes = await findOneNotes({ id: String(notesId) }, { token: ctx.state.user!.sessionToken });
+                    setNotes(notes);
+                } catch(err) {
+                    showError(err);
+                } finally {
+                    setPending(false);
+                }
+            })();
+        } else {
+            setNotes(null);
+        }
+    }, [ctx.state.currentModal]);
+    let showCode = () => {
+        alert(notes!.notes);
+    }
+    return <Modal name={'notes'} title={'Notes'} closeGuard={() => !pending}>
+        { (notes == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
+        <div style={{ overflow: 'auto', maxWidth: '80vw', minWidth: (ctx.state.layout == 'landscape')? undefined: '70vw' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                <div style={{ padding: '8px 8px 4px 8px', backgroundColor: DifficultyColorList[notes.difficulty] }}>
+                    <div style={{ width: '64px', height: '64px' }}>
+                        { notes.song.iconFileName? <img src={`${appconfig.apiBaseURL}/api/v1/uploads/${notes.song.iconFileName}`} style={{ width: '100%', height: '100%' }} />: <></> }
+                    </div>
+                    <div style={{ textAlign: 'center', fontSize: '110%', fontWeight: 'bold' }} title={notes.lv}>Lv.{notes.lv_base}{(Number(notes.lv) !== notes.lv_base)? '+': ''}</div>
+                </div>
+                <div style={{ flexGrow: '1', marginLeft: '10px' }}>
+                    <div style={{ fontSize: '110%', fontWeight: 'bold' }}>{ notes.song.name }</div>
+                    <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '18px' }}>
+                        { notes.is_official? <div style={{ fontSize: '90%', marginRight: '5px', color: 'red' }}>[Official]</div>: <></> }
+                        { notes.is_dx? <div style={{ fontSize: '90%', marginRight: '5px', color: 'orange' }}>[DX]</div>: <></> }
+                        <div style={{ fontSize: '90%' }}>[ID:{notes.id}]{notes.title? ` ${notes.title}`: ''} ({notes.designer})</div>
+                    </div>
+                </div>
+            </div>
+            <div style={{ marginTop: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img src={avatarUrl(uploader.avatarFileName)} style={{ width: '20x', height: '20px' }} />
+                    <div style={{ fontSize: '80%' }}>
+                        <LinkToModal name="profile" argument={uploader.id}>{uploader.name}</LinkToModal>
+                        {' '}added{' '}{(new Date(notes.createtime)).toDateString()}
+                    </div>
+                </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
+                <div>
+                    { (uploader.id == ctx.state.user!.id)? <LinkToModal name="notes_edit" argument={notes.id}>Edit...</LinkToModal>: <Link onClick={() => {showCode()}}>Code...</Link> }{' '}
+                    <LinkToModal name="song" argument={notes.song.id}>View Song...</LinkToModal>
+                </div>
+                <div style={{ marginLeft: '10px' }}>
+                    <Link onClick={() => {}}>Practice</Link>{' '}
+                    <Link onClick={() => {}}>AutoPlay</Link>
+                </div>
             </div>
         </div>}
     </Modal>
@@ -645,12 +780,14 @@ function NotesEditModal(): JSX.Element {
     let submit = async () => {
         setSubmitPending(true);
         try {
+            let newId = id;
             if (id == null) {
-                await createNotes(notes!, { token: ctx.state.user!.sessionToken });
+                let res = await createNotes(notes!, { token: ctx.state.user!.sessionToken });
+                newId = res.id;
             } else {
                 await updateNotes({ id: String(id) }, notes!, { token: ctx.state.user!.sessionToken });
             }
-            ctx.setState({ ...ctx.state, currentModal: {name:'profile',argument:ctx.state.user!.id} });
+            ctx.setState({ ...ctx.state, currentModal: {name:'notes',argument:newId!} });
         } catch(err) {
             showError(err);
         } finally {
@@ -658,9 +795,10 @@ function NotesEditModal(): JSX.Element {
         }
     };
     let writeValueTo = valueWriter(notes, setNotes, setDirty);
-    let writeValueToLevel = (ev: React.ChangeEvent<HTMLSelectElement>) => {
+    let writeValueToLevel = (ev: React.ChangeEvent<HTMLInputElement>) => {
         let lv = ev.target.value;
-        let lv_base = Number(lv.replace('+', ''));
+        if (lv == '') { lv = '1'; }
+        let lv_base = Number(lv.replace('+', '').replace(/\..*/, ''));
         setNotes({ ...notes!, lv, lv_base });
     };
     return <Modal name="notes_edit" title={(id == null)? 'Add New Notes': 'Edit Notes'} closeGuard={formCloseGuard(pending, dirty)}>
@@ -672,7 +810,7 @@ function NotesEditModal(): JSX.Element {
                 <tr><td>Title:</td><td><input type="text" value={notes.title} onChange={writeValueTo('title')} style={{ boxSizing: 'border-box', width: '100%' }}></input></td></tr>
                 <tr><td>Designer:</td><td><input type="text" value={notes.designer} onChange={writeValueTo('designer')} style={{ boxSizing: 'border-box', width: '100%' }}></input></td></tr>
                 <tr><td>Difficulty:</td><td><select value={notes.difficulty} onChange={writeValueTo('difficulty')}>{DifficultyList.map((difficulty,i) => <option key={i} value={i}>{difficulty}</option>)}</select></td></tr>
-                <tr><td>Level:</td><td><select value={notes.lv} onChange={writeValueToLevel}>{Array.from((function*() { for(let i=1;i<=15;i++) { yield `${i}`; yield `${i}+` } })()).map(lv => <option key={lv} value={lv}>{lv}</option>)}</select></td></tr>
+                <tr><td>Level:</td><td><input type="number" value={notes.lv} onChange={writeValueToLevel} style={{ width: '50px' }}></input></td></tr>
                 <tr><td>Notes:</td><td><textarea value={notes.notes} onChange={writeValueTo('notes')} style={{ boxSizing: 'border-box', width: '100%', resize: 'none' }}></textarea></td></tr>
                 <tr><td>Official:</td><td><input type="checkbox" checked={notes.is_official} onChange={writeValueTo('is_official')}></input></td></tr>
                 <tr><td>Private:</td><td><input type="checkbox" checked={notes.is_private} onChange={writeValueTo('is_private')}></input></td></tr>
@@ -1032,7 +1170,9 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
             <MenuModal />
             <ProfileModal />
             <ProfileEditModal />
+            <SongModal />
             <SongEditModal />
+            <NotesModal />
             <NotesEditModal />
             <InviteModal />
             <UsersModal />
