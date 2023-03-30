@@ -46,8 +46,9 @@ function App() {
             slideColor={SlideColor.Pink}
             doShowEffect={true}
             doShowJudgement={true}
+            outerColor={'#000000'}
             isAuto={true}
-            doShowKeys={true}
+            doShowKeys={false}
             centerText={0}
             sheet={sheetdata2.notes}
             sheetProps={{ first: sheetdata2.first, wholeBPM: sheetdata2.wholebpm }}

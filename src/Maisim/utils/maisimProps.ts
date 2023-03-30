@@ -27,6 +27,8 @@ export interface MaisimProps {
   doShowEffect?: boolean;
   /** 显示判定 */
   doShowJudgement?: boolean;
+  /** 外围颜色 */
+  outerColor: string;
   /** 自动 */
   isAuto: boolean;
   /** 自动的模式 */

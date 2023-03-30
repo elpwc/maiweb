@@ -53,6 +53,8 @@ export default function Maisim(
     doShowEffect = true,
     /** 是否显示判定 */
     doShowJudgement = true,
+    /**  */
+    outerColor = '#ffffff',
     /** 自动 */
     isAuto,
     /** 自动的模式 */
@@ -75,7 +77,7 @@ export default function Maisim(
     /** BGA */
     backgroundAnime = undefined,
     /** 背景色 */
-    backgroundColor = 'black',
+    backgroundColor = '#000000',
 
     gameState,
     setGameState = undefined,
@@ -252,7 +254,7 @@ export default function Maisim(
     const el: HTMLCanvasElement = document.getElementsByClassName('canvasOver' + id)[0] as HTMLCanvasElement;
     const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
 
-    drawOutRing(maimaiValues.current, doShowKeys, areaFactory.current.keys, ctx);
+    drawOutRing(maimaiValues.current, doShowKeys, outerColor,areaFactory.current.keys, ctx);
   };
 
   /** 启动绘制器 */

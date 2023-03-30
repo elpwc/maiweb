@@ -3,11 +3,11 @@ import MaimaiValues from '../maimaiValues';
 import { cos, sin } from '../utils/math';
 import { clearArcFun } from './_base';
 
-export const drawOutRing = (values: MaimaiValues, doShowKeys: boolean, keys: Area[], ctx: CanvasRenderingContext2D) => {
+export const drawOutRing = (values: MaimaiValues, doShowKeys: boolean, outerColor: string, keys: Area[], ctx: CanvasRenderingContext2D) => {
   ctx.clearRect(0, 0, values.canvasWidth, values.canvasHeight);
 
   ctx.beginPath();
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = outerColor;
   ctx.fillRect(0, 0, values.canvasWidth, values.canvasHeight);
 
   if (doShowKeys) {
