@@ -55,7 +55,7 @@ function App() {
             doShowKeys={false}
             centerText={0}
             track={testtrack}
-            backgroundType={BackgroundType.Color}
+            backgroundType={BackgroundType.Video}
             backgroundImage={testbgi}
             backgroundAnime={testbga}
             backgroundColor={'#136594'}

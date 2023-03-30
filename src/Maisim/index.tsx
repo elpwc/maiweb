@@ -84,6 +84,8 @@ export default function Maisim(
     onPlayStart = undefined,
     onGameRecordChange = undefined,
     onPlayFinish = undefined,
+    onPlayPause = undefined,
+    onPlayResume = undefined,
     /** 屏幕/按钮点击事件 */
     onScreenPressDown = undefined,
     onScreenPressUp = undefined,
@@ -239,6 +241,9 @@ export default function Maisim(
   /** 根据谱面流速，应该提前开始绘制的时间 */
   const advancedTime = useRef(0);
 
+  /** 是否已经遇到了Endmark，在等待所有Note消失後结束 */
+  const isWaitingForEnd = useRef(false);
+
   /** 绘制外键 */
   const drawKeys = () => {
     const el: HTMLCanvasElement = document.getElementsByClassName('canvasKeys' + id)[0] as HTMLCanvasElement;
@@ -366,9 +371,13 @@ export default function Maisim(
     clearInterval(timer_readAndUpdate.current);
     clearInterval(timer_draw.current);
     SongTrack.current.pause();
+    BGA.current!.pause();
     seekSongTrack(0);
     virtualTime.current = new VirtualTime();
     initAnimation();
+
+    setGameState?.(GameState.Finish);
+    onPlayFinish?.();
 
     showingNotes.current = [];
     currentTouchingArea.current = [];
@@ -861,6 +870,7 @@ export default function Maisim(
         /////////////////////////////// E ///////////////////////////////
         case NoteType.EndMark:
           if (currentTime.current >= noteIns.time) {
+            isWaitingForEnd.current = true;
             //finish();
             // 应该播放结算动画
           }
@@ -1040,6 +1050,14 @@ export default function Maisim(
         return note.status !== -1;
       }
     });
+
+    // 判断是否已经触发EndMark，在等待所有note结束
+    if (isWaitingForEnd.current) {
+      if (/* showingNotes中只剩一个EndMark */ showingNotes.current.length === 1 && /* 等待所有动画结束 */ animationFactory.current.animationList.length === 0) {
+        console.log('finish');
+        finish();
+      }
+    }
 
     // reader
     while (nextNoteIndex.current < currentSheet.current!.notes.length && currentTime.current >= currentSheet.current!.notes[nextNoteIndex.current].emergeTime!) {
@@ -1701,14 +1719,17 @@ export default function Maisim(
               if (gameState === GameState.Begin) {
                 starttimer();
                 setGameState?.(GameState.Play);
-                console.log(114);
+                onPlayStart?.();
+                console.log('start play');
               } else if (gameState === GameState.Play) {
-                console.log(1143);
                 virtualTime.current.pause();
                 clearInterval(timer_readAndUpdate.current);
                 clearInterval(timer_draw.current);
                 SongTrack.current.pause();
+                BGA.current!.pause();
                 setGameState?.(GameState.Pause);
+                onPlayPause?.();
+                console.log('paused');
               } else if (gameState === GameState.Pause) {
                 virtualTime.current.resume();
                 timer_readAndUpdate.current = setInterval(reader_and_updater, maimaiValues.current.timerPeriod);
@@ -1716,6 +1737,7 @@ export default function Maisim(
                 SongTrack.current.play();
                 BGA.current!.play();
                 setGameState?.(GameState.Play);
+                onPlayResume?.();
               } else {
               }
             }}

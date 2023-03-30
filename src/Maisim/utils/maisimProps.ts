@@ -60,6 +60,8 @@ export interface MaisimProps {
   onPlayStart?: () => void;
   onGameRecordChange?: (gameRecord: object) => void;
   onPlayFinish?: () => void;
+  onPlayPause?: () => void;
+  onPlayResume?: () => void;
 
   /** 是否显示UI遮盖层 */
   doShowUIContent?: boolean;
