@@ -1021,6 +1021,9 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
         if (listUpdatePending) {
             return;
         }
+        if (!ctx.state.user) {
+            return;
+        }
         (async () => {
             setListUpdatePending(true);
             try {
