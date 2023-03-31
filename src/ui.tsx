@@ -157,7 +157,7 @@ function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.
     </div>
 }
 
-type ModalName = 'register'|'reset_password'|'login'|'menu'|'profile'|'profile_edit'|'song'|'song_edit'|'notes'|'notes_edit'|'invite'|'users'|'filters';
+type ModalName = 'register'|'reset_password'|'login'|'menu'|'profile'|'profile_edit'|'song'|'song_edit'|'notes'|'notes_edit'|'invite'|'users';
 interface Modal { name: ModalName, argument?: any };
 function LinkToModal(props: { name: ModalName, argument?: any, children: string|JSX.Element, style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
@@ -1036,12 +1036,6 @@ function UsersModal(): JSX.Element {
     </Modal>
 }
 
-function FiltersModal(): JSX.Element {
-    return <Modal name={'filters'} title={'Filters'}>
-        {/* TODO */}
-    </Modal>
-}
-
 function PortraitLayoutTab(props: { tab: 'list'|'notes'|'details', text: string }): JSX.Element {
     let ctx = useContext(Context);
     return <div><Link enabled={ctx.state.portraitCurrentTab != props.tab} onClick={() => ctx.setState({ ...ctx.state, portraitCurrentTab: props.tab })}>{props.text}</Link></div>
@@ -1117,6 +1111,17 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
         notes.song = song;
         ctx.setState({ ...ctx.state, playing: { notes, auto: true } });
     };
+    let [keywordFilter, setKeywordFilter] = useState('');
+    let [genreFilter, setGenreFilter] = useState(-1);
+    let songFilter = (song: API.Song): boolean => {
+        if (keywordFilter != '' && song.name.toLowerCase().indexOf(keywordFilter.toLowerCase()) == -1) {
+            return false;
+        }
+        if (genreFilter != -1 && song.genre != genreFilter) {
+            return false;
+        }
+        return true;
+    };
     let hide = (
         (ctx.state.layout == 'landscape' && !ctx.state.landscapeLeftPanelsVisible)
         || (ctx.state.layout == 'portrait' && ctx.state.portraitCurrentTab != 'list')
@@ -1124,11 +1129,10 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
     return <Panel style={{ overflow: 'hidden', display: hide? 'none': 'flex', flexDirection: 'column', minHeight: '80vh', ...(props.style ?? {}) }}>
         <PortaritLayoutTabs/>
         <div style={{ marginBottom: '5px', display: 'flex' }}>
-            <input type="text" placeholder="Keyword" style={{ flexGrow: '1', flexShrink: '1', minWidth: '0', marginRight: '5px' }}></input>
-            <Link style={{ marginRight: '5px' }} onClick={() => {}}>Search</Link>
-            <LinkToModal name={'filters'}>Filters...</LinkToModal>
+            <input value={keywordFilter} onChange={ev => {setKeywordFilter(ev.target.value);}} type="text" placeholder="Search Keyword" style={{ flexGrow: '1', flexShrink: '1', minWidth: '0', marginRight: '5px' }}></input>
+            <select value={genreFilter} onChange={ev => {setGenreFilter(Number(ev.target.value));}} style={{ maxWidth: '39%' }}><option value="-1">(ALL)</option>{ GenreList.map((name,i) => <option key={i} value={i}>{name}</option>) }</select>
         </div>
-        <div style={{ overflow: 'auto', display: 'flex', flexDirection: 'column', flexGrow: '1', borderTop: '1px solid gray', borderBottom: '1px solid gray' }}>{ctx.state.list.map((song, i) => (
+        <div style={{ overflow: 'auto', display: 'flex', flexDirection: 'column', flexGrow: '1', borderTop: '1px solid gray', borderBottom: '1px solid gray' }}>{ctx.state.list.filter(songFilter).map((song, i) => (
             <div key={song.id} style={{ borderTop: (i != 0)? '1px solid lightgray': 'none', padding: '5px' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <div style={{ background: (song.iconFileName)? undefined: 'darkgray', marginRight: '5px', height: '30px', width: '30px', flexShrink: '0' }}>
@@ -1302,7 +1306,6 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
             <NotesEditModal />
             <InviteModal />
             <UsersModal />
-            <FiltersModal />
         </div>
     </Context.Provider>
 }
