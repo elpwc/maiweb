@@ -11,6 +11,8 @@ import { findOneUser } from "./services/api/findOneUser";
 import { inviteAuth } from "./services/api/inviteAuth";
 import { loginAuth } from "./services/api/loginAuth";
 import { registerAuth } from "./services/api/registerAuth";
+import { removeNotes } from "./services/api/removeNotes";
+import { removeSong } from "./services/api/removeSong";
 import { setBannedAuth } from "./services/api/setBannedAuth";
 import { updateNotes } from "./services/api/updateNotes";
 import { updateSong } from "./services/api/updateSong";
@@ -33,7 +35,7 @@ interface State {
     portraitCurrentTab: 'list'|'notes'|'details'
     currentModal: null|Modal,
     user: null|API.WhoamiDto,
-    list: API.Song[],
+    list: API.Song[], listForceUpdate: number;
     playing: null|{notes:API.Notes,auto:boolean}
 };
 const defaultState: State = (() => {
@@ -45,14 +47,13 @@ const defaultState: State = (() => {
         portraitCurrentTab: 'list',
         currentModal: (user != null)? null: {name:'login'},
         user: user,
-        list: [],
+        list: [], listForceUpdate: -1,
         playing: null
     }
 })();
 const Context = createContext<{
     state: State,
     setState: (newState: State) => void,
-    updateList: () => Promise<void>,
     onPlay: () => void,
 }>(null as any);
 
@@ -501,27 +502,43 @@ function ProfileEditModal(): JSX.Element {
 }
 function SongModal(): JSX.Element {
     let ctx = useContext(Context);
-    let [pending, setPending] = useState(false);
+    let [loadPending, setLoadPending] = useState(false);
+    let [removePending, setRemovePending] = useState(false);
+    let pending = loadPending || removePending;
     let [song, setSong] = useState<null|API.Song>(null);
     let uploader = (song?.uploader as API.UserInfoDto);
     useEffect(() => {
         if (ctx.state.currentModal?.name == 'song') {
             let songId = ctx.state.currentModal.argument!;
             (async () => {
-                setPending(true);
+                setLoadPending(true);
                 try {
                     let song = await findOneSong({ id: songId }, { token: ctx.state.user!.sessionToken });
                     setSong(song);
                 } catch(err) {
                     showError(err);
                 } finally {
-                    setPending(false);
+                    setLoadPending(false);
                 }
             })();
         } else {
             setSong(null);
         }
     }, [ctx.state.currentModal]);
+    let remove = async () => {
+        if (!window.confirm('*permanently* remove this song?')) {
+            return;
+        }
+        setRemovePending(true);
+        try {
+            await removeSong({ id: String(song!.id) }, { token: ctx.state.user!.sessionToken });
+            ctx.setState({ ...ctx.state, currentModal: {name:'profile',argument:uploader.id}, listForceUpdate: Math.random() });
+        } catch(err) {
+            showError(err);
+        } finally {
+            setRemovePending(false);
+        }
+    };
     return <Modal name={'song'} title={'Song'} closeGuard={() => !pending}>
         { (song == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
         <div style={{ marginTop: '10px', maxHeight: '60vh', maxWidth: '80vw', minWidth: (ctx.state.layout == 'landscape')? undefined: '70vw' }}>
@@ -536,9 +553,14 @@ function SongModal(): JSX.Element {
                     <div style={{ fontSize: '110%', fontWeight: 'bold' }}>{ song.name }</div>
                     <div style={{ fontSize: '90%' }}>{ song.artist }</div>
                 </div>
-            { (uploader.id == ctx.state.user!.id)? <div style={{ marginLeft: '10px' }}>
-                <LinkToModal name="song_edit" argument={song.id}>Edit...</LinkToModal>
-            </div>: <></> }
+                <div>
+                    { (uploader.id == ctx.state.user!.id)? <div style={{ marginLeft: '10px' }}>
+                        <LinkToModal name="song_edit" argument={song.id}>Edit...</LinkToModal>
+                    </div>: <></> }
+                    { (uploader.id == ctx.state.user!.id || ctx.state.user!.authLevel == Admin || ctx.state.user!.authLevel == Mod)? <div style={{ marginLeft: '10px' }}>
+                        <SubmitLink pending={removePending} onClick={() => {remove()}}>Remove...</SubmitLink>
+                    </div>: <></> }
+                </div>
             </div>
             <div style={{ marginTop: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -637,8 +659,7 @@ function SongEditModal(): JSX.Element {
             } else {
                 await updateSong({ id: String(id) }, song!, { token: ctx.state.user!.sessionToken });
             }
-            ctx.setState({ ...ctx.state, currentModal: {name:'song',argument:newId!} });
-            ctx.updateList();
+            ctx.setState({ ...ctx.state, currentModal: {name:'song',argument:newId!}, listForceUpdate: Math.random() });
         } catch(err) {
             showError(err);
         } finally {
@@ -672,27 +693,43 @@ function SongEditModal(): JSX.Element {
 }
 function NotesModal(): JSX.Element {
     let ctx = useContext(Context);
-    let [pending, setPending] = useState(false);
+    let [loadPending, setLoadPending] = useState(false);
+    let [removePending, setRemovePending] = useState(false);
+    let pending = loadPending || removePending;
     let [notes, setNotes] = useState<null|API.Notes>(null);
     let uploader = (notes?.uploader as API.UserInfoDto);
     useEffect(() => {
         if (ctx.state.currentModal?.name == 'notes') {
             let notesId: number = ctx.state.currentModal.argument!;
             (async () => {
-                setPending(true);
+                setLoadPending(true);
                 try {
                     let notes = await findOneNotes({ id: String(notesId) }, { token: ctx.state.user!.sessionToken });
                     setNotes(notes);
                 } catch(err) {
                     showError(err);
                 } finally {
-                    setPending(false);
+                    setLoadPending(false);
                 }
             })();
         } else {
             setNotes(null);
         }
     }, [ctx.state.currentModal]);
+    let remove = async () => {
+        if (!window.confirm('*permanently* remove this notes?')) {
+            return;
+        }
+        setRemovePending(true);
+        try {
+            await removeNotes({ id: String(notes!.id) }, { token: ctx.state.user!.sessionToken });
+            ctx.setState({ ...ctx.state, currentModal: {name:'profile',argument:uploader.id}, listForceUpdate: Math.random() });
+        } catch(err) {
+            showError(err);
+        } finally {
+            setRemovePending(false);
+        }
+    };
     let showCode = () => {
         alert(notes!.notes);
     }
@@ -728,13 +765,14 @@ function NotesModal(): JSX.Element {
                 </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
-                <div>
+                <div>                    
+                    { (uploader.id == ctx.state.user!.id || ctx.state.user!.authLevel == Admin || ctx.state.user!.authLevel == Mod)? <><SubmitLink pending={removePending} onClick={() => {remove()}}>Remove...</SubmitLink>{' '}</>: <></> }
                     { (uploader.id == ctx.state.user!.id)? <LinkToModal name="notes_edit" argument={notes.id}>Edit...</LinkToModal>: <Link onClick={() => {showCode()}}>Code...</Link> }{' '}
                     <LinkToModal name="song" argument={notes.song.id}>View Song...</LinkToModal>
                 </div>
                 <div style={{ marginLeft: '10px' }}>
-                    <Link onClick={() => {play({auto:false})}}>Practice</Link>{' '}
-                    <Link onClick={() => {play({auto:true})}}>AutoPlay</Link>
+                    <Link onClick={() => {play({auto:false})}}>&lt;Practice&gt;</Link>{' '}
+                    <Link onClick={() => {play({auto:true})}}>&lt;AutoPlay&gt;</Link>
                 </div>
             </div>
         </div>}
@@ -796,8 +834,7 @@ function NotesEditModal(): JSX.Element {
             } else {
                 await updateNotes({ id: String(id) }, notes!, { token: ctx.state.user!.sessionToken });
             }
-            ctx.setState({ ...ctx.state, currentModal: {name:'notes',argument:newId!} });
-            ctx.updateList();
+            ctx.setState({ ...ctx.state, currentModal: {name:'notes',argument:newId!}, listForceUpdate: Math.random() });
         } catch(err) {
             showError(err);
         } finally {
@@ -974,11 +1011,28 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
     useEffect(() => {
         if (ctx.state.user) {
-            ctx.updateList();
+            ctx.setState({ ...ctx.state, listForceUpdate: Math.random() });
         } else {
             ctx.setState({ ...ctx.state, list: [] });
         }
     }, [ctx.state.user]);
+    let [listUpdatePending, setListUpdatePending] = useState(false);
+    useEffect(() => {
+        if (listUpdatePending) {
+            return;
+        }
+        (async () => {
+            setListUpdatePending(true);
+            try {
+                let list = await findAllSong({}, { token: ctx.state.user!.sessionToken });
+                ctx.setState({ ...ctx.state, list });
+            } catch(err) {
+                showError(err);
+            } finally {
+                setListUpdatePending(false);
+            }
+        })();
+    }, [ctx.state.listForceUpdate]);
     let play = (song: API.Song, notes_: API.Notes) => {
         let notes = { ...notes_ };
         notes.song = song;
@@ -1113,21 +1167,6 @@ function DetailsPanel(props: { style?: React.CSSProperties }): JSX.Element {
 
 export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize: number) => void, onPlay: () => void }): JSX.Element {
     let [state,setState] = useState(defaultState);
-    let [listUpdatePending, setListUpdatePending] = useState(false);
-    let updateList = async () => {
-        if (listUpdatePending) {
-            return;
-        }
-        setListUpdatePending(true);
-        try {
-            let list = await findAllSong({}, { token: state.user!.sessionToken });
-            setState({ ...state, list });
-        } catch(err) {
-            showError(err);
-        } finally {
-            setListUpdatePending(false);
-        }
-    };
     let resizeCallback = () => {
         let [w, h] = [window.innerWidth, window.innerHeight];
         let newLayout = ((w < h)? 'portrait': 'landscape') as 'portrait'|'landscape';
@@ -1158,7 +1197,7 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
     let leftColumn = state.landscapeLeftPanelsVisible;
     let rightColumn = state.landscapeRightPanelsVisible;
     if (!leftColumn && !rightColumn) { leftColumn = rightColumn = true; }
-    return <Context.Provider value={{state,setState,updateList, onPlay:props.onPlay}}>
+    return <Context.Provider value={{state,setState, onPlay:props.onPlay}}>
         <div style={{
                 display: 'grid',
                 gridTemplateColumns: l? `${leftColumn?(rightColumn?'minmax(auto,25vw)':'auto'):'0'} 100vh ${rightColumn?'auto':'0'}`: '1fr',
