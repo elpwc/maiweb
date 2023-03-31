@@ -1081,9 +1081,9 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
     useEffect(() => {
         if (ctx.state.user) {
-            ctx.setState({ ...ctx.state, listForceUpdate: Math.random() });
+            ctx.setState({ ...ctx.state, playing: null, listForceUpdate: Math.random() });
         } else {
-            ctx.setState({ ...ctx.state, list: [] });
+            ctx.setState({ ...ctx.state, playing: null, list: [] });
         }
     }, [ctx.state.user]);
     let [listUpdatePending, setListUpdatePending] = useState(false);
