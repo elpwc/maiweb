@@ -349,7 +349,7 @@ function ProfileModal(): JSX.Element {
             setPending(false);
         }
     }
-    // TODO: relations(songs,notes,playrecords)
+    // TODO: PlayRecords
     return <Modal name={'profile'} title={'Profile'} closeGuard={() => !pending}>
         <div style={{ minWidth: (ctx.state.layout == 'landscape')? '40vw': '80vw', maxHeight: '60vh', overflow: 'auto', margin: '10px 0px' }}>
             {(userInfo == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
