@@ -32,7 +32,9 @@ interface State {
     landscapeRightPanelsVisible: boolean,
     portraitCurrentTab: 'list'|'notes'|'details'
     currentModal: null|Modal,
-    user: null|API.WhoamiDto
+    user: null|API.WhoamiDto,
+    list: API.Song[],
+    playing: null|{notes:API.Notes,auto:boolean}
 };
 const defaultState: State = (() => {
     let user = readSavedUser();
@@ -42,13 +44,16 @@ const defaultState: State = (() => {
         landscapeRightPanelsVisible: true,
         portraitCurrentTab: 'list',
         currentModal: (user != null)? null: {name:'login'},
-        user: user
+        user: user,
+        list: [],
+        playing: null
     }
 })();
 const Context = createContext<{
     state: State,
     setState: (newState: State) => void,
-    onPlay: () => void
+    updateList: () => Promise<void>,
+    onPlay: () => void,
 }>(null as any);
 
 function showError(err: any) {
@@ -633,6 +638,7 @@ function SongEditModal(): JSX.Element {
                 await updateSong({ id: String(id) }, song!, { token: ctx.state.user!.sessionToken });
             }
             ctx.setState({ ...ctx.state, currentModal: {name:'song',argument:newId!} });
+            ctx.updateList();
         } catch(err) {
             showError(err);
         } finally {
@@ -690,6 +696,9 @@ function NotesModal(): JSX.Element {
     let showCode = () => {
         alert(notes!.notes);
     }
+    let play = (options: {auto: boolean}) => {
+        ctx.setState({ ...ctx.state, playing: { notes: notes!, auto: options.auto }, currentModal: null });
+    }
     return <Modal name={'notes'} title={'Notes'} closeGuard={() => !pending}>
         { (notes == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
         <div style={{ overflow: 'auto', maxWidth: '80vw', minWidth: (ctx.state.layout == 'landscape')? undefined: '70vw' }}>
@@ -724,8 +733,8 @@ function NotesModal(): JSX.Element {
                     <LinkToModal name="song" argument={notes.song.id}>View Song...</LinkToModal>
                 </div>
                 <div style={{ marginLeft: '10px' }}>
-                    <Link onClick={() => {}}>Practice</Link>{' '}
-                    <Link onClick={() => {}}>AutoPlay</Link>
+                    <Link onClick={() => {play({auto:false})}}>Practice</Link>{' '}
+                    <Link onClick={() => {play({auto:true})}}>AutoPlay</Link>
                 </div>
             </div>
         </div>}
@@ -788,6 +797,7 @@ function NotesEditModal(): JSX.Element {
                 await updateNotes({ id: String(id) }, notes!, { token: ctx.state.user!.sessionToken });
             }
             ctx.setState({ ...ctx.state, currentModal: {name:'notes',argument:newId!} });
+            ctx.updateList();
         } catch(err) {
             showError(err);
         } finally {
@@ -962,52 +972,22 @@ function UserPanel(props: { style?: React.CSSProperties }): JSX.Element {
 
 function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
-    let play = () => {
-        if (ctx.state.user == null) {
-            // play _notesInDev
-            ctx.onPlay();
+    useEffect(() => {
+        if (ctx.state.user) {
+            ctx.updateList();
         } else {
-            // load song and notes ...
+            ctx.setState({ ...ctx.state, list: [] });
         }
+    }, [ctx.state.user]);
+    let play = (song: API.Song, notes_: API.Notes) => {
+        let notes = { ...notes_ };
+        notes.song = song;
+        ctx.setState({ ...ctx.state, playing: { notes, auto: true } });
     };
     let hide = (
         (ctx.state.layout == 'landscape' && !ctx.state.landscapeLeftPanelsVisible)
         || (ctx.state.layout == 'portrait' && ctx.state.portraitCurrentTab != 'list')
     );
-    let difficultyColors: { [key:string]: string } = {
-        'easy': '#6FE163',
-        'advanced': '#F8DF3A',
-        'expert': '#FF828E',
-        'master': '#C27FF4'
-    }
-    let dummyNotes: Array<{ difficulty: string, lvBase: number, lv: string, name: string, official: boolean, uploader: string }> = [
-        { difficulty: 'easy', lvBase: 3, lv: '3.0', name: '', official: true, uploader: 'admin' },
-        { difficulty: 'advanced', lvBase: 6, lv: '6.2', name: '', official: true, uploader: 'admin' },
-        { difficulty: 'expert', lvBase: 9, lv: '9.7', name: '', official: true, uploader: 'admin' },
-        { difficulty: 'master', lvBase: 11, lv: '11.5', name: '', official: true, uploader: 'admin' },
-        { difficulty: 'master', lvBase: 12, lv: '12.0', name: 'xxxxxxxxxxxxxx', official: false, uploader: 'foobar' },
-        { difficulty: 'master', lvBase: 14, lv: '14.2', name: 'yyyyyyyyyyyyyy', official: false, uploader: 'foobar' },
-    ]
-    let dummySongs: Array<{ genre: string, title: string, artist: string, notes: Array<{ difficulty: string, lvBase: number, lv: string, name: string, official: boolean, uploader: string }> }> = [
-        { genre: 'VOCALOID', title: '太陽系デスコ', artist: 'ナユタン星人', notes: [{ difficulty: 'master', lvBase: 10, lv: '10.5', name: '测试谱面', official: false, uploader: 'admin' }] },
-        { genre: 'VOCALOID', title: 'いーあるふぁんくらぶ', artist: 'みきとP', notes: dummyNotes },
-        { genre: 'VOCALOID', title: 'ココロ', artist: 'トラボルタ', notes: dummyNotes },
-        { genre: 'VOCALOID', title: '千本桜', artist: '黒うさP', notes: dummyNotes },
-        { genre: 'VOCALOID', title: 'ダブルラリアット', artist: 'アゴアニキ', notes: dummyNotes },
-        { genre: 'VOCALOID', title: 'ないせんのうた', artist: 'ナイセン - momoco-', notes: dummyNotes },
-        { genre: 'VOCALOID', title: 'ハッピーシンセサイザ', artist: 'EasyPop', notes: dummyNotes },
-        { genre: 'VOCALOID', title: 'みくみくにしてあげる♪【してやんよ】', artist: 'ika', notes: dummyNotes },
-        { genre: 'VOCALOID', title: 'ゆっくりしていってね！！！', artist: '今日犬', notes: dummyNotes },
-        { genre: 'VOCALOID', title: 'ルカルカ★ナイトフィーバー', artist: 'samfree', notes: dummyNotes },
-        { genre: 'VOCALOID', title: 'ワーワーワールド', artist: 'Giga & Mitchie M / 初音ミク、花里みのり、小豆沢こはね「プロジェクトセカイ カラフルステージ！ feat. 初音ミク」 ', notes: dummyNotes },
-        { genre: '東方プロジェクト', title: '色は匂へど散りぬるを', artist: '幽閉サテライト', notes: dummyNotes },
-        { genre: '東方プロジェクト', title: '神々が恋した幻想郷', artist: 'Unlucky Morpheus', notes: dummyNotes },
-        { genre: '東方プロジェクト', title: '最終鬼畜妹フランドール・S', artist: 'ビートまりお(COOL＆CREATE)', notes: dummyNotes },
-        { genre: '東方プロジェクト', title: 'チルノのパーフェクトさんすう教室', artist: 'ARM＋夕野ヨシミ(IOSYS)feat. miko', notes: dummyNotes },
-        { genre: '東方プロジェクト', title: 'ナイト・オブ・ナイツ', artist: 'ビートまりお(COOL＆CREATE)', notes: dummyNotes },
-        { genre: '東方プロジェクト', title: 'Bad Apple!! feat nomico', artist: 'Masayoshi Minoshima', notes: dummyNotes },
-        { genre: '東方プロジェクト', title: '魔理沙は大変なものを盗んでいきました', artist: 'ARM＋夕野ヨシミ(IOSYS)feat. 藤咲かりん', notes: dummyNotes },
-    ];
     return <Panel style={{ overflow: 'hidden', display: hide? 'none': 'flex', flexDirection: 'column', minHeight: '80vh', ...(props.style ?? {}) }}>
         <PortaritLayoutTabs/>
         <div style={{ marginBottom: '5px', display: 'flex' }}>
@@ -1015,34 +995,36 @@ function SongListPanel(props: { style?: React.CSSProperties }): JSX.Element {
             <Link style={{ marginRight: '5px' }} onClick={() => {}}>Search</Link>
             <LinkToModal name={'filters'}>Filters...</LinkToModal>
         </div>
-        <div style={{ overflow: 'auto', display: 'flex', flexDirection: 'column', flexGrow: '1', borderTop: '1px solid gray', borderBottom: '1px solid gray' }}>{dummySongs.map((song, i) => (
-            <div key={i /*TODO*/} style={{ borderTop: (i != 0)? '1px solid lightgray': 'none', padding: '5px' }}>
+        <div style={{ overflow: 'auto', display: 'flex', flexDirection: 'column', flexGrow: '1', borderTop: '1px solid gray', borderBottom: '1px solid gray' }}>{ctx.state.list.map((song, i) => (
+            <div key={song.id} style={{ borderTop: (i != 0)? '1px solid lightgray': 'none', padding: '5px' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{ background: 'darkgray', marginRight: '5px', height: '30px', width: '30px', flexShrink: '0' }}></div>
-                    <div lang="ja">{ song.title }</div>
+                    <div style={{ background: (song.iconFileName)? undefined: 'darkgray', marginRight: '5px', height: '30px', width: '30px', flexShrink: '0' }}>
+                        { (song.iconFileName)? <img src={`${appconfig.apiBaseURL}/api/v1/uploads/${song.iconFileName}`} style={{ width: '100%', height: '100%' }} />: <></> }
+                    </div>
+                    <div lang="ja">{ song.name }</div>
                 </div>
-                <table className="notesTable" style={{ whiteSpace: 'nowrap', fontSize: '75%', width: '100%', margin: '5px 0px' }}><tbody>{ song.notes.map((notes, j) => (
-                    <tr key={j /*TODO*/}>
+                <table className="notesTable" style={{ whiteSpace: 'nowrap', fontSize: '75%', width: '100%', margin: '5px 0px' }}><tbody>{ ((song as any).notes as API.Notes[]).map(notes => (
+                    <tr key={notes.id}>
                         <td>
-                            <span style={{ color: 'white', fontWeight: 'bold', background: difficultyColors[notes.difficulty], height: '16px', width: '16px', display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <div>{notes.lvBase}</div>
+                            <span style={{ color: 'white', fontWeight: 'bold', background: DifficultyColorList[notes.difficulty], height: '16px', width: '16px', display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <div>{notes.lv_base}</div>
                             </span>
                             {' '}
-                            <span>{notes.lv}</span>
+                            <span>{(Number(notes.lv) == notes.lv_base)? `${notes.lv_base}.0`: notes.lv}</span>
                         </td>
                         <td style={{ width: '100%', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', left: '0', right: '0', top: '0', bottom: '0', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                                {notes.official? <><span style={{ color: 'red' }}>[official]</span>{' '}</>: <></>}
-                                <span title={notes.name}>{notes.name}</span>
+                                {notes.is_official? <><span style={{ color: 'red' }}>[official]</span>{' '}</>: <></>}
+                                <span title={notes.title}>{notes.title}</span>
                             </div>
                         </td>
                         <td>
-                            {notes.uploader}
+                            {(notes.uploader as API.UserInfoDto).name}
                         </td>
                         <td>
-                            <Link onClick={() => {play()}}>Play</Link>
+                            <Link onClick={() => {play(song, notes)}}>Play</Link>
                             {' '}
-                            <Link onClick={() => {}}>Details...</Link>
+                            <LinkToModal name={'notes'} argument={notes.id}>Details...</LinkToModal>
                         </td>
                     </tr> 
                 ))}</tbody></table>
@@ -1112,15 +1094,40 @@ function DetailsPanel(props: { style?: React.CSSProperties }): JSX.Element {
         (ctx.state.layout == 'landscape' && !ctx.state.landscapeRightPanelsVisible)
         || (ctx.state.layout == 'portrait' && ctx.state.portraitCurrentTab != 'details')
     );
-    let l = (ctx.state.layout == 'landscape')
-    return <Panel style={{ display: hide? 'none': (l? 'flex': 'block'), justifyContent: 'center', alignItems: 'center', ...(props.style ?? {}) }}>
+    return <Panel style={{ display: hide? 'none': 'flex', flexDirection: 'column', alignItems: 'center', ...(props.style ?? {}) }}>
         <PortaritLayoutTabs/>
-        <h1 style={{ textAlign: 'center' }}>Details</h1>
+        <div style={{ alignSelf: 'stretch' }}><b>NowPlaying</b></div>
+        { (!ctx.state.playing)? <div style={{ flexGrow: '1', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><b>----</b></div>:
+        <>
+            <div style={{ marginTop: '10px' }}><LinkToModal name={'notes'} argument={ctx.state.playing.notes.id}><span>[ID:{ctx.state.playing.notes.id}]</span></LinkToModal>{(ctx.state.playing.auto)? ' (auto)': <></>}</div>
+            <div style={{ margin: '4px 0px', padding: '8px 8px 4px 8px', backgroundColor: DifficultyColorList[ctx.state.playing.notes.difficulty] }}>
+                <div style={{ width: '64px', height: '64px' }}>
+                    { ctx.state.playing.notes.song.iconFileName? <img src={`${appconfig.apiBaseURL}/api/v1/uploads/${ctx.state.playing.notes.song.iconFileName}`} style={{ width: '100%', height: '100%' }} />: <></> }
+                </div>
+                <div style={{ textAlign: 'center', fontSize: '110%', fontWeight: 'bold' }} title={ctx.state.playing.notes.lv}>Lv.{ctx.state.playing.notes.lv_base}{(Number(ctx.state.playing.notes.lv) !== ctx.state.playing.notes.lv_base)? '+': ''}</div>
+            </div>
+            <div style={{ fontWeight: 'bold' }}>{ ctx.state.playing.notes.song.name }</div>
+        </>}
     </Panel>
 }
 
 export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize: number) => void, onPlay: () => void }): JSX.Element {
     let [state,setState] = useState(defaultState);
+    let [listUpdatePending, setListUpdatePending] = useState(false);
+    let updateList = async () => {
+        if (listUpdatePending) {
+            return;
+        }
+        setListUpdatePending(true);
+        try {
+            let list = await findAllSong({}, { token: state.user!.sessionToken });
+            setState({ ...state, list });
+        } catch(err) {
+            showError(err);
+        } finally {
+            setListUpdatePending(false);
+        }
+    };
     let resizeCallback = () => {
         let [w, h] = [window.innerWidth, window.innerHeight];
         let newLayout = ((w < h)? 'portrait': 'landscape') as 'portrait'|'landscape';
@@ -1151,7 +1158,7 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
     let leftColumn = state.landscapeLeftPanelsVisible;
     let rightColumn = state.landscapeRightPanelsVisible;
     if (!leftColumn && !rightColumn) { leftColumn = rightColumn = true; }
-    return <Context.Provider value={{state,setState, onPlay:props.onPlay}}>
+    return <Context.Provider value={{state,setState,updateList, onPlay:props.onPlay}}>
         <div style={{
                 display: 'grid',
                 gridTemplateColumns: l? `${leftColumn?(rightColumn?'minmax(auto,25vw)':'auto'):'0'} 100vh ${rightColumn?'auto':'0'}`: '1fr',
