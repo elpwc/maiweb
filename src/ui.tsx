@@ -13,6 +13,8 @@ import { loginAuth } from "./services/api/loginAuth";
 import { registerAuth } from "./services/api/registerAuth";
 import { removeNotes } from "./services/api/removeNotes";
 import { removeSong } from "./services/api/removeSong";
+import { requestPasswordResetAuth } from "./services/api/requestPasswordResetAuth";
+import { resetPasswordAuth } from "./services/api/resetPasswordAuth";
 import { setBannedAuth } from "./services/api/setBannedAuth";
 import { updateNotes } from "./services/api/updateNotes";
 import { updateSong } from "./services/api/updateSong";
@@ -155,7 +157,7 @@ function Panel(props: { id?: string, style?: React.CSSProperties, children: JSX.
     </div>
 }
 
-type ModalName = 'register'|'login'|'menu'|'profile'|'profile_edit'|'song'|'song_edit'|'notes'|'notes_edit'|'invite'|'users'|'filters';
+type ModalName = 'register'|'reset_password'|'login'|'menu'|'profile'|'profile_edit'|'song'|'song_edit'|'notes'|'notes_edit'|'invite'|'users'|'filters';
 interface Modal { name: ModalName, argument?: any };
 function LinkToModal(props: { name: ModalName, argument?: any, children: string|JSX.Element, style?: React.CSSProperties }): JSX.Element {
     let ctx = useContext(Context);
@@ -241,6 +243,75 @@ function RegisterModal(): JSX.Element {
         </div>
     </Modal>
 }
+function ResetPasswordModal(): JSX.Element {
+    let ctx = useContext(Context);
+    let [sendPending, setSendPending] = useState(false);
+    let [resetPending, setResetPending] = useState(false);
+    let pending = sendPending || resetPending;
+    let emailInputRef = useRef<HTMLInputElement>(null);
+    let tokenInputRef = useRef<HTMLInputElement>(null);
+    let passwordInputRef = useRef<HTMLInputElement>(null);
+    let passwordConfirmRef = useRef<HTMLInputElement>(null);
+    let send = async () => {
+        let email = emailInputRef.current!.value;
+        if (!email) {
+            alert('email required');
+            return;
+        }
+        setSendPending(true);
+        try {
+            await requestPasswordResetAuth({ email });
+            alert('token sent');
+        } catch(err) {
+            showError(err);
+        } finally {
+            setSendPending(false);
+        }
+    };
+    let reset = async () => {
+        let emailInput = emailInputRef.current!;
+        let tokenInput = tokenInputRef.current!;
+        let passwordInput = passwordInputRef.current!;
+        let passwordConfirm = passwordConfirmRef.current!;
+        if (passwordInput.value != passwordConfirm.value) {
+            alert('Password inputs are not consistent.');
+            return;
+        }
+        setResetPending(true);
+        try {
+            await resetPasswordAuth({
+                email: emailInput.value,
+                token: tokenInput.value,
+                newPassword: passwordInput.value
+            });
+            emailInput.value = '';
+            tokenInput.value = '';
+            passwordInput.value = '';
+            passwordConfirm.value = '';
+            alert('success');
+            ctx.setState({ ...ctx.state, currentModal: {name:'login'} });
+        } catch(err) {
+            showError(err);
+        } finally {
+            setResetPending(false);
+        }
+    };
+    return <Modal name="reset_password" title={'Reset Password'} closeGuard={() => !pending}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px 20px' }}>
+            <table><tbody>
+                <tr><td>Email:</td><td><input ref={emailInputRef} type="email"></input></td></tr>
+                <tr><td>Token:</td><td><input ref={tokenInputRef} type="text"></input>{' '}<SubmitLink pending={sendPending} onClick={() => {send();}}>Send</SubmitLink></td></tr>
+                <tr><td>Pasword:</td><td><input ref={passwordInputRef} type="password"></input></td></tr>
+                <tr><td>Confirm:</td><td><input ref={passwordConfirmRef} type="password" onKeyDown={(ev) => { if(ev.key == 'Enter') {reset();} }}></input></td></tr>
+            </tbody></table>
+            <div style={{ textAlign: 'center' }}>
+                <SubmitLink pending={resetPending} onClick={() => {reset();}}>
+                    Reset
+                </SubmitLink>
+            </div>
+        </div>
+    </Modal>
+}
 function LoginModal(): JSX.Element {
     let ctx = useContext(Context);
     let [pending, setPending] = useState(false);
@@ -265,7 +336,6 @@ function LoginModal(): JSX.Element {
             setPending(false);
         }
     };
-    // TODO: reset password
     return <Modal name={'login'} title={'Login'} closeGuard={() => !pending}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px 20px' }}>
             <table><tbody>
@@ -276,9 +346,15 @@ function LoginModal(): JSX.Element {
                 <SubmitLink pending={pending} onClick={() => { login() }}>
                     Login
                 </SubmitLink>
-                <LinkToModal name="register" style={{ fontSize: '80%', marginTop: '8px' }}>
-                    Register with an Invitation Code
-                </LinkToModal>
+                <div>
+                    <LinkToModal name="reset_password" style={{ fontSize: '80%', marginTop: '8px' }}>
+                        Password Reset...
+                    </LinkToModal>
+                    {' '}
+                    <LinkToModal name="register" style={{ fontSize: '80%', marginTop: '8px' }}>
+                        Register...
+                    </LinkToModal>
+                </div>
             </div>
         </div>
     </Modal>
@@ -1215,6 +1291,7 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
             <NotesEditorPanel style={{ gridArea: l? '1 / 3 / 3 / 4': '4 / 1 / 5 / 2' }}/>
             <DetailsPanel style={{ gridArea: l? '3 / 3 / 5 / 4': '4 / 1 / 5 / 2' }}/>
             <RegisterModal />
+            <ResetPasswordModal />
             <LoginModal />
             <MenuModal />
             <ProfileModal />
