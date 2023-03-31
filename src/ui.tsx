@@ -541,7 +541,7 @@ function SongModal(): JSX.Element {
     };
     return <Modal name={'song'} title={'Song'} closeGuard={() => !pending}>
         { (song == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
-        <div style={{ marginTop: '10px', maxHeight: '60vh', maxWidth: '80vw', minWidth: (ctx.state.layout == 'landscape')? undefined: '70vw' }}>
+        <div style={{ marginTop: '10px', maxHeight: '60vh', maxWidth: '85vw', minWidth: (ctx.state.layout == 'landscape')? undefined: '85vw' }}>
             <div>
                 <audio controls={true} src={`${appconfig.apiBaseURL}/api/v1/uploads/${song.musicFileName}`} style={{ width: '100%' }} />
             </div>
@@ -738,7 +738,7 @@ function NotesModal(): JSX.Element {
     }
     return <Modal name={'notes'} title={'Notes'} closeGuard={() => !pending}>
         { (notes == null)? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}><h1>Loading...</h1></div>:
-        <div style={{ overflow: 'auto', maxWidth: '80vw', minWidth: (ctx.state.layout == 'landscape')? undefined: '70vw' }}>
+        <div style={{ overflow: 'auto', maxWidth: '85vw', minWidth: (ctx.state.layout == 'landscape')? undefined: '85vw' }}>
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
                 <div style={{ padding: '8px 8px 4px 8px', backgroundColor: DifficultyColorList[notes.difficulty] }}>
                     <div style={{ width: '64px', height: '64px' }}>
@@ -1148,19 +1148,19 @@ function DetailsPanel(props: { style?: React.CSSProperties }): JSX.Element {
         (ctx.state.layout == 'landscape' && !ctx.state.landscapeRightPanelsVisible)
         || (ctx.state.layout == 'portrait' && ctx.state.portraitCurrentTab != 'details')
     );
-    return <Panel style={{ display: hide? 'none': 'flex', flexDirection: 'column', alignItems: 'center', ...(props.style ?? {}) }}>
+    return <Panel style={{ display: hide? 'none': 'flex', flexDirection: 'column', alignItems: 'stretch', ...(props.style ?? {}) }}>
         <PortaritLayoutTabs/>
-        <div style={{ alignSelf: 'stretch' }}><b>NowPlaying</b></div>
-        { (!ctx.state.playing)? <div style={{ flexGrow: '1', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><b>----</b></div>:
+        <div><b>NowPlaying</b></div>
+        { (!ctx.state.playing)? <div style={{ alignSelf: 'center', flexGrow: '1', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><b>----</b></div>:
         <>
-            <div style={{ marginTop: '10px' }}><LinkToModal name={'notes'} argument={ctx.state.playing.notes.id}><span>[ID:{ctx.state.playing.notes.id}]</span></LinkToModal>{(ctx.state.playing.auto)? ' (auto)': <></>}</div>
-            <div style={{ margin: '4px 0px', padding: '8px 8px 4px 8px', backgroundColor: DifficultyColorList[ctx.state.playing.notes.difficulty] }}>
+            <div style={{ alignSelf: 'center', marginTop: '10px' }}><LinkToModal name={'notes'} argument={ctx.state.playing.notes.id}><span>[ID:{ctx.state.playing.notes.id}]</span></LinkToModal>{(ctx.state.playing.auto)? ' (auto)': <></>}</div>
+            <div style={{ alignSelf: 'center', margin: '4px 0px', padding: '8px 8px 4px 8px', backgroundColor: DifficultyColorList[ctx.state.playing.notes.difficulty] }}>
                 <div style={{ width: '64px', height: '64px' }}>
                     { ctx.state.playing.notes.song.iconFileName? <img src={`${appconfig.apiBaseURL}/api/v1/uploads/${ctx.state.playing.notes.song.iconFileName}`} style={{ width: '100%', height: '100%' }} />: <></> }
                 </div>
                 <div style={{ textAlign: 'center', fontSize: '110%', fontWeight: 'bold' }} title={ctx.state.playing.notes.lv}>Lv.{ctx.state.playing.notes.lv_base}{(Number(ctx.state.playing.notes.lv) !== ctx.state.playing.notes.lv_base)? '+': ''}</div>
             </div>
-            <div style={{ fontWeight: 'bold' }}>{ ctx.state.playing.notes.song.name }</div>
+            <div style={{ fontWeight: 'bold', position: 'relative' }}>　<div style={{ padding: '0px 5px', textAlign: 'center', position: 'absolute', top: '0', left: '0', right: '0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ ctx.state.playing.notes.song.name }</div></div>
         </>}
     </Panel>
 }
