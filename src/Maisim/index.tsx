@@ -207,8 +207,10 @@ export default function Maisim(
   //#endregion Global
 
   const SongTrack: React.MutableRefObject<HTMLAudioElement> = useRef(new Audio());
-  SongTrack.current.volume = 0.5;
-  SongTrack.current.src = track ?? '';
+  useEffect(() => {
+    SongTrack.current.volume = 0.5;
+    SongTrack.current.src = track ?? '';
+  }, [track]);
 
   const BGA: React.LegacyRef<HTMLVideoElement> = useRef(null);
 
