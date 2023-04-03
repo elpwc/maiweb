@@ -1259,6 +1259,7 @@ export default function Maisim(
 
   //#region Touch事件 TouchEvent
   const onTouchStart = (ev: Event) => {
+    console.log(114514);
     ev.preventDefault(); //阻止事件的默认行为
     const e = ev as TouchEvent;
     const touches: TouchList = e.targetTouches;
@@ -1632,8 +1633,10 @@ export default function Maisim(
     if (backgroundLightness > 1) backgroundLightness = 1;
   }, [backgroundLightness]);
 
+  const containerDivRef = useRef(null);
+
   return (
-    <div className="maisim" style={style}>
+    <div className="maisim" style={style} ref={containerDivRef}>
       <div className="canvasContainer">
         <div className="bottomContainer" style={{ height: canvasH, width: canvasW, backgroundColor: backgroundType === BackgroundType.Color ? backgroundColor : '#000000' }}>
           {/** 背景图 */}

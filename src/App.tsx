@@ -15,6 +15,7 @@ import testtrack2 from './testTrack/2/track.mp3';
 import testbgi2 from './testTrack/2/bg.jpg';
 import testbga2 from './testTrack/2/pv.mp4';
 import { BackgroundType } from './Maisim/utils/types/backgroundType';
+import { AutoType } from './Maisim/utils/types/autoType';
 
 function App() {
   const [gameState, setGameState] = useState(GameState.Begin);
@@ -56,7 +57,9 @@ function App() {
             doShowEffect={true}
             doShowJudgement={true}
             outerColor={'#000000'}
-            isAuto={true}
+            isAuto={false}
+            autoType={AutoType.Directly}
+            doEnableKeyboard={false}
             doShowKeys={false}
             centerText={0}
             track={testtrack}
