@@ -72,6 +72,8 @@ export default function Maisim(
     track = undefined,
     /** 背景显示方式 */
     backgroundType = BackgroundType.Image,
+    /** 在背景显示为Video时是否在播放前显示背景图 */
+    doShowBGImageBeforePlay = true,
     /** 背景图 */
     backgroundImage = undefined,
     /** BGA */
@@ -1635,7 +1637,7 @@ export default function Maisim(
       <div className="canvasContainer">
         <div className="bottomContainer" style={{ height: canvasH, width: canvasW, backgroundColor: backgroundType === BackgroundType.Color ? backgroundColor : '#000000' }}>
           {/** 背景图 */}
-          {backgroundType === BackgroundType.Image ? (
+          {backgroundType === BackgroundType.Image || (backgroundType === BackgroundType.Video && doShowBGImageBeforePlay && gameState === GameState.Begin) ? (
             <img
               alt="background"
               className="bottomItem bgi"
@@ -1652,7 +1654,7 @@ export default function Maisim(
           )}
 
           {/** bga */}
-          {backgroundType === BackgroundType.Video ? (
+          {(backgroundType === BackgroundType.Video && doShowBGImageBeforePlay && gameState !== GameState.Begin) || (backgroundType === BackgroundType.Video && !doShowBGImageBeforePlay) ? (
             <video
               ref={BGA}
               className="bottomItem bga"

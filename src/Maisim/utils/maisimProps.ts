@@ -48,6 +48,8 @@ export interface MaisimProps {
   track?: string;
   /** 背景显示方式 */
   backgroundType?: BackgroundType;
+  /** 在背景显示为Video时是否在播放前显示背景图 */
+  doShowBGImageBeforePlay?: boolean;
   /** 背景图 */
   backgroundImage?: string;
   /** BGA */
