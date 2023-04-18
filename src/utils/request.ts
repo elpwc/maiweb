@@ -45,6 +45,9 @@ service.interceptors.response.use(
     return res;
   },
   err => {
+    if (!(err.response)) {
+      throw err;
+    }
     const errResponse = err.response;
     console.log('Oops! ', errResponse);
 
@@ -79,6 +82,8 @@ interface RequestOptions {
   paramsSerializer?: (params: object) => string;
   timeout?: number;
   timeoutMessage?: string;
+  requestType?: 'form';
+  token?: string;
 }
 
 /** 返回格式 */
@@ -95,6 +100,13 @@ interface RequestResponse<T = any> {
  * @author wniko
  */
 const request = <T = any>(url: string, options?: RequestOptions): Promise<T> => {
+  let headers: any = {};
+  if (options?.token) {
+    headers['X-Auth-Token'] = options.token;
+  }
+  if (options?.data && (options.data instanceof FormData || options.requestType == 'form')) {
+    headers['Content-Type'] = 'multipart/form-data';
+  }
   return new Promise((resolve: (value: T) => void, reject: (error: any) => void) => {
     service
       .request({
@@ -105,11 +117,14 @@ const request = <T = any>(url: string, options?: RequestOptions): Promise<T> => 
         //paramsSerializer: options?.paramsSerializer,
         timeout: options?.timeout,
         timeoutErrorMessage: options?.timeoutMessage,
+        headers
       })
       .then((response: any) => {
         // console.log(response);
         if (response?.data) {
           resolve(response.data as T);
+        } else {
+          resolve(undefined as any);
         }
       })
       .catch((err: ErrorResponse) => {
