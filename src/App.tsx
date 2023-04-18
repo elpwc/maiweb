@@ -56,7 +56,7 @@ function App() {
           doShowEffect={true}
           doShowJudgement={true}
           outerColor={'#000000'}
-          isAuto={false}
+          isAuto={true}
           autoType={AutoType.Directly}
           doEnableKeyboard={false}
           doShowKeys={false}

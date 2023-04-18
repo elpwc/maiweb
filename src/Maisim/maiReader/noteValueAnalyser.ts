@@ -21,7 +21,7 @@ export const noteValue_and_noteNumber_analyser = (oriData: string, currentBPM: n
       res.notenumber = noteValue_and_noteNumber[2];
       //slide = slide.substring(0, slide.indexOf('['));
 
-      res.remainTime = (240_000 * res.notenumber) / (currentBPM * res.notevalue);
+      res.remainTime = (240_000 * res.notenumber) / (noteValue_and_noteNumber[0] * res.notevalue);
       res.stopTime = 60_000 / noteValue_and_noteNumber[0];
     } else {
       const noteValue_and_noteNumber_original_data_split_by_numbersign = ndata.split('#').map(e => {

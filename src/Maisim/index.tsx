@@ -715,6 +715,7 @@ export default function Maisim(
             if (currentTime.current >= noteIns.moveTime!) {
               // @ts-ignore
               NoteSound.slide_track.cloneNode().play();
+              newNote.guideStarRadius = maimaiValues.current.maimaiTapR;
               newNote.status = 2;
             }
           } else if (newNote.status === 2) {
@@ -922,7 +923,7 @@ export default function Maisim(
         if (noteIns.type === NoteType.SlideTrack && note.judgeStatus === JudgeStatus.Miss) {
           if (noteIns.slideType === 'w') {
             if (
-              note.currentSectionIndexWifi.sort((a, b) => {
+              note.currentSectionIndexWifi.sort((a: number, b: number) => {
                 return b - a;
               })[0] +
                 1 >
@@ -1589,7 +1590,7 @@ export default function Maisim(
     let onChange = (ev: Event) => {
       let value = Number((ev.target as HTMLInputElement).value);
       setSpeedFactor(value);
-    }
+    };
     speedSelect.addEventListener('change', onChange);
     return () => {
       speedSelect.removeEventListener('change', onChange);
@@ -1734,12 +1735,16 @@ export default function Maisim(
           <></>
         )}
       </div>
-      <div style={{
-        display: 'none', // 先苟且一下
-        position: 'relative', zIndex: 114514
-      }}>
+      <div
+        style={{
+          display: 'none', // 先苟且一下
+          position: 'relative',
+          zIndex: 114514,
+        }}
+      >
         <div>
-          <button id="playButton"
+          <button
+            id="playButton"
             onClick={() => {
               //testmusic.play();
               if (gameState === GameState.Begin) {
