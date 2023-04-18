@@ -173,3 +173,7 @@ recordUpdater.ts  touchHoldSounds
 3. 适配结尾没有写E的情况
 4. 添加自动开始播放的props
 5. 歌曲总是晚1s才开始播放(?)
+
+4.19
+1. !SLIDE中SLIDE TRACK没有浮现而是直接出现了√
+2. [## :] [## # :]的适配

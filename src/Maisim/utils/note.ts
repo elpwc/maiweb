@@ -175,7 +175,7 @@ export interface Note {
 
   /** ? （无头SLIDE TRACK）https://w.atwiki.jp/simai/pages/25.html#id_25968468  */
   isNoTapSlide?: boolean;
-  /** ! （无头闪现SLIDE TRACK）https://w.atwiki.jp/simai/pages/25.html#id_25968468 */
+  /** ! （无头无GUIDE STARhangup SLIDE TRACK）https://w.atwiki.jp/simai/pages/25.html#id_25968468 */
   isNoTapNoTameTimeSlide?: boolean;
 
   /** 仅用于谱面读取时 */
