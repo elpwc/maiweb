@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@types/react-cookies": "^0.1.0",
-    "@umijs/openapi": "^1.7.1"
+    "@umijs/openapi": "^1.7.1",
+    "ts-node": "^10.9.1"
   }
 }

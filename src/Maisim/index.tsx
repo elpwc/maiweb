@@ -1583,13 +1583,27 @@ export default function Maisim(
     changeSongTrackPlaybackrate(speedFactor);
     virtualTime.current.setSpeedFactor(speedFactor);
   }, [speedFactor]);
+  useEffect(() => {
+    // 先苟且一下
+    let speedSelect = document.getElementById('controlSpeedSelect') as HTMLInputElement;
+    let onChange = (ev: Event) => {
+      let value = Number((ev.target as HTMLInputElement).value);
+      setSpeedFactor(value);
+    }
+    speedSelect.addEventListener('change', onChange);
+    return () => {
+      speedSelect.removeEventListener('change', onChange);
+    };
+  });
 
   // 进度条相关
   const [showSlider, setShowSlider] = useState(false);
   const sliderRef = useRef(null as any as HTMLInputElement); // 很脏……（确实...（）
   const sliderMax = 10000;
   useEffect(() => {
-    let slider = sliderRef.current;
+    // let slider = sliderRef.current;
+    // 先苟且一下
+    let slider = document.getElementById('controlSlider') as HTMLInputElement;
     let lastUpdatedValue = 0;
     let clearBinding = virtualTime.current.onProgress((progress: number, _: string) => {
       if (progress < 0) progress = 0;
@@ -1720,9 +1734,12 @@ export default function Maisim(
           <></>
         )}
       </div>
-      <div style={{ position: 'relative', zIndex: 114514 }}>
+      <div style={{
+        display: 'none', // 先苟且一下
+        position: 'relative', zIndex: 114514
+      }}>
         <div>
-          <button
+          <button id="playButton"
             onClick={() => {
               //testmusic.play();
               if (gameState === GameState.Begin) {

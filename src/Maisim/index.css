@@ -1,8 +1,8 @@
-.maisim {
-  position: relative;
+#portal > * > * {
+  z-index: 1000000;
 }
 
-.canvasContainer {
+.maisim {
   position: relative;
 }
 
@@ -10,6 +10,14 @@
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.canvasContainer > div {
+  position: relative;
+}
+
+.canvasContainer > .uiContainer {
+  position: absolute;
 }
 
 canvas {
@@ -23,25 +31,23 @@ canvas {
 }
 
 .bottomContainer {
-  position: relative;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  background-color: black;
+  /*z-index: -100;*/
+  /*background-color: black;*/
 }
 
 .bottomContainer .bgi {
-  z-index: 1010;
+  /*z-index: -90;*/
+  z-index: unset;
 }
 .bottomContainer .bga {
-  z-index: 1020;
+  /*z-index: -80;*/
 }
 .bottomContainer .transperantDiv {
-  z-index: 1030;
+  /*z-index: -70;*/
   background-color: black;
 }
 .bottomContainer .judgeLine {
-  z-index: 1040;
+  /*z-index: -60;*/
 }
 
 .canvasGameRecord {

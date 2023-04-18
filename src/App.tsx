@@ -16,6 +16,7 @@ import testbgi2 from './testTrack/2/bg.jpg';
 import testbga2 from './testTrack/2/pv.mp4';
 import { BackgroundType } from './Maisim/utils/types/backgroundType';
 import { AutoType } from './Maisim/utils/types/autoType';
+import { UI } from './ui';
 
 function App() {
   const [gameState, setGameState] = useState(GameState.Begin);
@@ -23,108 +24,65 @@ function App() {
   const [gameState3, setGameState3] = useState(GameState.Begin);
   const [winWidth, setwinWidth] = useState(0);
   const [winHeight, setwinHeight] = useState(0);
+  const [size, setSize] = useState(0);
   const [key, setkey]: [string, any] = useState('');
   const [showEditor, setshowEditor]: [boolean, any] = useState(false);
   const [currentnotes, setcurrentnotes]: [string, any] = useState('');
 
-  useEffect(() => {
-    window.addEventListener('resize', e => {
-      setwinHeight((e.target as Window).innerHeight);
-      setwinWidth((e.target as Window).innerWidth);
-    });
-
-    setwinHeight(300);
-    setwinWidth(300);
-  }, []);
+  const beginRef = useRef(null);
+  const selectRef = useRef(null);
 
   return (
-    <div className="App">
-      <div className="mainContainer" style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
-        <div style={{ display: 'flex', backgroundColor: '#617e97', marginTop: '10px',padding: '20px 20px', borderRadius: '20px', boxShadow: 'rgb(141 141 141) 0px 0px 10px 0px' }}>
-          <Maisim
-            id="1"
-            style={{}}
-            gameState={gameState}
-            setGameState={e => {
-              setGameState(e);
-            }}
-            w={500}
-            h={500}
-            tapStyle={TapStyles.Classic}
-            holdStyle={RegularStyles.Classic}
-            slideStyle={RegularStyles.Classic}
-            slideColor={SlideColor.Pink}
-            doShowEffect={true}
-            doShowJudgement={true}
-            outerColor={'#000000'}
-            isAuto={false}
-            autoType={AutoType.Directly}
-            doEnableKeyboard={false}
-            doShowKeys={false}
-            centerText={0}
-            track={testtrack}
-            backgroundType={BackgroundType.Video}
-            backgroundImage={testbgi}
-            backgroundAnime={testbga}
-            backgroundColor={'#136594'}
-            sheet={sheetdata.notes}
-            sheetProps={{ first: sheetdata.first, wholeBPM: sheetdata.wholebpm }}
-            onPlayStart={function (): void {}}
-            onGameRecordChange={function (gameRecord: object): void {}}
-            onPlayFinish={function (): void {}}
-            uiContent={undefined}
-            doShowUIContent={true}
-            onScreenPressDown={function (key: string): void {
-              setkey(key);
-            }}
-            onScreenPressUp={function (key: string): void {
-              setkey('');
-            }}
-            lightStatus={[]}
-          />
-          <Maisim
-            id="2"
-            style={{}}
-            gameState={gameState2}
-            setGameState={e => {
-              setGameState2(e);
-            }}
-            w={500}
-            h={500}
-            tapStyle={TapStyles.Classic}
-            holdStyle={RegularStyles.Classic}
-            slideStyle={RegularStyles.Classic}
-            slideColor={SlideColor.Pink}
-            doShowEffect={true}
-            doShowJudgement={true}
-            outerColor={'#000000'}
-            isAuto={true}
-            doShowKeys={false}
-            centerText={0}
-            track={testtrack2}
-            backgroundType={BackgroundType.Video}
-            backgroundImage={testbgi2}
-            backgroundAnime={testbga2}
-            backgroundColor={'#136594'}
-            sheet={sheetdata2.notes}
-            sheetProps={{ first: sheetdata2.first, wholeBPM: sheetdata2.wholebpm }}
-            onPlayStart={function (): void {}}
-            onGameRecordChange={function (gameRecord: object): void {}}
-            onPlayFinish={function (): void {}}
-            uiContent={undefined}
-            doShowUIContent={true}
-            onScreenPressDown={function (key: string): void {
-              setkey(key);
-            }}
-            onScreenPressUp={function (key: string): void {
-              setkey('');
-            }}
-            lightStatus={[]}
-          />
-        </div>
-        <div></div>
-      </div>
-    </div>
+    <UI
+      size={size}
+      setSize={setSize}
+      onPlay={() => {
+        document.getElementById('playButton')?.click();
+      }}
+      maisim={
+        <Maisim
+          id="1"
+          style={{}}
+          gameState={gameState}
+          setGameState={(e: any) => {
+            setGameState(e);
+          }}
+          w={size}
+          h={size}
+          tapStyle={TapStyles.Classic}
+          holdStyle={RegularStyles.Classic}
+          slideStyle={RegularStyles.Classic}
+          slideColor={SlideColor.Pink}
+          doShowEffect={true}
+          doShowJudgement={true}
+          outerColor={'#000000'}
+          isAuto={false}
+          autoType={AutoType.Directly}
+          doEnableKeyboard={false}
+          doShowKeys={false}
+          centerText={0}
+          track={testtrack}
+          backgroundType={BackgroundType.Video}
+          backgroundImage={testbgi}
+          backgroundAnime={testbga}
+          backgroundColor={'#136594'}
+          sheet={sheetdata.notes}
+          sheetProps={{ first: sheetdata.first, wholeBPM: sheetdata.wholebpm }}
+          onPlayStart={function (): void {}}
+          onGameRecordChange={function (gameRecord: object): void {}}
+          onPlayFinish={function (): void {}}
+          uiContent={undefined}
+          doShowUIContent={true}
+          onScreenPressDown={function (key: string): void {
+            setkey(key);
+          }}
+          onScreenPressUp={function (key: string): void {
+            setkey('');
+          }}
+          lightStatus={[]}
+        />
+      }
+    />
   );
 }
 
