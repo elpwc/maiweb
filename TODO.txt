@@ -160,7 +160,7 @@ recordUpdater.ts  touchHoldSounds
 
 3.29
 1. 多个控件只在对一个HTMLAudioElement进行操作
-2. [宴]Oshama Scramble! (Cranky Remix) 结尾左上出现了奇怪的黄圈  https://w.atwiki.jp/simai/pages/499.html
+2. [宴]Oshama Scramble! (Cranky Remix) 结尾左上出现了奇怪的黄圈  https://w.atwiki.jp/simai/pages/499.html √
 3. [宴]Hand in Hand 大量事故  https://w.atwiki.jp/simai/pages/608.html √
 3.1. 虽然适配了123456连续写在一起表示2以上多押的语法，但是这种写法写在/後时似乎会被识别为TOUCH并错误播放（1h[4:3]/357） √
 3.2. 还有很多 但该睡觉了 √

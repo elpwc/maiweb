@@ -45,7 +45,6 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
   const each_process = (e: string) => {
     let resEachNotes: string[] = [];
     e.split('/').forEach((eachNote: string) => {
-      console.log(e, eachNote);
       if (/^[0-9]+$/.test(eachNote)) {
         resEachNotes = [...resEachNotes, ...eachNote.split('')];
       } else {
