@@ -101,7 +101,7 @@ export interface Note {
   /** Note类型 */
   type: NoteType;
 
-  /** 是否是伪EACH https://w.atwiki.jp/simai/pages/25.html#id_62a860a2 */
+  /** 是否是疑似EACH https://w.atwiki.jp/simai/pages/25.html#id_62a860a2 */
   isNiseEach?: boolean;
 
   // 适用于SLIDE

@@ -26,7 +26,8 @@ II. 音符属性
 - Break
 - Each
 - Ex
-- NiseEach    时间相隔非常近但不是黄色的伪Each
+- NiseEach / 疑似EACH    时间相隔非常近但不是黄色的Each
+- 伪EACH                        黄色但实际上只有一个的Note
 - 多TOUCH白线 / 重叠TOUCH白框     多个TOUCH重叠时出现的白色框
 
 III. 难以归类的

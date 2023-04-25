@@ -1,6 +1,6 @@
 /** Note类型 */
 export enum NoteType {
-  Empty,
+  Undefined,
 
   Tap,
   Hold,
@@ -11,6 +11,9 @@ export enum NoteType {
 
   Touch,
   TouchHold,
+
+  /** 空位。目前在 xx/0 这种神秘写法的适配中使用，用来表示位置设置在 0 的工具Note */
+  Empty,
 
   /** 结束标记 */
   EndMark,

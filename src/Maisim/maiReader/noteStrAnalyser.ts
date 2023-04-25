@@ -15,7 +15,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
     serial: -1,
     pos: '',
     slideTracks: [],
-    type: NoteType.Empty,
+    type: NoteType.Undefined,
     beatIndex: 0,
     partnotevalue: 0,
     bpm: 0,
@@ -27,8 +27,14 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
     return null;
   }
 
+  if (noteData.substring(0, 1) === '0') {
+    // 匹配用 xx/0 表示伪EACH（黄色但只有一个）这样的地狱写法
+    noteRes.type = NoteType.Empty;
+    return noteRes;
+  }
+
   if (noteData.indexOf('速') !== -1) {
-    // 伪EACH
+    // 疑似EACH
     noteRes.isNiseEach = true;
     noteData = noteData.replaceAll('速', '');
   }

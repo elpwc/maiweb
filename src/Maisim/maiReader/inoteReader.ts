@@ -50,7 +50,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
   const allNotes: string[][] = inote
     .replaceAll('\n', '')
     .replaceAll('\r', '')
-    // 伪EACH。把[`]替换为[,速]，变成普通的两个节拍，仅仅留下[速]作为标识
+    // 疑似EACH。把[`]替换为[,速]，变成普通的两个节拍，仅仅留下[速]作为标识
     // 因为考虑到未来谱面的新Note可能会使用其他字母，所以这里使用汉字做转义符
     .replaceAll('`', ',速')
     // 分离所有节拍
@@ -177,7 +177,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
 
         // 处理好的res加入Notes列表
         // 并分离掉？！SLIDE的头
-        if (!(res.isNoTapSlide || res.isNoTapNoTameTimeSlide)) {
+        if (!(res.isNoTapSlide || res.isNoTapNoTameTimeSlide || res.type === NoteType.Empty)) {
           res.serial = serial;
           notesRes.push(res);
           serial++;
@@ -204,7 +204,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
               remainTime: slideTrack.remainTime,
               notenumber: slideTrack.notenumber,
               notevalue: slideTrack.notevalue,
-              isEach: res.slideTracks!.length > 1,
+              isEach: res.slideTracks!.length > 1 || res.isEach,
               isBreak: res.isSlideTrackBreak,
               isTapStar: res.isTapStar,
               isStarTap: res.isStarTap,
@@ -436,14 +436,6 @@ export const calculate_speed_related_params_for_notes = (
         });
       }
     }
-
-    // isEach for SLIDE TRACK
-    notes.forEach((note2, j) => {
-      if (note.type === NoteType.SlideTrack && note2.type === NoteType.SlideTrack && i !== j && note.emergeTime === note2.emergeTime) {
-        notes[i].isEach = true;
-        notes[j].isEach = true;
-      }
-    });
   });
 
   notes.sort((a: Note, b: Note) => {
