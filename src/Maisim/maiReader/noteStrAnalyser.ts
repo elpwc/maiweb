@@ -177,6 +177,12 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
         // SLIDES
         let slide = slideOri;
 
+        // 会有在*後仍然写上SLIDE TAP位置的写法 e.g. 1-5[]*1-8[]
+        if (/^[0-9]$/.test(slide.substring(0, 1))) {
+          
+          slide = slide.substring(1, slide.length);
+        }
+
         let currentSlideTrackRes: SlideTrack = {};
 
         // 判断是不是人体蜈蚣
