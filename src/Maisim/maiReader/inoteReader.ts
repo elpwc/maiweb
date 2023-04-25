@@ -41,6 +41,20 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
     })
     .join('');
 
+  /** 处理带/的语句，包括/中的连续数字写法也会顺便处理 */
+  const each_process = (e: string) => {
+    let resEachNotes: string[] = [];
+    e.split('/').forEach((eachNote: string) => {
+      console.log(e, eachNote);
+      if (/^[0-9]+$/.test(eachNote)) {
+        resEachNotes = [...resEachNotes, ...eachNote.split('')];
+      } else {
+        resEachNotes.push(eachNote);
+      }
+    });
+    return resEachNotes;
+  };
+
   //所有note
   /**
    * 分割後根据节拍排序的所有Note文本。
@@ -69,7 +83,9 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
           return tempRes;
         } else {
           //EACH
-          return e.split('/');
+          const tempRes = each_process(notesdata);
+          tempRes[0] = e.substring(0, endpos1 + 1) + tempRes[0];
+          return tempRes;
         }
       } else {
         if (/^[0-9]+$/.test(e)) {
@@ -77,11 +93,10 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
           return e.split('');
         } else {
           //EACH
-          return e.split('/');
+          return each_process(e);
         }
       }
     });
-
   /** 当前处理的节拍在谱面中从0开始的时间 ms */
   let currentTime: number = 0;
   /** Note唯一标识，递增 */
