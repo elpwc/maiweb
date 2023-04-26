@@ -244,9 +244,6 @@ export default function Maisim(
   /** 所有外键的状态 */
   let keyStates: KeyState[] = [];
 
-  /** 根据谱面流速，应该提前开始绘制的时间 */
-  const advancedTime = useRef(0);
-
   /** 是否已经遇到了Endmark，在等待所有Note消失後结束 */
   const isWaitingForEnd = useRef(false);
 
@@ -275,22 +272,26 @@ export default function Maisim(
     if (currentSheet.current) {
       showingNotes.current = [];
       nextNoteIndex.current = 0;
-      advancedTime.current = (currentSheet.current.notes[0].emergeTime ?? 0) < 0 ? -(currentSheet.current.notes[0].emergeTime ?? 0) : 0;
-      // console.log({ advancedTime.current })
       setTimeout(
         () => {
+          // 播放時间与 VirtualTime 有微小偏差
+          // 以後可以考虑直接使用 <audio> 的 currentTime 來渲染谱面
+          // SongTrack.current.addEventListener('timeupdate', ev => {
+          //   console.log('currentTime', SongTrack.current.currentTime);
+          //   console.log('vt', virtualTime.current.read());
+          // });
           SongTrack.current.play();
           BGA.current!.play();
         },
-        advancedTime.current / virtualTime.current.speedFactor // 苟且做法（无法动态调整 timeout 的速度）
+        0
       );
 
-      const duration = advancedTime.current + SongTrack.current.duration * 1000;
+      const duration = SongTrack.current.duration * 1000;
       // console.log({ duration: duration/1000 })
 
       //console.log(currentSheet.beats5?.beat);
       setTimeout(() => {
-        virtualTime.current.init(duration, advancedTime.current);
+        virtualTime.current.init(duration, 0);
         virtualTime.current.onSeek((progress: number) => {
           if (currentSheet.current) {
             // 进度条被拖动，重置音符状态
@@ -317,12 +318,8 @@ export default function Maisim(
   const seekSongTrack = (progress: number): boolean => {
     let duration = virtualTime.current.duration;
     let time = progress * duration;
-    if (time < advancedTime.current) {
-      return false;
-    } else {
-      SongTrack.current.currentTime = (time - advancedTime.current) / 1000;
-      return true;
-    }
+    SongTrack.current.currentTime = time / 1000;
+    return true;
   };
   const handleSongTrackFinish = (callback: () => void): (() => void) => {
     SongTrack.current.addEventListener('ended', callback);
