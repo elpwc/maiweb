@@ -308,7 +308,7 @@ export default function Maisim(
 
         timer_readAndUpdate.current = setInterval(reader_and_updater, maimaiValues.current.timerPeriod);
         timer_draw.current = setInterval(drawer, maimaiValues.current.timerPeriod);
-      }, currentSheet.current.first ?? 0 * 1000);
+      }, (currentSheet.current.first ?? 0) * 1000);
     }
   };
 
