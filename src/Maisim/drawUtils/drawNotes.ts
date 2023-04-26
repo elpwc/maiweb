@@ -320,7 +320,7 @@ export const drawNote = (
     };
 
     const drawEachPairLine = () => {
-      if (note.isEachPairFirst) {
+      if (note.eachPairDistance !== 0 && note.isEachPairFirst) {
         drawRotationImage(
           effectBackCtx!,
           eachPairLines[(note.eachPairDistance ?? 1) - 1],

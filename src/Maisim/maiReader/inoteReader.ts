@@ -45,7 +45,6 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
   const each_process = (e: string) => {
     let resEachNotes: string[] = [];
     e.split('/').forEach((eachNote: string) => {
-      console.log(e, eachNote);
       if (/^[0-9]+$/.test(eachNote)) {
         resEachNotes = [...resEachNotes, ...eachNote.split('')];
       } else {
@@ -205,6 +204,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
             const tempSlideTrackNote: Note = {
               index: res.index,
               serial,
+              slideTapSerial: res.serial,
               pos: res.pos,
               type: NoteType.SlideTrack,
               beatIndex: -1,
@@ -219,7 +219,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
               remainTime: slideTrack.remainTime,
               notenumber: slideTrack.notenumber,
               notevalue: slideTrack.notevalue,
-              isEach: res.slideTracks!.length > 1 || res.isEach,
+              isEach: res.slideTracks!.length > 1,
               isBreak: res.isSlideTrackBreak,
               isTapStar: res.isTapStar,
               isStarTap: res.isStarTap,
@@ -451,6 +451,14 @@ export const calculate_speed_related_params_for_notes = (
         });
       }
     }
+
+    // isEach for SLIDE TRACK
+    notes.forEach((note2, j) => {
+      if (note.type === NoteType.SlideTrack && note2.type === NoteType.SlideTrack && i !== j && abs((note.emergeTime ?? 0) - (note2.emergeTime ?? 0)) <= 0.0000005) {
+        notes[i].isEach = true;
+        notes[j].isEach = true;
+      }
+    });
   });
 
   notes.sort((a: Note, b: Note) => {

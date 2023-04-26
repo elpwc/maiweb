@@ -164,6 +164,9 @@ export interface Note {
   /**这段人体蜈蚣里的所有TRACK */
   slideLines?: SlideLine[];
 
+  /** 对应的星星头的标识符 */
+  slideTapSerial?: number;
+
   // 以下在生成後由speed之类的决定
   /** GUIDE STAR开始浮现的时间 */
   guideStarEmergeTime?: number;
