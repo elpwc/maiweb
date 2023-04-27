@@ -218,6 +218,7 @@ export const judge = (
           } else {
           }
         }
+
         if (showingNotes[i].judgeStatus !== JudgeStatus.Miss) {
           // touch group
           if (noteIns.inTouchGroup) {
@@ -231,6 +232,8 @@ export const judge = (
                     showingNotes[j].isTouching = true;
                     showingNotes[j].judgeTime = showingNotes[i].judgeTime;
                     showingNotes[j].judgeStatus = showingNotes[i].judgeStatus;
+
+                    showingNotes[j].status = -4;
 
                     // 更新touch group自动判定的TOUCH的game record
                     updateRecord(

@@ -272,19 +272,16 @@ export default function Maisim(
     if (currentSheet.current) {
       showingNotes.current = [];
       nextNoteIndex.current = 0;
-      setTimeout(
-        () => {
-          // 播放時间与 VirtualTime 有微小偏差
-          // 以後可以考虑直接使用 <audio> 的 currentTime 來渲染谱面
-          // SongTrack.current.addEventListener('timeupdate', ev => {
-          //   console.log('currentTime', SongTrack.current.currentTime);
-          //   console.log('vt', virtualTime.current.read());
-          // });
-          SongTrack.current.play();
-          BGA.current!.play();
-        },
-        0
-      );
+      setTimeout(() => {
+        // 播放時间与 VirtualTime 有微小偏差
+        // 以後可以考虑直接使用 <audio> 的 currentTime 來渲染谱面
+        // SongTrack.current.addEventListener('timeupdate', ev => {
+        //   console.log('currentTime', SongTrack.current.currentTime);
+        //   console.log('vt', virtualTime.current.read());
+        // });
+        SongTrack.current.play();
+        BGA.current!.play();
+      }, 0);
 
       const duration = SongTrack.current.duration * 1000;
       // console.log({ duration: duration/1000 })
@@ -675,10 +672,10 @@ export default function Maisim(
                   autoType === AutoType.Directly
                 );
               }
-            }
-
-            if (currentTime.current >= noteIns.time!) {
-              newNote.status = -2;
+            } else {
+              if (currentTime.current >= noteIns.time!) {
+                newNote.status = -2;
+              }
             }
           } else if (newNote.status === -2) {
             // stop

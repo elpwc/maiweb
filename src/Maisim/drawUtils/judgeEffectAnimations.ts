@@ -5,7 +5,7 @@ import { drawRotationImage } from './_base';
 import AnimationUtils from './animation';
 import MaimaiValues from '../maimaiValues';
 
-/** TAP STAR HOLD TOUCHHOLD结束後的判定特效 */
+/** TAP STAR HOLD TOUCHHOLD结束後的判定特效, TOUCH的不在这里，往下翻有*/
 export const JudgeEffectAnimation_Hex_or_Star = (values: MaimaiValues, animationFactory: AnimationUtils, ctx: CanvasRenderingContext2D, pos: string, type: 'hex' | 'star') => {
   let effectImage: HTMLImageElement;
   if (type === 'hex') {
