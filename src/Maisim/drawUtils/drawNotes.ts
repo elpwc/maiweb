@@ -20,6 +20,7 @@ let tapBreakIcon: HTMLImageElement;
 let tapExIcon: HTMLImageElement;
 let tapExEachIcon: HTMLImageElement;
 let tapExBreakIcon: HTMLImageElement;
+let tapTrapIcon: HTMLImageElement;
 
 let holdIcon: HTMLImageElement;
 let holdEachIcon: HTMLImageElement;
@@ -47,6 +48,7 @@ let starDoubleExBreakIcon: HTMLImageElement;
 let slideIcon: HTMLImageElement;
 let slideEachIcon: HTMLImageElement;
 let slideBreakIcon: HTMLImageElement;
+let slideExIcon: HTMLImageElement;
 
 /** 根据样式设定将Note图片更新为指定样式 */
 export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slideStyle: RegularStyles, slideColor: SlideColor) => {
@@ -58,6 +60,7 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
       tapExIcon = NoteIcon.Tap_Ex_00_pink;
       tapExEachIcon = NoteIcon.Tap_Ex_00_each;
       tapExBreakIcon = NoteIcon.Tap_Ex_00_break;
+      tapTrapIcon = NoteIcon.Tap_Trap_00;
       break;
     case TapStyles.Classic:
       tapIcon = NoteIcon.Tap_01;
@@ -66,6 +69,7 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
       tapExIcon = NoteIcon.Tap_Ex_01_pink;
       tapExEachIcon = NoteIcon.Tap_Ex_01_each;
       tapExBreakIcon = NoteIcon.Tap_Ex_01_break;
+      tapTrapIcon = NoteIcon.Tap_Trap_01;
       break;
     case TapStyles.DX:
       tapIcon = NoteIcon.Tap_02;
@@ -74,6 +78,7 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
       tapExIcon = NoteIcon.Tap_Ex_02_pink;
       tapExEachIcon = NoteIcon.Tap_Ex_02_each;
       tapExBreakIcon = NoteIcon.Tap_Ex_02_break;
+      tapTrapIcon = NoteIcon.Tap_Trap_02;
       break;
     case TapStyles.Strip:
       tapIcon = NoteIcon.Tap_03;
@@ -82,6 +87,7 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
       tapExIcon = NoteIcon.Tap_Ex_03_pink;
       tapExEachIcon = NoteIcon.Tap_Ex_03_each;
       tapExBreakIcon = NoteIcon.Tap_Ex_03_break;
+      tapTrapIcon = NoteIcon.Tap_Trap_03;
       break;
     case TapStyles.TAPKun:
       tapIcon = NoteIcon.Tap_04;
@@ -90,6 +96,7 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
       tapExIcon = NoteIcon.Tap_Ex_04_pink;
       tapExEachIcon = NoteIcon.Tap_Ex_04_each;
       tapExBreakIcon = NoteIcon.Tap_Ex_04_break;
+      tapTrapIcon = NoteIcon.Tap_Trap_04;
       break;
   }
 
@@ -121,6 +128,7 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
       slideIcon = NoteIcon.Slide_00;
       slideEachIcon = NoteIcon.Slide_Each_00;
       slideBreakIcon = NoteIcon.Slide_Break_00;
+      slideExIcon = NoteIcon.Slide_Ex_00;
 
       starBreakIcon = NoteIcon.BreakStar_00;
       starDoubleBreakIcon = NoteIcon.BreakStar_Double_00;
@@ -153,6 +161,7 @@ export const updateIcons = (tapStyle: TapStyles, holdStyle: RegularStyles, slide
       slideIcon = NoteIcon.Slide_01;
       slideEachIcon = NoteIcon.Slide_Each_01;
       slideBreakIcon = NoteIcon.Slide_Break_01;
+      slideExIcon = NoteIcon.Slide_Ex_01;
 
       starBreakIcon = NoteIcon.BreakStar_01;
       starDoubleBreakIcon = NoteIcon.BreakStar_Double_01;
@@ -277,7 +286,7 @@ export const drawNote = (
 
     const eachPairLines = [EffectIcon.EachLine1, EffectIcon.EachLine2, EffectIcon.EachLine3, EffectIcon.EachLine4];
 
-    const drawNoteLine = (lineImage: HTMLImageElement) => {
+    const drawNoteLine = (lineImage: HTMLImageElement, alpha: number = 1) => {
       if (note.isBreak) {
         drawRotationImage(
           effectBackCtx!,
@@ -288,7 +297,8 @@ export const drawNote = (
           ((props.rho + values.maimaiSummonLineR) / k2) * 2,
           values.center[0],
           values.center[1],
-          -22.5 + Number(note.pos) * 45
+          -22.5 + Number(note.pos) * 45,
+          alpha
         );
       } else {
         if (note.isEach) {
@@ -301,7 +311,8 @@ export const drawNote = (
             ((props.rho + values.maimaiSummonLineR) / k2) * 2,
             values.center[0],
             values.center[1],
-            -22.5 + Number(note.pos) * 45
+            -22.5 + Number(note.pos) * 45,
+            alpha
           );
         } else {
           drawRotationImage(
@@ -313,7 +324,8 @@ export const drawNote = (
             ((props.rho + values.maimaiSummonLineR) / k2) * 2,
             values.center[0],
             values.center[1],
-            -22.5 + Number(note.pos) * 45
+            -22.5 + Number(note.pos) * 45,
+            alpha
           );
         }
       }
@@ -335,20 +347,49 @@ export const drawNote = (
       }
     };
 
+    const ghostNoteAlphaCalculation = (type: NoteType, rho: number): number => {
+      let alpha = 1;
+      if (note.isGhost) {
+        switch (type) {
+          case NoteType.Tap:
+          case NoteType.Slide:
+          case NoteType.Hold:
+            alpha = 1 - (2 * props.rho) / (values.maimaiJudgeLineR - values.maimaiSummonLineR);
+            break;
+          case NoteType.SlideTrack:
+            alpha = 1 - (2 * props.rho) / (note.time - note.moveTime!);
+            break;
+          case NoteType.Touch:
+          case NoteType.TouchHold:
+            alpha = 1 - props.rho;
+            break;
+        }
+      }
+      if (alpha < 0) alpha = 0;
+      return alpha;
+    };
+
     const drawTapImage = (image: HTMLImageElement) => {
       const centerx = x,
         centery = y;
 
+      const alpha = ghostNoteAlphaCalculation(note.type, props.rho);
+
       if (doDrawEachLine) {
         drawEachPairLine();
-        drawNoteLine(EffectIcon.NormalLine);
+        drawNoteLine(EffectIcon.NormalLine, alpha);
       }
-      drawRotationImage(ctx, image, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (props.radius * 2) / k, centerx, centery, -22.5 + Number(note.pos) * 45);
+
+      drawRotationImage(ctx, image, x - props.radius / k, y - props.radius / k, (props.radius * 2) / k, (props.radius * 2) / k, centerx, centery, -22.5 + Number(note.pos) * 45, alpha);
+      console.log(props.rho);
     };
 
     const drawSlideTapImage = (image: HTMLImageElement, rotate: boolean = true) => {
       const centerx = x,
         centery = y;
+
+      const alpha = ghostNoteAlphaCalculation(note.type, props.rho);
+
       let rotateK = 0;
       if (note.isStarTap) {
         if (note.starTapRotate) {
@@ -362,7 +403,7 @@ export const drawNote = (
 
       if (doDrawEachLine) {
         drawEachPairLine();
-        drawNoteLine(EffectIcon.SlideLine);
+        drawNoteLine(EffectIcon.SlideLine, alpha);
       }
 
       drawRotationImage(
@@ -374,7 +415,8 @@ export const drawNote = (
         (props.radius * 2) / k,
         centerx,
         centery,
-        -22.5 + Number(note.pos) * 45 + (rotate ? rotateK : 0)
+        -22.5 + Number(note.pos) * 45 + (rotate ? rotateK : 0),
+        alpha
       );
     };
 
@@ -383,9 +425,11 @@ export const drawNote = (
       const centerx = x,
         centery = y;
 
+      const alpha = ghostNoteAlphaCalculation(note.type, props.rho);
+
       if (doDrawEachLine) {
         drawEachPairLine();
-        drawNoteLine(EffectIcon.NormalLine);
+        drawNoteLine(EffectIcon.NormalLine, alpha);
       }
 
       if (isShortHold) {
@@ -399,7 +443,7 @@ export const drawNote = (
           centerx,
           centery,
           -22.5 + Number(note.pos) * 45,
-          1,
+          alpha,
           0,
           0,
           image.width,
@@ -415,7 +459,7 @@ export const drawNote = (
           centerx,
           centery,
           157.5 + Number(note.pos) * 45,
-          1,
+          alpha,
           0,
           0,
           image.width,
@@ -433,7 +477,7 @@ export const drawNote = (
           centerx,
           centery,
           -22.5 + Number(note.pos) * 45,
-          1,
+          alpha,
           0,
           0,
           image.width,
@@ -449,7 +493,7 @@ export const drawNote = (
           centerx,
           centery,
           -22.5 + Number(note.pos) * 45,
-          1,
+          alpha,
           0,
           values.holdHeadHeight,
           image.width,
@@ -480,6 +524,8 @@ export const drawNote = (
       let k = (0.65 * values.maimaiScreenR) / 350,
         centerk = (0.8 * values.maimaiScreenR) / 350;
 
+      const alpha = props.status === 0 ? props.radius / values.maimaiTapR : ghostNoteAlphaCalculation(note.type, props.rho);
+
       // 多重TOUCH线
       if ((note.innerTouchOverlap ?? 0) > 0) {
         drawRotationImage(
@@ -504,38 +550,33 @@ export const drawNote = (
 
       for (let i = 0; i < 4; i++) {
         // 从下方的叶片开始顺时针绘制
-        drawRotationImage(
-          ctx,
-          image,
-          x - (image.width * k) / 2,
-          y + values.touchMaxDistance - (6.5 * values.maimaiScreenR) / 350 - props.rho,
-          image.width * k,
-          image.height * k,
-          x,
-          y,
-          90 * i,
-          props.radius / values.maimaiTapR
-        );
+        drawRotationImage(ctx, image, x - (image.width * k) / 2, y + values.touchMaxDistance - (6.5 * values.maimaiScreenR) / 350 - props.rho, image.width * k, image.height * k, x, y, 90 * i, alpha);
       }
       // 中心点
-      drawRotationImage(ctx, imageCenter, x - (imageCenter.width * k) / 2, y - (imageCenter.height * k) / 2, imageCenter.width * k, imageCenter.height * k);
+      drawRotationImage(ctx, imageCenter, x - (imageCenter.width * k) / 2, y - (imageCenter.height * k) / 2, imageCenter.width * k, imageCenter.height * k, 0, 0, alpha);
       // if (props.touched) {
       // 	drawRotationImage(ctx, NoteIcon.touch_just, x - (NoteIcon.touch_just.width ) / 2, y - (NoteIcon.touch_just.height ) / 2, NoteIcon.touch_just.width , NoteIcon.touch_just.height );
       // }
     };
 
-    const drawTouchHoldImage = (is_miss: boolean, isShortHold: boolean = false, imageTouchTwo: HTMLImageElement, imageTouchThree: HTMLImageElement) => {
+    const drawTouchHoldImage = (is_miss: boolean, isShortHold: boolean = false, imageTouchTwo: HTMLImageElement, imageTouchThree: HTMLImageElement, isBreak?: boolean) => {
       const centerx = x,
         centery = y;
+
+      const alpha = ghostNoteAlphaCalculation(note.type, props.rho);
 
       let k = (0.65 * values.maimaiScreenR) / 350,
         centerk = (0.8 * values.maimaiScreenR) / 350;
 
-      const touchHoldPieces = is_miss
+      const touchHoldPieces = isBreak
+        ? is_miss
+          ? [NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss]
+          : [NoteIcon.touch_hold_1, NoteIcon.touch_hold_1, NoteIcon.touch_hold_1, NoteIcon.touch_hold_1]
+        : is_miss
         ? [NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss, NoteIcon.touch_hold_miss]
         : [NoteIcon.touch_hold_1, NoteIcon.touch_hold_2, NoteIcon.touch_hold_3, NoteIcon.touch_hold_4];
-      const touchHoldCenter = is_miss ? NoteIcon.touch_hold_center_miss : NoteIcon.touch_center;
-      const touchHoldGage = is_miss ? NoteIcon.touch_hold_gage_miss : NoteIcon.touch_hold_gage;
+      const touchHoldCenter = isBreak ? (is_miss ? NoteIcon.touch_hold_center_miss : NoteIcon.touch_break_center) : is_miss ? NoteIcon.touch_hold_center_miss : NoteIcon.touch_center;
+      const touchHoldGage = isBreak ? (is_miss ? NoteIcon.touch_hold_gage_miss_break : NoteIcon.touch_hold_gage_break) : is_miss ? NoteIcon.touch_hold_gage_miss : NoteIcon.touch_hold_gage;
 
       // 多重TOUCH线
       if ((note.innerTouchOverlap ?? 0) > 0) {
@@ -666,6 +707,8 @@ export const drawNote = (
     };
 
     const drawSlideTrackImage = (imageTrack: HTMLImageElement, imageStar: HTMLImageElement, wifiTrack?: HTMLImageElement[]) => {
+      const alpha = ghostNoteAlphaCalculation(note.type, props.rho);
+
       const drawSlideTrackImage_ = () => {
         if (note.isChain) {
           // 人体蜈蚣
@@ -712,7 +755,7 @@ export const drawNote = (
                     slideData.x - values.center[0],
                     slideData.y - values.center[1],
                     slideData.direction,
-                    props.radius
+                    props.radius * alpha
                   );
                 }
                 ctx_slideTrack.restore();
@@ -779,7 +822,7 @@ export const drawNote = (
                     slideData[0].x - values.center[0],
                     slideData[0].y - values.center[1],
                     22.534119524645373,
-                    props.radius * 0.5
+                    props.radius * 0.5 * alpha
                   );
 
                   ctx_slideTrack.save();
@@ -794,7 +837,7 @@ export const drawNote = (
                     slideData[2].x - (values.APositions[0][0] - values.APositions[7][0]) - values.center[0],
                     slideData[2].y - values.center[1],
                     -22.534119524645373,
-                    props.radius * 0.5
+                    props.radius * 0.5 * alpha
                   );
                   ctx_slideTrack.restore();
                 }
@@ -840,7 +883,7 @@ export const drawNote = (
                   guideStarData.x - values.center[0],
                   guideStarData.y - values.center[1],
                   guideStarData.direction,
-                  props.guideStarRadius! / values.maimaiTapR
+                  (props.guideStarRadius! / values.maimaiTapR) * alpha
                 );
                 ctx.restore();
               }
@@ -875,7 +918,7 @@ export const drawNote = (
                     wifiguide.x - values.center[0],
                     wifiguide.y - values.center[1],
                     wifiguide.direction,
-                    props.guideStarRadius! / values.maimaiTapR
+                    (props.guideStarRadius! / values.maimaiTapR) * alpha
                   );
                 });
 
@@ -916,7 +959,7 @@ export const drawNote = (
                   slideData.x - values.center[0],
                   slideData.y - values.center[1],
                   slideData.direction,
-                  props.radius
+                  props.radius * alpha
                 );
               }
               ctx_slideTrack.restore();
@@ -951,7 +994,7 @@ export const drawNote = (
                 guideStarData.x - values.center[0],
                 guideStarData.y - values.center[1],
                 guideStarData.direction,
-                props.guideStarRadius! / values.maimaiTapR
+                (props.guideStarRadius! / values.maimaiTapR) * alpha
               );
               ctx.restore();
             }
@@ -1012,7 +1055,7 @@ export const drawNote = (
                   slideData[0].x - values.center[0],
                   slideData[0].y - values.center[1],
                   22.534119524645373,
-                  props.radius * 0.5
+                  props.radius * 0.5 * alpha
                 );
 
                 ctx_slideTrack.save();
@@ -1027,7 +1070,7 @@ export const drawNote = (
                   slideData[2].x - (values.APositions[0][0] - values.APositions[7][0]) - values.center[0],
                   slideData[2].y - values.center[1],
                   -22.534119524645373,
-                  props.radius * 0.5
+                  props.radius * 0.5 * alpha
                 );
                 ctx_slideTrack.restore();
               }
@@ -1063,7 +1106,7 @@ export const drawNote = (
                     wifiguide.x - values.center[0],
                     wifiguide.y - values.center[1],
                     wifiguide.direction,
-                    props.guideStarRadius! / values.maimaiTapR
+                    (props.guideStarRadius! / values.maimaiTapR) * alpha
                   );
                 });
 
@@ -1077,208 +1120,300 @@ export const drawNote = (
       drawSlideTrackImage_();
     };
 
-    switch (note.type) {
-      case NoteType.Tap:
-        if (isEach) {
-          if (note.isBreak) {
-            drawTapImage(tapBreakIcon);
-            if (note.isEx) {
-              drawTapImage(tapExBreakIcon);
-            }
-          } else {
-            drawTapImage(tapEachIcon);
-            if (note.isEx) {
-              drawTapImage(tapExEachIcon);
-            }
-          }
-        } else {
-          if (note.isBreak) {
-            drawTapImage(tapBreakIcon);
-            if (note.isEx) {
-              drawTapImage(tapExBreakIcon);
-            }
-          } else {
-            drawTapImage(tapIcon);
+    /** 画！ */
+    const draw = () => {
+      switch (note.type) {
+        case NoteType.Tap:
+          if (note.isTrap) {
+            drawTapImage(tapTrapIcon);
             if (note.isEx) {
               drawTapImage(tapExIcon);
             }
+          } else {
+            if (isEach) {
+              if (note.isBreak) {
+                drawTapImage(tapBreakIcon);
+                if (note.isEx) {
+                  drawTapImage(tapExBreakIcon);
+                }
+              } else {
+                drawTapImage(tapEachIcon);
+                if (note.isEx) {
+                  drawTapImage(tapExEachIcon);
+                }
+              }
+            } else {
+              if (note.isBreak) {
+                drawTapImage(tapBreakIcon);
+                if (note.isEx) {
+                  drawTapImage(tapExBreakIcon);
+                }
+              } else {
+                drawTapImage(tapIcon);
+                if (note.isEx) {
+                  drawTapImage(tapExIcon);
+                }
+              }
+            }
           }
-        }
 
-        break;
-      case NoteType.Hold:
-        if (props.isTouching || (!props.isTouching && props.rho < values.maimaiJudgeLineR - values.maimaiSummonLineR)) {
-          if (isEach) {
-            if (note.isBreak) {
-              drawHoldImage(holdBreakIcon, note.isShortHold);
-              if (note.isEx) {
-                drawHoldImage(holdExBreakIcon, note.isShortHold);
+          break;
+        case NoteType.Hold:
+          if (props.isTouching || (!props.isTouching && props.rho < values.maimaiJudgeLineR - values.maimaiSummonLineR)) {
+            if (isEach) {
+              if (note.isBreak) {
+                drawHoldImage(holdBreakIcon, note.isShortHold);
+                if (note.isEx) {
+                  drawHoldImage(holdExBreakIcon, note.isShortHold);
+                }
+              } else {
+                drawHoldImage(holdEachIcon, note.isShortHold);
+                if (note.isEx) {
+                  drawHoldImage(holdExEachIcon, note.isShortHold);
+                }
               }
             } else {
-              drawHoldImage(holdEachIcon, note.isShortHold);
-              if (note.isEx) {
-                drawHoldImage(holdExEachIcon, note.isShortHold);
+              if (note.isBreak) {
+                drawHoldImage(holdBreakIcon, note.isShortHold);
+                if (note.isEx) {
+                  drawHoldImage(holdExBreakIcon, note.isShortHold);
+                }
+              } else {
+                drawHoldImage(holdIcon, note.isShortHold);
+                if (note.isEx) {
+                  drawHoldImage(holdExIcon, note.isShortHold);
+                }
               }
             }
           } else {
-            if (note.isBreak) {
-              drawHoldImage(holdBreakIcon, note.isShortHold);
-              if (note.isEx) {
-                drawHoldImage(holdExBreakIcon, note.isShortHold);
-              }
-            } else {
-              drawHoldImage(holdIcon, note.isShortHold);
-              if (note.isEx) {
-                drawHoldImage(holdExIcon, note.isShortHold);
-              }
+            drawHoldImage(holdMissIcon, note.isShortHold);
+            if (note.isEx) {
+              drawHoldImage(holdExMissIcon, note.isShortHold);
             }
           }
-        } else {
-          drawHoldImage(holdMissIcon, note.isShortHold);
-          if (note.isEx) {
-            drawHoldImage(holdExMissIcon, note.isShortHold);
-          }
-        }
 
-        break;
-      case NoteType.Slide:
-        // console.log(note, note.slideTracks)
-        if (note.slideTracks?.length! > 1) {
-          // DOUBLE TRACK
+          break;
+        case NoteType.Slide:
+          // console.log(note, note.slideTracks)
+          if (note.slideTracks?.length! > 1) {
+            // DOUBLE TRACK
+            if (isEach) {
+              if (note.isBreak) {
+                drawSlideTapImage(starDoubleBreakIcon);
+                if (note.isEx) {
+                  drawSlideTapImage(starDoubleExBreakIcon);
+                }
+              } else {
+                drawSlideTapImage(starDoubleEachIcon);
+                if (note.isEx) {
+                  drawSlideTapImage(starDoubleExEachIcon);
+                }
+              }
+            } else {
+              if (note.isBreak) {
+                drawSlideTapImage(starDoubleBreakIcon);
+                if (note.isEx) {
+                  drawSlideTapImage(starDoubleExBreakIcon);
+                }
+              } else {
+                drawSlideTapImage(starDoubleIcon);
+                if (note.isEx) {
+                  drawSlideTapImage(starDoubleExIcon);
+                }
+              }
+            }
+          } else {
+            // SINGLE
+            if (isEach) {
+              if (note.isBreak) {
+                drawSlideTapImage(starBreakIcon);
+                if (note.isEx) {
+                  drawSlideTapImage(starExBreakIcon);
+                }
+              } else {
+                drawSlideTapImage(starEachIcon);
+                if (note.isEx) {
+                  drawSlideTapImage(starExEachIcon);
+                }
+              }
+            } else {
+              if (note.isBreak) {
+                drawSlideTapImage(starBreakIcon);
+                if (note.isEx) {
+                  drawSlideTapImage(starExBreakIcon);
+                }
+              } else {
+                drawSlideTapImage(starIcon);
+                if (note.isEx) {
+                  drawSlideTapImage(starExIcon);
+                }
+              }
+            }
+          }
+          break;
+        case NoteType.Touch:
+          if (note.isTrap) {
+            drawTouchImage(NoteIcon.touch_trap, NoteIcon.touch_trap_center);
+          } else {
+            if (isEach) {
+              if (note.isBreak) {
+                drawTouchImage(NoteIcon.touch_break, NoteIcon.touch_break_center);
+              } else {
+                drawTouchImage(NoteIcon.touch_each, NoteIcon.touch_each_center);
+              }
+            } else {
+              if (note.isBreak) {
+                drawTouchImage(NoteIcon.touch_break, NoteIcon.touch_break_center);
+              } else {
+                drawTouchImage(NoteIcon.touch, NoteIcon.touch_center);
+              }
+            }
+          }
+          break;
+        case NoteType.TouchHold:
+          if (props.isTouching || (!props.isTouching && props.tailRho <= 0)) {
+            drawTouchHoldImage(false, note.isShortHold, NoteIcon.touch_hold_two, NoteIcon.touch_hold_three, note.isBreak);
+          } else {
+            drawTouchHoldImage(true, note.isShortHold, NoteIcon.touch_hold_two, NoteIcon.touch_hold_three, note.isBreak);
+          }
+
+          break;
+        case NoteType.SlideTrack:
           if (isEach) {
             if (note.isBreak) {
-              drawSlideTapImage(starDoubleBreakIcon);
+              drawSlideTrackImage(slideBreakIcon, starBreakIcon, [
+                NoteIcon.wifi_break_0,
+                NoteIcon.wifi_break_1,
+                NoteIcon.wifi_break_2,
+                NoteIcon.wifi_break_3,
+                NoteIcon.wifi_break_4,
+                NoteIcon.wifi_break_5,
+                NoteIcon.wifi_break_6,
+                NoteIcon.wifi_break_7,
+                NoteIcon.wifi_break_8,
+                NoteIcon.wifi_break_9,
+                NoteIcon.wifi_break_10,
+              ]);
               if (note.isEx) {
-                drawSlideTapImage(starDoubleExBreakIcon);
+                drawSlideTrackImage(slideExIcon, starExBreakIcon, [
+                  NoteIcon.wifi_ex_0,
+                  NoteIcon.wifi_ex_1,
+                  NoteIcon.wifi_ex_2,
+                  NoteIcon.wifi_ex_3,
+                  NoteIcon.wifi_ex_4,
+                  NoteIcon.wifi_ex_5,
+                  NoteIcon.wifi_ex_6,
+                  NoteIcon.wifi_ex_7,
+                  NoteIcon.wifi_ex_8,
+                  NoteIcon.wifi_ex_9,
+                  NoteIcon.wifi_ex_10,
+                ]);
               }
             } else {
-              drawSlideTapImage(starDoubleEachIcon);
+              drawSlideTrackImage(slideEachIcon, starEachIcon, [
+                NoteIcon.wifi_each_0,
+                NoteIcon.wifi_each_1,
+                NoteIcon.wifi_each_2,
+                NoteIcon.wifi_each_3,
+                NoteIcon.wifi_each_4,
+                NoteIcon.wifi_each_5,
+                NoteIcon.wifi_each_6,
+                NoteIcon.wifi_each_7,
+                NoteIcon.wifi_each_8,
+                NoteIcon.wifi_each_9,
+                NoteIcon.wifi_each_10,
+              ]);
               if (note.isEx) {
-                drawSlideTapImage(starDoubleExEachIcon);
+                drawSlideTrackImage(slideExIcon, starExEachIcon, [
+                  NoteIcon.wifi_ex_0,
+                  NoteIcon.wifi_ex_1,
+                  NoteIcon.wifi_ex_2,
+                  NoteIcon.wifi_ex_3,
+                  NoteIcon.wifi_ex_4,
+                  NoteIcon.wifi_ex_5,
+                  NoteIcon.wifi_ex_6,
+                  NoteIcon.wifi_ex_7,
+                  NoteIcon.wifi_ex_8,
+                  NoteIcon.wifi_ex_9,
+                  NoteIcon.wifi_ex_10,
+                ]);
               }
             }
           } else {
             if (note.isBreak) {
-              drawSlideTapImage(starDoubleBreakIcon);
+              drawSlideTrackImage(slideBreakIcon, starBreakIcon, [
+                NoteIcon.wifi_break_0,
+                NoteIcon.wifi_break_1,
+                NoteIcon.wifi_break_2,
+                NoteIcon.wifi_break_3,
+                NoteIcon.wifi_break_4,
+                NoteIcon.wifi_break_5,
+                NoteIcon.wifi_break_6,
+                NoteIcon.wifi_break_7,
+                NoteIcon.wifi_break_8,
+                NoteIcon.wifi_break_9,
+                NoteIcon.wifi_break_10,
+              ]);
               if (note.isEx) {
-                drawSlideTapImage(starDoubleExBreakIcon);
+                drawSlideTrackImage(slideExIcon, starExBreakIcon, [
+                  NoteIcon.wifi_ex_0,
+                  NoteIcon.wifi_ex_1,
+                  NoteIcon.wifi_ex_2,
+                  NoteIcon.wifi_ex_3,
+                  NoteIcon.wifi_ex_4,
+                  NoteIcon.wifi_ex_5,
+                  NoteIcon.wifi_ex_6,
+                  NoteIcon.wifi_ex_7,
+                  NoteIcon.wifi_ex_8,
+                  NoteIcon.wifi_ex_9,
+                  NoteIcon.wifi_ex_10,
+                ]);
               }
             } else {
-              drawSlideTapImage(starDoubleIcon);
+              drawSlideTrackImage(slideIcon, starIcon, [
+                NoteIcon.wifi_0,
+                NoteIcon.wifi_1,
+                NoteIcon.wifi_2,
+                NoteIcon.wifi_3,
+                NoteIcon.wifi_4,
+                NoteIcon.wifi_5,
+                NoteIcon.wifi_6,
+                NoteIcon.wifi_7,
+                NoteIcon.wifi_8,
+                NoteIcon.wifi_9,
+                NoteIcon.wifi_10,
+              ]);
               if (note.isEx) {
-                drawSlideTapImage(starDoubleExIcon);
+                drawSlideTrackImage(slideExIcon, starExIcon, [
+                  NoteIcon.wifi_ex_0,
+                  NoteIcon.wifi_ex_1,
+                  NoteIcon.wifi_ex_2,
+                  NoteIcon.wifi_ex_3,
+                  NoteIcon.wifi_ex_4,
+                  NoteIcon.wifi_ex_5,
+                  NoteIcon.wifi_ex_6,
+                  NoteIcon.wifi_ex_7,
+                  NoteIcon.wifi_ex_8,
+                  NoteIcon.wifi_ex_9,
+                  NoteIcon.wifi_ex_10,
+                ]);
               }
             }
           }
-        } else {
-          // SINGLE
-          if (isEach) {
-            if (note.isBreak) {
-              drawSlideTapImage(starBreakIcon);
-              if (note.isEx) {
-                drawSlideTapImage(starExBreakIcon);
-              }
-            } else {
-              drawSlideTapImage(starEachIcon);
-              if (note.isEx) {
-                drawSlideTapImage(starExEachIcon);
-              }
-            }
-          } else {
-            if (note.isBreak) {
-              drawSlideTapImage(starBreakIcon);
-              if (note.isEx) {
-                drawSlideTapImage(starExBreakIcon);
-              }
-            } else {
-              drawSlideTapImage(starIcon);
-              if (note.isEx) {
-                drawSlideTapImage(starExIcon);
-              }
-            }
-          }
-        }
-        break;
-      case NoteType.Touch:
-        if (isEach) {
-          drawTouchImage(NoteIcon.touch_each, NoteIcon.touch_each_center);
-        } else {
-          drawTouchImage(NoteIcon.touch, NoteIcon.touch_center);
-        }
-        break;
-      case NoteType.TouchHold:
-        if (props.isTouching || (!props.isTouching && props.tailRho <= 0)) {
-          drawTouchHoldImage(false, note.isShortHold, NoteIcon.touch_hold_two, NoteIcon.touch_hold_three);
-        } else {
-          drawTouchHoldImage(true, note.isShortHold, NoteIcon.touch_hold_two, NoteIcon.touch_hold_three);
-        }
-        break;
-      case NoteType.SlideTrack:
-        if (isEach) {
-          if (note.isBreak) {
-            drawSlideTrackImage(slideBreakIcon, starBreakIcon, [
-              NoteIcon.wifi_break_0,
-              NoteIcon.wifi_break_1,
-              NoteIcon.wifi_break_2,
-              NoteIcon.wifi_break_3,
-              NoteIcon.wifi_break_4,
-              NoteIcon.wifi_break_5,
-              NoteIcon.wifi_break_6,
-              NoteIcon.wifi_break_7,
-              NoteIcon.wifi_break_8,
-              NoteIcon.wifi_break_9,
-              NoteIcon.wifi_break_10,
-            ]);
-          } else {
-            drawSlideTrackImage(slideEachIcon, starEachIcon, [
-              NoteIcon.wifi_each_0,
-              NoteIcon.wifi_each_1,
-              NoteIcon.wifi_each_2,
-              NoteIcon.wifi_each_3,
-              NoteIcon.wifi_each_4,
-              NoteIcon.wifi_each_5,
-              NoteIcon.wifi_each_6,
-              NoteIcon.wifi_each_7,
-              NoteIcon.wifi_each_8,
-              NoteIcon.wifi_each_9,
-              NoteIcon.wifi_each_10,
-            ]);
-          }
-        } else {
-          if (note.isBreak) {
-            drawSlideTrackImage(slideBreakIcon, starBreakIcon, [
-              NoteIcon.wifi_break_0,
-              NoteIcon.wifi_break_1,
-              NoteIcon.wifi_break_2,
-              NoteIcon.wifi_break_3,
-              NoteIcon.wifi_break_4,
-              NoteIcon.wifi_break_5,
-              NoteIcon.wifi_break_6,
-              NoteIcon.wifi_break_7,
-              NoteIcon.wifi_break_8,
-              NoteIcon.wifi_break_9,
-              NoteIcon.wifi_break_10,
-            ]);
-          } else {
-            drawSlideTrackImage(slideIcon, starIcon, [
-              NoteIcon.wifi_0,
-              NoteIcon.wifi_1,
-              NoteIcon.wifi_2,
-              NoteIcon.wifi_3,
-              NoteIcon.wifi_4,
-              NoteIcon.wifi_5,
-              NoteIcon.wifi_6,
-              NoteIcon.wifi_7,
-              NoteIcon.wifi_8,
-              NoteIcon.wifi_9,
-              NoteIcon.wifi_10,
-            ]);
-          }
-        }
-        break;
-      case NoteType.EndMark:
-        //finish();
-        break;
+          break;
+        case NoteType.EndMark:
+          //finish();
+          break;
+      }
+    };
+
+    if (note.isInvisible) {
+    } else if (note.isGhost) {
+      if (props.status === 0 || props.status === 1) {
+        draw();
+      }
+    } else {
+      draw();
     }
   } else if (props.status === -3) {
     // 显示判定

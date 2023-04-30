@@ -183,6 +183,10 @@ export interface Note {
 
   /** 仅用于谱面读取时 */
   isSlideTrackBreak?: boolean;
+  /** 仅用于谱面读取时 观赏谱 */
+  isSlideTrackEx?: boolean;
+  isSlideTrackInvisible?: boolean;
+  isSlideTrackGhost?: boolean;
 
   /** 最後SlideLine的角度，用来确定判定图像的角度 */
   slideLineDirectionParams?: SlideTrackJudgementParams;
@@ -208,4 +212,15 @@ export interface Note {
 
   /** 适用于TOUCH，此TOUCH是否在一个touch group中 */
   inTouchGroup?: boolean;
+
+  /** 是否是全隐形note */
+  isInvisible?: boolean;
+
+  /// 观赏谱相关
+  /** 速度 */
+  speed?: number;
+  /** 是否是陷阱 */
+  isTrap?: boolean;
+  /** 是否是幽灵note（只有浮现和判定会显示） */
+  isGhost?: boolean;
 }

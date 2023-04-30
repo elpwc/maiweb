@@ -58,7 +58,7 @@ function App() {
           outerColor={'#000000'}
           isAuto={true}
           autoType={AutoType.Directly}
-          doEnableKeyboard={false}
+          doEnableKeyboard={true}
           doShowKeys={false}
           centerText={0}
           track={testtrack2}
@@ -80,6 +80,9 @@ function App() {
             setkey('');
           }}
           lightStatus={[]}
+          speedTap={2}
+          speedTouch={6.5}
+          slideTrackOffset={0}
         />
       }
     />

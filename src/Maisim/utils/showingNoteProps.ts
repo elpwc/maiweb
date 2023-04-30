@@ -9,15 +9,20 @@ export interface ShowingNoteProps {
 
   /**
    *  ● TAP:
-   * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1:move
+   * -4: 等待修正 -3: judge -1: die 0: emerge 1:move
    *  ● HOLD:
-   * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1: grow 2: move(不能充满，移动)/fill(充满 长度暂时不改变) 3: disappear
+   * -4: 等待修正 -3: judge -1: die 0: emerge 1: grow 2: move(不能充满，移动)/fill(充满 长度暂时不改变) 3: disappear
    *  ● SLIDE TRACK:
-   * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1: hangup 2: move
+   * -4: 等待修正 -3: judge -1: die 0: emerge 1: hangup 2: move
    *  ● FIREWORK:
    * -1: die 0: wait for trig 1: change
    *  ● TOUCH:
    * -4: 等待修正 -3: judge -2: wait(停留) -1: die 0: emerge 1:converge
+   * ※说明：
+   * -4(等待修正)：在判定范围内的任何时间被判定後，迅速（在judge.ts内）转变为等待修正状态，之後在对ex,HOLD按压时间导致的判定改变更新完成後，转变为-3（显示判定），TAP沒有被判定会在离开屏幕後进入-4状态；
+   * -3(judge)：显示判定文字(PERFECT,GREAT,etc.)的阶段，显示完毕後转变为-1(die)状态；
+   * -2(wait)：在正解时刻後持续显示的阶段，只用于TOUCH；
+   * -1(die)：完成了整个生命周期，等待从pool中回收；
    */
   status: number;
   /** 当前note本身大小的半径 */
@@ -51,7 +56,7 @@ export interface ShowingNoteProps {
   judgeStatus: JudgeStatus;
   /** 判定FAST LATE */
   judgeTime: JudgeTimeStatus;
-  /** BREAK结果细分 */
+  /** BREAK结果细分 范围：CP:1, P:2-3, G:4-6 */
   judgeLevel: number;
 
   /** 适用于HOLD, SLIDE HOLD 被按下的总时间 */

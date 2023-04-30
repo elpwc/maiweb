@@ -61,13 +61,73 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
   }
   if (noteData.indexOf('x') !== -1) {
     // EX
-    noteRes.isEx = true;
+    // 如果是SLIDE
+    if (noteData.includes('[') && !noteData.includes('h')) {
+      if (noteData.split('x').length === 3) {
+        noteRes.isEx = true;
+        noteRes.isSlideTrackEx = true;
+      } else if (noteData.split('x').length === 2) {
+        if (noteData.substring(1, 2) === 'x') {
+          noteRes.isEx = true;
+        } else {
+          noteRes.isSlideTrackEx = true;
+        }
+      }
+    } else {
+      // 通常Note
+      noteRes.isEx = true;
+    }
     noteData = noteData.replaceAll('x', '');
   }
   if (noteData.indexOf('f') !== -1) {
     // FIREWORK
     noteRes.hasFirework = true;
     noteData = noteData.replaceAll('f', '');
+  }
+  if (noteData.indexOf('m') !== -1) {
+    // TRAP
+    noteRes.isTrap = true;
+    noteData = noteData.replaceAll('m', '');
+  }
+  if (noteData.indexOf('i') !== -1) {
+    // 隐形note
+    // 如果是SLIDE
+    if (noteData.includes('[') && !noteData.includes('h')) {
+      if (noteData.split('i').length === 3) {
+        noteRes.isInvisible = true;
+        noteRes.isSlideTrackInvisible = true;
+      } else if (noteData.split('i').length === 2) {
+        if (noteData.substring(1, 2) === 'i') {
+          noteRes.isInvisible = true;
+        } else {
+          noteRes.isSlideTrackInvisible = true;
+        }
+      }
+    } else {
+      // 通常Note
+      noteRes.isInvisible = true;
+    }
+    noteData = noteData.replaceAll('i', '');
+  }
+  if (noteData.indexOf('g') !== -1) {
+    // 幽灵note
+    // 如果是SLIDE
+    if (noteData.includes('[') && !noteData.includes('h')) {
+      if (noteData.split('g').length === 3) {
+        noteRes.isGhost = true;
+        noteRes.isSlideTrackGhost = true;
+      } else if (noteData.split('g').length === 2) {
+        if (noteData.substring(1, 2) === 'g') {
+          noteRes.isGhost = true;
+        } else {
+          noteRes.isSlideTrackGhost = true;
+        }
+      }
+    } else {
+      // 通常Note
+      noteRes.isGhost = true;
+    }
+    noteData = noteData.replaceAll('g', '');
   }
 
   // $ @ ? !
@@ -179,7 +239,6 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
 
         // 会有在*後仍然写上SLIDE TAP位置的写法 e.g. 1-5[]*1-8[]
         if (/^[0-9]$/.test(slide.substring(0, 1))) {
-          
           slide = slide.substring(1, slide.length);
         }
 

@@ -221,7 +221,7 @@ export default function Maisim(
   /** 画外键 */
   const timer_drawkeys: React.MutableRefObject<string | number | NodeJS.Timeout | undefined> = useRef(undefined);
   /** 根据绘制信息去绘制的Timer */
-  const timer_draw: React.MutableRefObject<string | number | NodeJS.Timer | undefined> = useRef(undefined);
+  //const timer_draw: React.MutableRefObject<string | number | NodeJS.Timer | undefined> = useRef(undefined);
 
   /** NOTE移动速度调整量 */
   const tapMoveSpeed: number = 1; // 0.85
@@ -303,8 +303,11 @@ export default function Maisim(
           }
         });
 
-        timer_readAndUpdate.current = setInterval(reader_and_updater, maimaiValues.current.timerPeriod);
-        timer_draw.current = setInterval(drawer, maimaiValues.current.timerPeriod);
+        timer_readAndUpdate.current = setInterval(() => {
+          reader_and_updater();
+          drawer();
+        }, maimaiValues.current.timerPeriod);
+        //timer_draw.current = setInterval(drawer, maimaiValues.current.timerPeriod);
       }, (currentSheet.current.first ?? 0) * 1000);
     }
   };
@@ -369,7 +372,7 @@ export default function Maisim(
   /** 终止播放，清除变量，恢复到初始状态 */
   const finish = () => {
     clearInterval(timer_readAndUpdate.current);
-    clearInterval(timer_draw.current);
+    //clearInterval(timer_draw.current);
     SongTrack.current.pause();
     BGA.current!.pause();
     seekSongTrack(0);
@@ -422,7 +425,7 @@ export default function Maisim(
             // move
             newNote.rho = ((currentTime.current - noteIns.moveTime!) / (noteIns.time! - noteIns.moveTime!)) * (maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR);
 
-            if (isAuto) {
+            if (isAuto && !noteIns.isTrap) {
               if (newNote.rho >= maimaiValues.current.maimaiJudgeLineR - maimaiValues.current.maimaiSummonLineR) {
                 judge(
                   gameRecord.current,
@@ -935,6 +938,7 @@ export default function Maisim(
           note.judgeStatus = JudgeStatus.CriticalPerfect;
         }
         if (note.status === -1 && !note.touched) {
+          console.log(1);
           updateRecord(gameRecord.current, noteIns, note, currentSheet.current!.basicEvaluation, currentSheet.current!.exEvaluation, currentSheet.current!.oldTheoreticalScore);
         }
       }
@@ -942,9 +946,43 @@ export default function Maisim(
       // 修正判定，并updateRecord（更新分数），return的是filt出的还没按的
       if (noteIns.type === NoteType.Tap || noteIns.type === NoteType.Slide || noteIns.type === NoteType.SlideTrack) {
         if (note.status === -4) {
+          if (noteIns.isTrap) {
+            switch (note.judgeStatus) {
+              case JudgeStatus.CriticalPerfect:
+                note.judgeStatus = JudgeStatus.Miss;
+                break;
+              case JudgeStatus.Perfect:
+                note.judgeStatus = JudgeStatus.Good;
+                break;
+              case JudgeStatus.Great:
+                note.judgeStatus = JudgeStatus.Great;
+                switch (note.judgeLevel) {
+                  case 4:
+                    note.judgeLevel = 6;
+                    break;
+                  case 5:
+                    note.judgeLevel = 5;
+                    break;
+                  case 6:
+                    note.judgeLevel = 4;
+                    break;
+                }
+                break;
+              case JudgeStatus.Good:
+                note.judgeStatus = JudgeStatus.Perfect;
+                note.judgeLevel = 2;
+                break;
+              case JudgeStatus.Miss:
+                note.judgeStatus = JudgeStatus.CriticalPerfect;
+                note.judgeLevel = 1;
+                break;
+            }
+          }
+
           if (isAuto && autoType === AutoType.Directly) {
             note.judgeStatus = JudgeStatus.CriticalPerfect;
           }
+
           if (noteIns.isEx) {
             if (note.judgeStatus !== JudgeStatus.Miss) note.judgeStatus = JudgeStatus.CriticalPerfect;
           }
@@ -1631,7 +1669,7 @@ export default function Maisim(
     return handleSongTrackFinish(() => {
       virtualTime.current.pause();
       clearInterval(timer_readAndUpdate.current);
-      clearInterval(timer_draw.current);
+      //clearInterval(timer_draw.current);
       setGameState?.(GameState.Pause);
     });
   }, []);
@@ -1749,7 +1787,7 @@ export default function Maisim(
               } else if (gameState === GameState.Play) {
                 virtualTime.current.pause();
                 clearInterval(timer_readAndUpdate.current);
-                clearInterval(timer_draw.current);
+                //clearInterval(timer_draw.current);
                 SongTrack.current.pause();
                 BGA.current!.pause();
                 setGameState?.(GameState.Pause);
@@ -1757,8 +1795,11 @@ export default function Maisim(
                 console.log('paused');
               } else if (gameState === GameState.Pause) {
                 virtualTime.current.resume();
-                timer_readAndUpdate.current = setInterval(reader_and_updater, maimaiValues.current.timerPeriod);
-                timer_draw.current = setInterval(drawer, maimaiValues.current.timerPeriod);
+                timer_readAndUpdate.current = setInterval(() => {
+                  reader_and_updater();
+                  drawer();
+                }, maimaiValues.current.timerPeriod);
+                //timer_draw.current = setInterval(() => {}, maimaiValues.current.timerPeriod);
                 SongTrack.current.play();
                 BGA.current!.play();
                 setGameState?.(GameState.Play);
