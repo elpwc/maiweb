@@ -33,6 +33,8 @@ import Slide_Break_00_icon from '../resource/maimai_img/notes/Slide_Break_00.png
 import Slide_Break_01_icon from '../resource/maimai_img/notes/Slide_Break_01.png';
 import Slide_Each_00_icon from '../resource/maimai_img/notes/Slide_Each_00.png';
 import Slide_Each_01_icon from '../resource/maimai_img/notes/Slide_Each_01.png';
+import Slide_Ex_00_icon from '../resource/maimai_img/notes/Slide_Ex_00.png';
+import Slide_Ex_01_icon from '../resource/maimai_img/notes/Slide_Ex_01.png';
 import Star_00_icon from '../resource/maimai_img/notes/Star_00.png';
 import Star_01_icon from '../resource/maimai_img/notes/Star_01.png';
 import Star_Double_00_icon from '../resource/maimai_img/notes/Star_Double_00.png';
@@ -86,7 +88,14 @@ import Tap_Ex_03_pink_icon from '../resource/maimai_img/notes/Tap_Ex_03_pink.png
 import Tap_Ex_04_break_icon from '../resource/maimai_img/notes/Tap_Ex_04_break.png';
 import Tap_Ex_04_each_icon from '../resource/maimai_img/notes/Tap_Ex_04_each.png';
 import Tap_Ex_04_pink_icon from '../resource/maimai_img/notes/Tap_Ex_04_pink.png';
+import Tap_Trap_00_icon from '../resource/maimai_img/notes/Tap_Trap_00.png';
+import Tap_Trap_01_icon from '../resource/maimai_img/notes/Tap_Trap_01.png';
+import Tap_Trap_02_icon from '../resource/maimai_img/notes/Tap_Trap_02.png';
+import Tap_Trap_03_icon from '../resource/maimai_img/notes/Tap_Trap_03.png';
+import Tap_Trap_04_icon from '../resource/maimai_img/notes/Tap_Trap_04.png';
 import touch_icon from '../resource/maimai_img/notes/touch.png';
+import touch_break_icon from '../resource/maimai_img/notes/touch_break.png';
+import touch_break_center_icon from '../resource/maimai_img/notes/touch_break_center.png';
 import touch_center_icon from '../resource/maimai_img/notes/touch_center.png';
 import touch_each_icon from '../resource/maimai_img/notes/touch_each.png';
 import touch_each_center_icon from '../resource/maimai_img/notes/touch_each_center.png';
@@ -97,13 +106,17 @@ import touch_hold_2_icon from '../resource/maimai_img/notes/touch_hold_2.png';
 import touch_hold_3_icon from '../resource/maimai_img/notes/touch_hold_3.png';
 import touch_hold_4_icon from '../resource/maimai_img/notes/touch_hold_4.png';
 import touch_hold_center_miss_icon from '../resource/maimai_img/notes/touch_hold_center_miss.png';
+import touch_hold_gage _break_icon from '../resource/maimai_img/notes/touch_hold_gage _break.png';
 import touch_hold_gage_icon from '../resource/maimai_img/notes/touch_hold_gage.png';
 import touch_hold_gage_miss_icon from '../resource/maimai_img/notes/touch_hold_gage_miss.png';
+import touch_hold_gage_miss_break_icon from '../resource/maimai_img/notes/touch_hold_gage_miss_break.png';
 import touch_hold_miss_icon from '../resource/maimai_img/notes/touch_hold_miss.png';
 import touch_hold_three_icon from '../resource/maimai_img/notes/touch_hold_three.png';
 import touch_hold_two_icon from '../resource/maimai_img/notes/touch_hold_two.png';
 import touch_just_icon from '../resource/maimai_img/notes/touch_just.png';
 import touch_three_icon from '../resource/maimai_img/notes/touch_three.png';
+import touch_trap_icon from '../resource/maimai_img/notes/touch_trap.png';
+import touch_trap_center_icon from '../resource/maimai_img/notes/touch_trap_center.png';
 import touch_two_icon from '../resource/maimai_img/notes/touch_two.png';
 import wifi_0_icon from '../resource/maimai_img/notes/wifi_0.png';
 import wifi_1_icon from '../resource/maimai_img/notes/wifi_1.png';
@@ -138,6 +151,17 @@ import wifi_each_6_icon from '../resource/maimai_img/notes/wifi_each_6.png';
 import wifi_each_7_icon from '../resource/maimai_img/notes/wifi_each_7.png';
 import wifi_each_8_icon from '../resource/maimai_img/notes/wifi_each_8.png';
 import wifi_each_9_icon from '../resource/maimai_img/notes/wifi_each_9.png';
+import wifi_ex_0_icon from '../resource/maimai_img/notes/wifi_ex_0.png';
+import wifi_ex_1_icon from '../resource/maimai_img/notes/wifi_ex_1.png';
+import wifi_ex_10_icon from '../resource/maimai_img/notes/wifi_ex_10.png';
+import wifi_ex_2_icon from '../resource/maimai_img/notes/wifi_ex_2.png';
+import wifi_ex_3_icon from '../resource/maimai_img/notes/wifi_ex_3.png';
+import wifi_ex_4_icon from '../resource/maimai_img/notes/wifi_ex_4.png';
+import wifi_ex_5_icon from '../resource/maimai_img/notes/wifi_ex_5.png';
+import wifi_ex_6_icon from '../resource/maimai_img/notes/wifi_ex_6.png';
+import wifi_ex_7_icon from '../resource/maimai_img/notes/wifi_ex_7.png';
+import wifi_ex_8_icon from '../resource/maimai_img/notes/wifi_ex_8.png';
+import wifi_ex_9_icon from '../resource/maimai_img/notes/wifi_ex_9.png';
 
 export const NoteIcon = {
     BreakStar_00: new Image(),
@@ -171,6 +195,8 @@ export const NoteIcon = {
     Slide_Break_01: new Image(),
     Slide_Each_00: new Image(),
     Slide_Each_01: new Image(),
+    Slide_Ex_00: new Image(),
+    Slide_Ex_01: new Image(),
     Star_00: new Image(),
     Star_01: new Image(),
     Star_Double_00: new Image(),
@@ -224,7 +250,14 @@ export const NoteIcon = {
     Tap_Ex_04_break: new Image(),
     Tap_Ex_04_each: new Image(),
     Tap_Ex_04_pink: new Image(),
+    Tap_Trap_00: new Image(),
+    Tap_Trap_01: new Image(),
+    Tap_Trap_02: new Image(),
+    Tap_Trap_03: new Image(),
+    Tap_Trap_04: new Image(),
     touch: new Image(),
+    touch_break: new Image(),
+    touch_break_center: new Image(),
     touch_center: new Image(),
     touch_each: new Image(),
     touch_each_center: new Image(),
@@ -235,13 +268,17 @@ export const NoteIcon = {
     touch_hold_3: new Image(),
     touch_hold_4: new Image(),
     touch_hold_center_miss: new Image(),
+    touch_hold_gage _break: new Image(),
     touch_hold_gage: new Image(),
     touch_hold_gage_miss: new Image(),
+    touch_hold_gage_miss_break: new Image(),
     touch_hold_miss: new Image(),
     touch_hold_three: new Image(),
     touch_hold_two: new Image(),
     touch_just: new Image(),
     touch_three: new Image(),
+    touch_trap: new Image(),
+    touch_trap_center: new Image(),
     touch_two: new Image(),
     wifi_0: new Image(),
     wifi_1: new Image(),
@@ -276,10 +313,21 @@ export const NoteIcon = {
     wifi_each_7: new Image(),
     wifi_each_8: new Image(),
     wifi_each_9: new Image(),
+    wifi_ex_0: new Image(),
+    wifi_ex_1: new Image(),
+    wifi_ex_10: new Image(),
+    wifi_ex_2: new Image(),
+    wifi_ex_3: new Image(),
+    wifi_ex_4: new Image(),
+    wifi_ex_5: new Image(),
+    wifi_ex_6: new Image(),
+    wifi_ex_7: new Image(),
+    wifi_ex_8: new Image(),
+    wifi_ex_9: new Image(),
 };
 
 export const initnotesicons = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {
-  const amount = 136;
+  const amount = 160;
   let loaded = 0;
   if(NoteIcon.BreakStar_00.src === ''){ NoteIcon.BreakStar_00.src = BreakStar_00_icon; NoteIcon.BreakStar_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_00'); }
   if(NoteIcon.BreakStar_01.src === ''){ NoteIcon.BreakStar_01.src = BreakStar_01_icon; NoteIcon.BreakStar_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_01'); }
@@ -312,6 +360,8 @@ export const initnotesicons = (onProgress: (amount: number, loaded: number, name
   if(NoteIcon.Slide_Break_01.src === ''){ NoteIcon.Slide_Break_01.src = Slide_Break_01_icon; NoteIcon.Slide_Break_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Break_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Break_01'); }
   if(NoteIcon.Slide_Each_00.src === ''){ NoteIcon.Slide_Each_00.src = Slide_Each_00_icon; NoteIcon.Slide_Each_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Each_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Each_00'); }
   if(NoteIcon.Slide_Each_01.src === ''){ NoteIcon.Slide_Each_01.src = Slide_Each_01_icon; NoteIcon.Slide_Each_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Each_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Each_01'); }
+  if(NoteIcon.Slide_Ex_00.src === ''){ NoteIcon.Slide_Ex_00.src = Slide_Ex_00_icon; NoteIcon.Slide_Ex_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Ex_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Ex_00'); }
+  if(NoteIcon.Slide_Ex_01.src === ''){ NoteIcon.Slide_Ex_01.src = Slide_Ex_01_icon; NoteIcon.Slide_Ex_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Ex_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Slide_Ex_01'); }
   if(NoteIcon.Star_00.src === ''){ NoteIcon.Star_00.src = Star_00_icon; NoteIcon.Star_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_00'); }
   if(NoteIcon.Star_01.src === ''){ NoteIcon.Star_01.src = Star_01_icon; NoteIcon.Star_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_01'); }
   if(NoteIcon.Star_Double_00.src === ''){ NoteIcon.Star_Double_00.src = Star_Double_00_icon; NoteIcon.Star_Double_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Double_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Star_Double_00'); }
@@ -365,7 +415,14 @@ export const initnotesicons = (onProgress: (amount: number, loaded: number, name
   if(NoteIcon.Tap_Ex_04_break.src === ''){ NoteIcon.Tap_Ex_04_break.src = Tap_Ex_04_break_icon; NoteIcon.Tap_Ex_04_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_break'); }
   if(NoteIcon.Tap_Ex_04_each.src === ''){ NoteIcon.Tap_Ex_04_each.src = Tap_Ex_04_each_icon; NoteIcon.Tap_Ex_04_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_each'); }
   if(NoteIcon.Tap_Ex_04_pink.src === ''){ NoteIcon.Tap_Ex_04_pink.src = Tap_Ex_04_pink_icon; NoteIcon.Tap_Ex_04_pink.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_pink'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Ex_04_pink'); }
+  if(NoteIcon.Tap_Trap_00.src === ''){ NoteIcon.Tap_Trap_00.src = Tap_Trap_00_icon; NoteIcon.Tap_Trap_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Trap_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Trap_00'); }
+  if(NoteIcon.Tap_Trap_01.src === ''){ NoteIcon.Tap_Trap_01.src = Tap_Trap_01_icon; NoteIcon.Tap_Trap_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Trap_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Trap_01'); }
+  if(NoteIcon.Tap_Trap_02.src === ''){ NoteIcon.Tap_Trap_02.src = Tap_Trap_02_icon; NoteIcon.Tap_Trap_02.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Trap_02'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Trap_02'); }
+  if(NoteIcon.Tap_Trap_03.src === ''){ NoteIcon.Tap_Trap_03.src = Tap_Trap_03_icon; NoteIcon.Tap_Trap_03.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Trap_03'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Trap_03'); }
+  if(NoteIcon.Tap_Trap_04.src === ''){ NoteIcon.Tap_Trap_04.src = Tap_Trap_04_icon; NoteIcon.Tap_Trap_04.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Trap_04'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'Tap_Trap_04'); }
   if(NoteIcon.touch.src === ''){ NoteIcon.touch.src = touch_icon; NoteIcon.touch.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch'); }
+  if(NoteIcon.touch_break.src === ''){ NoteIcon.touch_break.src = touch_break_icon; NoteIcon.touch_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_break'); }
+  if(NoteIcon.touch_break_center.src === ''){ NoteIcon.touch_break_center.src = touch_break_center_icon; NoteIcon.touch_break_center.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_break_center'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_break_center'); }
   if(NoteIcon.touch_center.src === ''){ NoteIcon.touch_center.src = touch_center_icon; NoteIcon.touch_center.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_center'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_center'); }
   if(NoteIcon.touch_each.src === ''){ NoteIcon.touch_each.src = touch_each_icon; NoteIcon.touch_each.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each'); }
   if(NoteIcon.touch_each_center.src === ''){ NoteIcon.touch_each_center.src = touch_each_center_icon; NoteIcon.touch_each_center.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_center'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_each_center'); }
@@ -376,13 +433,17 @@ export const initnotesicons = (onProgress: (amount: number, loaded: number, name
   if(NoteIcon.touch_hold_3.src === ''){ NoteIcon.touch_hold_3.src = touch_hold_3_icon; NoteIcon.touch_hold_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_3'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_3'); }
   if(NoteIcon.touch_hold_4.src === ''){ NoteIcon.touch_hold_4.src = touch_hold_4_icon; NoteIcon.touch_hold_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_4'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_4'); }
   if(NoteIcon.touch_hold_center_miss.src === ''){ NoteIcon.touch_hold_center_miss.src = touch_hold_center_miss_icon; NoteIcon.touch_hold_center_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_center_miss'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_center_miss'); }
+  if(NoteIcon.touch_hold_gage _break.src === ''){ NoteIcon.touch_hold_gage _break.src = touch_hold_gage _break_icon; NoteIcon.touch_hold_gage _break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage _break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage _break'); }
   if(NoteIcon.touch_hold_gage.src === ''){ NoteIcon.touch_hold_gage.src = touch_hold_gage_icon; NoteIcon.touch_hold_gage.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage'); }
   if(NoteIcon.touch_hold_gage_miss.src === ''){ NoteIcon.touch_hold_gage_miss.src = touch_hold_gage_miss_icon; NoteIcon.touch_hold_gage_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss'); }
+  if(NoteIcon.touch_hold_gage_miss_break.src === ''){ NoteIcon.touch_hold_gage_miss_break.src = touch_hold_gage_miss_break_icon; NoteIcon.touch_hold_gage_miss_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss_break'); }
   if(NoteIcon.touch_hold_miss.src === ''){ NoteIcon.touch_hold_miss.src = touch_hold_miss_icon; NoteIcon.touch_hold_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_miss'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_miss'); }
   if(NoteIcon.touch_hold_three.src === ''){ NoteIcon.touch_hold_three.src = touch_hold_three_icon; NoteIcon.touch_hold_three.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_three'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_three'); }
   if(NoteIcon.touch_hold_two.src === ''){ NoteIcon.touch_hold_two.src = touch_hold_two_icon; NoteIcon.touch_hold_two.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_two'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_two'); }
   if(NoteIcon.touch_just.src === ''){ NoteIcon.touch_just.src = touch_just_icon; NoteIcon.touch_just.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_just'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_just'); }
   if(NoteIcon.touch_three.src === ''){ NoteIcon.touch_three.src = touch_three_icon; NoteIcon.touch_three.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_three'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_three'); }
+  if(NoteIcon.touch_trap.src === ''){ NoteIcon.touch_trap.src = touch_trap_icon; NoteIcon.touch_trap.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_trap'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_trap'); }
+  if(NoteIcon.touch_trap_center.src === ''){ NoteIcon.touch_trap_center.src = touch_trap_center_icon; NoteIcon.touch_trap_center.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_trap_center'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_trap_center'); }
   if(NoteIcon.touch_two.src === ''){ NoteIcon.touch_two.src = touch_two_icon; NoteIcon.touch_two.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_two'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_two'); }
   if(NoteIcon.wifi_0.src === ''){ NoteIcon.wifi_0.src = wifi_0_icon; NoteIcon.wifi_0.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_0'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_0'); }
   if(NoteIcon.wifi_1.src === ''){ NoteIcon.wifi_1.src = wifi_1_icon; NoteIcon.wifi_1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_1'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_1'); }
@@ -417,4 +478,15 @@ export const initnotesicons = (onProgress: (amount: number, loaded: number, name
   if(NoteIcon.wifi_each_7.src === ''){ NoteIcon.wifi_each_7.src = wifi_each_7_icon; NoteIcon.wifi_each_7.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_7'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_7'); }
   if(NoteIcon.wifi_each_8.src === ''){ NoteIcon.wifi_each_8.src = wifi_each_8_icon; NoteIcon.wifi_each_8.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_8'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_8'); }
   if(NoteIcon.wifi_each_9.src === ''){ NoteIcon.wifi_each_9.src = wifi_each_9_icon; NoteIcon.wifi_each_9.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_9'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_each_9'); }
+  if(NoteIcon.wifi_ex_0.src === ''){ NoteIcon.wifi_ex_0.src = wifi_ex_0_icon; NoteIcon.wifi_ex_0.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_0'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_0'); }
+  if(NoteIcon.wifi_ex_1.src === ''){ NoteIcon.wifi_ex_1.src = wifi_ex_1_icon; NoteIcon.wifi_ex_1.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_1'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_1'); }
+  if(NoteIcon.wifi_ex_10.src === ''){ NoteIcon.wifi_ex_10.src = wifi_ex_10_icon; NoteIcon.wifi_ex_10.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_10'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_10'); }
+  if(NoteIcon.wifi_ex_2.src === ''){ NoteIcon.wifi_ex_2.src = wifi_ex_2_icon; NoteIcon.wifi_ex_2.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_2'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_2'); }
+  if(NoteIcon.wifi_ex_3.src === ''){ NoteIcon.wifi_ex_3.src = wifi_ex_3_icon; NoteIcon.wifi_ex_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_3'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_3'); }
+  if(NoteIcon.wifi_ex_4.src === ''){ NoteIcon.wifi_ex_4.src = wifi_ex_4_icon; NoteIcon.wifi_ex_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_4'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_4'); }
+  if(NoteIcon.wifi_ex_5.src === ''){ NoteIcon.wifi_ex_5.src = wifi_ex_5_icon; NoteIcon.wifi_ex_5.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_5'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_5'); }
+  if(NoteIcon.wifi_ex_6.src === ''){ NoteIcon.wifi_ex_6.src = wifi_ex_6_icon; NoteIcon.wifi_ex_6.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_6'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_6'); }
+  if(NoteIcon.wifi_ex_7.src === ''){ NoteIcon.wifi_ex_7.src = wifi_ex_7_icon; NoteIcon.wifi_ex_7.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_7'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_7'); }
+  if(NoteIcon.wifi_ex_8.src === ''){ NoteIcon.wifi_ex_8.src = wifi_ex_8_icon; NoteIcon.wifi_ex_8.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_8'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_8'); }
+  if(NoteIcon.wifi_ex_9.src === ''){ NoteIcon.wifi_ex_9.src = wifi_ex_9_icon; NoteIcon.wifi_ex_9.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_9'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'wifi_ex_9'); }
 };
