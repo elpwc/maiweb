@@ -106,8 +106,8 @@ import touch_hold_2_icon from '../resource/maimai_img/notes/touch_hold_2.png';
 import touch_hold_3_icon from '../resource/maimai_img/notes/touch_hold_3.png';
 import touch_hold_4_icon from '../resource/maimai_img/notes/touch_hold_4.png';
 import touch_hold_center_miss_icon from '../resource/maimai_img/notes/touch_hold_center_miss.png';
-import touch_hold_gage _break_icon from '../resource/maimai_img/notes/touch_hold_gage _break.png';
 import touch_hold_gage_icon from '../resource/maimai_img/notes/touch_hold_gage.png';
+import touch_hold_gage_break_icon from '../resource/maimai_img/notes/touch_hold_gage_break.png';
 import touch_hold_gage_miss_icon from '../resource/maimai_img/notes/touch_hold_gage_miss.png';
 import touch_hold_gage_miss_break_icon from '../resource/maimai_img/notes/touch_hold_gage_miss_break.png';
 import touch_hold_miss_icon from '../resource/maimai_img/notes/touch_hold_miss.png';
@@ -268,8 +268,8 @@ export const NoteIcon = {
     touch_hold_3: new Image(),
     touch_hold_4: new Image(),
     touch_hold_center_miss: new Image(),
-    touch_hold_gage _break: new Image(),
     touch_hold_gage: new Image(),
+    touch_hold_gage_break: new Image(),
     touch_hold_gage_miss: new Image(),
     touch_hold_gage_miss_break: new Image(),
     touch_hold_miss: new Image(),
@@ -433,8 +433,8 @@ export const initnotesicons = (onProgress: (amount: number, loaded: number, name
   if(NoteIcon.touch_hold_3.src === ''){ NoteIcon.touch_hold_3.src = touch_hold_3_icon; NoteIcon.touch_hold_3.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_3'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_3'); }
   if(NoteIcon.touch_hold_4.src === ''){ NoteIcon.touch_hold_4.src = touch_hold_4_icon; NoteIcon.touch_hold_4.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_4'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_4'); }
   if(NoteIcon.touch_hold_center_miss.src === ''){ NoteIcon.touch_hold_center_miss.src = touch_hold_center_miss_icon; NoteIcon.touch_hold_center_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_center_miss'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_center_miss'); }
-  if(NoteIcon.touch_hold_gage _break.src === ''){ NoteIcon.touch_hold_gage _break.src = touch_hold_gage _break_icon; NoteIcon.touch_hold_gage _break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage _break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage _break'); }
   if(NoteIcon.touch_hold_gage.src === ''){ NoteIcon.touch_hold_gage.src = touch_hold_gage_icon; NoteIcon.touch_hold_gage.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage'); }
+  if(NoteIcon.touch_hold_gage_break.src === ''){ NoteIcon.touch_hold_gage_break.src = touch_hold_gage_break_icon; NoteIcon.touch_hold_gage_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_break'); }
   if(NoteIcon.touch_hold_gage_miss.src === ''){ NoteIcon.touch_hold_gage_miss.src = touch_hold_gage_miss_icon; NoteIcon.touch_hold_gage_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss'); }
   if(NoteIcon.touch_hold_gage_miss_break.src === ''){ NoteIcon.touch_hold_gage_miss_break.src = touch_hold_gage_miss_break_icon; NoteIcon.touch_hold_gage_miss_break.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss_break'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_gage_miss_break'); }
   if(NoteIcon.touch_hold_miss.src === ''){ NoteIcon.touch_hold_miss.src = touch_hold_miss_icon; NoteIcon.touch_hold_miss.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_miss'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_miss'); }
