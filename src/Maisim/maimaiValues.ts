@@ -73,7 +73,14 @@ export default class MaimaiValues {
   keyLightWidth: number = 0.2;
 
   /** 各个判定点的坐标（前面加A纯粹是为了方便找到喵） */
-  APositions: { /***/ J: [number, number][]; A: [number, number][]; B: [number, number][]; D: [number, number][]; E: [number, number][]; C: [number, number] } = {
+  APositions: {
+    /** A区判定线上的点 */ J: [number, number][];
+    /** A区TOUCH的中心点 */ A: [number, number][];
+    B: [number, number][];
+    D: [number, number][];
+    E: [number, number][];
+    C: [number, number];
+  } = {
     J: [],
     A: [],
     B: [],
