@@ -60,8 +60,8 @@ export const getTrackProps = (
 // -
 const straight = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: number; y: number; direction: number } => {
   return {
-    x: values.APositions[0][0] + (values.APositions[endPos - 1][0] - values.APositions[0][0]) * (ct / rt),
-    y: values.APositions[0][1] + (values.APositions[endPos - 1][1] - values.APositions[0][1]) * (ct / rt),
+    x: values.APositions.J[0][0] + (values.APositions.J[endPos - 1][0] - values.APositions.J[0][0]) * (ct / rt),
+    y: values.APositions.J[0][1] + (values.APositions.J[endPos - 1][1] - values.APositions.J[0][1]) * (ct / rt),
     direction: 22.5 * (endPos - 1) + 202.5,
   };
 };
@@ -167,14 +167,14 @@ const rightCurve = (values: MaimaiValues, startPos: number, endPos: number, ct: 
 const v = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: number; y: number; direction: number } => {
   if (ct < rt / 2) {
     return {
-      x: values.APositions[0][0] + (values.center[0] - values.APositions[0][0]) * (ct / (rt / 2)),
-      y: values.APositions[0][1] + (values.center[1] - values.APositions[0][1]) * (ct / (rt / 2)),
+      x: values.APositions.J[0][0] + (values.center[0] - values.APositions.J[0][0]) * (ct / (rt / 2)),
+      y: values.APositions.J[0][1] + (values.center[1] - values.APositions.J[0][1]) * (ct / (rt / 2)),
       direction: -67.5,
     };
   } else {
     return {
-      x: values.center[0] + (values.APositions[endPos - 1][0] - values.center[0]) * ((ct - rt / 2) / (rt / 2)),
-      y: values.center[1] + (values.APositions[endPos - 1][1] - values.center[1]) * ((ct - rt / 2) / (rt / 2)),
+      x: values.center[0] + (values.APositions.J[endPos - 1][0] - values.center[0]) * ((ct - rt / 2) / (rt / 2)),
+      y: values.center[1] + (values.APositions.J[endPos - 1][1] - values.center[1]) * ((ct - rt / 2) / (rt / 2)),
       direction: 45 * endPos + 67.5,
     };
   }
@@ -186,8 +186,8 @@ const sz_r1 = 0.361615673,
 const s = (values: MaimaiValues, ct: number, rt: number): { x: number; y: number; direction: number } => {
   if (ct < rt * sz_r1) {
     return {
-      x: values.APositions[0][0] + (values.szLeftPoint[0] - values.APositions[0][0]) * (ct / (rt * sz_r1)),
-      y: values.APositions[0][1] + (values.szLeftPoint[1] - values.APositions[0][1]) * (ct / (rt * sz_r1)),
+      x: values.APositions.J[0][0] + (values.szLeftPoint[0] - values.APositions.J[0][0]) * (ct / (rt * sz_r1)),
+      y: values.APositions.J[0][1] + (values.szLeftPoint[1] - values.APositions.J[0][1]) * (ct / (rt * sz_r1)),
       direction: -45,
     };
   } else if (ct >= rt * sz_r1 && ct < rt * (sz_r1 + sz_r2)) {
@@ -198,8 +198,8 @@ const s = (values: MaimaiValues, ct: number, rt: number): { x: number; y: number
     };
   } else {
     return {
-      x: values.szRightPoint[0] + (values.APositions[4][0] - values.szRightPoint[0]) * ((ct - rt * (sz_r1 + sz_r2)) / (rt * sz_r1)),
-      y: values.szRightPoint[1] + (values.APositions[4][1] - values.szRightPoint[1]) * ((ct - rt * (sz_r1 + sz_r2)) / (rt * sz_r1)),
+      x: values.szRightPoint[0] + (values.APositions.J[4][0] - values.szRightPoint[0]) * ((ct - rt * (sz_r1 + sz_r2)) / (rt * sz_r1)),
+      y: values.szRightPoint[1] + (values.APositions.J[4][1] - values.szRightPoint[1]) * ((ct - rt * (sz_r1 + sz_r2)) / (rt * sz_r1)),
       direction: -45,
     };
   }
@@ -209,8 +209,8 @@ const s = (values: MaimaiValues, ct: number, rt: number): { x: number; y: number
 const z = (values: MaimaiValues, ct: number, rt: number): { x: number; y: number; direction: number } => {
   if (ct < rt * sz_r1) {
     return {
-      x: values.APositions[0][0] + (values.szRightPoint[0] - values.APositions[0][0]) * (ct / (rt * sz_r1)),
-      y: values.APositions[0][1] + (values.szRightPoint[1] - values.APositions[0][1]) * (ct / (rt * sz_r1)),
+      x: values.APositions.J[0][0] + (values.szRightPoint[0] - values.APositions.J[0][0]) * (ct / (rt * sz_r1)),
+      y: values.APositions.J[0][1] + (values.szRightPoint[1] - values.APositions.J[0][1]) * (ct / (rt * sz_r1)),
       direction: -90,
     };
   } else if (ct >= rt * sz_r1 && ct < rt * (sz_r1 + sz_r2)) {
@@ -221,8 +221,8 @@ const z = (values: MaimaiValues, ct: number, rt: number): { x: number; y: number
     };
   } else {
     return {
-      x: values.szLeftPoint[0] + (values.APositions[4][0] - values.szLeftPoint[0]) * ((ct - rt * (sz_r1 + sz_r2)) / (rt * sz_r1)),
-      y: values.szLeftPoint[1] + (values.APositions[4][1] - values.szLeftPoint[1]) * ((ct - rt * (sz_r1 + sz_r2)) / (rt * sz_r1)),
+      x: values.szLeftPoint[0] + (values.APositions.J[4][0] - values.szLeftPoint[0]) * ((ct - rt * (sz_r1 + sz_r2)) / (rt * sz_r1)),
+      y: values.szLeftPoint[1] + (values.APositions.J[4][1] - values.szLeftPoint[1]) * ((ct - rt * (sz_r1 + sz_r2)) / (rt * sz_r1)),
       direction: -90,
     };
   }
@@ -247,8 +247,8 @@ const p = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: n
 
   if (b <= values.qplen / sumLen) {
     return {
-      x: values.APositions[0][0] + (p1[0] - values.APositions[0][0]) * (b / (values.qplen / sumLen)),
-      y: values.APositions[0][1] + (p1[1] - values.APositions[0][1]) * (b / (values.qplen / sumLen)),
+      x: values.APositions.J[0][0] + (p1[0] - values.APositions.J[0][0]) * (b / (values.qplen / sumLen)),
+      y: values.APositions.J[0][1] + (p1[1] - values.APositions.J[0][1]) * (b / (values.qplen / sumLen)),
       direction: -45,
     };
   } else if (b > values.qplen / sumLen && b < (values.qplen + curveLen) / sumLen) {
@@ -259,8 +259,8 @@ const p = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: n
     };
   } else if (b >= (values.qplen + curveLen) / sumLen) {
     return {
-      x: p2[0] + (values.APositions[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - values.qplen) / values.qplen),
-      y: p2[1] + (values.APositions[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - values.qplen) / values.qplen),
+      x: p2[0] + (values.APositions.J[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - values.qplen) / values.qplen),
+      y: p2[1] + (values.APositions.J[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - values.qplen) / values.qplen),
       direction: 45 * (endPos >= 6 ? endPos - 7 : endPos + 1),
     };
   } else {
@@ -287,8 +287,8 @@ const q = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: n
 
   if (b <= values.qplen / sumLen) {
     return {
-      x: values.APositions[0][0] + (p1[0] - values.APositions[0][0]) * (b / (values.qplen / sumLen)),
-      y: values.APositions[0][1] + (p1[1] - values.APositions[0][1]) * (b / (values.qplen / sumLen)),
+      x: values.APositions.J[0][0] + (p1[0] - values.APositions.J[0][0]) * (b / (values.qplen / sumLen)),
+      y: values.APositions.J[0][1] + (p1[1] - values.APositions.J[0][1]) * (b / (values.qplen / sumLen)),
       direction: -90,
     };
   } else if (b > values.qplen / sumLen && b < (values.qplen + curveLen) / sumLen) {
@@ -299,8 +299,8 @@ const q = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: n
     };
   } else if (b >= (values.qplen + curveLen) / sumLen) {
     return {
-      x: p2[0] + (values.APositions[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - values.qplen) / values.qplen),
-      y: p2[1] + (values.APositions[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - values.qplen) / values.qplen),
+      x: p2[0] + (values.APositions.J[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - values.qplen) / values.qplen),
+      y: p2[1] + (values.APositions.J[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - values.qplen) / values.qplen),
       direction: 45 * (endPos <= 4 ? endPos - 6 : endPos - 6),
     };
   } else {
@@ -319,8 +319,8 @@ const pp = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: 
   /** 圆弧终止的点 */
   const p2 = [values.qpRightCircleCenter[0] + values.qpLeftRighCircleR * cos((startAngle - angle) * π), values.qpRightCircleCenter[1] + values.qpLeftRighCircleR * sin((startAngle - angle) * π)];
 
-  const l1 = lineLen(values.APositions[0][0], values.APositions[0][1], p1[0], p1[1]);
-  const l2 = lineLen(values.APositions[endPos - 1][0], values.APositions[endPos - 1][1], p2[0], p2[1]);
+  const l1 = lineLen(values.APositions.J[0][0], values.APositions.J[0][1], p1[0], p1[1]);
+  const l2 = lineLen(values.APositions.J[endPos - 1][0], values.APositions.J[endPos - 1][1], p2[0], p2[1]);
 
   /** 圆弧长度 */
   const curveLen = angle * values.qpLeftRighCircleR * π;
@@ -331,8 +331,8 @@ const pp = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: 
 
   if (b <= l1 / sumLen) {
     return {
-      x: values.APositions[0][0] + (p1[0] - values.APositions[0][0]) * (b / (l1 / sumLen)),
-      y: values.APositions[0][1] + (p1[1] - values.APositions[0][1]) * (b / (l1 / sumLen)),
+      x: values.APositions.J[0][0] + (p1[0] - values.APositions.J[0][0]) * (b / (l1 / sumLen)),
+      y: values.APositions.J[0][1] + (p1[1] - values.APositions.J[0][1]) * (b / (l1 / sumLen)),
       direction: 90 + startAngle * 180,
     };
   } else if (b > l1 / sumLen && b < (l1 + curveLen) / sumLen) {
@@ -343,8 +343,8 @@ const pp = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: 
     };
   } else if (b >= (l1 + curveLen) / sumLen) {
     return {
-      x: p2[0] + (values.APositions[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - l1) / l2),
-      y: p2[1] + (values.APositions[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - l1) / l2),
+      x: p2[0] + (values.APositions.J[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - l1) / l2),
+      y: p2[1] + (values.APositions.J[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - l1) / l2),
       direction: 90 + ppPoints[endPos] * 180,
     };
   } else {
@@ -363,8 +363,8 @@ const qq = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: 
   /** 圆弧终止的点 */
   const p2 = [values.qpLeftCircleCenter[0] + values.qpLeftRighCircleR * cos((startAngle + angle) * π), values.qpLeftCircleCenter[1] + values.qpLeftRighCircleR * sin((startAngle + angle) * π)];
 
-  const l1 = lineLen(values.APositions[0][0], values.APositions[0][1], p1[0], p1[1]);
-  const l2 = lineLen(values.APositions[endPos - 1][0], values.APositions[endPos - 1][1], p2[0], p2[1]);
+  const l1 = lineLen(values.APositions.J[0][0], values.APositions.J[0][1], p1[0], p1[1]);
+  const l2 = lineLen(values.APositions.J[endPos - 1][0], values.APositions.J[endPos - 1][1], p2[0], p2[1]);
 
   /** 圆弧长度 */
   const curveLen = angle * values.qpLeftRighCircleR * π;
@@ -375,8 +375,8 @@ const qq = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: 
 
   if (b <= l1 / sumLen) {
     return {
-      x: values.APositions[0][0] + (p1[0] - values.APositions[0][0]) * (b / (l1 / sumLen)),
-      y: values.APositions[0][1] + (p1[1] - values.APositions[0][1]) * (b / (l1 / sumLen)),
+      x: values.APositions.J[0][0] + (p1[0] - values.APositions.J[0][0]) * (b / (l1 / sumLen)),
+      y: values.APositions.J[0][1] + (p1[1] - values.APositions.J[0][1]) * (b / (l1 / sumLen)),
       direction: startAngle * 180 - 90,
     };
   } else if (b > l1 / sumLen && b < (l1 + curveLen) / sumLen) {
@@ -387,8 +387,8 @@ const qq = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: 
     };
   } else if (b >= (l1 + curveLen) / sumLen) {
     return {
-      x: p2[0] + (values.APositions[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - l1) / l2),
-      y: p2[1] + (values.APositions[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - l1) / l2),
+      x: p2[0] + (values.APositions.J[endPos - 1][0] - p2[0]) * ((sumLen * b - curveLen - l1) / l2),
+      y: p2[1] + (values.APositions.J[endPos - 1][1] - p2[1]) * ((sumLen * b - curveLen - l1) / l2),
       direction: qqPoints[endPos] * 180 - 90,
     };
   } else {
@@ -398,22 +398,22 @@ const qq = (values: MaimaiValues, endPos: number, ct: number, rt: number): { x: 
 
 // V
 const turn = (values: MaimaiValues, turnPos: number, endPos: number, ct: number, rt: number): { x: number; y: number; direction: number } => {
-  const l1 = lineLen(values.APositions[turnPos - 1][0], values.APositions[turnPos - 1][1], values.APositions[0][0], values.APositions[0][1]);
-  const l2 = lineLen(values.APositions[turnPos - 1][0], values.APositions[turnPos - 1][1], values.APositions[endPos - 1][0], values.APositions[endPos - 1][1]);
+  const l1 = lineLen(values.APositions.J[turnPos - 1][0], values.APositions.J[turnPos - 1][1], values.APositions.J[0][0], values.APositions.J[0][1]);
+  const l2 = lineLen(values.APositions.J[turnPos - 1][0], values.APositions.J[turnPos - 1][1], values.APositions.J[endPos - 1][0], values.APositions.J[endPos - 1][1]);
   const sumLen = l1 + l2;
 
   const b = ct / rt;
 
   if (b < l1 / sumLen) {
     return {
-      x: values.APositions[0][0] + ((values.APositions[turnPos - 1][0] - values.APositions[0][0]) * (ct / rt)) / (l1 / sumLen),
-      y: values.APositions[0][1] + ((values.APositions[turnPos - 1][1] - values.APositions[0][1]) * (ct / rt)) / (l1 / sumLen),
+      x: values.APositions.J[0][0] + ((values.APositions.J[turnPos - 1][0] - values.APositions.J[0][0]) * (ct / rt)) / (l1 / sumLen),
+      y: values.APositions.J[0][1] + ((values.APositions.J[turnPos - 1][1] - values.APositions.J[0][1]) * (ct / rt)) / (l1 / sumLen),
       direction: 22.5 * (turnPos - 1) + 202.5,
     };
   } else {
     return {
-      x: values.APositions[turnPos - 1][0] + ((values.APositions[endPos - 1][0] - values.APositions[turnPos - 1][0]) * (ct / rt - l1 / sumLen)) / (l2 / sumLen),
-      y: values.APositions[turnPos - 1][1] + ((values.APositions[endPos - 1][1] - values.APositions[turnPos - 1][1]) * (ct / rt - l1 / sumLen)) / (l2 / sumLen),
+      x: values.APositions.J[turnPos - 1][0] + ((values.APositions.J[endPos - 1][0] - values.APositions.J[turnPos - 1][0]) * (ct / rt - l1 / sumLen)) / (l2 / sumLen),
+      y: values.APositions.J[turnPos - 1][1] + ((values.APositions.J[endPos - 1][1] - values.APositions.J[turnPos - 1][1]) * (ct / rt - l1 / sumLen)) / (l2 / sumLen),
       direction: 22.5 * (endPos - turnPos - 1) + turnPos * 45 + (endPos > 4 && turnPos < 5 ? 180 : 0),
     };
   }
@@ -423,18 +423,18 @@ const turn = (values: MaimaiValues, turnPos: number, endPos: number, ct: number,
 const w = (values: MaimaiValues, ct: number, rt: number): { x: number; y: number; direction: number }[] => {
   return [
     {
-      x: values.APositions[0][0] + (values.APositions[5][0] - values.APositions[0][0]) * (ct / rt),
-      y: values.APositions[0][1] + (values.APositions[5][1] - values.APositions[0][1]) * (ct / rt),
+      x: values.APositions.J[0][0] + (values.APositions.J[5][0] - values.APositions.J[0][0]) * (ct / rt),
+      y: values.APositions.J[0][1] + (values.APositions.J[5][1] - values.APositions.J[0][1]) * (ct / rt),
       direction: 22.5 * 5 + 202.5,
     },
     {
-      x: values.APositions[0][0] + (values.APositions[4][0] - values.APositions[0][0]) * (ct / rt),
-      y: values.APositions[0][1] + (values.APositions[4][1] - values.APositions[0][1]) * (ct / rt),
+      x: values.APositions.J[0][0] + (values.APositions.J[4][0] - values.APositions.J[0][0]) * (ct / rt),
+      y: values.APositions.J[0][1] + (values.APositions.J[4][1] - values.APositions.J[0][1]) * (ct / rt),
       direction: 22.5 * 4 + 202.5,
     },
     {
-      x: values.APositions[0][0] + (values.APositions[3][0] - values.APositions[0][0]) * (ct / rt),
-      y: values.APositions[0][1] + (values.APositions[3][1] - values.APositions[0][1]) * (ct / rt),
+      x: values.APositions.J[0][0] + (values.APositions.J[3][0] - values.APositions.J[0][0]) * (ct / rt),
+      y: values.APositions.J[0][1] + (values.APositions.J[3][1] - values.APositions.J[0][1]) * (ct / rt),
       direction: 22.5 * 3 + 202.5,
     },
   ];

@@ -34,12 +34,12 @@ export default class MaimaiValues {
   fireworkInnerCircleR: number = this.maimaiJudgeLineR * 0.4138;
 
   // 轨迹
+  /** TRACK的蓝色小节相互之间的距离（单位：ms（草）） */
   trackItemGap: number = (28 * this.maimaiScreenR) / 350;
   trackItemWidth: number = this.maimaiTapR * 1.5;
   trackItemHeight: number = this.maimaiTapR * 2;
 
-  // HOLD头部高度
-  // 准确地说是头像顶端到头部中心点(?)的距离
+  /** HOLD头部高度,准确地说是头像顶端到头部中心点(?)的距离 */
   holdHeadHeight: number = 70;
 
   // 判定相关
@@ -72,32 +72,42 @@ export default class MaimaiValues {
   /** 灯占高度比 */
   keyLightWidth: number = 0.2;
 
-  // 1-8判定点的坐标
-  APositions: [number, number][] = [];
+  /** 各个判定点的坐标（前面加A纯粹是为了方便找到喵） */
+  APositions: { /***/ J: [number, number][]; A: [number, number][]; B: [number, number][]; D: [number, number][]; E: [number, number][]; C: [number, number] } = {
+    J: [],
+    A: [],
+    B: [],
+    D: [],
+    E: [],
+    C: [0, 0],
+  };
 
   //// SLIDE
   // sz轨迹的左右拐点
+  /** sz轨迹的左拐点 */
   szLeftPoint: [number, number] = [0, 0];
+  /** sz轨迹的右拐点 */
   szRightPoint: [number, number] = [0, 0];
 
-  // qp中央圆半径
+  /** qp中央圆半径 */
   qpCenterCircleR = 0;
 
-  // qqpp左右圆圆心距center距离
+  /** qqpp左右圆圆心距center距离 */
   qpLeftRightCircleCenterR = 0;
-  // qqpp左右圆半径
+  /** qqpp左右圆半径 */
   qpLeftRighCircleR = 0;
 
-  // qqpp左右圆圆心坐标
+  /** qqpp左圆圆心坐标 */
   qpLeftCircleCenter = [0, 0];
+  /** qqpp右圆圆心坐标 */
   qpRightCircleCenter = [0, 0];
 
   /** qp一条直线的长度 */
   qplen = 0;
 
-  // qq左圆圆心角度
+  /** qq左圆圆心角度 */
   qpLeftCircleCenterAngle = -0.75;
-  // pp右圆圆心角度
+  /** pp右圆圆心角度 */
   qpRightCircleCenterAngle = 0;
 
   update = (w: number, h: number, doShowKeys: boolean = true) => {
@@ -130,14 +140,26 @@ export default class MaimaiValues {
 
     this.judgeDistance = this.maimaiTapR * 1.5;
 
-    this.APositions = [];
+    this.APositions = {
+      J: [],
+      A: [],
+      B: [],
+      D: [],
+      E: [],
+      C: [0, 0],
+    };
     for (let i = 1; i <= 8; i++) {
-      this.APositions.push([this.center[0] + this.maimaiJudgeLineR * cos((-5 / 8 + (1 / 4) * i) * Math.PI), this.center[1] + this.maimaiJudgeLineR * sin((-5 / 8 + (1 / 4) * i) * Math.PI)]);
+      this.APositions.J.push([this.center[0] + this.maimaiJudgeLineR * cos((-5 / 8 + (1 / 4) * i) * Math.PI), this.center[1] + this.maimaiJudgeLineR * sin((-5 / 8 + (1 / 4) * i) * Math.PI)]);
+      this.APositions.A.push(this._getTouchCenterCoord('A' + i));
+      this.APositions.B.push(this._getTouchCenterCoord('B' + i));
+      this.APositions.D.push(this._getTouchCenterCoord('D' + i));
+      this.APositions.E.push(this._getTouchCenterCoord('E' + i));
     }
+    this.APositions.C = this.center;
 
-    let szk = (this.APositions[2][1] - this.APositions[6][1]) / (this.APositions[2][0] - this.APositions[6][0]);
-    this.szLeftPoint = [this.APositions[7][0], szk * this.APositions[7][0] + this.APositions[2][1] - this.APositions[2][0] * szk];
-    this.szRightPoint = [this.APositions[0][0], szk * this.APositions[0][0] + this.APositions[2][1] - this.APositions[2][0] * szk];
+    let szk = (this.APositions.J[2][1] - this.APositions.J[6][1]) / (this.APositions.J[2][0] - this.APositions.J[6][0]);
+    this.szLeftPoint = [this.APositions.J[7][0], szk * this.APositions.J[7][0] + this.APositions.J[2][1] - this.APositions.J[2][0] * szk];
+    this.szRightPoint = [this.APositions.J[0][0], szk * this.APositions.J[0][0] + this.APositions.J[2][1] - this.APositions.J[2][0] * szk];
 
     // qp中央圆半径
     this.qpCenterCircleR = this.maimaiScreenR * 0.356;
@@ -158,6 +180,48 @@ export default class MaimaiValues {
     ];
 
     /** qp一条直线的长度 */
-    this.qplen = lineLen(this.APositions[0][0], this.APositions[0][1], this.APositions[5][0], this.APositions[5][1]) / 2;
+    this.qplen = lineLen(this.APositions.J[0][0], this.APositions.J[0][1], this.APositions.J[5][0], this.APositions.J[5][1]) / 2;
+  };
+
+  /**
+   * 指定pos的TOUCH的中心
+   * @param pos
+   */
+  private _getTouchCenterCoord = (pos: string): [number, number] => {
+    const firstChar = pos.substring(0, 1);
+    const touchPos = pos.substring(1, 2);
+    let x = 0,
+      y = 0;
+    let θ = 0;
+    switch (firstChar) {
+      case 'C':
+        x = this.center[0];
+        y = this.center[1];
+        break;
+      case 'A':
+        θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+        x = this.center[0] + this.maimaiADTouchR * Math.cos(θ);
+        y = this.center[1] + this.maimaiADTouchR * Math.sin(θ);
+        break;
+      case 'B':
+        θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+        x = this.center[0] + this.maimaiBR * Math.cos(θ);
+        y = this.center[1] + this.maimaiBR * Math.sin(θ);
+        break;
+      case 'D':
+        θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+        x = this.center[0] + this.maimaiADTouchR * Math.cos(θ);
+        y = this.center[1] + this.maimaiADTouchR * Math.sin(θ);
+        break;
+      case 'E':
+        θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+        x = this.center[0] + this.maimaiER * Math.cos(θ);
+        y = this.center[1] + this.maimaiER * Math.sin(θ);
+        break;
+      default:
+        break;
+    }
+
+    return [x, y];
   };
 }

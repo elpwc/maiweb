@@ -19,11 +19,11 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
 
   let angle = ((startPos - 1) * 2 * π) / 8;
 
-  // let startPosX = values.APositions[0][0],
-  // 	startPosY = values.APositions[0][1];
+  // let startPosX = values.APositions.J[0][0],
+  // 	startPosY = values.APositions.J[0][1];
 
-  let startPosX = values.APositions[startPos - 1][0],
-    startPosY = values.APositions[startPos - 1][1];
+  let startPosX = values.APositions.J[startPos - 1][0],
+    startPosY = values.APositions.J[startPos - 1][1];
 
   switch (type) {
     case '<':
@@ -51,8 +51,8 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
       startPosY = values.center[1];
       break;
     case 'V':
-      startPosX = values.APositions[turnPosOri - 1][0];
-      startPosY = values.APositions[turnPosOri - 1][1];
+      startPosX = values.APositions.J[turnPosOri - 1][0];
+      startPosY = values.APositions.J[turnPosOri - 1][1];
       break;
     case 'p':
       {
@@ -173,9 +173,9 @@ export const getJudgeDirectionParams = (endPosOri_: string, startPosOri_: string
     let angle = 0;
 
     if (direction === 0) {
-      angle = (atan2(values.APositions[endPosOri - 1][1] - startPosY, values.APositions[endPosOri - 1][0] - startPosX) / π) * 180 - 180;
+      angle = (atan2(values.APositions.J[endPosOri - 1][1] - startPosY, values.APositions.J[endPosOri - 1][0] - startPosX) / π) * 180 - 180;
     } else {
-      angle = (atan2(values.APositions[endPosOri - 1][1] - startPosY, values.APositions[endPosOri - 1][0] - startPosX) / π) * 180;
+      angle = (atan2(values.APositions.J[endPosOri - 1][1] - startPosY, values.APositions.J[endPosOri - 1][0] - startPosX) / π) * 180;
     }
 
     return {

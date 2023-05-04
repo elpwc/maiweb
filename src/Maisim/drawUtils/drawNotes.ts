@@ -781,25 +781,25 @@ export const drawNote = (
                 const getWifiTrackProps = (ct: number, rt: number): { x: number; y: number; direction: number }[] => {
                   return [
                     {
-                      x: startPoint[0] + (values.APositions[5][0] - startPoint[0]) * (ct / rt),
-                      y: startPoint[1] + (values.APositions[5][1] - startPoint[1]) * (ct / rt),
+                      x: startPoint[0] + (values.APositions.J[5][0] - startPoint[0]) * (ct / rt),
+                      y: startPoint[1] + (values.APositions.J[5][1] - startPoint[1]) * (ct / rt),
                       direction: 22.5 * 5 + 202.5,
                     },
                     {
-                      x: startPoint[0] + (values.APositions[4][0] - startPoint[0]) * (ct / rt),
-                      y: startPoint[1] + (values.APositions[4][1] - startPoint[1]) * (ct / rt),
+                      x: startPoint[0] + (values.APositions.J[4][0] - startPoint[0]) * (ct / rt),
+                      y: startPoint[1] + (values.APositions.J[4][1] - startPoint[1]) * (ct / rt),
                       direction: 22.5 * 4 + 202.5,
                     },
                     {
-                      x: 2 * values.APositions[0][0] - startPoint[0] + (values.APositions[3][0] - 2 * values.APositions[0][0] + startPoint[0]) * (ct / rt),
-                      y: startPoint[1] + (values.APositions[3][1] - startPoint[1]) * (ct / rt),
+                      x: 2 * values.APositions.J[0][0] - startPoint[0] + (values.APositions.J[3][0] - 2 * values.APositions.J[0][0] + startPoint[0]) * (ct / rt),
+                      y: startPoint[1] + (values.APositions.J[3][1] - startPoint[1]) * (ct / rt),
                       direction: 22.5 * 3 + 202.5,
                     },
                   ];
                 };
 
                 // 相邻两判定点的距离
-                const dist = lineLen(values.APositions[4][0], values.APositions[4][1], values.APositions[5][0], values.APositions[5][1]);
+                const dist = lineLen(values.APositions.J[4][0], values.APositions.J[4][1], values.APositions.J[5][0], values.APositions.J[5][1]);
 
                 // SLIDE TRACK
                 ctx_slideTrack.save();
@@ -830,11 +830,11 @@ export const drawNote = (
                   drawRotationImage(
                     ctx_slideTrack,
                     wifiTrack![i - 1],
-                    slideData[2].x - (values.APositions[0][0] - values.APositions[7][0]) - values.center[0] - ((dist * i) / 12) * 0.076,
+                    slideData[2].x - (values.APositions.J[0][0] - values.APositions.J[7][0]) - values.center[0] - ((dist * i) / 12) * 0.076,
                     slideData[2].y - values.center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
                     (dist * i) / 12,
                     ((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12,
-                    slideData[2].x - (values.APositions[0][0] - values.APositions[7][0]) - values.center[0],
+                    slideData[2].x - (values.APositions.J[0][0] - values.APositions.J[7][0]) - values.center[0],
                     slideData[2].y - values.center[1],
                     -22.534119524645373,
                     props.radius * 0.5 * alpha
@@ -1014,25 +1014,25 @@ export const drawNote = (
               const getWifiTrackProps = (ct: number, rt: number): { x: number; y: number; direction: number }[] => {
                 return [
                   {
-                    x: startPoint[0] + (values.APositions[5][0] - startPoint[0]) * (ct / rt),
-                    y: startPoint[1] + (values.APositions[5][1] - startPoint[1]) * (ct / rt),
+                    x: startPoint[0] + (values.APositions.J[5][0] - startPoint[0]) * (ct / rt),
+                    y: startPoint[1] + (values.APositions.J[5][1] - startPoint[1]) * (ct / rt),
                     direction: 22.5 * 5 + 202.5,
                   },
                   {
-                    x: startPoint[0] + (values.APositions[4][0] - startPoint[0]) * (ct / rt),
-                    y: startPoint[1] + (values.APositions[4][1] - startPoint[1]) * (ct / rt),
+                    x: startPoint[0] + (values.APositions.J[4][0] - startPoint[0]) * (ct / rt),
+                    y: startPoint[1] + (values.APositions.J[4][1] - startPoint[1]) * (ct / rt),
                     direction: 22.5 * 4 + 202.5,
                   },
                   {
-                    x: 2 * values.APositions[0][0] - startPoint[0] + (values.APositions[3][0] - 2 * values.APositions[0][0] + startPoint[0]) * (ct / rt),
-                    y: startPoint[1] + (values.APositions[3][1] - startPoint[1]) * (ct / rt),
+                    x: 2 * values.APositions.J[0][0] - startPoint[0] + (values.APositions.J[3][0] - 2 * values.APositions.J[0][0] + startPoint[0]) * (ct / rt),
+                    y: startPoint[1] + (values.APositions.J[3][1] - startPoint[1]) * (ct / rt),
                     direction: 22.5 * 3 + 202.5,
                   },
                 ];
               };
 
               // 相邻两判定点的距离
-              const dist = lineLen(values.APositions[4][0], values.APositions[4][1], values.APositions[5][0], values.APositions[5][1]);
+              const dist = lineLen(values.APositions.J[4][0], values.APositions.J[4][1], values.APositions.J[5][0], values.APositions.J[5][1]);
 
               // SLIDE TRACK
               ctx_slideTrack.save();
@@ -1063,11 +1063,11 @@ export const drawNote = (
                 drawRotationImage(
                   ctx_slideTrack,
                   wifiTrack![i - 1],
-                  slideData[2].x - (values.APositions[0][0] - values.APositions[7][0]) - values.center[0] - ((dist * i) / 12) * 0.076,
+                  slideData[2].x - (values.APositions.J[0][0] - values.APositions.J[7][0]) - values.center[0] - ((dist * i) / 12) * 0.076,
                   slideData[2].y - values.center[1] - (((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12) * 0.076,
                   (dist * i) / 12,
                   ((wifiTrack![i - 1].height / wifiTrack![i - 1].width) * (dist * i)) / 12,
-                  slideData[2].x - (values.APositions[0][0] - values.APositions[7][0]) - values.center[0],
+                  slideData[2].x - (values.APositions.J[0][0] - values.APositions.J[7][0]) - values.center[0],
                   slideData[2].y - values.center[1],
                   -22.534119524645373,
                   props.radius * 0.5 * alpha
@@ -1714,8 +1714,8 @@ export const drawNote = (
         const judgeIconHeight = values.maimaiTapR * 1 * k;
         const judgeIconWidth = ((values.maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
 
-        x = values.APositions[lastLineEndPos - 1][0]; // values.center[0] - judgeIconWidth / 2;
-        y = values.APositions[lastLineEndPos - 1][1]; //values.center[1] - (values.maimaiJudgeLineR - values.judgeDistance + judgeIconHeight / 2);
+        x = values.APositions.J[lastLineEndPos - 1][0]; // values.center[0] - judgeIconWidth / 2;
+        y = values.APositions.J[lastLineEndPos - 1][1]; //values.center[1] - (values.maimaiJudgeLineR - values.judgeDistance + judgeIconHeight / 2);
 
         let angle = note.slideLineDirectionParams?.angle;
         if (lastLine.slideType === 'w') {

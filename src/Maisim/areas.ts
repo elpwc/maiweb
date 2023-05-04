@@ -203,39 +203,22 @@ export class AreaUtils {
 export const getTouchCenterCoord = (pos: string, values: MaimaiValues): [number, number] => {
   const firstChar = pos.substring(0, 1);
   const touchPos = pos.substring(1, 2);
-  let x = 0,
-    y = 0;
-  let θ = 0;
   switch (firstChar) {
     case 'C':
-      x = values.center[0];
-      y = values.center[1];
-      break;
+      return values.center;
     case 'A':
-      θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-      x = values.center[0] + values.maimaiADTouchR * Math.cos(θ);
-      y = values.center[1] + values.maimaiADTouchR * Math.sin(θ);
-      break;
+      return values.APositions.A[Number(touchPos) - 1];
     case 'B':
-      θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-      x = values.center[0] + values.maimaiBR * Math.cos(θ);
-      y = values.center[1] + values.maimaiBR * Math.sin(θ);
-      break;
+      return values.APositions.B[Number(touchPos) - 1];
     case 'D':
-      θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-      x = values.center[0] + values.maimaiADTouchR * Math.cos(θ);
-      y = values.center[1] + values.maimaiADTouchR * Math.sin(θ);
-      break;
+      return values.APositions.D[Number(touchPos) - 1];
     case 'E':
-      θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-      x = values.center[0] + values.maimaiER * Math.cos(θ);
-      y = values.center[1] + values.maimaiER * Math.sin(θ);
-      break;
+      return values.APositions.E[Number(touchPos) - 1];
     default:
       break;
   }
 
-  return [x, y];
+  return [0, 0];
 };
 
 /** 如果设置了谱面镜像，翻转pos */

@@ -12,7 +12,7 @@ export const trackLength = (type: string, values: MaimaiValues, startPos: number
 
   switch (type) {
     case '-':
-      return lineLen(values.APositions[0][0], values.APositions[0][1], values.APositions[endPos - 1][0], values.APositions[endPos - 1][1]);
+      return lineLen(values.APositions.J[0][0], values.APositions.J[0][1], values.APositions.J[endPos - 1][0], values.APositions.J[endPos - 1][1]);
     case '^':
       if (endPos > 1 && endPos < 5) {
         return π * values.maimaiJudgeLineR * 2 * ((endPos - 1) / 8);
@@ -62,14 +62,14 @@ export const trackLength = (type: string, values: MaimaiValues, startPos: number
       return (
         ppangle * values.qpLeftRighCircleR * π +
         lineLen(
-          values.APositions[0][0],
-          values.APositions[0][1],
+          values.APositions.J[0][0],
+          values.APositions.J[0][1],
           values.qpRightCircleCenter[0] + values.qpLeftRighCircleR * cos(ppPoints[0] * π),
           values.qpRightCircleCenter[1] + values.qpLeftRighCircleR * sin(ppPoints[0] * π)
         ) +
         lineLen(
-          values.APositions[endPos - 1][0],
-          values.APositions[endPos - 1][1],
+          values.APositions.J[endPos - 1][0],
+          values.APositions.J[endPos - 1][1],
           values.qpRightCircleCenter[0] + values.qpLeftRighCircleR * cos((ppPoints[0] - ppangle) * π),
           values.qpRightCircleCenter[1] + values.qpLeftRighCircleR * sin((ppPoints[0] - ppangle) * π)
         )
@@ -80,14 +80,14 @@ export const trackLength = (type: string, values: MaimaiValues, startPos: number
       return (
         qqangle * values.qpLeftRighCircleR * π +
         lineLen(
-          values.APositions[0][0],
-          values.APositions[0][1],
+          values.APositions.J[0][0],
+          values.APositions.J[0][1],
           values.qpLeftCircleCenter[0] + values.qpLeftRighCircleR * cos(qqPoints[0] * π),
           values.qpLeftCircleCenter[1] + values.qpLeftRighCircleR * sin(qqPoints[0] * π)
         ) +
         lineLen(
-          values.APositions[endPos - 1][0],
-          values.APositions[endPos - 1][1],
+          values.APositions.J[endPos - 1][0],
+          values.APositions.J[endPos - 1][1],
           values.qpLeftCircleCenter[0] + values.qpLeftRighCircleR * cos((qqPoints[0] + qqangle) * π),
           values.qpLeftCircleCenter[1] + values.qpLeftRighCircleR * sin((qqPoints[0] + qqangle) * π)
         )
@@ -98,11 +98,11 @@ export const trackLength = (type: string, values: MaimaiValues, startPos: number
       return values.maimaiJudgeLineR * 2.9932;
     case 'V':
       return (
-        lineLen(values.APositions[turnPos - 1][0], values.APositions[turnPos - 1][1], values.APositions[0][0], values.APositions[0][1]) +
-        lineLen(values.APositions[turnPos - 1][0], values.APositions[turnPos - 1][1], values.APositions[endPos - 1][0], values.APositions[endPos - 1][1])
+        lineLen(values.APositions.J[turnPos - 1][0], values.APositions.J[turnPos - 1][1], values.APositions.J[0][0], values.APositions.J[0][1]) +
+        lineLen(values.APositions.J[turnPos - 1][0], values.APositions.J[turnPos - 1][1], values.APositions.J[endPos - 1][0], values.APositions.J[endPos - 1][1])
       );
     case 'w':
-      return lineLen(values.APositions[0][0], values.APositions[0][1], values.APositions[4][0], values.APositions[4][1]);
+      return lineLen(values.APositions.J[0][0], values.APositions.J[0][1], values.APositions.J[4][0], values.APositions.J[4][1]);
     default:
       break;
   }
@@ -286,7 +286,7 @@ export const flipTrack = (type: string, flipMode: FlipMode) => {
   };
 
   pqTrackJudgeCalc = () => {
-    const len = lineLen(this.APositions[0][0], this.APositions[0][1], this.APositions[3][0], this.APositions[3][1]);
+    const len = lineLen(this.APositions.J[0][0], this.APositions.J[0][1], this.APositions.J[3][0], this.APositions.J[3][1]);
     const c = this.qpCenterCircleR * 2 * π;
     const len1 = len / 2;
     let sum = len + c;
