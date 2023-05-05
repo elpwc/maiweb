@@ -1122,11 +1122,6 @@ export default function Maisim(
         currentGuideStarLineIndex: 0,
       });
       nextNoteIndex.current++;
-
-      if (currentSheet.current!.notes[nextNoteIndex.current].type === NoteType.EndMark) {
-        // 终止
-        break;
-      }
     }
 
     //console.log(nextNoteIndex, showingNotes.current);
