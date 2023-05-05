@@ -57,6 +57,7 @@ const Context = createContext<{
     state: State,
     setState: (newState: State) => void,
     onPlay: () => void,
+    onRestart: () => void
 }>(null as any);
 
 function showError(err: any) {
@@ -1191,6 +1192,9 @@ function PlayControlPanel(props: { style?: React.CSSProperties }): JSX.Element {
     let playPause = () => {
         ctx.onPlay();
     }
+    let restart = () => {
+        ctx.onRestart();
+    }
     return <Panel style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch', ...(props.style ?? {}) }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
             <div>
@@ -1200,9 +1204,9 @@ function PlayControlPanel(props: { style?: React.CSSProperties }): JSX.Element {
                     <option value={0.50}>0.50x</option>
                 </select>
                 {' '}
-                <Link onClick={() => playPause()}>Play/Pause</Link>
+                <Link onClick={() => {playPause()}}>Play/Pause</Link>
                 {' '}
-                <Link onClick={() => {}}>Restart</Link>
+                <Link onClick={() => {restart()}}>Restart</Link>
             </div>
             <input id="controlSlider" type="range" min="0" max={10000 /* ad hoc hard coded value */}></input>
         </div>
@@ -1248,7 +1252,7 @@ function DetailsPanel(props: { style?: React.CSSProperties }): JSX.Element {
     </Panel>
 }
 
-export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize: number) => void, onPlay: () => void }): JSX.Element {
+export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize: number) => void, onPlay: () => void, onRestart: () => void }): JSX.Element {
     let [state,setState] = useState(defaultState);
     let resizeCallback = () => {
         let [w, h] = [window.innerWidth, window.innerHeight];
@@ -1280,7 +1284,7 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
     let leftColumn = state.landscapeLeftPanelsVisible;
     let rightColumn = state.landscapeRightPanelsVisible;
     if (!leftColumn && !rightColumn) { leftColumn = rightColumn = true; }
-    return <Context.Provider value={{state,setState, onPlay:props.onPlay}}>
+    return <Context.Provider value={{state,setState, onPlay:props.onPlay, onRestart:props.onRestart}}>
         <div style={{
                 display: 'grid',
                 gridTemplateColumns: l? `${leftColumn?(rightColumn?'minmax(auto,25vw)':'auto'):'0'} 100vh ${rightColumn?'auto':'0'}`: '1fr',
