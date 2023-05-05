@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import appconfig from "./appconfig";
+import { read_inote } from "./Maisim/maiReader/inoteReader";
 import { createNotes } from "./services/api/createNotes";
 import { createSong } from "./services/api/createSong";
 import { findAllSong } from "./services/api/findAllSong";
@@ -38,7 +39,8 @@ interface State {
     currentModal: null|Modal,
     user: null|API.WhoamiDto,
     list: API.Song[], listForceUpdate: number;
-    playing: null|{notes:API.Notes,auto:boolean}
+    playing: null|{notes:API.Notes,auto:boolean},
+    currentNotes: string // 為了編輯測試譜做的臨時方案 TODO:
 };
 const defaultState: State = (() => {
     let user = readSavedUser();
@@ -50,14 +52,16 @@ const defaultState: State = (() => {
         currentModal: (user != null)? null: {name:'login'},
         user: user,
         list: [], listForceUpdate: -1,
-        playing: null
+        playing: null,
+        currentNotes: ''
     }
 })();
 const Context = createContext<{
     state: State,
     setState: (newState: State) => void,
     onPlay: () => void,
-    onRestart: () => void
+    onRestart: (notes: string) => void,
+    initialNotes: string, // 為了編輯測試譜做的臨時方案 TODO:
 }>(null as any);
 
 function showError(err: any) {
@@ -1193,7 +1197,14 @@ function PlayControlPanel(props: { style?: React.CSSProperties }): JSX.Element {
         ctx.onPlay();
     }
     let restart = () => {
-        ctx.onRestart();
+        let notes = ctx.state.currentNotes;
+        try {
+            read_inote(notes);
+        } catch(err) {
+            alert(err);
+            return;
+        }
+        ctx.onRestart(notes);
     }
     return <Panel style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch', ...(props.style ?? {}) }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
@@ -1219,12 +1230,13 @@ function NotesEditorPanel(props: { style?: React.CSSProperties }): JSX.Element {
         (ctx.state.layout == 'landscape' && !ctx.state.landscapeRightPanelsVisible)
         || (ctx.state.layout == 'portrait' && ctx.state.portraitCurrentTab != 'notes')
     );
-    let l = (ctx.state.layout == 'landscape')
+    let l = (ctx.state.layout == 'landscape');
+    let status = (ctx.state.currentNotes == ctx.initialNotes)? 'clean': 'dirty';
     return <Panel style={{ display: hide? 'none': 'block', ...(props.style ?? {}) }}>
         <PortaritLayoutTabs/>
         <div style={{ display: l? 'flex': 'block', flexDirection: 'column', height: l? '100%': undefined }}>
             {l? <div><b>Notes Editor</b></div>: <></>}
-            <div style={{ flexGrow: '1' }}><textarea placeholder="notes data ......"  style={{ resize: 'none', minHeight: '150px', height: l? '100%': undefined, width: '100%', boxSizing: 'border-box' }}></textarea></div>
+            <div style={{ flexGrow: '1' }}><textarea placeholder="notes data ......"  style={{ resize: 'none', minHeight: '150px', height: l? '100%': undefined, width: '100%', boxSizing: 'border-box', fontFamily: 'Consolas, monospace', color: (status == 'dirty')? '#3333FF': 'unset' }} value={ctx.state.currentNotes} onChange={ev => ctx.setState({ ...ctx.state, currentNotes: ev.target.value })}></textarea></div>
         </div>
     </Panel>
 }
@@ -1252,8 +1264,8 @@ function DetailsPanel(props: { style?: React.CSSProperties }): JSX.Element {
     </Panel>
 }
 
-export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize: number) => void, onPlay: () => void, onRestart: () => void }): JSX.Element {
-    let [state,setState] = useState(defaultState);
+export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize: number) => void, onPlay: () => void, onRestart: (notes: string) => void, initialNotes: string }): JSX.Element {
+    let [state,setState] = useState({ ...defaultState, currentNotes: props.initialNotes });
     let resizeCallback = () => {
         let [w, h] = [window.innerWidth, window.innerHeight];
         let newLayout = ((w < h)? 'portrait': 'landscape') as 'portrait'|'landscape';
@@ -1284,7 +1296,7 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
     let leftColumn = state.landscapeLeftPanelsVisible;
     let rightColumn = state.landscapeRightPanelsVisible;
     if (!leftColumn && !rightColumn) { leftColumn = rightColumn = true; }
-    return <Context.Provider value={{state,setState, onPlay:props.onPlay, onRestart:props.onRestart}}>
+    return <Context.Provider value={{state,setState, onPlay:props.onPlay, onRestart:props.onRestart, initialNotes:props.initialNotes}}>
         <div style={{
                 display: 'grid',
                 gridTemplateColumns: l? `${leftColumn?(rightColumn?'minmax(auto,25vw)':'auto'):'0'} 100vh ${rightColumn?'auto':'0'}`: '1fr',
