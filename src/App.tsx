@@ -27,21 +27,55 @@ function App() {
   const [size, setSize] = useState(0);
   const [key, setkey]: [string, any] = useState('');
   const [showEditor, setshowEditor]: [boolean, any] = useState(false);
-  const [currentnotes, setcurrentnotes]: [string, any] = useState('');
+  const [maisimComponentKey, setMaisimComponentKey] = useState(1);
+
+  // TODO: Maisim 與 UI 功能整合之後，當前譜面應該由 UI 組件控制。現在這個 state 是臨時方案。
+  const [currentNotes, setCurrentNotes]: [string, any] = useState(
+    sheetdata2.notes
+  );
 
   const beginRef = useRef(null);
   const selectRef = useRef(null);
+  
+  const restarting = useRef(false);
 
   return (
     <UI
       size={size}
       setSize={setSize}
+      initialNotes={currentNotes}
       onPlay={() => {
-        document.getElementById('playButton')?.click();
+        if (restarting.current) {
+          return;
+        }
+        // TODO: 這個太髒了，以後得把 GameState 相關的東西小重寫一下
+        document.getElementById('playButton')!.click();
+      }}
+      onRestart={(notes: string) => {
+        if (restarting.current) {
+          return;
+        }
+        restarting.current = true;
+        // pause
+        if (gameState == GameState.Play) {
+          document.getElementById('playButton')!.click();
+        }
+        // reload
+        if (notes != currentNotes) {
+          setCurrentNotes(notes);
+        }
+        setGameState(GameState.Begin);
+        setMaisimComponentKey(maisimComponentKey + 1);
+        // auto play
+        setTimeout(() => {
+          document.getElementById('playButton')!.click();
+          restarting.current = false;
+        }, 1000);
       }}
       maisim={
         <Maisim
-          id="1"
+          id={String(maisimComponentKey)}
+          key={String(maisimComponentKey)}
           style={{}}
           gameState={gameState}
           setGameState={(e: any) => {
@@ -66,7 +100,7 @@ function App() {
           backgroundImage={testbgi2}
           backgroundAnime={testbga2}
           backgroundColor={'#136594'}
-          sheet={sheetdata2.notes}
+          sheet={currentNotes}
           sheetProps={{ first: sheetdata2.first, wholeBPM: sheetdata2.wholebpm }}
           onPlayStart={function (): void {}}
           onGameRecordChange={function (gameRecord: object): void {}}

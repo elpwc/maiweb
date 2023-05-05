@@ -247,7 +247,7 @@ export const drawNote = (
       //console.log(note.pos, θ*180)
       x = values.center[0] + (props.rho + values.maimaiSummonLineR) * Math.cos(θ);
       y = values.center[1] + (props.rho + values.maimaiSummonLineR) * Math.sin(θ);
-    } else {
+    } else if (note.pos != 'E') {
       // 字母开头的位置（TOUCH）
       if (firstChar === 'A' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold)) {
         θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
