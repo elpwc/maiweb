@@ -2,6 +2,10 @@ import MaimaiValues from '../maimaiValues';
 import { SectionInfo } from '../utils/note';
 import { trackLength } from './_global';
 
+
+export const section_new = () => {}
+
+
 /** SLIDE TRACK分段 */
 export const section = (type: string | undefined, values: MaimaiValues, startPos: string, endPosOri: string, turnPosOri?: string): SectionInfo[] | undefined => {
   let endPos = Number(endPosOri) - Number(startPos) + 1;

@@ -1,5 +1,6 @@
 import { NoteType } from './types/noteType';
 import { SlideTrackJudgementParams } from './slideTrackJudgementParams';
+import { SpecFrame } from '../spectator/specFrame';
 
 /*
   注释不使用「时间」，而分别使用「时刻」和「时长」
@@ -53,7 +54,7 @@ export interface SlideTrack {
   /** 适用于V, 转向位置 '1'-'8' */
   turnPos?: string;
 
-  // HOLD延时的节拍 ([]里的内容)
+  // HOLD延时的节拍 ([]里的内容) 只是谱面分析时用来算出remainTime用的
   /** HOLD演示节拍[]里内容的前一个数字 */
   notevalue?: number;
   /** HOLD演示节拍[]里内容的後一个数字 */
@@ -112,7 +113,7 @@ export interface Note {
   /** 适用于HOLD,TOUCH HOLD, 是否是TAP型HOLD */
   isShortHold?: boolean;
 
-  // HOLD延时的节拍 ([]里的内容)
+  // HOLD延时的节拍 ([]里的内容) 只是谱面分析时用来算出remainTime用的
   /** HOLD演示节拍[]里内容的前一个数字 */
   notevalue?: number;
   /** HOLD演示节拍[]里内容的後一个数字 */
@@ -187,6 +188,8 @@ export interface Note {
   isSlideTrackEx?: boolean;
   isSlideTrackInvisible?: boolean;
   isSlideTrackGhost?: boolean;
+  /** 是否是观赏谱中的自定义前後位置的TRACK */
+  isSpectatorSpecialRouteTrack?: boolean;
 
   /** 最後SlideLine的角度，用来确定判定图像的角度 */
   slideLineDirectionParams?: SlideTrackJudgementParams;
@@ -223,4 +226,8 @@ export interface Note {
   isTrap?: boolean;
   /** 是否是幽灵note（只有浮现和判定会显示） */
   isGhost?: boolean;
+  /** 浮现时关键帧 */
+  specFramesEmerge?: SpecFrame[];
+  /** 移动时关键帧 */
+  specFramesMove?: SpecFrame[];
 }
