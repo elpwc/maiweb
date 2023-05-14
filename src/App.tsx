@@ -29,7 +29,7 @@ function App() {
   const [showEditor, setshowEditor]: [boolean, any] = useState(false);
   const [maisimComponentKey, setMaisimComponentKey] = useState(1);
 
-  // TODO: Maisim 與 UI 功能整合之後，當前譜面應該由 UI 組件控制。現在這個 state 是臨時方案。
+  // TODO: 現在這裡僅包括譜面代碼。以後應該加上整個 sheetdata 和 bga 等
   const [currentNotes, setCurrentNotes]: [string, any] = useState(
     sheetdata2.notes
   );
