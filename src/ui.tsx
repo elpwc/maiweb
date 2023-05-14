@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect, useRef } from "r
 import ReactDOM from "react-dom";
 import appconfig from "./appconfig";
 import { read_inote } from "./Maisim/maiReader/inoteReader";
+import { Silder, SliderMax } from "./Maisim/utils/slider";
 import { createNotes } from "./services/api/createNotes";
 import { createSong } from "./services/api/createSong";
 import { findAllSong } from "./services/api/findAllSong";
@@ -1206,6 +1207,25 @@ function PlayControlPanel(props: { style?: React.CSSProperties }): JSX.Element {
         }
         ctx.onRestart(notes);
     }
+    let [sliderInitial, setSliderInitial] = useState({ value: 0 });
+    let [sliderValue, setSliderValue] = useState(0);
+    let sliderChange = (newValue: number) => {
+        setSliderInitial({ value: newValue });
+    };
+    useEffect(() => {
+        let v = sliderInitial.value;
+        setSliderValue(v);
+        let clock = setInterval(() => {
+            v += 60;
+            if (v > SliderMax) {
+                v = 0;
+            }
+            setSliderValue(v);
+        }, 120);
+        return () => {
+            clearInterval(clock);
+        };
+    }, [sliderInitial]);
     return <Panel style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch', ...(props.style ?? {}) }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
             <div>
@@ -1219,7 +1239,8 @@ function PlayControlPanel(props: { style?: React.CSSProperties }): JSX.Element {
                 {' '}
                 <Link onClick={() => {restart()}}>Restart</Link>
             </div>
-            <input id="controlSlider" type="range" min="0" max={10000 /* ad hoc hard coded value */}></input>
+            <Silder value={sliderValue} onChange={sliderChange} />
+            <input style={{ display: 'none' }} id="controlSlider" type="range" min="0" max={10000 /* ad hoc hard coded value */}></input>
         </div>
     </Panel>
 }
