@@ -40,7 +40,8 @@ function App() {
       backgroundAnime: testbga2
     },
     gameRecord: null,
-    progress: 0
+    progress: 0,
+    duration: 0
   });
   const [seekAction, setSeekAction] = useState<{ progress: number } | undefined>(undefined);
 
@@ -119,7 +120,7 @@ function App() {
           backgroundColor={'#136594'}
           sheet={info.currentNotes.sheet}
           sheetProps={info.currentNotes.sheetProps}
-          onPlayStart={function (): void {}}
+          onPlayStart={(duration: number) => { setInfo({ ...info, duration }) }}
           onGameRecordChange={function (gameRecord: GameRecord): void {}}
           onPlayFinish={function (): void {}}
           onProgress={(progress: number) => { setInfo({ ...info, progress }) }}

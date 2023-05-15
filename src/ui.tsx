@@ -72,7 +72,8 @@ const Context = createContext<{
 export interface MaisimInfo {
     currentNotes: CurrentNotes,
     gameRecord: GameRecord|null,
-    progress: number
+    progress: number,
+    duration: number
 };
 export interface CurrentNotes {
     sheet: string,
@@ -1230,18 +1231,30 @@ function PlayControlPanel(props: { style?: React.CSSProperties }): JSX.Element {
         let progress = (newValue / SliderMax);
         ctx.onSeek(progress);
     };
+    let formatTime = (t: number, f: (s: number) => number): string => {
+        let m = Math.floor(t / 60);
+        let s = f(t - m*60);
+        let M = String(m);
+        let S = String(s);
+        return ((M.length < 2)? '0'+M: M) + ':' + ((S.length < 2)? '0'+S: S);
+    };
+    let currentTime = formatTime(ctx.info.progress * ctx.info.duration, Math.round);
+    let duration = formatTime(ctx.info.duration, Math.ceil);
     return <Panel style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch', ...(props.style ?? {}) }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
-            <div>
-                <select id="controlSpeedSelect">
-                    <option value={1.00}>1.00x</option>
-                    <option value={0.75}>0.75x</option>
-                    <option value={0.50}>0.50x</option>
-                </select>
-                {' '}
-                <Link onClick={() => {playPause()}}>Play/Pause</Link>
-                {' '}
-                <Link onClick={() => {restart()}}>Restart</Link>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <div>
+                    <select id="controlSpeedSelect">
+                        <option value={1.00}>1.00x</option>
+                        <option value={0.75}>0.75x</option>
+                        <option value={0.50}>0.50x</option>
+                    </select>
+                    {' '}
+                    <Link onClick={() => {playPause()}}>Play/Pause</Link>
+                    {' '}
+                    <Link onClick={() => {restart()}}>Restart</Link>
+                </div>
+                <div>{currentTime} / {duration}</div>
             </div>
             <Silder value={sliderValue} onChange={sliderChange} />
             <input style={{ display: 'none' }} id="controlSlider" type="range" min="0" max={10000 /* ad hoc hard coded value */}></input>

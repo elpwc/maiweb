@@ -62,7 +62,7 @@ export interface MaisimProps {
 
   gameState: GameState;
   setGameState?: (gameState: GameState) => void;
-  onPlayStart?: () => void;
+  onPlayStart?: (duration: number) => void;
   onGameRecordChange?: (gameRecord: GameRecord) => void;
   onPlayFinish?: () => void;
   onPlayPause?: () => void;

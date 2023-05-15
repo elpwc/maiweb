@@ -1798,7 +1798,7 @@ export default function Maisim(
               if (gameState === GameState.Begin) {
                 starttimer();
                 setGameState?.(GameState.Play);
-                onPlayStart?.();
+                onPlayStart?.(SongTrack.current.duration);
                 console.log('start play');
               } else if (gameState === GameState.Play) {
                 virtualTime.current.pause();
