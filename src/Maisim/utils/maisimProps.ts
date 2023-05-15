@@ -5,6 +5,7 @@ import { FlipMode } from './types/flipMode';
 import { ScoreCalculationType } from './types/judgeStatus';
 import { TapStyles, RegularStyles, SlideColor } from './types/noteStyles';
 import { SheetSecondaryProps } from './sheet';
+import { GameRecord } from './types/gameRecord';
 
 export interface MaisimProps {
   /** 唯一标识，当有多个Maisim时，请为每个Maisim分配不同的id */
@@ -62,10 +63,13 @@ export interface MaisimProps {
   gameState: GameState;
   setGameState?: (gameState: GameState) => void;
   onPlayStart?: () => void;
-  onGameRecordChange?: (gameRecord: object) => void;
+  onGameRecordChange?: (gameRecord: GameRecord) => void;
   onPlayFinish?: () => void;
   onPlayPause?: () => void;
   onPlayResume?: () => void;
+  onProgress?: (progress: number) => void,
+
+  seekAction?: { progress: number } | undefined,
 
   /** 是否显示UI遮盖层 */
   doShowUIContent?: boolean;

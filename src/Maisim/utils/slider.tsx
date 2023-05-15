@@ -21,7 +21,6 @@ export function Silder(props: { value: number, onChange: (newValue: number) => v
     let ob = 
       pd(fromEvent(cursor, 'mousedown'))
         .pipe(exhaustMap(eventStart => {
-          eventStart.preventDefault();
           let l = (cursor.parentElement!.offsetWidth - cursor.offsetWidth);
           let a = cursor.offsetLeft / l;
           setDragging(true);

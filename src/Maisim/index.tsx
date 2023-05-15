@@ -26,6 +26,7 @@ import { NoteType, isNormalNoteType, isInnerScreenNoteType } from './utils/types
 import { ShowingNoteProps } from './utils/showingNoteProps';
 import { BackgroundType } from './utils/types/backgroundType';
 import { MaisimProps } from './utils/maisimProps';
+import { GameRecord } from './utils/types/gameRecord';
 import { Sheet } from './utils/sheet';
 import { getSheet } from './maiReader/maiReaderMain';
 import AnimationUtils from './drawUtils/animation';
@@ -90,6 +91,10 @@ export default function Maisim(
     onPlayFinish = undefined,
     onPlayPause = undefined,
     onPlayResume = undefined,
+    onProgress = undefined,
+
+    seekAction = undefined,
+
     /** 屏幕/按钮点击事件 */
     onScreenPressDown = undefined,
     onScreenPressUp = undefined,
@@ -133,7 +138,7 @@ export default function Maisim(
   const areaFactory: React.MutableRefObject<AreaUtils> = useRef(new AreaUtils(maimaiValues.current));
 
   /** 游戏记录 */
-  const gameRecord = useRef({
+  const gameRecord = useRef<GameRecord>({
     criticalPerfect: 0,
     perfect: 0,
     great: 0,
@@ -283,7 +288,8 @@ export default function Maisim(
         BGA.current!.play();
       }, 0);
 
-      const duration = SongTrack.current.duration * 1000;
+      const first = ((currentSheet.current.first ?? 0) * 1000);
+      const duration = ((SongTrack.current.duration * 1000) - first);
       // console.log({ duration: duration/1000 })
 
       //console.log(currentSheet.beats5?.beat);
@@ -291,11 +297,15 @@ export default function Maisim(
         virtualTime.current.init(duration, 0);
         virtualTime.current.onSeek((progress: number) => {
           if (currentSheet.current) {
-            // 进度条被拖动，重置音符状态
+            // 进度条被拖动
+            seekSongTrack(progress, first);
+            // 重置音符状态
             showingNotes.current = [];
             nextNoteIndex.current = 0;
             const time = duration * progress;
-            while ((currentSheet.current.notes[nextNoteIndex.current]?.emergeTime ?? Infinity) < time) {
+            while (Math.max((currentSheet.current.notes[nextNoteIndex.current]?.emergeTime ?? Infinity),
+                    (currentSheet.current.notes[nextNoteIndex.current]?.moveTime ?? Infinity))
+                  < time) {
               nextNoteIndex.current++;
             }
             reader_and_updater();
@@ -308,17 +318,17 @@ export default function Maisim(
           drawer();
         }, maimaiValues.current.timerPeriod);
         //timer_draw.current = setInterval(drawer, maimaiValues.current.timerPeriod);
-      }, (currentSheet.current.first ?? 0) * 1000);
+      }, first);
     }
   };
 
   const changeSongTrackPlaybackrate = (rate: number) => {
     SongTrack.current.playbackRate = rate;
   };
-  const seekSongTrack = (progress: number): boolean => {
+  const seekSongTrack = (progress: number, first: number): boolean => {
     let duration = virtualTime.current.duration;
-    let time = progress * duration;
-    SongTrack.current.currentTime = time / 1000;
+    let time = ((progress * duration) + first);
+    SongTrack.current.currentTime = (time / 1000);
     return true;
   };
   const handleSongTrackFinish = (callback: () => void): (() => void) => {
@@ -375,7 +385,7 @@ export default function Maisim(
     //clearInterval(timer_draw.current);
     SongTrack.current.pause();
     BGA.current!.pause();
-    seekSongTrack(0);
+    seekSongTrack(0, 0);
     virtualTime.current = new VirtualTime();
     initAnimation();
 
@@ -1631,33 +1641,44 @@ export default function Maisim(
   useEffect(() => {
     // let slider = sliderRef.current;
     // 先苟且一下
-    let slider = document.getElementById('controlSlider') as HTMLInputElement;
-    let lastUpdatedValue = 0;
+    // let slider = document.getElementById('controlSlider') as HTMLInputElement;
+    // let lastUpdatedValue = 0;
     let clearBinding = virtualTime.current.onProgress((progress: number, _: string) => {
       if (progress < 0) progress = 0;
       if (progress > 1) progress = 1;
       let newValue = progress * sliderMax;
-      slider.value = newValue as any;
-      lastUpdatedValue = newValue;
-    });
-    let onChange = (ev: Event) => {
-      let value = Number((ev.target as HTMLInputElement).value);
-      let progress = value / sliderMax;
-      if (gameState !== GameState.Begin) {
-        let ok = seekSongTrack(progress);
-        if (ok) {
-          virtualTime.current.seek(progress);
-        } else {
-          slider.value = lastUpdatedValue as any; // 使 slider 回到原位
-        }
+      // slider.value = newValue as any;
+      // lastUpdatedValue = newValue;
+      if (onProgress) {
+        onProgress(progress);
       }
-    };
-    slider.addEventListener('change', onChange);
+    });
+    // let onChange = (ev: Event) => {
+    //   let value = Number((ev.target as HTMLInputElement).value);
+    //   let progress = value / sliderMax;
+    //   if (gameState !== GameState.Begin) {
+    //     let ok = seekSongTrack(progress, 0);
+    //     if (ok) {
+    //       virtualTime.current.seek(progress);
+    //     } else {
+    //       slider.value = lastUpdatedValue as any; // 使 slider 回到原位
+    //     }
+    //   }
+    // };
+    // slider.addEventListener('change', onChange);
     return () => {
-      slider.removeEventListener('change', onChange);
+      // slider.removeEventListener('change', onChange);
       clearBinding();
     };
   }, [gameState]);
+  useEffect(() => {
+    if (seekAction != null) {
+      let progress = seekAction.progress;
+      if (virtualTime.current.initialized) {
+        virtualTime.current.seek(progress);
+      }
+    }
+  }, [seekAction]);
 
   // 音乐播放完後，同步暂停状态
   useEffect(() => {
