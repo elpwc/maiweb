@@ -16,7 +16,8 @@ import testbgi2 from './testTrack/2/bg.jpg';
 import testbga2 from './testTrack/2/pv.mp4';
 import { BackgroundType } from './Maisim/utils/types/backgroundType';
 import { AutoType } from './Maisim/utils/types/autoType';
-import { UI } from './ui';
+import { MaisimInfo, UI } from './ui';
+import { GameRecord } from './Maisim/utils/types/gameRecord';
 
 function App() {
   const [gameState, setGameState] = useState(GameState.Begin);
@@ -29,10 +30,20 @@ function App() {
   const [showEditor, setshowEditor]: [boolean, any] = useState(false);
   const [maisimComponentKey, setMaisimComponentKey] = useState(1);
 
-  // TODO: Maisim 與 UI 功能整合之後，當前譜面應該由 UI 組件控制。現在這個 state 是臨時方案。
-  const [currentNotes, setCurrentNotes]: [string, any] = useState(
-    sheetdata2.notes
-  );
+  const [info, setInfo] = useState<MaisimInfo>({
+    currentNotes: {
+      sheet: sheetdata2.notes,
+      sheetProps: { wholeBPM: sheetdata2.wholebpm, first: sheetdata2.first },
+      track: testtrack2,
+      backgroundType: BackgroundType.Video,
+      backgroundImage: testbgi2,
+      backgroundAnime: testbga2
+    },
+    gameRecord: null,
+    progress: 0,
+    duration: 0
+  });
+  const [seekAction, setSeekAction] = useState<{ progress: number } | undefined>(undefined);
 
   const beginRef = useRef(null);
   const selectRef = useRef(null);
@@ -43,7 +54,7 @@ function App() {
     <UI
       size={size}
       setSize={setSize}
-      initialNotes={currentNotes}
+      info={info}
       onPlay={() => {
         if (restarting.current) {
           return;
@@ -51,7 +62,7 @@ function App() {
         // TODO: 這個太髒了，以後得把 GameState 相關的東西小重寫一下
         document.getElementById('playButton')!.click();
       }}
-      onRestart={(notes: string) => {
+      onRestart={(sheet: string) => {
         if (restarting.current) {
           return;
         }
@@ -61,9 +72,10 @@ function App() {
           document.getElementById('playButton')!.click();
         }
         // reload
-        if (notes != currentNotes) {
-          setCurrentNotes(notes);
+        if (sheet != info.currentNotes.sheet) {
+          setInfo({ ...info, currentNotes: { ...info.currentNotes, sheet } });
         }
+        setSeekAction(undefined);
         setGameState(GameState.Begin);
         setMaisimComponentKey(maisimComponentKey + 1);
         // auto play
@@ -71,6 +83,12 @@ function App() {
           document.getElementById('playButton')!.click();
           restarting.current = false;
         }, 1000);
+      }}
+      onSeek={(progress: number) => {
+        if (restarting.current) {
+          return;
+        }
+        setSeekAction({ progress });
       }}
       maisim={
         <Maisim
@@ -95,16 +113,18 @@ function App() {
           doEnableKeyboard={true}
           doShowKeys={false}
           centerText={0}
-          track={testtrack2}
-          backgroundType={BackgroundType.Video}
-          backgroundImage={testbgi2}
-          backgroundAnime={testbga2}
+          track={info.currentNotes.track}
+          backgroundType={info.currentNotes.backgroundType}
+          backgroundImage={info.currentNotes.backgroundImage}
+          backgroundAnime={info.currentNotes.backgroundAnime}
           backgroundColor={'#136594'}
-          sheet={currentNotes}
-          sheetProps={{ first: sheetdata2.first, wholeBPM: sheetdata2.wholebpm }}
-          onPlayStart={function (): void {}}
-          onGameRecordChange={function (gameRecord: object): void {}}
+          sheet={info.currentNotes.sheet}
+          sheetProps={info.currentNotes.sheetProps}
+          onPlayStart={(duration: number) => { setInfo({ ...info, duration }) }}
+          onGameRecordChange={function (gameRecord: GameRecord): void {}}
           onPlayFinish={function (): void {}}
+          onProgress={(progress: number) => { setInfo({ ...info, progress }) }}
+          seekAction={seekAction}
           uiContent={undefined}
           doShowUIContent={true}
           onScreenPressDown={function (key: string): void {

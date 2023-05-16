@@ -2,6 +2,10 @@ import React, { createContext, useState, useContext, useEffect, useRef } from "r
 import ReactDOM from "react-dom";
 import appconfig from "./appconfig";
 import { read_inote } from "./Maisim/maiReader/inoteReader";
+import { SheetSecondaryProps } from "./Maisim/utils/sheet";
+import { Silder, SliderMax } from "./Maisim/utils/slider";
+import { BackgroundType } from "./Maisim/utils/types/backgroundType";
+import { GameRecord } from "./Maisim/utils/types/gameRecord";
 import { createNotes } from "./services/api/createNotes";
 import { createSong } from "./services/api/createSong";
 import { findAllSong } from "./services/api/findAllSong";
@@ -38,9 +42,9 @@ interface State {
     portraitCurrentTab: 'list'|'notes'|'details'
     currentModal: null|Modal,
     user: null|API.WhoamiDto,
-    list: API.Song[], listForceUpdate: number;
+    list: API.Song[], listForceUpdate: number,
     playing: null|{notes:API.Notes,auto:boolean},
-    currentNotes: string // 為了編輯測試譜做的臨時方案 TODO:
+    currentSheet: string
 };
 const defaultState: State = (() => {
     let user = readSavedUser();
@@ -53,16 +57,32 @@ const defaultState: State = (() => {
         user: user,
         list: [], listForceUpdate: -1,
         playing: null,
-        currentNotes: ''
+        currentSheet: ''
     }
 })();
 const Context = createContext<{
     state: State,
     setState: (newState: State) => void,
+    info: MaisimInfo,
     onPlay: () => void,
-    onRestart: (notes: string) => void,
-    initialNotes: string, // 為了編輯測試譜做的臨時方案 TODO:
+    onRestart: (sheet: string) => void,
+    onSeek: (progress: number) => void
 }>(null as any);
+
+export interface MaisimInfo {
+    currentNotes: CurrentNotes,
+    gameRecord: GameRecord|null,
+    progress: number,
+    duration: number
+};
+export interface CurrentNotes {
+    sheet: string,
+    sheetProps: SheetSecondaryProps,
+    track: string,
+    backgroundType: BackgroundType,
+    backgroundImage: string,
+    backgroundAnime: string
+};
 
 function showError(err: any) {
     if (err.message) {
@@ -1197,29 +1217,47 @@ function PlayControlPanel(props: { style?: React.CSSProperties }): JSX.Element {
         ctx.onPlay();
     }
     let restart = () => {
-        let notes = ctx.state.currentNotes;
+        let sheet = ctx.state.currentSheet;
         try {
-            read_inote(notes);
+            read_inote(sheet);
         } catch(err) {
             alert(err);
             return;
         }
-        ctx.onRestart(notes);
+        ctx.onRestart(sheet);
     }
+    let sliderValue = (ctx.info.progress * SliderMax);
+    let sliderChange = (newValue: number) => {
+        let progress = (newValue / SliderMax);
+        ctx.onSeek(progress);
+    };
+    let formatTime = (t: number, f: (s: number) => number): string => {
+        let m = Math.floor(t / 60);
+        let s = f(t - m*60);
+        let M = String(m);
+        let S = String(s);
+        return ((M.length < 2)? '0'+M: M) + ':' + ((S.length < 2)? '0'+S: S);
+    };
+    let currentTime = formatTime(ctx.info.progress * ctx.info.duration, Math.round);
+    let duration = formatTime(ctx.info.duration, Math.ceil);
     return <Panel style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'stretch', ...(props.style ?? {}) }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
-            <div>
-                <select id="controlSpeedSelect">
-                    <option value={1.00}>1.00x</option>
-                    <option value={0.75}>0.75x</option>
-                    <option value={0.50}>0.50x</option>
-                </select>
-                {' '}
-                <Link onClick={() => {playPause()}}>Play/Pause</Link>
-                {' '}
-                <Link onClick={() => {restart()}}>Restart</Link>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <div>
+                    <select id="controlSpeedSelect">
+                        <option value={1.00}>1.00x</option>
+                        <option value={0.75}>0.75x</option>
+                        <option value={0.50}>0.50x</option>
+                    </select>
+                    {' '}
+                    <Link onClick={() => {playPause()}}>Play/Pause</Link>
+                    {' '}
+                    <Link onClick={() => {restart()}}>Restart</Link>
+                </div>
+                <div>{currentTime} / {duration}</div>
             </div>
-            <input id="controlSlider" type="range" min="0" max={10000 /* ad hoc hard coded value */}></input>
+            <Silder value={sliderValue} onChange={sliderChange} />
+            <input style={{ display: 'none' }} id="controlSlider" type="range" min="0" max={10000 /* ad hoc hard coded value */}></input>
         </div>
     </Panel>
 }
@@ -1231,12 +1269,12 @@ function NotesEditorPanel(props: { style?: React.CSSProperties }): JSX.Element {
         || (ctx.state.layout == 'portrait' && ctx.state.portraitCurrentTab != 'notes')
     );
     let l = (ctx.state.layout == 'landscape');
-    let status = (ctx.state.currentNotes == ctx.initialNotes)? 'clean': 'dirty';
+    let status = (ctx.state.currentSheet == ctx.info.currentNotes?.sheet)? 'clean': 'dirty';
     return <Panel style={{ display: hide? 'none': 'block', ...(props.style ?? {}) }}>
         <PortaritLayoutTabs/>
         <div style={{ display: l? 'flex': 'block', flexDirection: 'column', height: l? '100%': undefined }}>
             {l? <div><b>Notes Editor</b></div>: <></>}
-            <div style={{ flexGrow: '1' }}><textarea placeholder="notes data ......"  style={{ resize: 'none', minHeight: '150px', height: l? '100%': undefined, width: '100%', boxSizing: 'border-box', fontFamily: 'Consolas, monospace', color: (status == 'dirty')? '#3333FF': 'unset' }} value={ctx.state.currentNotes} onChange={ev => ctx.setState({ ...ctx.state, currentNotes: ev.target.value })}></textarea></div>
+            <div style={{ flexGrow: '1' }}><textarea placeholder="notes data ......"  style={{ resize: 'none', minHeight: '150px', height: l? '100%': undefined, width: '100%', boxSizing: 'border-box', fontFamily: 'Consolas, monospace', color: (status == 'dirty')? '#3333FF': 'unset' }} value={ctx.state.currentSheet} onChange={ev => ctx.setState({ ...ctx.state, currentSheet: ev.target.value })}></textarea></div>
         </div>
     </Panel>
 }
@@ -1264,8 +1302,11 @@ function DetailsPanel(props: { style?: React.CSSProperties }): JSX.Element {
     </Panel>
 }
 
-export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize: number) => void, onPlay: () => void, onRestart: (notes: string) => void, initialNotes: string }): JSX.Element {
-    let [state,setState] = useState({ ...defaultState, currentNotes: props.initialNotes });
+export function UI(props: { maisim: JSX.Element, info: MaisimInfo, size: number, setSize: (newSize: number) => void, onPlay: () => void, onRestart: (notes: string) => void, onSeek: (progress: number) => void }): JSX.Element {
+    let [state,setState] = useState(defaultState);
+    useEffect(() => {
+        setState({ ...state, currentSheet: props.info.currentNotes.sheet });
+    }, [props.info.currentNotes.sheet]);
     let resizeCallback = () => {
         let [w, h] = [window.innerWidth, window.innerHeight];
         let newLayout = ((w < h)? 'portrait': 'landscape') as 'portrait'|'landscape';
@@ -1296,7 +1337,7 @@ export function UI(props: { maisim: JSX.Element, size: number, setSize: (newSize
     let leftColumn = state.landscapeLeftPanelsVisible;
     let rightColumn = state.landscapeRightPanelsVisible;
     if (!leftColumn && !rightColumn) { leftColumn = rightColumn = true; }
-    return <Context.Provider value={{state,setState, onPlay:props.onPlay, onRestart:props.onRestart, initialNotes:props.initialNotes}}>
+    return <Context.Provider value={{state,setState, info:props.info, onPlay:props.onPlay, onRestart:props.onRestart, onSeek: props.onSeek}}>
         <div style={{
                 display: 'grid',
                 gridTemplateColumns: l? `${leftColumn?(rightColumn?'minmax(auto,25vw)':'auto'):'0'} 100vh ${rightColumn?'auto':'0'}`: '1fr',
