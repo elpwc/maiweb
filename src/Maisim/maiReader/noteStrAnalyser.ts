@@ -160,21 +160,21 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
 
   if (noteData.length === 1) {
     // C TOUCH, TAP
-    if (noteData === 'C') {
+    if (noteData.toUpperCase() === 'C') {
       // C TOUCH
       noteRes.type = NoteType.Touch;
       noteRes.pos = 'C';
     } else {
       // TAP
       noteRes.type = NoteType.Tap;
-      noteRes.pos = flipPos(noteData, flipMode);
+      noteRes.pos = flipPos(noteData.toUpperCase(), flipMode);
     }
   }
 
   if (noteData.length === 2) {
     // TOUCH (except C)
     noteRes.type = NoteType.Touch;
-    noteRes.pos = flipPos(noteData, flipMode);
+    noteRes.pos = flipPos(noteData.toUpperCase(), flipMode);
 
     // C1 C2
     if (noteRes.pos === 'C1' || noteRes.pos === 'C2') {
@@ -209,7 +209,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
       noteData = noteData.substring(0, noteData.indexOf('['));
 
       //console.log(noteRes);
-      const firstChar = noteData.substring(0, 1);
+      const firstChar = noteData.substring(0, 1).toUpperCase();
       if (firstChar === 'C' || firstChar === 'A' || firstChar === 'B' || firstChar === 'D' || firstChar === 'E') {
         // TOUCH HOLD
         noteRes.type = NoteType.TouchHold;
