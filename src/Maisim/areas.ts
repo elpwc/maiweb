@@ -2,6 +2,8 @@ import { abs, atan, cos, sin, π } from './utils/math';
 import { isInner, lineLen } from './drawUtils/_base';
 import { FlipMode } from './utils/types/flipMode';
 import MaimaiValues from './maimaiValues';
+import { SpecPos } from './spectator/specPos';
+import { SpecPosType } from './spectator/specPosType';
 
 /** 一块判定区 */
 export interface Area {
@@ -271,18 +273,54 @@ export const flipPos = (pos: string | undefined, flipMode: FlipMode): string => 
         return pos;
     }
   };
+  const flipCartSpecPosNum = (x: number, y: number): { x: number; y: number } => {
+    switch (flipMode) {
+      case FlipMode.Horizonal:
+        return { x: -x, y };
+      case FlipMode.Vertical:
+        return { x, y: -y };
+      case FlipMode.Both:
+        return { x: -x, y: -y };
+      default:
+        return { x, y };
+    }
+  };
+  const flipPolarSpecPosNum = (sita: number): number => {
+    switch (flipMode) {
+      case FlipMode.Horizonal:
+        return 360 - sita;
+      case FlipMode.Vertical:
+        return 180 - sita < 0 ? 540 - sita : 180 - sita;
+      case FlipMode.Both:
+        return -(180 - sita < 0 ? 540 - sita : -(180 - sita));
+      default:
+        return sita;
+    }
+  };
 
   const firstChar = pos.substring(0, 1);
   if (isNaN(Number(firstChar))) {
     // A B C ..
     if (firstChar === 'C') {
       return 'C';
-    } else {
-      if (firstChar === 'E' || firstChar === 'D') {
-        return firstChar + flipPosNumED(pos.substring(1, 2));
-      } else {
-        return firstChar + flipPosNum(pos.substring(1, 2));
+    } else if (firstChar === 'E' || firstChar === 'D') {
+      return firstChar + flipPosNumED(pos.substring(1, 2));
+    } else if (firstChar === '#' || firstChar === '@') {
+      // 观赏谱
+      const specres = SpecPos.readPosFromStr(pos);
+      switch (specres.type) {
+        case SpecPosType.Cartesian:
+          const res = flipCartSpecPosNum(specres.x_sita, specres.y_r);
+          specres.x_sita = res.x;
+          specres.y_r = res.y;
+          break;
+        case SpecPosType.Polar:
+          specres.x_sita = flipPolarSpecPosNum(specres.x_sita);
+          break;
       }
+      return specres.toString();
+    } else {
+      return firstChar + flipPosNum(pos.substring(1, 2));
     }
   } else {
     // 1 2 3 ..

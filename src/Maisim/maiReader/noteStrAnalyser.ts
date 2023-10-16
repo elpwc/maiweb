@@ -182,6 +182,13 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
     }
   }
 
+  // spec pos
+  if (noteData.substring(0, 1) === '#' || noteData.substring(0, 1) === '@') {
+    const specPosEnd = noteData.indexOf(')');
+    noteRes.type = NoteType.Touch;
+    noteRes.pos = flipPos(noteData.substring(0, specPosEnd+1), flipMode);
+  }
+
   if (noteData.indexOf('[') !== -1) {
     // SLIDE,HOLD,TOUCH HOLD
     if (noteData.indexOf('h') !== -1) {

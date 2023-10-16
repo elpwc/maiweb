@@ -26,6 +26,20 @@ export class SpecPos {
     }
   }
 
+  /** 将这个SpecPos转换为string形式 */
+  toString() {
+    let _type = '';
+    switch (this.type) {
+      case SpecPosType.Cartesian:
+        _type = '#';
+        break;
+      case SpecPosType.Polar:
+        _type = '@';
+        break;
+    }
+    return `${_type}(${this.x_sita}'${this.y_r})`;
+  }
+
   /** 从谱面中读取出SpecPos */
   static readPosFromStr(str: string) {
     const firstChar = str.substring(0, 1);
