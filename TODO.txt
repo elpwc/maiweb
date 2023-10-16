@@ -177,3 +177,7 @@ recordUpdater.ts  touchHoldSounds
 4.19
 1. !SLIDE中SLIDE TRACK没有浮现而是直接出现了√
 2. [## :] [## # :]的适配√
+
+10.17
+1. @#後面附加属性的判断
+2. 为观赏NOTE取消判定

@@ -110,9 +110,9 @@ export default function Maisim(
     /** 是否启用键盘打歌，启用的话，内屏NOTE都会auto */
     doEnableKeyboard = true,
     /** 谱面流速TAP */
-    speedTap = 7,
+    speedTap = 7.5,
     /** 谱面流速TOUCH */
-    speedTouch = 6.5,
+    speedTouch = 7,
     /** 计分方式 */
     scoreCalculationType = ScoreCalculationType.maimaiDX,
     /** SLIDE显示时机 -1~1*/

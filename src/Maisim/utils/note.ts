@@ -230,4 +230,7 @@ export interface Note {
   specFramesEmerge?: SpecFrame[];
   /** 移动时关键帧 */
   specFramesMove?: SpecFrame[];
+
+  /** 是否对这个Note启用观赏谱判定 （因为一些观赏谱Note完全不能适用于现有的判定） */
+  doSpecJudge?: boolean;
 }

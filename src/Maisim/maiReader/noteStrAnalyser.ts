@@ -187,6 +187,8 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
     const specPosEnd = noteData.indexOf(')');
     noteRes.type = NoteType.Touch;
     noteRes.pos = flipPos(noteData.substring(0, specPosEnd + 1), flipMode);
+    // 对于这种位置随机的观赏谱Note开启观赏谱判定
+    noteRes.doSpecJudge = true;
   }
 
   if (noteData.indexOf('[') !== -1) {

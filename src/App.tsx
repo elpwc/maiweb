@@ -134,8 +134,8 @@ function App() {
             setkey('');
           }}
           lightStatus={[]}
-          speedTap={2}
-          speedTouch={6.5}
+          speedTap={9.5}
+          speedTouch={9}
           slideTrackOffset={0}
         />
       }
