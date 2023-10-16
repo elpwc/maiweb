@@ -142,7 +142,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
     }
     noteData = noteData.replaceAll('$', '');
   }
-  if (noteData.indexOf('@') !== -1) {
+  if (noteData.indexOf('@') > 0 && noteData.substring(0, 2) !== '@(') {
     // SLIDE時にTAP、BREAKを強制的に○型にする
     noteRes.isTapStar = true;
     noteData = noteData.replaceAll('@', '');
@@ -186,7 +186,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
   if (noteData.substring(0, 1) === '#' || noteData.substring(0, 1) === '@') {
     const specPosEnd = noteData.indexOf(')');
     noteRes.type = NoteType.Touch;
-    noteRes.pos = flipPos(noteData.substring(0, specPosEnd+1), flipMode);
+    noteRes.pos = flipPos(noteData.substring(0, specPosEnd + 1), flipMode);
   }
 
   if (noteData.indexOf('[') !== -1) {

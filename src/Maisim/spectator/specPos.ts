@@ -54,7 +54,7 @@ export class SpecPos {
       default:
         break;
     }
-    const coords = str.split(',');
+    const coords = str.split('\'');
 
     let num1 = coords[0].substring(2, coords[0].length);
     let num2 = coords[1].substring(0, coords[1].length - 1);

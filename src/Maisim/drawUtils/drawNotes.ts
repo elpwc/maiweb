@@ -13,6 +13,8 @@ import AnimationUtils from './animation';
 import MaimaiValues from '../maimaiValues';
 import { trackLength } from '../slideTracks/_global';
 import { getTouchCenterCoord } from '../areas';
+import { SpecPos } from '../spectator/specPos';
+import { SpecPosType } from '../spectator/specPosType';
 
 let tapIcon: HTMLImageElement;
 let tapEachIcon: HTMLImageElement;
@@ -257,10 +259,23 @@ export const drawNote = (
         θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
         x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
         y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
-      } else {
+      } else if (firstChar === 'C') {
         const touchCenterCoord = getTouchCenterCoord(note.pos, values);
         x = touchCenterCoord[0];
         y = touchCenterCoord[1];
+      } else if (firstChar === '#' || firstChar === '@') {
+        const specPos = SpecPos.readPosFromStr(note.pos);
+        switch (specPos.type) {
+          case SpecPosType.Cartesian:
+            x = values.center[0] + (specPos.x_sita / 100) * values.maimaiScreenR;
+            y = values.center[1] - (specPos.y_r / 100) * values.maimaiScreenR;
+            break;
+          case SpecPosType.Polar:
+            θ = ((specPos.x_sita - 90) / 180) * Math.PI;
+            x = values.center[0] + (specPos.y_r / 100) * values.maimaiScreenR * Math.cos(θ);
+            y = values.center[1] + (specPos.y_r / 100) * values.maimaiScreenR * Math.sin(θ);
+            break;
+        }
       }
     }
 
