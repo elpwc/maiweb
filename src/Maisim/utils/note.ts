@@ -96,7 +96,7 @@ export interface Note {
   /** 有没有带着烟花特效 */
   hasFirework?: boolean;
 
-  /** 位置 / 头位置 */
+  /** 位置 / 头位置 / # @ 也在这里 */
   pos: string;
 
   /** Note类型 */

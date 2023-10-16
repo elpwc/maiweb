@@ -8,6 +8,9 @@ import { Note, Beat, SlideTrack, SlideLine } from '../utils/note';
 import { NoteType } from '../utils/types/noteType';
 import { Sheet } from '../utils/sheet';
 import MaimaiValues from '../maimaiValues';
+import { ChartError } from '../utils/chartError';
+import { ErrorJudgeMode } from '../utils/types/errorJudgeMode';
+import { ChartErrorType } from '../utils/types/chartErrorType';
 
 /**
  * 读取maimaiDX谱面文件的inote属性
@@ -15,7 +18,12 @@ import MaimaiValues from '../maimaiValues';
  * @param globalBpm 谱面文件属性里的全局bpm，可以不填，只是万一谱面前面没加(bpm)的话，就会参考这个
  * @returns 返回这个谱面里的音符列表和节拍列表
  */
-export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipMode = FlipMode.None): { notes: Note[]; beats: Beat[] } => {
+export const read_inote = (
+  inoteOri: string,
+  globalBpm?: number,
+  flipMode: FlipMode = FlipMode.None,
+  errorJudgeMode: ErrorJudgeMode = ErrorJudgeMode.Default
+): { notes: Note[]; beats: Beat[]; errors: ChartError[] } => {
   /** 当下处理的这一拍的BPM */
   let currentBPM: number = 0;
   /** 当下处理的这一拍的拍数 */
@@ -23,6 +31,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
 
   let beatRes: Beat[] = [];
   let notesRes: Note[] = [];
+  let errorRes: ChartError[] = [];
 
   let inote = inoteOri;
 
@@ -69,10 +78,10 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
     // 分离所有节拍
     .split(',')
     .map(e => {
-      if (e.includes('(') || e.includes('{')) {
+      if (e.substring(0, 1) === '(' || e.substring(0, 1) === '{') {
         // 针对 (4)12 这样的情况（即简写的TAP EACH前带了拍数或BPM变换）
-        let endpos1 = e.lastIndexOf('}');
-        const endpos2 = e.lastIndexOf(')');
+        let endpos1 = e.indexOf('}');
+        const endpos2 = e.indexOf(')');
         if (endpos2 > endpos1) endpos1 = endpos2;
         const notesdata = e.substring(endpos1 + 1, e.length);
         if (/^[0-9]+$/.test(notesdata)) {
@@ -100,7 +109,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
   let currentTime: number = 0;
   /** Note唯一标识，递增 */
   let serial: number = 0;
-
+  
   //处理所有
   allNotes.forEach((noteGroup: string[], index) => {
     // 一次处理一个拍的
@@ -115,14 +124,17 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
 
     // 读入和消除(){}
     const bpmSign = noteGroup[0].indexOf('(');
-
+    
     if (bpmSign > -1) {
-      currentBPM = Number(noteGroup[0].substring(bpmSign + 1, noteGroup[0].indexOf(')')));
-      noteGroup[0] = noteGroup[0].substring(0, noteGroup[0].indexOf('(')) + noteGroup[0].substring(noteGroup[0].indexOf(')') + 1, noteGroup[0].length);
+      if (bpmSign === 0 || (bpmSign > 0 && (noteGroup[0].substring(bpmSign - 1, bpmSign) !== '#' && noteGroup[0].substring(bpmSign - 1, bpmSign) !== '@'))) {
+        currentBPM = Number(noteGroup[0].substring(bpmSign + 1, noteGroup[0].indexOf(')')));
+        noteGroup[0] = noteGroup[0].substring(0, noteGroup[0].indexOf('(')) + noteGroup[0].substring(noteGroup[0].indexOf(')') + 1, noteGroup[0].length);
+      }
     } else {
       if (index === 0) {
         if (globalBpm === undefined) {
-          throw new Error('当前谱面没有指定BPM');
+          // throw new Error('当前谱面没有指定BPM');
+          errorRes.push({ errorType: ChartErrorType.BPM_not_set, row: -1, col: -1 } as ChartError);
         } else {
           currentBPM = globalBpm;
         }
@@ -140,7 +152,8 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
       noteGroup[0] = noteGroup[0].substring(0, noteGroup[0].indexOf('{')) + noteGroup[0].substring(noteGroup[0].indexOf('}') + 1, noteGroup[0].length);
     } else {
       if (index === 0) {
-        throw new Error('当前谱面没有指定节拍');
+        // throw new Error('当前谱面没有指定节拍');
+        errorRes.push({ errorType: ChartErrorType.BPM_not_set, row: -1, col: -1 } as ChartError);
       }
     }
 
@@ -333,7 +346,7 @@ export const read_inote = (inoteOri: string, globalBpm?: number, flipMode: FlipM
     });
   }
 
-  return { beats: beatRes, notes: notesRes };
+  return { beats: beatRes, notes: notesRes, errors: errorRes };
 };
 
 /**
