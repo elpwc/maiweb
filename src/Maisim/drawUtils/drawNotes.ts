@@ -249,7 +249,7 @@ export const drawNote = (
       //console.log(note.pos, θ*180)
       x = values.center[0] + (props.rho + values.maimaiSummonLineR) * Math.cos(θ);
       y = values.center[1] + (props.rho + values.maimaiSummonLineR) * Math.sin(θ);
-    } else if (note.pos != 'E') {
+    } else if (note.pos !== 'E') {
       // 字母开头的位置（TOUCH）
       if (firstChar === 'A' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold)) {
         θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
@@ -264,18 +264,9 @@ export const drawNote = (
         x = touchCenterCoord[0];
         y = touchCenterCoord[1];
       } else if (firstChar === '#' || firstChar === '@') {
-        const specPos = SpecPos.readPosFromStr(note.pos);
-        switch (specPos.type) {
-          case SpecPosType.Cartesian:
-            x = values.center[0] + (specPos.x_sita / 100) * values.maimaiScreenR;
-            y = values.center[1] - (specPos.y_r / 100) * values.maimaiScreenR;
-            break;
-          case SpecPosType.Polar:
-            θ = ((specPos.x_sita - 90) / 180) * Math.PI;
-            x = values.center[0] + (specPos.y_r / 100) * values.maimaiScreenR * Math.cos(θ);
-            y = values.center[1] + (specPos.y_r / 100) * values.maimaiScreenR * Math.sin(θ);
-            break;
-        }
+        const specPos = SpecPos.readPosFromStr(note.pos).getCoord(values);
+        x = specPos[0];
+        y = specPos[1];
       }
     }
 
@@ -1780,45 +1771,53 @@ export const drawNote = (
           x = values.center[0] - judgeIconWidth / 2;
           y = values.center[1] - (values.maimaiJudgeLineR - values.judgeDistance + judgeIconHeight / 2);
         } else {
-          // 字母开头的位置（TOUCH）
-          const touchPos = note.pos.substring(1, 2);
-          switch (firstWord) {
-            case 'C':
-              x = values.center[0];
-              y = values.center[1];
-              break;
-            case 'A':
-              θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-              if (note.type === NoteType.Touch) {
-                x = values.center[0] + values.maimaiADTouchR * Math.cos(θ);
-                y = values.center[1] + values.maimaiADTouchR * Math.sin(θ);
-              } else {
-                x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
-                y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
-              }
-              break;
-            case 'B':
-              θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
-              x = values.center[0] + values.maimaiBR * Math.cos(θ);
-              y = values.center[1] + values.maimaiBR * Math.sin(θ);
-              break;
-            case 'D':
-              θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-              if (note.type === NoteType.Touch) {
-                x = values.center[0] + values.maimaiADTouchR * Math.cos(θ);
-                y = values.center[1] + values.maimaiADTouchR * Math.sin(θ);
-              } else {
-                x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
-                y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
-              }
-              break;
-            case 'E':
-              θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
-              x = values.center[0] + values.maimaiER * Math.cos(θ);
-              y = values.center[1] + values.maimaiER * Math.sin(θ);
-              break;
-            default:
-              break;
+          // TOUCH
+          if (firstWord === '#' || firstWord === '@') {
+            // 观赏谱 # @
+            const touchPos = SpecPos.readPosFromStr(note.pos).getCoord(values);
+            x = touchPos[0];
+            y = touchPos[1];
+          } else {
+            // 字母开头的位置（TOUCH）
+            const touchPos = note.pos.substring(1, 2);
+            switch (firstWord) {
+              case 'C':
+                x = values.center[0];
+                y = values.center[1];
+                break;
+              case 'A':
+                θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+                if (note.type === NoteType.Touch) {
+                  x = values.center[0] + values.maimaiADTouchR * Math.cos(θ);
+                  y = values.center[1] + values.maimaiADTouchR * Math.sin(θ);
+                } else {
+                  x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
+                  y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
+                }
+                break;
+              case 'B':
+                θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
+                x = values.center[0] + values.maimaiBR * Math.cos(θ);
+                y = values.center[1] + values.maimaiBR * Math.sin(θ);
+                break;
+              case 'D':
+                θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+                if (note.type === NoteType.Touch) {
+                  x = values.center[0] + values.maimaiADTouchR * Math.cos(θ);
+                  y = values.center[1] + values.maimaiADTouchR * Math.sin(θ);
+                } else {
+                  x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
+                  y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
+                }
+                break;
+              case 'E':
+                θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
+                x = values.center[0] + values.maimaiER * Math.cos(θ);
+                y = values.center[1] + values.maimaiER * Math.sin(θ);
+                break;
+              default:
+                break;
+            }
           }
         }
 

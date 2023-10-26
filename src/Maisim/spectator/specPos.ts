@@ -18,9 +18,10 @@ export class SpecPos {
   getCoord(values: MaimaiValues) {
     switch (this.type) {
       case SpecPosType.Cartesian:
-        return [values.center[0] + (this.x_sita / 100) * values.maimaiScreenR, values.center[1] + (this.y_r / 100) * values.maimaiScreenR];
+        return [values.center[0] + (this.x_sita / 100) * values.maimaiScreenR, values.center[1] - (this.y_r / 100) * values.maimaiScreenR];
       case SpecPosType.Polar:
-        return [values.center[0] + (this.x_sita + values.maimaiSummonLineR) * cos(this.y_r), values.center[1] + (this.x_sita + values.maimaiSummonLineR) * sin(this.y_r)];
+        const θ = ((this.x_sita - 90) / 180) * Math.PI;
+        return [values.center[0] + (this.y_r / 100) * values.maimaiScreenR * cos(θ), values.center[1] + (this.y_r / 100) * values.maimaiScreenR * sin(θ)];
       default:
         return [0, 0];
     }
@@ -54,7 +55,7 @@ export class SpecPos {
       default:
         break;
     }
-    const coords = str.split('\'');
+    const coords = str.split("'");
 
     let num1 = coords[0].substring(2, coords[0].length);
     let num2 = coords[1].substring(0, coords[1].length - 1);

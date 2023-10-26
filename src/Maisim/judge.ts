@@ -175,7 +175,7 @@ export const judge = (
       // 适用于多个TOUCH短时间内叠加在一个位置上的情况，因为TOUCH点击后不会立即消失，还会继续隐藏几帧，所以需要跳过已经判定过的TOUCH
       if (showingNotes[i].touched) continue;
 
-      if (area.area.name === noteIns.pos) {
+      if (area.area?.name === noteIns.pos || noteIns.doSpecJudge) {
         // 设置标志位
         showingNotes[i].touched = true;
         showingNotes[i].touchedTime = currentTime;

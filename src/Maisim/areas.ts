@@ -11,8 +11,7 @@ export interface Area {
   type: string;
   /** 1 2 3 4 5 6 7 8 */
   id: number;
-  /** A1 B2 C3... */
-  name: string;
+  /** A1 B2 C3... N*/ /* N: None 用于一般范围以外的观赏谱Notes */ name: string;
   /** 围住的多边形的所有顶点 */
   points: [number, number][];
 
@@ -216,6 +215,9 @@ export const getTouchCenterCoord = (pos: string, values: MaimaiValues): [number,
       return values.APositions.D[Number(touchPos) - 1];
     case 'E':
       return values.APositions.E[Number(touchPos) - 1];
+    case '#':
+    case '@':
+      return SpecPos.readPosFromStr(pos).getCoord(values) as [number, number];
     default:
       break;
   }
