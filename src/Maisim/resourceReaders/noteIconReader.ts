@@ -114,6 +114,7 @@ import touch_hold_miss_icon from '../resource/maimai_img/notes/touch_hold_miss.p
 import touch_hold_three_icon from '../resource/maimai_img/notes/touch_hold_three.png';
 import touch_hold_two_icon from '../resource/maimai_img/notes/touch_hold_two.png';
 import touch_just_icon from '../resource/maimai_img/notes/touch_just.png';
+import touch_slide_icon from '../resource/maimai_img/notes/touch_slide.png';
 import touch_three_icon from '../resource/maimai_img/notes/touch_three.png';
 import touch_trap_icon from '../resource/maimai_img/notes/touch_trap.png';
 import touch_trap_center_icon from '../resource/maimai_img/notes/touch_trap_center.png';
@@ -276,6 +277,7 @@ export const NoteIcon = {
     touch_hold_three: new Image(),
     touch_hold_two: new Image(),
     touch_just: new Image(),
+    touch_slide: new Image(),
     touch_three: new Image(),
     touch_trap: new Image(),
     touch_trap_center: new Image(),
@@ -327,7 +329,7 @@ export const NoteIcon = {
 };
 
 export const initnotesicons = (onProgress: (amount: number, loaded: number, name: string) => void, onload: () => void) => {
-  const amount = 160;
+  const amount = 161;
   let loaded = 0;
   if(NoteIcon.BreakStar_00.src === ''){ NoteIcon.BreakStar_00.src = BreakStar_00_icon; NoteIcon.BreakStar_00.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_00'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_00'); }
   if(NoteIcon.BreakStar_01.src === ''){ NoteIcon.BreakStar_01.src = BreakStar_01_icon; NoteIcon.BreakStar_01.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_01'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'BreakStar_01'); }
@@ -441,6 +443,7 @@ export const initnotesicons = (onProgress: (amount: number, loaded: number, name
   if(NoteIcon.touch_hold_three.src === ''){ NoteIcon.touch_hold_three.src = touch_hold_three_icon; NoteIcon.touch_hold_three.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_three'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_three'); }
   if(NoteIcon.touch_hold_two.src === ''){ NoteIcon.touch_hold_two.src = touch_hold_two_icon; NoteIcon.touch_hold_two.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_two'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_hold_two'); }
   if(NoteIcon.touch_just.src === ''){ NoteIcon.touch_just.src = touch_just_icon; NoteIcon.touch_just.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_just'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_just'); }
+  if(NoteIcon.touch_slide.src === ''){ NoteIcon.touch_slide.src = touch_slide_icon; NoteIcon.touch_slide.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_slide'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_slide'); }
   if(NoteIcon.touch_three.src === ''){ NoteIcon.touch_three.src = touch_three_icon; NoteIcon.touch_three.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_three'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_three'); }
   if(NoteIcon.touch_trap.src === ''){ NoteIcon.touch_trap.src = touch_trap_icon; NoteIcon.touch_trap.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_trap'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_trap'); }
   if(NoteIcon.touch_trap_center.src === ''){ NoteIcon.touch_trap_center.src = touch_trap_center_icon; NoteIcon.touch_trap_center.onload = () => { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_trap_center'); }} else { loaded++; if (loaded >= amount) onload(); else onProgress(amount, loaded, 'touch_trap_center'); }
