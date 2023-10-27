@@ -8,7 +8,7 @@ import { noteValue_and_noteNumber_analyser } from './noteValueAnalyser';
 import { analyse_slide_line } from './slideLineAnalyser';
 
 /** 分析谱面中一个note的文本 */
-export const analyse_note_original_data = (noteDataOri: string, index: number, currentBPM: number, flipMode: FlipMode) => {
+export const analyse_note_original_data = (noteDataOri: string, index: number, currentBPM: number, flipMode: FlipMode): Note | null => {
   //console.log(noteDataOri, index);
   let noteRes: Note = {
     index,
@@ -235,11 +235,27 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
         noteRes.pos = flipPos(noteData.substring(0, 1), flipMode);
       }
     } else {
+      // SLIDE & (观赏谱) TOUCH SLIDE
+      const first_char = noteData.substring(0, 1);
+      if (!isNaN(Number(first_char))) {
+        // 正常SLIDE
+        noteRes.pos = flipPos(noteData.substring(0, 1), flipMode);
+        noteRes.type = NoteType.Slide;
+        noteData = noteData.substring(1, noteData.length);
+      } else if (first_char === '#' || first_char === '@') {
+        // 任意位置开头的TOUCH SLIDE
+        noteRes.pos = flipPos(noteData.split(/-|\^|<|>|v|s|z|pp|qq|p|q|w|V/)[0] /*noteData.substring(0, noteData.indexOf(')') + 1)*/, flipMode);
+        noteRes.type = NoteType.Spec_TouchSlide;
+        noteData = noteData.substring(noteRes.pos.length, noteData.length);
+      } else {
+        // ABCDE开头的TOUCH SLIDE
+        noteRes.pos = flipPos(noteData.split(/-|\^|<|>|v|s|z|pp|qq|p|q|w|V/)[0], flipMode);
+        noteRes.type = NoteType.Spec_TouchSlide;
+        noteData = noteData.substring(noteRes.pos.length, noteData.length);
+      }
+
       // SLIDE (TAP + SLIDES)
       // SLIDE TAP
-      noteRes.pos = flipPos(noteData.substring(0, 1), flipMode);
-      noteRes.type = NoteType.Slide;
-      noteData = noteData.substring(1, noteData.length);
 
       const slides = noteData.split('*');
       slides.forEach(slideOri => {

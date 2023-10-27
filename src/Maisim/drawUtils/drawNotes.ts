@@ -1126,6 +1126,49 @@ export const drawNote = (
       drawSlideTrackImage_();
     };
 
+    /// SPEC
+
+    const drawTouchSlideImage = (image: HTMLImageElement, imageCenter: HTMLImageElement) => {
+      const centerx = x,
+      centery = y;
+    let k = (0.65 * values.maimaiScreenR) / 350,
+      centerk = (0.8 * values.maimaiScreenR) / 350;
+
+    const alpha = props.status === 0 ? props.radius / values.maimaiTapR : ghostNoteAlphaCalculation(note.type, props.rho);
+
+    // 多重TOUCH线
+    if ((note.innerTouchOverlap ?? 0) > 0) {
+      drawRotationImage(
+        ctx,
+        note.innerTouchOverlap === 1 ? NoteIcon.touch_two : NoteIcon.touch_each_two,
+        x - (NoteIcon.touch_two.width * centerk) / 2,
+        y - (NoteIcon.touch_two.height * centerk) / 2,
+        NoteIcon.touch_two.width * centerk,
+        NoteIcon.touch_two.height * centerk
+      );
+    }
+    if ((note.outerTouchOverlap ?? 0) > 0) {
+      drawRotationImage(
+        ctx,
+        note.outerTouchOverlap === 1 ? NoteIcon.touch_three : NoteIcon.touch_each_three,
+        x - (NoteIcon.touch_three.width * centerk) / 2,
+        y - (NoteIcon.touch_three.height * centerk) / 2,
+        NoteIcon.touch_three.width * centerk,
+        NoteIcon.touch_three.height * centerk
+      );
+    }
+console.log(centerx,centery, x,y)
+    for (let i = 0; i < 5; i++) {
+      // 从下方的叶片开始顺时针绘制
+      drawRotationImage(ctx, image, x - (image.width * k) / 2, y + values.touchMaxDistance - (6.5 * values.maimaiScreenR) / 350 - props.rho, image.width * k, image.height * k, x, y, 72 * i, alpha);
+    }
+    // 中心点
+    drawRotationImage(ctx, imageCenter, x - (imageCenter.width * k) / 2, y - (imageCenter.height * k) / 2, imageCenter.width * k, imageCenter.height * k, 0, 0, alpha);
+    // if (props.touched) {
+    // 	drawRotationImage(ctx, NoteIcon.touch_just, x - (NoteIcon.touch_just.width ) / 2, y - (NoteIcon.touch_just.height ) / 2, NoteIcon.touch_just.width , NoteIcon.touch_just.height );
+    // }
+    }
+
     /** 画！ */
     const draw = () => {
       switch (note.type) {
@@ -1403,6 +1446,25 @@ export const drawNote = (
                   NoteIcon.wifi_ex_9,
                   NoteIcon.wifi_ex_10,
                 ]);
+              }
+            }
+          }
+          break;
+          case NoteType.Spec_TouchSlide:
+          if (note.isTrap) {
+            drawTouchSlideImage(NoteIcon.touch_slide, NoteIcon.touch_trap_center);
+          } else {
+            if (isEach) {
+              if (note.isBreak) {
+                drawTouchSlideImage(NoteIcon.touch_slide, NoteIcon.touch_break_center);
+              } else {
+                drawTouchSlideImage(NoteIcon.touch_slide, NoteIcon.touch_each_center);
+              }
+            } else {
+              if (note.isBreak) {
+                drawTouchSlideImage(NoteIcon.touch_slide, NoteIcon.touch_break_center);
+              } else {
+                drawTouchSlideImage(NoteIcon.touch_slide, NoteIcon.touch_center);
               }
             }
           }
