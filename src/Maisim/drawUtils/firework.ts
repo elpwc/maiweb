@@ -1,4 +1,4 @@
-import { getTouchCenterCoord } from '../areas';
+import { getPosCenterCoord } from '../areas';
 import MaimaiValues from '../maimaiValues';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { NoteSound } from '../resourceReaders/noteSoundReader';
@@ -16,7 +16,7 @@ export const fireworkAt = (values: MaimaiValues, pos: string, effectBackCtx: Can
     NoteSound.firework.cloneNode().play();
   }
 
-  const [x, y] = getTouchCenterCoord(pos, values);
+  const [x, y] = getPosCenterCoord(pos, values);
   animationFactory.animation(null, values.fireworkLength, (t: number) => {
     const k = t / values.fireworkLength;
 

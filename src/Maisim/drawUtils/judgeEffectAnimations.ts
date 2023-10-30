@@ -1,5 +1,5 @@
 import { cos, sin, π } from '../utils/math';
-import { getTouchCenterCoord } from '../areas';
+import { getPosCenterCoord } from '../areas';
 import { EffectIcon } from '../resourceReaders/effectIconReader';
 import { drawRotationImage } from './_base';
 import AnimationUtils from './animation';
@@ -24,7 +24,7 @@ export const JudgeEffectAnimation_Hex_or_Star = (values: MaimaiValues, animation
   /** 特效中心坐标 */
   let coord = values.center;
   if (isTouch) {
-    coord = getTouchCenterCoord(pos, values);
+    coord = getPosCenterCoord(pos, values);
   }
 
   /** 外部图案轨道半径 */
@@ -85,7 +85,7 @@ export const JudgeEffectAnimation_Circle = (values: MaimaiValues, animationFacto
   /** 特效中心坐标 */
   let coord = values.center;
   if (isTouch) {
-    coord = getTouchCenterCoord(pos, values);
+    coord = getPosCenterCoord(pos, values);
   }
 
   /** 其中一个圆环在一组中从出现到消失所占的时长比例 */
@@ -138,7 +138,7 @@ export const JudgeEffectAnimation_Touch = (values: MaimaiValues, animationFactor
   特效由中心图案和周围的四个图案组成
   */
 
-  const coord = getTouchCenterCoord(pos, values);
+  const coord = getPosCenterCoord(pos, values);
 
   // 内圈星星
   const innerStarR = values.maimaiTapR * 0.2;

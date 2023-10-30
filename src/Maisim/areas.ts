@@ -198,11 +198,15 @@ export class AreaUtils {
 }
 
 /**
- * 指定pos的TOUCH的中心
+ * 指定pos的具体坐标
  * @param pos
  */
-export const getTouchCenterCoord = (pos: string, values: MaimaiValues): [number, number] => {
+export const getPosCenterCoord = (pos: string, values: MaimaiValues): [number, number] => {
   const firstChar = pos.substring(0, 1);
+  if (!isNaN(Number(firstChar))) {
+    return values.APositions.J[Number(firstChar) - 1];
+  }
+  
   const touchPos = pos.substring(1, 2);
   switch (firstChar) {
     case 'C':

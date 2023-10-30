@@ -12,7 +12,7 @@ import { ShowingNoteProps } from '../utils/showingNoteProps';
 import AnimationUtils from './animation';
 import MaimaiValues from '../maimaiValues';
 import { trackLength } from '../slideTracks/_global';
-import { getTouchCenterCoord } from '../areas';
+import { getPosCenterCoord } from '../areas';
 import { SpecPos } from '../spectator/specPos';
 import { SpecPosType } from '../spectator/specPosType';
 
@@ -267,7 +267,7 @@ export const drawNote = (
         y = specPos[1];
       } else if (isTouchNoteType(note.type)) {
         // TOUCH的位置
-        const touchCenterCoord = getTouchCenterCoord(note.pos, values);
+        const touchCenterCoord = getPosCenterCoord(note.pos, values);
         x = touchCenterCoord[0];
         y = touchCenterCoord[1];
       }
@@ -533,7 +533,7 @@ export const drawNote = (
         centerk = (0.8 * values.maimaiScreenR) / 350;
 
       const alpha = props.status === 0 ? props.radius / values.maimaiTapR : ghostNoteAlphaCalculation(note.type, props.rho);
-      console.log(centerx, centery, getTouchCenterCoord('A1', values), x, y);
+      console.log(centerx, centery, getPosCenterCoord('A1', values), x, y);
       // 多重TOUCH线
       if ((note.innerTouchOverlap ?? 0) > 0) {
         drawRotationImage(
