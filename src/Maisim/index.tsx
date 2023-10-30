@@ -288,8 +288,8 @@ export default function Maisim(
         BGA.current!.play();
       }, 0);
 
-      const first = ((currentSheet.current.first ?? 0) * 1000);
-      const duration = ((SongTrack.current.duration * 1000) - first);
+      const first = (currentSheet.current.first ?? 0) * 1000;
+      const duration = SongTrack.current.duration * 1000 - first;
       // console.log({ duration: duration/1000 })
 
       //console.log(currentSheet.beats5?.beat);
@@ -303,9 +303,7 @@ export default function Maisim(
             showingNotes.current = [];
             nextNoteIndex.current = 0;
             const time = duration * progress;
-            while (Math.max((currentSheet.current.notes[nextNoteIndex.current]?.emergeTime ?? Infinity),
-                    (currentSheet.current.notes[nextNoteIndex.current]?.moveTime ?? Infinity))
-                  < time) {
+            while (Math.max(currentSheet.current.notes[nextNoteIndex.current]?.emergeTime ?? Infinity, currentSheet.current.notes[nextNoteIndex.current]?.moveTime ?? Infinity) < time) {
               nextNoteIndex.current++;
             }
             reader_and_updater();
@@ -327,8 +325,8 @@ export default function Maisim(
   };
   const seekSongTrack = (progress: number, first: number): boolean => {
     let duration = virtualTime.current.duration;
-    let time = ((progress * duration) + first);
-    SongTrack.current.currentTime = (time / 1000);
+    let time = progress * duration + first;
+    SongTrack.current.currentTime = time / 1000;
     return true;
   };
   const handleSongTrackFinish = (callback: () => void): (() => void) => {
@@ -368,11 +366,16 @@ export default function Maisim(
    * @param c currentTime.current
    * @param m moveTime
    * @param t time
-   * @returns
+   * @param isTouchSlide 是否是观赏谱的TOUCH SLIDE?
+   * @returns 返回当前应当从touchMaxDistance里减去的距离
    */
-  const touchConvergeCurrentRho = (c: number, m: number, t: number) => {
+  const touchConvergeCurrentRho = (c: number, m: number, t: number, isTouchSlide: boolean = false) => {
     const a = 1 - ((c - m) / (t - m)) ** 1.8;
-    return maimaiValues.current.touchMaxDistance * (1 - sqrt(a < 0 ? 0 : a)) /* 判断小于0是为了防止出现根-1导致叶片闭合後不被绘制 */;
+    if (!isTouchSlide) {
+      return maimaiValues.current.touchMaxDistance * (1 - sqrt(a < 0 ? 0 : a)) /* 判断小于0是为了防止出现根-1导致叶片闭合後不被绘制 */;
+    } else {
+      return maimaiValues.current.touchSlideMaxDistance * (1 - sqrt(a < 0 ? 0 : a)) /* 判断小于0是为了防止出现根-1导致叶片闭合後不被绘制 */;
+    }
   };
 
   const initAnimation = () => {
@@ -889,6 +892,60 @@ export default function Maisim(
             // 应该播放结算动画
           }
           break;
+        /////////////////////////////// SPEC TOUCH SLIDE ///////////////////////////////
+        case NoteType.Spec_TouchSlide:
+          if (newNote.status === 0) {
+            // emerge
+            newNote.radius = ((currentTime.current - noteIns.emergeTime!) / (noteIns.moveTime! - noteIns.emergeTime!)) * maimaiValues.current.maimaiTapR;
+
+            if (currentTime.current >= noteIns.moveTime!) {
+              newNote.status = 1;
+            }
+          } else if (newNote.status === 1) {
+            // converge
+
+            newNote.rho = touchConvergeCurrentRho(currentTime.current, noteIns.moveTime!, noteIns.time!, true);
+            if (isAuto || doEnableKeyboard) {
+              if (newNote.rho >= maimaiValues.current.touchMaxDistance) {
+                //if (currentTime.current >= noteIns.time! -  maimaiValues.current.timerPeriod * 5) {
+                judge(
+                  gameRecord.current,
+                  touchHoldSoundsManager.current,
+                  showingNotes.current,
+                  maimaiValues.current.timerPeriod,
+                  currentSheet.current!,
+                  currentTime.current,
+                  {
+                    area: areaFactory.current.areas.filter(a => {
+                      return a.name === noteIns.pos;
+                    })[0],
+                    pressTime: currentTime.current,
+                  },
+                  currentTouchingArea.current,
+                  autoType === AutoType.Directly
+                );
+              }
+            } else {
+              if (currentTime.current >= noteIns.time!) {
+                newNote.status = -2;
+              }
+            }
+          } else if (newNote.status === -2) {
+            // stop
+
+            newNote.rho = maimaiValues.current.touchMaxDistance;
+            if (currentTime.current >= noteIns.time! + maimaiValues.current.judgeLineRemainTimeTouch) {
+              newNote.status = -4;
+            }
+          } else if (newNote.status === -3) {
+            // judge
+
+            if (currentTime.current >= noteIns.time! + maimaiValues.current.judgeResultShowTime) {
+              newNote.status = -1;
+            }
+          }
+          newNote.timer++;
+          break;
         /////////////////////////////// default ///////////////////////////////
         default:
           if (newNote.status === 0) {
@@ -1007,7 +1064,7 @@ export default function Maisim(
           note.status = -3;
         }
         return note.status !== -1;
-      } else if (noteIns.type === NoteType.Touch) {
+      } else if (noteIns.type === NoteType.Touch || noteIns.type === NoteType.Spec_TouchSlide) {
         if (note.status === -4) {
           if ((isAuto && autoType === AutoType.Directly) || doEnableKeyboard) {
             note.judgeStatus = JudgeStatus.CriticalPerfect;

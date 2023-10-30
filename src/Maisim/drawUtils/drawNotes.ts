@@ -7,7 +7,7 @@ import { RegularStyles, SlideColor, TapStyles } from '../utils/types/noteStyles'
 import { JudgeIcon } from '../resourceReaders/judgeIconReader';
 import { JudgeStatus, JudgeTimeStatus } from '../utils/types/judgeStatus';
 import { Note, SectionInfo, SlideLine } from '../utils/note';
-import { NoteType } from '../utils/types/noteType';
+import { NoteType, isTouchNoteType } from '../utils/types/noteType';
 import { ShowingNoteProps } from '../utils/showingNoteProps';
 import AnimationUtils from './animation';
 import MaimaiValues from '../maimaiValues';
@@ -250,26 +250,28 @@ export const drawNote = (
       x = values.center[0] + (props.rho + values.maimaiSummonLineR) * Math.cos(θ);
       y = values.center[1] + (props.rho + values.maimaiSummonLineR) * Math.sin(θ);
     } else if (note.pos !== 'E') {
-      // 字母开头的位置（TOUCH）
-      if (firstChar === 'A' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold)) {
+      // 字母开头的位置
+      // 字母开头但不是TOUCH的位置
+      if (firstChar === 'A' && !isTouchNoteType(note.type)) {
         θ = (-5 / 8 + (1 / 4) * Number(touchPos)) * Math.PI;
         x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
         y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
-      } else if (firstChar === 'D' && !(note.type === NoteType.Touch || note.type === NoteType.TouchHold)) {
+      } else if (firstChar === 'D' && !isTouchNoteType(note.type)) {
         θ = (-3 / 4 + (1 / 4) * Number(touchPos)) * Math.PI;
         x = values.center[0] + values.maimaiScreenR * Math.cos(θ);
         y = values.center[1] + values.maimaiScreenR * Math.sin(θ);
-      } else if (firstChar === 'C') {
-        const touchCenterCoord = getTouchCenterCoord(note.pos, values);
-        x = touchCenterCoord[0];
-        y = touchCenterCoord[1];
       } else if (firstChar === '#' || firstChar === '@') {
+        // 观赏谱自定义TOUCH的位置
         const specPos = SpecPos.readPosFromStr(note.pos).getCoord(values);
         x = specPos[0];
         y = specPos[1];
+      } else if (isTouchNoteType(note.type)) {
+        // TOUCH的位置
+        const touchCenterCoord = getTouchCenterCoord(note.pos, values);
+        x = touchCenterCoord[0];
+        y = touchCenterCoord[1];
       }
     }
-
     if (note.type === NoteType.Hold) {
       tx = values.center[0] + (props.tailRho + values.maimaiSummonLineR) * Math.cos(θ);
       ty = values.center[1] + (props.tailRho + values.maimaiSummonLineR) * Math.sin(θ);
@@ -531,7 +533,7 @@ export const drawNote = (
         centerk = (0.8 * values.maimaiScreenR) / 350;
 
       const alpha = props.status === 0 ? props.radius / values.maimaiTapR : ghostNoteAlphaCalculation(note.type, props.rho);
-
+      console.log(centerx, centery, getTouchCenterCoord('A1', values), x, y);
       // 多重TOUCH线
       if ((note.innerTouchOverlap ?? 0) > 0) {
         drawRotationImage(
@@ -1130,44 +1132,54 @@ export const drawNote = (
 
     const drawTouchSlideImage = (image: HTMLImageElement, imageCenter: HTMLImageElement) => {
       const centerx = x,
-      centery = y;
-    let k = (0.65 * values.maimaiScreenR) / 350,
-      centerk = (0.8 * values.maimaiScreenR) / 350;
+        centery = y;
+      let k = (0.65 * values.maimaiScreenR) / 350,
+        centerk = (0.8 * values.maimaiScreenR) / 350;
 
-    const alpha = props.status === 0 ? props.radius / values.maimaiTapR : ghostNoteAlphaCalculation(note.type, props.rho);
+      const alpha = props.status === 0 ? props.radius / values.maimaiTapR : ghostNoteAlphaCalculation(note.type, props.rho);
 
-    // 多重TOUCH线
-    if ((note.innerTouchOverlap ?? 0) > 0) {
-      drawRotationImage(
-        ctx,
-        note.innerTouchOverlap === 1 ? NoteIcon.touch_two : NoteIcon.touch_each_two,
-        x - (NoteIcon.touch_two.width * centerk) / 2,
-        y - (NoteIcon.touch_two.height * centerk) / 2,
-        NoteIcon.touch_two.width * centerk,
-        NoteIcon.touch_two.height * centerk
-      );
-    }
-    if ((note.outerTouchOverlap ?? 0) > 0) {
-      drawRotationImage(
-        ctx,
-        note.outerTouchOverlap === 1 ? NoteIcon.touch_three : NoteIcon.touch_each_three,
-        x - (NoteIcon.touch_three.width * centerk) / 2,
-        y - (NoteIcon.touch_three.height * centerk) / 2,
-        NoteIcon.touch_three.width * centerk,
-        NoteIcon.touch_three.height * centerk
-      );
-    }
-console.log(centerx,centery, x,y)
-    for (let i = 0; i < 5; i++) {
-      // 从下方的叶片开始顺时针绘制
-      drawRotationImage(ctx, image, x - (image.width * k) / 2, y + values.touchMaxDistance - (6.5 * values.maimaiScreenR) / 350 - props.rho, image.width * k, image.height * k, x, y, 72 * i, alpha);
-    }
-    // 中心点
-    drawRotationImage(ctx, imageCenter, x - (imageCenter.width * k) / 2, y - (imageCenter.height * k) / 2, imageCenter.width * k, imageCenter.height * k, 0, 0, alpha);
-    // if (props.touched) {
-    // 	drawRotationImage(ctx, NoteIcon.touch_just, x - (NoteIcon.touch_just.width ) / 2, y - (NoteIcon.touch_just.height ) / 2, NoteIcon.touch_just.width , NoteIcon.touch_just.height );
-    // }
-    }
+      // 多重TOUCH线
+      if ((note.innerTouchOverlap ?? 0) > 0) {
+        drawRotationImage(
+          ctx,
+          note.innerTouchOverlap === 1 ? NoteIcon.touch_two : NoteIcon.touch_each_two,
+          x - (NoteIcon.touch_two.width * centerk) / 2,
+          y - (NoteIcon.touch_two.height * centerk) / 2,
+          NoteIcon.touch_two.width * centerk,
+          NoteIcon.touch_two.height * centerk
+        );
+      }
+      if ((note.outerTouchOverlap ?? 0) > 0) {
+        drawRotationImage(
+          ctx,
+          note.outerTouchOverlap === 1 ? NoteIcon.touch_three : NoteIcon.touch_each_three,
+          x - (NoteIcon.touch_three.width * centerk) / 2,
+          y - (NoteIcon.touch_three.height * centerk) / 2,
+          NoteIcon.touch_three.width * centerk,
+          NoteIcon.touch_three.height * centerk
+        );
+      }
+      for (let i = 0; i < 5; i++) {
+        // 从下方的叶片开始顺时针绘制
+        drawRotationImage(
+          ctx,
+          image,
+          x - (image.width * k) / 2,
+          y + values.touchSlideMaxDistance - (6.5 * values.maimaiScreenR) / 300 - props.rho,
+          image.width * k,
+          image.height * k,
+          x,
+          y,
+          72 * i,
+          alpha
+        );
+      }
+      // 中心点
+      drawRotationImage(ctx, imageCenter, x - (imageCenter.width * k) / 2, y - (imageCenter.height * k) / 2, imageCenter.width * k, imageCenter.height * k, 0, 0, alpha);
+      // if (props.touched) {
+      // 	drawRotationImage(ctx, NoteIcon.touch_just, x - (NoteIcon.touch_just.width ) / 2, y - (NoteIcon.touch_just.height ) / 2, NoteIcon.touch_just.width , NoteIcon.touch_just.height );
+      // }
+    };
 
     /** 画！ */
     const draw = () => {
@@ -1450,7 +1462,7 @@ console.log(centerx,centery, x,y)
             }
           }
           break;
-          case NoteType.Spec_TouchSlide:
+        case NoteType.Spec_TouchSlide:
           if (note.isTrap) {
             drawTouchSlideImage(NoteIcon.touch_slide, NoteIcon.touch_trap_center);
           } else {

@@ -21,7 +21,9 @@ export default class MaimaiValues {
   maimaiER = this.maimaiScreenR * 0.574;
 
   /** TOUCH叶片距离中心的起始距离 */
-  touchMaxDistance = this.maimaiTapR * 0.4;
+  touchMaxDistance = this.maimaiTapR * 0.5;
+  /** TOUCH SLIDE */
+  touchSlideMaxDistance = this.maimaiTapR * 0.5;
 
   /** AD区的TOUCH的位置 */
   maimaiADTouchR = this.maimaiJudgeLineR * 0.875;
@@ -129,6 +131,7 @@ export default class MaimaiValues {
     this.maimaiBR = this.maimaiScreenR * 0.418;
     this.maimaiER = this.maimaiScreenR * 0.574;
     this.touchMaxDistance = this.maimaiTapR * 0.5;
+    this.touchSlideMaxDistance = this.maimaiTapR * 0.5;
 
     this.maimaiADTouchR = this.maimaiJudgeLineR * 0.875;
 

@@ -51,3 +51,8 @@ export const isInnerScreenNoteType = (type: NoteType) => {
 export const isSpectatorNoteType = (type: NoteType) => {
   return type === NoteType.Spec_TouchHoldSlide || type === NoteType.Spec_TouchSlide || type === NoteType.Spec_HoldSlide;
 };
+
+/** 是否是Touch类Note */
+export const isTouchNoteType = (type: NoteType) => {
+  return type === NoteType.Touch || type === NoteType.TouchHold || type === NoteType.Spec_TouchHoldSlide || type === NoteType.Spec_TouchSlide;
+};
