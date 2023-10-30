@@ -1,28 +1,35 @@
+import { getPosCenterCoord } from '../areas';
+import { lineLenByPoint } from '../drawUtils/_base';
 import MaimaiValues from '../maimaiValues';
+import { isANumber } from '../utils/math';
 import { SectionInfo } from '../utils/note';
 import { trackLength } from './_global';
 
-
-export const section_new = () => {}
-
+export const section_new = () => {};
 
 /** SLIDE TRACK分段 */
 export const section = (type: string | undefined, values: MaimaiValues, startPos: string, endPosOri: string, turnPosOri?: string): SectionInfo[] | undefined => {
-  let endPos = Number(endPosOri) - Number(startPos) + 1;
-  let turnPos = (Number(turnPosOri) ?? 0) - Number(startPos) + 1;
-  if (endPos < 1) endPos += 8;
-  if (turnPos < 1) turnPos += 8;
+  if (isANumber(startPos) && isANumber(endPosOri)) {
+    // 正常
+    let endPos = Number(endPosOri) - Number(startPos) + 1;
+    let turnPos = (Number(turnPosOri) ?? 0) - Number(startPos) + 1;
+    if (endPos < 1) endPos += 8;
+    if (turnPos < 1) turnPos += 8;
 
-  return section_A1(type, values, endPos, turnPos, Number(startPos))?.map(section => {
-    const resAreas = section.areas.map(area => {
-      if (area !== 'C') {
-        let newPos = Number(area.substring(1, 2)) + Number(startPos) - 1;
-        if (newPos > 8) newPos -= 8;
-        return area.substring(0, 1) + newPos.toString();
-      } else return 'C';
+    return section_A1(type, values, endPos, turnPos, Number(startPos))?.map(section => {
+      const resAreas = section.areas.map(area => {
+        if (area !== 'C') {
+          let newPos = Number(area.substring(1, 2)) + Number(startPos) - 1;
+          if (newPos > 8) newPos -= 8;
+          return area.substring(0, 1) + newPos.toString();
+        } else return 'C';
+      });
+      return { start: section.start, areas: resAreas };
     });
-    return { start: section.start, areas: resAreas };
-  });
+  } else {
+    // 观赏谱随意SLIDE
+    return section_SPEC(type, values, endPosOri, startPos);
+  }
 };
 
 /** SLIDE TRACK分段(仅适用于A1开头的SLIDE TRACK) */
@@ -546,8 +553,8 @@ const section_A1 = (type: string | undefined, values: MaimaiValues, endPos: numb
         { start: 0.827119, areas: ['E6', 'A5'] },
       ];
     case 'V':
-      const length1 = trackLength('-', values, 1, turnPos);
-      const length2 = trackLength('-', values, turnPos, endPos);
+      const length1 = trackLength('-', values, '1', turnPos.toString());
+      const length2 = trackLength('-', values, turnPos.toString(), endPos.toString());
       const part1: { start: number; areas: string[] }[] | undefined = section_A1('-', values, turnPos, 0, 0);
       const part2: { start: number; areas: string[] }[] | undefined = section('-', values, turnPos.toString(), endPos.toString());
       const resV = [];
@@ -610,4 +617,27 @@ export const section_wifi = (startPos: string, endPosOri: string): SectionInfo[]
       return { start: section.start, areas: resAreas };
     });
   });
+};
+
+const section_SPEC = (type: string | undefined, values: MaimaiValues, endPos: string, startPos: string): SectionInfo[] | undefined => {
+  const startPosCoord = getPosCenterCoord(startPos, values);
+  const endPosCoord = getPosCenterCoord(endPos, values);
+  const distance = lineLenByPoint(startPosCoord, endPosCoord);
+
+  const distance_unit = (values.maimaiJudgeLineR * 2) / 5;
+
+  let length = Math.ceil(distance / distance_unit);
+
+  if (length >= 5) {
+    length = 5;
+  } else if (length <= 2) {
+    length = 2;
+  }
+
+  let res = [];
+  for (let i = 0; i < length; i++) {
+    res.push({ start: i / length, areas: [] });
+  }
+
+  return res;
 };

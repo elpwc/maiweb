@@ -32,3 +32,7 @@ export const sqrt = (num: number): number => {
 
 export const PI = Math.PI;
 export const π = Math.PI;
+
+export const isANumber = (value: any): boolean => {
+  return !isNaN(Number(value));
+};

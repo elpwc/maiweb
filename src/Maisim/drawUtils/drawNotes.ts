@@ -729,7 +729,7 @@ export const drawNote = (
                 // 间隔放置TRACK元素的时间
                 const trackItemGapTime =
                   (values.trackItemGap * slideLine.remainTime!) /
-                  trackLength(slideLine.slideType!, values, Number(slideLine.pos), Number(slideLine.endPos), slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos));
+                  trackLength(slideLine.slideType!, values, slideLine.pos, slideLine.endPos, slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos));
 
                 // SLIDE分段信息
                 const sectionInfo = slideLine.sections as SectionInfo[];
@@ -743,8 +743,8 @@ export const drawNote = (
                   const slideData = getTrackProps(
                     values,
                     slideLine.slideType!,
-                    Number(slideLine.pos),
-                    Number(slideLine.endPos),
+                    slideLine.pos,
+                    slideLine.endPos,
                     i,
                     slideLine.remainTime!,
                     slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos)
@@ -870,8 +870,8 @@ export const drawNote = (
                 const guideStarData = getTrackProps(
                   values,
                   slideLine.slideType!,
-                  Number(slideLine.pos),
-                  Number(slideLine.endPos),
+                  slideLine.pos,
+                  slideLine.endPos,
                   props.rho - slideLine.beginTime!,
                   slideLine.remainTime!,
                   slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos)
@@ -905,8 +905,8 @@ export const drawNote = (
                 const guideStarData = getTrackProps(
                   values,
                   slideLine.slideType!,
-                  Number(slideLine.pos),
-                  Number(slideLine.endPos),
+                  slideLine.pos,
+                  slideLine.endPos,
                   props.rho - slideLine.beginTime!,
                   slideLine.remainTime!,
                   slideLine.turnPos === undefined ? undefined : Number(slideLine.turnPos)
@@ -941,7 +941,7 @@ export const drawNote = (
             if (/*如果沒有全部画完（-1表示最後一段也画了）*/ props.currentSectionIndex !== -1) {
               // 间隔放置TRACK元素的时间
               const trackItemGapTime =
-                (values.trackItemGap * note.remainTime!) / trackLength(note.slideType!, values, Number(note.pos), Number(note.endPos), note.turnPos === undefined ? undefined : Number(note.turnPos));
+                (values.trackItemGap * note.remainTime!) / trackLength(note.slideType!, values, note.pos, note.endPos, note.turnPos === undefined ? undefined : Number(note.turnPos));
 
               // SLIDE分段信息
               const sectionInfo = note.sections as SectionInfo[];
@@ -952,7 +952,7 @@ export const drawNote = (
               ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
               // 得从後往前画
               for (let i = note.remainTime!; i >= sectionInfo![props.currentSectionIndex].start * note.remainTime!; i -= trackItemGapTime) {
-                const slideData = getTrackProps(values, note.slideType!, Number(note.pos), Number(note.endPos), i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
+                const slideData = getTrackProps(values, note.slideType!, note.pos, note.endPos, i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
                   x: number;
                   y: number;
                   direction: number;
@@ -979,15 +979,7 @@ export const drawNote = (
               ctx.translate(values.center[0], values.center[1]);
               ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
 
-              const guideStarData = getTrackProps(
-                values,
-                note.slideType!,
-                Number(note.pos),
-                Number(note.endPos),
-                props.rho,
-                note.remainTime!,
-                note.turnPos === undefined ? undefined : Number(note.turnPos)
-              ) as {
+              const guideStarData = getTrackProps(values, note.slideType!, note.pos, note.endPos, props.rho, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
                 x: number;
                 y: number;
                 direction: number;
@@ -1090,15 +1082,7 @@ export const drawNote = (
                 ctx.translate(values.center[0], values.center[1]);
                 ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
 
-                const guideStarData = getTrackProps(
-                  values,
-                  note.slideType!,
-                  Number(note.pos),
-                  Number(note.endPos),
-                  props.rho,
-                  note.remainTime!,
-                  note.turnPos === undefined ? undefined : Number(note.turnPos)
-                ) as {
+                const guideStarData = getTrackProps(values, note.slideType!, note.pos, note.endPos, props.rho, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
                   x: number;
                   y: number;
                   direction: number;

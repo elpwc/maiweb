@@ -111,3 +111,8 @@ export const judgeIntersect = (x1: number, y1: number, x2: number, y2: number, x
 export const lineLen = (x1: number, y1: number, x2: number, y2: number) => {
   return sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
 };
+
+/** 两点间线段长度 点 */
+export const lineLenByPoint = (p1: [number, number], p2: [number, number]): number => {
+  return sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2);
+};

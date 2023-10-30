@@ -1,7 +1,8 @@
-import { cos, sin, π } from '../utils/math';
+import { cos, isANumber, sin, π } from '../utils/math';
 import { lineLen } from '../drawUtils/_base';
 import MaimaiValues from '../maimaiValues';
-import { ppPoints, qqPoints } from './_global';
+import { getAngle, ppPoints, qqPoints } from './_global';
+import { getPosCenterCoord } from '../areas';
 
 /**
  * 获得当前时刻的track信息
@@ -15,46 +16,66 @@ import { ppPoints, qqPoints } from './_global';
 export const getTrackProps = (
   values: MaimaiValues,
   type: string,
-  startPos: number,
-  endPosOri: number,
+  startPos_: string | undefined,
+  endPosOri_: string | undefined,
   ct: number,
   rt: number,
   turnPosOri?: number
 ): { x: number; y: number; direction: number } | /* wifi */ { x: number; y: number; direction: number }[] => {
-  let endPos = endPosOri - startPos + 1;
-  let turnPos = (turnPosOri ?? 0) - startPos + 1;
-  if (endPos < 1) endPos += 8;
-  if (turnPos < 1) turnPos += 8;
-  switch (type) {
-    case '-':
-      return straight(values, endPos, ct, rt);
-    case '^':
-      return curve(values, endPos, ct, rt);
-    case '<':
-      return leftCurve(values, startPos, endPos, ct, rt);
-    case '>':
-      return rightCurve(values, startPos, endPos, ct, rt);
-    case 'v':
-      return v(values, endPos, ct, rt);
-    case 's':
-      return s(values, ct, rt);
-    case 'z':
-      return z(values, ct, rt);
-    case 'p':
-      return p(values, endPos, ct, rt);
-    case 'q':
-      return q(values, endPos, ct, rt);
-    case 'pp':
-      return pp(values, endPos, ct, rt);
-    case 'qq':
-      return qq(values, endPos, ct, rt);
-    case 'V':
-      return turn(values, turnPos, endPos, ct, rt);
-    case 'w':
-      return w(values, ct, rt);
-    default:
-      return { x: 0, y: 0, direction: 0 };
+  if (isANumber(startPos_) && isANumber(endPosOri_)) {
+    const startPos = Number(startPos_);
+    const endPosOri = Number(endPosOri_);
+
+    let endPos = endPosOri - startPos + 1;
+    let turnPos = (turnPosOri ?? 0) - startPos + 1;
+    if (endPos < 1) endPos += 8;
+    if (turnPos < 1) turnPos += 8;
+    switch (type) {
+      case '-':
+        return straight(values, endPos, ct, rt);
+      case '^':
+        return curve(values, endPos, ct, rt);
+      case '<':
+        return leftCurve(values, startPos, endPos, ct, rt);
+      case '>':
+        return rightCurve(values, startPos, endPos, ct, rt);
+      case 'v':
+        return v(values, endPos, ct, rt);
+      case 's':
+        return s(values, ct, rt);
+      case 'z':
+        return z(values, ct, rt);
+      case 'p':
+        return p(values, endPos, ct, rt);
+      case 'q':
+        return q(values, endPos, ct, rt);
+      case 'pp':
+        return pp(values, endPos, ct, rt);
+      case 'qq':
+        return qq(values, endPos, ct, rt);
+      case 'V':
+        return turn(values, turnPos, endPos, ct, rt);
+      case 'w':
+        return w(values, ct, rt);
+      default:
+        return { x: 0, y: 0, direction: 0 };
+    }
+  } else {
+    if (startPos_ && endPosOri_) {
+      switch (type) {
+        case '-':
+          return straight_SPEC(values, startPos_, endPosOri_, ct, rt);
+        case '<':
+        //return leftCurve(values, startPos, endPos, ct, rt);
+        case '>':
+        //return rightCurve(values, startPos, endPos, ct, rt);
+        default:
+          return { x: 0, y: 0, direction: 0 };
+      }
+    }
   }
+
+  return { x: 0, y: 0, direction: 0 };
 };
 
 // -
@@ -438,4 +459,23 @@ const w = (values: MaimaiValues, ct: number, rt: number): { x: number; y: number
       direction: 22.5 * 3 + 202.5,
     },
   ];
+};
+
+// -
+const straight_SPEC = (values: MaimaiValues, startPos: string, endPos: string, ct: number, rt: number): { x: number; y: number; direction: number } => {
+  const startPosCoord = getPosCenterCoord(startPos, values);
+  const endPosCoord = getPosCenterCoord(endPos, values);
+
+  let direction = 0;
+  if (endPosCoord[0] > startPosCoord[0]) {
+    direction = getAngle(startPosCoord, endPosCoord, [startPosCoord[0], startPosCoord[1] + 100]) + 180;
+  } else {
+    direction = getAngle(startPosCoord, endPosCoord, [startPosCoord[0], startPosCoord[1] - 100]);
+  }
+
+  return {
+    x: startPosCoord[0] + (endPosCoord[0] - startPosCoord[0]) * (ct / rt),
+    y: startPosCoord[1] + (endPosCoord[1] - startPosCoord[1]) * (ct / rt),
+    direction,
+  };
 };

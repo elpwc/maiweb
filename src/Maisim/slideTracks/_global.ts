@@ -1,111 +1,124 @@
 import MaimaiValues from '../maimaiValues';
-import { abs, acos, asin, atan, cos, sin, sqrt, π } from '../utils/math';
-import { lineLen } from '../drawUtils/_base';
+import { abs, acos, asin, atan, cos, isANumber, sin, sqrt, π } from '../utils/math';
+import { lineLen, lineLenByPoint } from '../drawUtils/_base';
 import { FlipMode } from '../utils/types/flipMode';
+import { getPosCenterCoord } from '../areas';
 
 /** 一条SLIDE轨迹的长度 */
-export const trackLength = (type: string, values: MaimaiValues, startPos: number, endPosOri: number, turnPosOri?: number): number => {
-  let endPos = endPosOri - startPos + 1;
-  if (endPos < 1) endPos += 8;
-  let turnPos = (turnPosOri ?? 0) - startPos + 1;
-  if (turnPos < 1) turnPos += 8;
+export const trackLength = (type: string, values: MaimaiValues, startPos_: string | undefined, endPosOri: string | undefined, turnPosOri?: number): number => {
+  if (isANumber(startPos_) && isANumber(endPosOri)) {
+    const startPos = Number(startPos_);
+    let endPos = Number(endPosOri) - startPos + 1;
+    if (endPos < 1) endPos += 8;
+    let turnPos = (turnPosOri ?? 0) - startPos + 1;
+    if (turnPos < 1) turnPos += 8;
 
-  switch (type) {
-    case '-':
-      return lineLen(values.APositions.J[0][0], values.APositions.J[0][1], values.APositions.J[endPos - 1][0], values.APositions.J[endPos - 1][1]);
-    case '^':
-      if (endPos > 1 && endPos < 5) {
-        return π * values.maimaiJudgeLineR * 2 * ((endPos - 1) / 8);
-      } else if (endPos > 5 && endPos <= 8) {
-        return π * values.maimaiJudgeLineR * 2 * ((9 - endPos) / 8);
-      }
-      break;
-    case '<':
-      if (startPos <= 2 || startPos >= 7) {
-        if (endPos > 1 && endPos <= 8) {
-          return π * values.maimaiJudgeLineR * 2 * ((9 - endPos) / 8);
-        } else if (endPos === 1) {
-          return π * values.maimaiJudgeLineR * 2;
-        }
-      } else if (startPos >= 3 && startPos <= 6) {
-        if (endPos > 1 && endPos <= 8) {
+    switch (type) {
+      case '-':
+        return lineLenByPoint(values.APositions.J[0], values.APositions.J[endPos - 1]);
+      case '^':
+        if (endPos > 1 && endPos < 5) {
           return π * values.maimaiJudgeLineR * 2 * ((endPos - 1) / 8);
-        } else if (endPos === 1) {
-          return π * values.maimaiJudgeLineR * 2;
-        }
-      }
-
-      break;
-    case '>':
-      if (startPos <= 2 || startPos >= 7) {
-        if (endPos > 1 && endPos <= 8) {
-          return π * values.maimaiJudgeLineR * 2 * ((endPos - 1) / 8);
-        } else if (endPos === 1) {
-          return π * values.maimaiJudgeLineR * 2;
-        }
-      } else if (startPos >= 3 && startPos <= 6) {
-        if (endPos > 1 && endPos <= 8) {
+        } else if (endPos > 5 && endPos <= 8) {
           return π * values.maimaiJudgeLineR * 2 * ((9 - endPos) / 8);
-        } else if (endPos === 1) {
-          return π * values.maimaiJudgeLineR * 2;
         }
-      }
-      break;
-    case 'v':
-      return values.maimaiJudgeLineR * 2;
-    case 'p':
-      return 0.25 * (endPos >= 6 ? 14 - endPos : 6 - endPos) * values.qpCenterCircleR * π + values.qplen * 2;
-    case 'q':
-      return 0.25 * (endPos <= 4 ? endPos + 4 : endPos - 4) * values.qpCenterCircleR * π + values.qplen * 2;
-    case 'pp':
-      const ppangle = endPos === 4 ? 1 - ppPoints[endPos] + 1 + ppPoints[0] + 2 : 1 - ppPoints[endPos] + 1 + ppPoints[0];
-      return (
-        ppangle * values.qpLeftRighCircleR * π +
-        lineLen(
-          values.APositions.J[0][0],
-          values.APositions.J[0][1],
-          values.qpRightCircleCenter[0] + values.qpLeftRighCircleR * cos(ppPoints[0] * π),
-          values.qpRightCircleCenter[1] + values.qpLeftRighCircleR * sin(ppPoints[0] * π)
-        ) +
-        lineLen(
-          values.APositions.J[endPos - 1][0],
-          values.APositions.J[endPos - 1][1],
-          values.qpRightCircleCenter[0] + values.qpLeftRighCircleR * cos((ppPoints[0] - ppangle) * π),
-          values.qpRightCircleCenter[1] + values.qpLeftRighCircleR * sin((ppPoints[0] - ppangle) * π)
-        )
-      );
+        break;
+      case '<':
+        if (startPos <= 2 || startPos >= 7) {
+          if (endPos > 1 && endPos <= 8) {
+            return π * values.maimaiJudgeLineR * 2 * ((9 - endPos) / 8);
+          } else if (endPos === 1) {
+            return π * values.maimaiJudgeLineR * 2;
+          }
+        } else if (startPos >= 3 && startPos <= 6) {
+          if (endPos > 1 && endPos <= 8) {
+            return π * values.maimaiJudgeLineR * 2 * ((endPos - 1) / 8);
+          } else if (endPos === 1) {
+            return π * values.maimaiJudgeLineR * 2;
+          }
+        }
 
-    case 'qq':
-      const qqangle = endPos === 7 ? qqPoints[endPos] - qqPoints[0] : 1 + qqPoints[endPos] + 1 - qqPoints[0];
-      return (
-        qqangle * values.qpLeftRighCircleR * π +
-        lineLen(
-          values.APositions.J[0][0],
-          values.APositions.J[0][1],
-          values.qpLeftCircleCenter[0] + values.qpLeftRighCircleR * cos(qqPoints[0] * π),
-          values.qpLeftCircleCenter[1] + values.qpLeftRighCircleR * sin(qqPoints[0] * π)
-        ) +
-        lineLen(
-          values.APositions.J[endPos - 1][0],
-          values.APositions.J[endPos - 1][1],
-          values.qpLeftCircleCenter[0] + values.qpLeftRighCircleR * cos((qqPoints[0] + qqangle) * π),
-          values.qpLeftCircleCenter[1] + values.qpLeftRighCircleR * sin((qqPoints[0] + qqangle) * π)
-        )
-      );
-    case 's':
-      return values.maimaiJudgeLineR * 2.9932;
-    case 'z':
-      return values.maimaiJudgeLineR * 2.9932;
-    case 'V':
-      return (
-        lineLen(values.APositions.J[turnPos - 1][0], values.APositions.J[turnPos - 1][1], values.APositions.J[0][0], values.APositions.J[0][1]) +
-        lineLen(values.APositions.J[turnPos - 1][0], values.APositions.J[turnPos - 1][1], values.APositions.J[endPos - 1][0], values.APositions.J[endPos - 1][1])
-      );
-    case 'w':
-      return lineLen(values.APositions.J[0][0], values.APositions.J[0][1], values.APositions.J[4][0], values.APositions.J[4][1]);
-    default:
-      break;
+        break;
+      case '>':
+        if (startPos <= 2 || startPos >= 7) {
+          if (endPos > 1 && endPos <= 8) {
+            return π * values.maimaiJudgeLineR * 2 * ((endPos - 1) / 8);
+          } else if (endPos === 1) {
+            return π * values.maimaiJudgeLineR * 2;
+          }
+        } else if (startPos >= 3 && startPos <= 6) {
+          if (endPos > 1 && endPos <= 8) {
+            return π * values.maimaiJudgeLineR * 2 * ((9 - endPos) / 8);
+          } else if (endPos === 1) {
+            return π * values.maimaiJudgeLineR * 2;
+          }
+        }
+        break;
+      case 'v':
+        return values.maimaiJudgeLineR * 2;
+      case 'p':
+        return 0.25 * (endPos >= 6 ? 14 - endPos : 6 - endPos) * values.qpCenterCircleR * π + values.qplen * 2;
+      case 'q':
+        return 0.25 * (endPos <= 4 ? endPos + 4 : endPos - 4) * values.qpCenterCircleR * π + values.qplen * 2;
+      case 'pp':
+        const ppangle = endPos === 4 ? 1 - ppPoints[endPos] + 1 + ppPoints[0] + 2 : 1 - ppPoints[endPos] + 1 + ppPoints[0];
+        return (
+          ppangle * values.qpLeftRighCircleR * π +
+          lineLen(
+            values.APositions.J[0][0],
+            values.APositions.J[0][1],
+            values.qpRightCircleCenter[0] + values.qpLeftRighCircleR * cos(ppPoints[0] * π),
+            values.qpRightCircleCenter[1] + values.qpLeftRighCircleR * sin(ppPoints[0] * π)
+          ) +
+          lineLen(
+            values.APositions.J[endPos - 1][0],
+            values.APositions.J[endPos - 1][1],
+            values.qpRightCircleCenter[0] + values.qpLeftRighCircleR * cos((ppPoints[0] - ppangle) * π),
+            values.qpRightCircleCenter[1] + values.qpLeftRighCircleR * sin((ppPoints[0] - ppangle) * π)
+          )
+        );
+
+      case 'qq':
+        const qqangle = endPos === 7 ? qqPoints[endPos] - qqPoints[0] : 1 + qqPoints[endPos] + 1 - qqPoints[0];
+        return (
+          qqangle * values.qpLeftRighCircleR * π +
+          lineLen(
+            values.APositions.J[0][0],
+            values.APositions.J[0][1],
+            values.qpLeftCircleCenter[0] + values.qpLeftRighCircleR * cos(qqPoints[0] * π),
+            values.qpLeftCircleCenter[1] + values.qpLeftRighCircleR * sin(qqPoints[0] * π)
+          ) +
+          lineLen(
+            values.APositions.J[endPos - 1][0],
+            values.APositions.J[endPos - 1][1],
+            values.qpLeftCircleCenter[0] + values.qpLeftRighCircleR * cos((qqPoints[0] + qqangle) * π),
+            values.qpLeftCircleCenter[1] + values.qpLeftRighCircleR * sin((qqPoints[0] + qqangle) * π)
+          )
+        );
+      case 's':
+        return values.maimaiJudgeLineR * 2.9932;
+      case 'z':
+        return values.maimaiJudgeLineR * 2.9932;
+      case 'V':
+        return lineLenByPoint(values.APositions.J[turnPos - 1], values.APositions.J[0]) + lineLenByPoint(values.APositions.J[turnPos - 1], values.APositions.J[endPos - 1]);
+      case 'w':
+        return lineLenByPoint(values.APositions.J[0], values.APositions.J[4]);
+      default:
+        break;
+    }
+  } else {
+    const startPosCoord = getPosCenterCoord(startPos_ ?? '1', values);
+    const endPosCoord = getPosCenterCoord(endPosOri ?? '1', values);
+    switch (type) {
+      case '-':
+        return lineLenByPoint(startPosCoord, endPosCoord);
+      case '<':
+      case '>':
+      default:
+        break;
+    }
   }
+
   return 0;
 };
 
@@ -178,6 +191,16 @@ export const flipTrack = (type: string, flipMode: FlipMode) => {
   }
 };
 
+/**
+ * 三点确定夹角度数
+ * @param o
+ * @param p1
+ * @param p2
+ * @returns 返回 180° 360° 这样的
+ */
+export const getAngle = (o: [number, number], p1: [number, number], p2: [number, number]): number => {
+  return asin(((p1[0] - o[0]) * (p2[0] - o[0]) + (p1[1] - o[1]) * (p2[1] - o[1])) / (lineLenByPoint(o, p1) * lineLenByPoint(o, p2))) / π * 180;
+};
 /*
 
 

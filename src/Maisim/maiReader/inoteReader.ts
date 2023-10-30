@@ -212,7 +212,7 @@ export const read_inote = (
         }
 
         // 加入SLIDE TRACK
-        if (foreType === NoteType.Slide) {
+        if (foreType === NoteType.Slide || foreType === NoteType.Spec_TouchSlide) {
           res.slideTracks?.forEach((slideTrack: SlideTrack) => {
             const tempSlideTrackNote: Note = {
               index: res.index,
