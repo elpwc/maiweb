@@ -1,11 +1,11 @@
 import { flipPos } from '../areas';
-import { section, section_wifi } from '../slideTracks/section';
 import { flipTrack } from '../slideTracks/_global';
 import { FlipMode } from '../utils/types/flipMode';
 import { Note, SlideTrack, SlideLine } from '../utils/note';
 import { NoteType } from '../utils/types/noteType';
 import { noteValue_and_noteNumber_analyser } from './noteValueAnalyser';
 import { analyse_slide_line } from './slideLineAnalyser';
+import { isANumber } from '../utils/math';
 
 /** 分析谱面中一个note的文本 */
 export const analyse_note_original_data = (noteDataOri: string, index: number, currentBPM: number, flipMode: FlipMode): Note | null => {
@@ -237,7 +237,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
     } else {
       // SLIDE & (观赏谱) TOUCH SLIDE
       const first_char = noteData.substring(0, 1);
-      if (!isNaN(Number(first_char))) {
+      if (isANumber(first_char)) {
         // 正常SLIDE
         noteRes.pos = flipPos(noteData.substring(0, 1), flipMode);
         noteRes.type = NoteType.Slide;
@@ -320,7 +320,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
           // 2. majdata型   -3-5[:]
           currentSlideTrackRes.isChain = true;
 
-          const temp_slideLinesOri: SlideLine[] = [];
+          let temp_slideLinesOri: SlideLine[] = [];
 
           let positions = slide.split('[')[0];
           const noteValue_and_noteNumber_original_data = slide.substring(slide.indexOf('[') + 1, slide.indexOf(']'));
@@ -331,65 +331,118 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
           currentSlideTrackRes.remainTime = noteValueRes.remainTime;
           currentSlideTrackRes.stopTime = noteValueRes.stopTime;
 
-          let i = 0;
+          //let i = 0;
           //开始处理左边这一长串  pp3w6V57-3-6qq3q4
-          while (positions !== '') {
-            if (positions.substring(0, 2) === 'pp' || positions.substring(0, 2) === 'qq') {
-              // pp qq
-              const slideType = flipTrack(positions.substring(0, 2), flipMode);
-              const endPos = flipPos(positions.substring(2, 3), flipMode);
-              const pos = i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos;
-              temp_slideLinesOri.push({
-                slideType,
-                endPos,
-                pos,
 
-                /**  持续时间占比 */
-                remainTime: 0,
-                beginTime: 0,
-                //sections: section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
-              });
-              positions = positions.substring(3, positions.length);
-            } else if (positions.substring(0, 1) === 'V') {
-              //V
-              const slideType = flipTrack(positions.substring(0, 1), flipMode);
-              const turnPos = flipPos(positions.substring(1, 2), flipMode);
-              const endPos = flipPos(positions.substring(2, 3), flipMode);
-              const pos = i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos;
-              temp_slideLinesOri.push({
-                slideType,
-                turnPos,
-                endPos,
-                pos,
+          let poses: string[] = positions.split(/-|\^|<|>|v|s|z|pp|qq|p|q|w|V/);
+          let types: string[] = [];
 
-                /**  持续时间占比 */
-                remainTime: 0,
-                beginTime: 0,
-                //sections: section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
-              });
-              positions = positions.substring(3, positions.length);
-            } else {
-              // normal
-              const slideType = flipTrack(positions.substring(0, 1), flipMode);
-              const endPos = flipPos(positions.substring(1, 2), flipMode);
-              const pos = i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos;
-              temp_slideLinesOri.push({
-                slideType,
-                endPos,
-                pos,
+          poses.splice(0, 1);
 
-                /**  持续时间占比 */
-                remainTime: 0,
-                beginTime: 0,
-                // sections:
-                //   positions.substring(0, 1) === 'w'
-                //     ? section_wifi(i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!)
-                //     : section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
-              });
-              positions = positions.substring(2, positions.length);
+          let turnPoses: string[] = [];
+          let turnPosesIndex = -1;
+
+          let j = 0;
+          for (let i = 0; i < positions.length; i++) {
+            const crtChar = positions.substring(i, i + 1);
+            if (['-', '^', '<', '>', 'v', 's', 'z', 'V', 'p', 'q', 'w'].includes(crtChar)) {
+              if (crtChar === 'q' || crtChar === 'p') {
+                const crtAndNextChar = positions.substring(i, i + 2);
+                if (crtAndNextChar === 'qq' || crtAndNextChar === 'pp') {
+                  types.push(crtAndNextChar);
+                }
+              } else if (crtChar === 'V') {
+                turnPoses.push(poses[j].substring(1, 2));
+                poses[j] = poses[j].substring(0, 1);
+              } else {
+                types.push(crtChar);
+              }
+              j++;
             }
-            i++;
           }
+          temp_slideLinesOri = types.map((each_type, i) => {
+            if (each_type === 'V') {
+              turnPosesIndex++;
+            }
+            return {
+              slideType: flipTrack(each_type, flipMode),
+              turnPos: each_type === 'V' ? flipPos(turnPoses[turnPosesIndex], flipMode) : '',
+              endPos: flipPos(poses[i], flipMode),
+              pos: i === 0 ? noteRes.pos : poses[i - 1],
+
+              /**  持续时间占比 */
+              remainTime: 0,
+              beginTime: 0,
+              //sections: section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
+            };
+          });
+
+          console.log(positions, poses, types, temp_slideLinesOri, turnPoses);
+
+          // while (positions !== '') {
+          //   if (positions.substring(0, 2) === 'pp' || positions.substring(0, 2) === 'qq') {
+          //     // pp qq
+          //     const slideType = flipTrack(positions.substring(0, 2), flipMode);
+          //     const endPos = flipPos(positions.substring(2, 3), flipMode);
+          //     const pos = i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos;
+          //     temp_slideLinesOri.push({
+          //       slideType,
+          //       endPos,
+          //       pos,
+
+          //       /**  持续时间占比 */
+          //       remainTime: 0,
+          //       beginTime: 0,
+          //       //sections: section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
+          //     });
+          //     positions = positions.substring(3, positions.length);
+          //   } else if (positions.substring(0, 1) === 'V') {
+          //     //V
+          //     const slideType = flipTrack(positions.substring(0, 1), flipMode);
+          //     const turnPos = flipPos(positions.substring(1, 2), flipMode);
+          //     const endPos = flipPos(positions.substring(2, 3), flipMode);
+          //     const pos = i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos;
+          //     temp_slideLinesOri.push({
+          //       slideType,
+          //       turnPos,
+          //       endPos,
+          //       pos,
+
+          //       /**  持续时间占比 */
+          //       remainTime: 0,
+          //       beginTime: 0,
+          //       //sections: section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
+          //     });
+          //     positions = positions.substring(3, positions.length);
+          //   } else {
+          //     // normal
+          //     const slideType = flipTrack(positions.substring(0, 1), flipMode);
+          //     let crt = 1;
+          //     while (!['-', '^', '<', '>', 'v', 's', 'z', 'V', 'p', 'q', 'w'].includes(positions.substring(crt, crt + 1))) {
+          //       crt++;
+          //       if (crt >= positions.length) {
+          //         break;
+          //       }
+          //     }
+          //     const endPos = flipPos(positions.substring(1, 1 + crt), flipMode); //TODO maisim型人体蜈蚣里   1-E2-B3这样的特殊位置的读取
+          //     const pos = i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos;
+          //     temp_slideLinesOri.push({
+          //       slideType,
+          //       endPos,
+          //       pos,
+
+          //       /**  持续时间占比 */
+          //       remainTime: 0,
+          //       beginTime: 0,
+          //       // sections:
+          //       //   positions.substring(0, 1) === 'w'
+          //       //     ? section_wifi(i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!)
+          //       //     : section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
+          //     });
+          //     positions = positions.substring(1 + crt, positions.length);
+          //   }
+          //   i++;
+          // }
 
           // 设置时间
           for (let j = 0; j < temp_slideLinesOri.length; j++) {

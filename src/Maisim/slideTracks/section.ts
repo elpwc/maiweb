@@ -9,26 +9,30 @@ export const section_new = () => {};
 
 /** SLIDE TRACK分段 */
 export const section = (type: string | undefined, values: MaimaiValues, startPos: string, endPosOri: string, turnPosOri?: string): SectionInfo[] | undefined => {
-  if (isANumber(startPos) && isANumber(endPosOri)) {
-    // 正常
-    let endPos = Number(endPosOri) - Number(startPos) + 1;
-    let turnPos = (Number(turnPosOri) ?? 0) - Number(startPos) + 1;
-    if (endPos < 1) endPos += 8;
-    if (turnPos < 1) turnPos += 8;
+  if (endPosOri !== undefined && startPos !== undefined) {
+    if (isANumber(startPos) && isANumber(endPosOri)) {
+      // 正常
+      let endPos = Number(endPosOri) - Number(startPos) + 1;
+      let turnPos = (Number(turnPosOri) ?? 0) - Number(startPos) + 1;
+      if (endPos < 1) endPos += 8;
+      if (turnPos < 1) turnPos += 8;
 
-    return section_A1(type, values, endPos, turnPos, Number(startPos))?.map(section => {
-      const resAreas = section.areas.map(area => {
-        if (area !== 'C') {
-          let newPos = Number(area.substring(1, 2)) + Number(startPos) - 1;
-          if (newPos > 8) newPos -= 8;
-          return area.substring(0, 1) + newPos.toString();
-        } else return 'C';
+      return section_A1(type, values, endPos, turnPos, Number(startPos))?.map(section => {
+        const resAreas = section.areas.map(area => {
+          if (area !== 'C') {
+            let newPos = Number(area.substring(1, 2)) + Number(startPos) - 1;
+            if (newPos > 8) newPos -= 8;
+            return area.substring(0, 1) + newPos.toString();
+          } else return 'C';
+        });
+        return { start: section.start, areas: resAreas };
       });
-      return { start: section.start, areas: resAreas };
-    });
+    } else {
+      // 观赏谱随意SLIDE
+      return section_SPEC(type, values, endPosOri, startPos);
+    }
   } else {
-    // 观赏谱随意SLIDE
-    return section_SPEC(type, values, endPosOri, startPos);
+    return undefined;
   }
 };
 

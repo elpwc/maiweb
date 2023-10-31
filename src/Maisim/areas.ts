@@ -1,4 +1,4 @@
-import { abs, atan, cos, sin, π } from './utils/math';
+import { abs, atan, cos, isANumber, sin, π } from './utils/math';
 import { isInner, lineLen } from './drawUtils/_base';
 import { FlipMode } from './utils/types/flipMode';
 import MaimaiValues from './maimaiValues';
@@ -203,10 +203,10 @@ export class AreaUtils {
  */
 export const getPosCenterCoord = (pos: string, values: MaimaiValues): [number, number] => {
   const firstChar = pos.substring(0, 1);
-  if (!isNaN(Number(firstChar))) {
+  if (isANumber(firstChar)) {
     return values.APositions.J[Number(firstChar) - 1];
   }
-  
+
   const touchPos = pos.substring(1, 2);
   switch (firstChar) {
     case 'C':

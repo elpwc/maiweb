@@ -1,9 +1,9 @@
 import { SlideTrack } from '../utils/note';
 import { flipPos } from '../areas';
-import { section } from '../slideTracks/section';
 import { flipTrack } from '../slideTracks/_global';
 import { FlipMode } from '../utils/types/flipMode';
 import { noteValue_and_noteNumber_analyser } from './noteValueAnalyser';
+import { isANumber } from '../utils/math';
 
 /** 对一整条SLIDE的谱面文本的分析（majdata型人体蜈蚣不走这里，直接在noteStrAnalyser.ts里解析） */
 export const analyse_slide_line = (oriData: string, startPos: string, currentBPM: number, flipMode: FlipMode): SlideTrack => {
@@ -23,6 +23,7 @@ export const analyse_slide_line = (oriData: string, startPos: string, currentBPM
   let endPos = undefined,
     turnPos = undefined;
 
+  // 确定slideType
   currentSlideTrackRes.slideType = slide.substring(0, 1) as '-' | '^' | '<' | '>' | 'v' | 'p' | 'q' | 's' | 'z' | 'pp' | 'qq' | 'w' | 'V';
   if (currentSlideTrackRes.slideType === 'p' && slide.substring(1, 2) === 'p') {
     currentSlideTrackRes.slideType = 'pp';
@@ -34,8 +35,17 @@ export const analyse_slide_line = (oriData: string, startPos: string, currentBPM
     turnPos = slide.substring(1, 2);
     endPos = slide.substring(2, 3);
   } else {
-    endPos = slide.substring(1, 2);
+    if (isANumber(startPos) && isANumber(endPos)) {
+      // 正常SLIDE
+      endPos = slide.substring(1, 2);
+    } else {
+      // 观赏谱SLIDE
+      const dividedEndPosAndData = slide.split(/-|\^|<|>|v|s|z|pp|qq|p|q|w|V|\[/);
+      endPos = dividedEndPosAndData[1];
+    }
   }
+
+  // 确定endPos
 
   currentSlideTrackRes.slideType = flipTrack(currentSlideTrackRes.slideType, flipMode);
   currentSlideTrackRes.turnPos = flipPos(turnPos, flipMode);

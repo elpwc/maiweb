@@ -1,4 +1,4 @@
-import { cos, sin, π } from '../utils/math';
+import { cos, isANumber, sin, π } from '../utils/math';
 import { getTrackProps } from '../slideTracks/tracks';
 import { drawRotationImage, lineLen } from './_base';
 import { NoteIcon } from '../resourceReaders/noteIconReader';
@@ -737,7 +737,10 @@ export const drawNote = (
                 // 画SLIDE TRACK
                 ctx_slideTrack.save();
                 ctx_slideTrack.translate(values.center[0], values.center[1]);
-                ctx_slideTrack.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
+                // 观赏谱的话不需要旋转画布
+                if (isANumber(note.pos) && isANumber(note.endPos)) {
+                  ctx_slideTrack.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
+                }
                 // 得从後往前画
                 for (let i = slideLine.remainTime!; i >= sectionInfo![j === props.currentLineIndex ? props.currentSectionIndex : 0].start * slideLine.remainTime!; i -= trackItemGapTime) {
                   const slideData = getTrackProps(
@@ -812,7 +815,10 @@ export const drawNote = (
                 // SLIDE TRACK
                 ctx_slideTrack.save();
                 ctx_slideTrack.translate(values.center[0], values.center[1]);
-                ctx_slideTrack.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
+                // 观赏谱的话不需要旋转画布
+                if (isANumber(note.pos) && isANumber(note.endPos)) {
+                  ctx_slideTrack.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
+                }
                 // 得从後往前画
 
                 for (let i = 11; i >= min * 2 + (min === 0 ? 1 : 2); i--) {
@@ -865,7 +871,10 @@ export const drawNote = (
                 console.log(0);
                 ctx.save();
                 ctx.translate(values.center[0], values.center[1]);
-                ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
+                // 观赏谱的话不需要旋转画布
+                if (isANumber(note.pos) && isANumber(note.endPos)) {
+                  ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
+                }
 
                 const guideStarData = getTrackProps(
                   values,
@@ -900,7 +909,10 @@ export const drawNote = (
               if (!note.isNoTapNoTameTimeSlide || (note.isNoTapNoTameTimeSlide && props.status === 2)) {
                 ctx.save();
                 ctx.translate(values.center[0], values.center[1]);
-                ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
+                // 观赏谱的话不需要旋转画布
+                if (isANumber(note.pos) && isANumber(note.endPos)) {
+                  ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
+                }
 
                 const guideStarData = getTrackProps(
                   values,
@@ -949,9 +961,13 @@ export const drawNote = (
               // 画SLIDE TRACK
               ctx_slideTrack.save();
               ctx_slideTrack.translate(values.center[0], values.center[1]);
-              ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+              // 观赏谱的话不需要旋转画布
+              if (isANumber(note.pos) && isANumber(note.endPos)) {
+                ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+              }
               // 得从後往前画
               for (let i = note.remainTime!; i >= sectionInfo![props.currentSectionIndex].start * note.remainTime!; i -= trackItemGapTime) {
+                console.log(note);
                 const slideData = getTrackProps(values, note.slideType!, note.pos, note.endPos, i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
                   x: number;
                   y: number;
@@ -977,7 +993,10 @@ export const drawNote = (
             if (!note.isNoTapNoTameTimeSlide || (note.isNoTapNoTameTimeSlide && props.status === 2)) {
               ctx.save();
               ctx.translate(values.center[0], values.center[1]);
-              ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+              // 观赏谱的话不需要旋转画布
+              if (isANumber(note.pos) && isANumber(note.endPos)) {
+                ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+              }
 
               const guideStarData = getTrackProps(values, note.slideType!, note.pos, note.endPos, props.rho, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
                 x: number;
@@ -1037,7 +1056,10 @@ export const drawNote = (
               // SLIDE TRACK
               ctx_slideTrack.save();
               ctx_slideTrack.translate(values.center[0], values.center[1]);
-              ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+              // 观赏谱的话不需要旋转画布
+              if (isANumber(note.pos) && isANumber(note.endPos)) {
+                ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+              }
               // 得从後往前画
 
               for (let i = 11; i >= min * 2 + (min === 0 ? 1 : 2); i--) {
@@ -1080,7 +1102,10 @@ export const drawNote = (
               if (!note.isNoTapNoTameTimeSlide || (note.isNoTapNoTameTimeSlide && props.status === 2)) {
                 ctx.save();
                 ctx.translate(values.center[0], values.center[1]);
-                ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+                // 观赏谱的话不需要旋转画布
+                if (isANumber(note.pos) && isANumber(note.endPos)) {
+                  ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
+                }
 
                 const guideStarData = getTrackProps(values, note.slideType!, note.pos, note.endPos, props.rho, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
                   x: number;
@@ -1526,8 +1551,8 @@ export const drawNote = (
         }
 
         let lastLineDirection = note.slideLineDirectionParams?.direction;
-        let lastLineEndPos = Number(lastLine.endPos);
-        let lastLineStartPos = Number(lastLine.pos);
+        /** 最後一条SLIDE线的结束点（即GUIDE STAR消失的地方） */
+        let lastLineEndPos: string = lastLine.endPos ?? '1';
 
         switch (note.slideLineDirectionParams?.image) {
           case 0:
@@ -1778,8 +1803,9 @@ export const drawNote = (
         const judgeIconHeight = values.maimaiTapR * 1 * k;
         const judgeIconWidth = ((values.maimaiTapR * 1) / judgeImage.height) * judgeImage.width * k;
 
-        x = values.APositions.J[lastLineEndPos - 1][0]; // values.center[0] - judgeIconWidth / 2;
-        y = values.APositions.J[lastLineEndPos - 1][1]; //values.center[1] - (values.maimaiJudgeLineR - values.judgeDistance + judgeIconHeight / 2);
+        const slideEndPoint = getPosCenterCoord(lastLineEndPos, values);
+        x = slideEndPoint[0]; //values.APositions.J[lastLineEndPos - 1][0]; // values.center[0] - judgeIconWidth / 2;
+        y = slideEndPoint[1]; //values.APositions.J[lastLineEndPos - 1][1]; //values.center[1] - (values.maimaiJudgeLineR - values.judgeDistance + judgeIconHeight / 2);
 
         let angle = note.slideLineDirectionParams?.angle;
         if (lastLine.slideType === 'w') {
