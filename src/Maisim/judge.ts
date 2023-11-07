@@ -343,7 +343,7 @@ export const judge = (
             // 三条TRACK分别处理喵
             nextPositionsWifi.forEach((nextPositions, j) => {
               // 如果点了任意一个区域
-              if (nextPositions.includes(area.area.name)) {
+              if (noteIns.doSpecJudge || nextPositions.includes(area.area.name)) {
                 if (note.currentSectionIndexWifi[j] === 4) {
                   // 如果是最後一个区域，那就设为-1，然後判断其他的是不是也都-1
 
@@ -465,7 +465,7 @@ export const judge = (
             // 可供点击的下一个段的区域
             const nextPositions = sectionInfo![note.currentSectionIndex].areas;
             // 如果点了任意一个区域
-            if (nextPositions.includes(area.area.name)) {
+            if (noteIns.doSpecJudge || nextPositions.includes(area.area.name)) {
               if (note.currentSectionIndex === sectionInfo?.length! - 1) {
                 // 如果是当前LINE里的最後一个区域
                 if (note.currentLineIndex === noteIns.slideLines?.length! - 1) {

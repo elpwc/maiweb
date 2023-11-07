@@ -861,14 +861,11 @@ export const drawNote = (
           }
 
           // 人体蜈蚣 GUIDE STAR
-          console.log(note.slideLines, props.currentGuideStarLineIndex);
           if (props.currentGuideStarLineIndex !== -1) {
             const slideLine = note.slideLines![props.currentGuideStarLineIndex];
             if (slideLine.slideType !== 'w') {
               // 人体蜈蚣 GUIDE STAR
               if (!note.isNoTapNoTameTimeSlide || (note.isNoTapNoTameTimeSlide && props.status === 2)) {
-                console.log(props.currentGuideStarLineIndex, props.currentLineIndex);
-                console.log(0);
                 ctx.save();
                 ctx.translate(values.center[0], values.center[1]);
                 // 观赏谱的话不需要旋转画布

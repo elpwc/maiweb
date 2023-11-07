@@ -199,8 +199,9 @@ export const flipTrack = (type: string, flipMode: FlipMode) => {
  * @returns 返回 180° 360° 这样的
  */
 export const getAngle = (o: [number, number], p1: [number, number], p2: [number, number]): number => {
-  return asin(((p1[0] - o[0]) * (p2[0] - o[0]) + (p1[1] - o[1]) * (p2[1] - o[1])) / (lineLenByPoint(o, p1) * lineLenByPoint(o, p2))) / π * 180;
+  return (asin(((p1[0] - o[0]) * (p2[0] - o[0]) + (p1[1] - o[1]) * (p2[1] - o[1])) / (lineLenByPoint(o, p1) * lineLenByPoint(o, p2))) / π) * 180;
 };
+
 /*
 
 

@@ -41,7 +41,7 @@ export const analyse_slide_line = (oriData: string, startPos: string, currentBPM
     } else {
       // 观赏谱SLIDE
       const dividedEndPosAndData = slide.split(/-|\^|<|>|v|s|z|pp|qq|p|q|w|V|\[/);
-      endPos = dividedEndPosAndData[1];
+      endPos = dividedEndPosAndData[1].replaceAll('_', '-');
     }
   }
 

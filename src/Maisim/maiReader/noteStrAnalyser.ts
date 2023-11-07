@@ -6,6 +6,7 @@ import { NoteType } from '../utils/types/noteType';
 import { noteValue_and_noteNumber_analyser } from './noteValueAnalyser';
 import { analyse_slide_line } from './slideLineAnalyser';
 import { isANumber } from '../utils/math';
+import { findAllStr, replaceAt } from '../utils/stringUtils';
 
 /** 分析谱面中一个note的文本 */
 export const analyse_note_original_data = (noteDataOri: string, index: number, currentBPM: number, flipMode: FlipMode): Note | null => {
@@ -157,6 +158,19 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
     noteRes.isNoTapNoTameTimeSlide = true;
     noteData = noteData.replaceAll('!', '');
   }
+  // 把观赏谱特殊位置内的负号-都变成_防止影响後面SLIDE TYPE解析
+  if (noteData.indexOf('#(') !== -1) {
+    const specPosPositions = findAllStr(noteData, '#(');
+    specPosPositions.forEach(specPosPosition => {
+      noteData = replaceAt(noteData, '-', '_', specPosPosition, noteData.indexOf(')', specPosPosition));
+    });
+  }
+  if (noteData.indexOf('@(') !== -1) {
+    const specPosPositions = findAllStr(noteData, '@(');
+    specPosPositions.forEach(specPosPosition => {
+      noteData = replaceAt(noteData, '-', '_', specPosPosition, noteData.indexOf(')', specPosPosition));
+    });
+  }
 
   if (noteData.length === 1) {
     // C TOUCH, TAP
@@ -186,7 +200,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
   if (noteData.substring(0, 1) === '#' || noteData.substring(0, 1) === '@') {
     const specPosEnd = noteData.indexOf(')');
     noteRes.type = NoteType.Touch;
-    noteRes.pos = flipPos(noteData.substring(0, specPosEnd + 1), flipMode);
+    noteRes.pos = flipPos(noteData.substring(0, specPosEnd + 1).replaceAll('_', '-'), flipMode);
     // 对于这种位置随机的观赏谱Note开启观赏谱判定
     noteRes.doSpecJudge = true;
   }
@@ -244,7 +258,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
         noteData = noteData.substring(1, noteData.length);
       } else if (first_char === '#' || first_char === '@') {
         // 任意位置开头的TOUCH SLIDE
-        noteRes.pos = flipPos(noteData.split(/-|\^|<|>|v|s|z|pp|qq|p|q|w|V/)[0] /*noteData.substring(0, noteData.indexOf(')') + 1)*/, flipMode);
+        noteRes.pos = flipPos(noteData.split(/-|\^|<|>|v|s|z|pp|qq|p|q|w|V/)[0].replaceAll('_', '-') /*noteData.substring(0, noteData.indexOf(')') + 1)*/, flipMode);
         noteRes.type = NoteType.Spec_TouchSlide;
         noteData = noteData.substring(noteRes.pos.length, noteData.length);
       } else {
@@ -367,8 +381,8 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
             return {
               slideType: flipTrack(each_type, flipMode),
               turnPos: each_type === 'V' ? flipPos(turnPoses[turnPosesIndex], flipMode) : '',
-              endPos: flipPos(poses[i], flipMode),
-              pos: i === 0 ? noteRes.pos : poses[i - 1],
+              endPos: flipPos(poses[i].replaceAll('_', '-'), flipMode),
+              pos: i === 0 ? noteRes.pos.replaceAll('_', '-') : poses[i - 1].replaceAll('_', '-'),
 
               /**  持续时间占比 */
               remainTime: 0,
