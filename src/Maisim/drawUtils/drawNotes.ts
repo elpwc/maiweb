@@ -967,7 +967,7 @@ export const drawNote = (
               }
               // 得从後往前画
               for (let i = note.remainTime!; i >= sectionInfo![props.currentSectionIndex].start * note.remainTime!; i -= trackItemGapTime) {
-                console.log(note);
+                //console.log(note);
                 const slideData = getTrackProps(values, note.slideType!, note.pos, note.endPos, i, note.remainTime!, note.turnPos === undefined ? undefined : Number(note.turnPos)) as {
                   x: number;
                   y: number;

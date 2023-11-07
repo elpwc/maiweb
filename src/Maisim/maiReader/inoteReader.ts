@@ -1,4 +1,4 @@
-import { abs } from '../utils/math';
+import { abs, isANumber } from '../utils/math';
 import { getJudgeDirectionParams } from '../slideTracks/judgeDirection';
 // 仅仅用来计算分段数量
 import { section, section_wifi } from '../slideTracks/section';
@@ -109,7 +109,7 @@ export const read_inote = (
   let currentTime: number = 0;
   /** Note唯一标识，递增 */
   let serial: number = 0;
-  
+
   //处理所有
   allNotes.forEach((noteGroup: string[], index) => {
     // 一次处理一个拍的
@@ -124,9 +124,9 @@ export const read_inote = (
 
     // 读入和消除(){}
     const bpmSign = noteGroup[0].indexOf('(');
-    
+
     if (bpmSign > -1) {
-      if (bpmSign === 0 || (bpmSign > 0 && (noteGroup[0].substring(bpmSign - 1, bpmSign) !== '#' && noteGroup[0].substring(bpmSign - 1, bpmSign) !== '@'))) {
+      if (bpmSign === 0 || (bpmSign > 0 && noteGroup[0].substring(bpmSign - 1, bpmSign) !== '#' && noteGroup[0].substring(bpmSign - 1, bpmSign) !== '@')) {
         currentBPM = Number(noteGroup[0].substring(bpmSign + 1, noteGroup[0].indexOf(')')));
         noteGroup[0] = noteGroup[0].substring(0, noteGroup[0].indexOf('(')) + noteGroup[0].substring(noteGroup[0].indexOf(')') + 1, noteGroup[0].length);
       }
@@ -243,6 +243,7 @@ export const read_inote = (
               isNoTapNoTameTimeSlide: res.isNoTapNoTameTimeSlide,
               isChain: slideTrack.isChain,
               slideLines: slideTrack.slideLines,
+              doSpecJudge: !(isANumber(res.pos) && isANumber(res.endPos)),
             };
 
             notesRes.push(tempSlideTrackNote);

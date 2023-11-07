@@ -712,7 +712,7 @@ export const judge = (
             // 可供点击的下一个段的区域
             const nextPositions = sectionInfo![note.currentSectionIndex].areas;
             // 如果点了任意一个区域
-            if (nextPositions.includes(area.area.name)) {
+            if (noteIns.doSpecJudge || nextPositions.includes(area.area.name)) {
               if (note.currentSectionIndex === sectionInfo?.length! - 1) {
                 // 如果是最後一个区域
                 note.currentSectionIndex = -1;

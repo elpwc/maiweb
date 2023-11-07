@@ -64,7 +64,7 @@ export const getTrackProps = (
     if (startPos_ && endPosOri_) {
       switch (type) {
         case '-':
-          console.log(values, startPos_, endPosOri_, ct, rt)
+          //console.log(values, startPos_, endPosOri_, ct, rt)
           return straight_SPEC(values, startPos_, endPosOri_, ct, rt);
         case '<':
         //return leftCurve(values, startPos, endPos, ct, rt);
