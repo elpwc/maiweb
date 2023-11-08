@@ -213,6 +213,9 @@ export default function Maisim(
 
   //#endregion Global
 
+  /** 当前指针位置 */
+  const currentMousePosition: React.MutableRefObject<[number, number]> = useRef([0, 0]);
+
   const SongTrack: React.MutableRefObject<HTMLAudioElement> = useRef(new Audio());
   useEffect(() => {
     SongTrack.current.volume = 0.5;
@@ -1308,8 +1311,7 @@ export default function Maisim(
 
   //#region 事件 Event
   //#region 指针事件 MouseEvent
-  const onMouseDown = (e: Event) => {
-    // @ts-ignore
+  const onMouseDown = (e: MouseEvent) => {
     const area = areaFactory.current.whichArea(e.offsetX, e.offsetY);
     if (area) {
       currentTouchingArea.current.push({
@@ -1324,7 +1326,6 @@ export default function Maisim(
 
     const testdiv = document.getElementsByClassName('uiContainer')[0];
 
-    // @ts-ignore
     imitateClick(testdiv, e.offsetX, e.offsetY);
 
     function imitateClick(oElement: Element, iClientX: number, iClientY: number) {
@@ -1336,8 +1337,7 @@ export default function Maisim(
 
     //console.log(currentTouchingArea.current);
   };
-  const onMouseUp = (e: Event) => {
-    // @ts-ignore
+  const onMouseUp = (e: MouseEvent) => {
     const area = areaFactory.current.whichArea(e.offsetX, e.offsetY);
     if (area) {
       currentTouchingArea.current = currentTouchingArea.current.filter(ta => {
@@ -1350,18 +1350,22 @@ export default function Maisim(
     }
     //console.log(currentTouchingArea.current);
   };
+
+  const onMouseMove = (e: MouseEvent) => {
+    const x = e.offsetX,
+      y = e.offsetY;
+  };
   //#endregion 指针事件 MouseEvent
 
   //#region Touch事件 TouchEvent
-  const onTouchStart = (ev: Event) => {
-    console.log(114514);
-    ev.preventDefault(); //阻止事件的默认行为
-    const e = ev as TouchEvent;
+  const onTouchStart = (e: TouchEvent) => {
+    console.log(e);
+    e.preventDefault(); //阻止事件的默认行为
     const touches: TouchList = e.targetTouches;
 
     for (let i = 0; i < touches.length; i++) {
-      // @ts-ignore
-      const area = areaFactory.current.whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
+      var rect = containerDivRef.current!.getBoundingClientRect();
+      const area = areaFactory.current.whichArea(touches[i].clientX - rect.left, touches[i].clientY - rect.top);
       if (area) {
         if (
           currentTouchingArea.current.find(ta => {
@@ -1381,14 +1385,13 @@ export default function Maisim(
     }
     console.log(currentTouchingArea.current);
   };
-  const onTouchEnd = (ev: Event) => {
-    ev.preventDefault(); //阻止事件的默认行为
-    const e = ev as TouchEvent;
+  const onTouchEnd = (e: TouchEvent) => {
+    e.preventDefault(); //阻止事件的默认行为
     const touches: TouchList = e.changedTouches;
 
     for (let i = 0; i < touches.length; i++) {
-      // @ts-ignore
-      const area = areaFactory.current.whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
+      var rect = containerDivRef.current!.getBoundingClientRect();
+      const area = areaFactory.current.whichArea(touches[i].clientX - rect.left, touches[i].clientY - rect.top);
       if (area) {
         currentTouchingArea.current = currentTouchingArea.current.filter(ta => {
           return ta.area.name !== area.name;
@@ -1401,14 +1404,13 @@ export default function Maisim(
     }
     console.log(e);
   };
-  const onTouchCancel = (ev: Event) => {
-    ev.preventDefault(); //阻止事件的默认行为
-    const e = ev as TouchEvent;
+  const onTouchCancel = (e: TouchEvent) => {
+    e.preventDefault(); //阻止事件的默认行为
     const touches: TouchList = e.changedTouches;
 
     for (let i = 0; i < touches.length; i++) {
-      // @ts-ignore
-      const area = areaFactory.current.whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
+      var rect = containerDivRef.current!.getBoundingClientRect();
+      const area = areaFactory.current.whichArea(touches[i].clientX - rect.left, touches[i].clientY - rect.top);
       if (area) {
         currentTouchingArea.current = currentTouchingArea.current.filter(ta => {
           return ta.area.name !== area.name;
@@ -1420,35 +1422,15 @@ export default function Maisim(
       }
     }
   };
-  const onTouchLeave = (ev: Event) => {
-    ev.preventDefault(); //阻止事件的默认行为
-    const e = ev as TouchEvent;
-    const touches: TouchList = e.changedTouches;
-
-    for (let i = 0; i < touches.length; i++) {
-      // @ts-ignore
-      const area = areaFactory.current.whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
-      if (area) {
-        currentTouchingArea.current = currentTouchingArea.current.filter(ta => {
-          return ta.area.name !== area.name;
-        });
-        onPressUp({
-          area,
-          pressTime: currentTime.current,
-        });
-      }
-    }
-  };
-  const onTouchMove = (ev: Event) => {
-    ev.preventDefault(); //阻止事件的默认行为
-    const e = ev as TouchEvent;
+  const onTouchMove = (e: TouchEvent) => {
+    e.preventDefault(); //阻止事件的默认行为
     const touches: TouchList = e.targetTouches;
 
     let tempTouchingArea: TouchArea[] = [];
 
     for (let i = 0; i < touches.length; i++) {
-      // @ts-ignore
-      const area = areaFactory.current.whichArea(touches[i].clientX - containerDivRef.current?.offsetLeft, touches[i].clientY - containerDivRef.current?.offsetTop);
+      var rect = containerDivRef.current!.getBoundingClientRect();
+      const area = areaFactory.current.whichArea(touches[i].clientX - rect.left, touches[i].clientY - rect.top);
       if (area) {
         if (
           tempTouchingArea.find(ta => {
@@ -1583,13 +1565,13 @@ export default function Maisim(
 
   //设置事件处理程序
   function initEvent() {
-    const el = document.getElementsByClassName('canvasEvent' + id)[0];
+    const el: HTMLCanvasElement = document.getElementsByClassName('canvasEvent' + id)[0] as HTMLCanvasElement;
     el.addEventListener('mousedown', onMouseDown, false);
     el.addEventListener('mouseup', onMouseUp, false);
+    el.addEventListener('mousemove', onMouseMove, false);
     el.addEventListener('touchstart', onTouchStart, false);
     el.addEventListener('touchend', onTouchEnd, false);
     el.addEventListener('touchcancel', onTouchCancel, false);
-    el.addEventListener('touchleave', onTouchLeave, false);
     el.addEventListener('touchmove', onTouchMove, false);
   }
 
@@ -1753,7 +1735,7 @@ export default function Maisim(
     if (backgroundLightness > 1) backgroundLightness = 1;
   }, [backgroundLightness]);
 
-  const containerDivRef = useRef(null);
+  const containerDivRef: React.MutableRefObject<HTMLDivElement | null> = useRef(null);
 
   return (
     <div className="maisim" style={style} ref={containerDivRef}>
