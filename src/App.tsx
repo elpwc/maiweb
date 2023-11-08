@@ -37,17 +37,17 @@ function App() {
       track: testtrack2,
       backgroundType: BackgroundType.Video,
       backgroundImage: testbgi2,
-      backgroundAnime: testbga2
+      backgroundAnime: testbga2,
     },
     gameRecord: null,
     progress: 0,
-    duration: 0
+    duration: 0,
   });
   const [seekAction, setSeekAction] = useState<{ progress: number } | undefined>(undefined);
 
   const beginRef = useRef(null);
   const selectRef = useRef(null);
-  
+
   const restarting = useRef(false);
 
   return (
@@ -92,7 +92,7 @@ function App() {
       }}
       maisim={
         <Maisim
-          id={String(maisimComponentKey)}
+          id={'1'}
           key={String(maisimComponentKey)}
           style={{}}
           gameState={gameState}
@@ -120,10 +120,14 @@ function App() {
           backgroundColor={'#136594'}
           sheet={info.currentNotes.sheet}
           sheetProps={info.currentNotes.sheetProps}
-          onPlayStart={(duration: number) => { setInfo({ ...info, duration }) }}
+          onPlayStart={(duration: number) => {
+            setInfo({ ...info, duration });
+          }}
           onGameRecordChange={function (gameRecord: GameRecord): void {}}
           onPlayFinish={function (): void {}}
-          onProgress={(progress: number) => { setInfo({ ...info, progress }) }}
+          onProgress={(progress: number) => {
+            setInfo({ ...info, progress });
+          }}
           seekAction={seekAction}
           uiContent={undefined}
           doShowUIContent={true}

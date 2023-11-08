@@ -6,7 +6,7 @@ import { Area, AreaUtils } from './areas';
 import { drawAllKeys, drawAllTouchingAreas } from './drawUtils/drawTouchingAreas';
 import { drawOutRing } from './drawUtils/drawOutRing';
 import { initResources } from './resourceReaders/_init';
-import { abs, cos, sin, sqrt, π } from './utils/math';
+import { abs, atan2, cos, sin, sqrt, π } from './utils/math';
 import { judge, judge_up } from './judge';
 import { TouchHoldSoundsManager, updateRecord } from './recordUpdater';
 import { NoteSound } from './resourceReaders/noteSoundReader';
@@ -31,6 +31,7 @@ import { Sheet } from './utils/sheet';
 import { getSheet } from './maiReader/maiReaderMain';
 import AnimationUtils from './drawUtils/animation';
 import MaimaiValues from './maimaiValues';
+import { lineLen, lineLenByPoint } from './drawUtils/_base';
 
 export default function Maisim(
   //#region Maisim Props
@@ -255,6 +256,17 @@ export default function Maisim(
   /** 是否已经遇到了Endmark，在等待所有Note消失後结束 */
   const isWaitingForEnd = useRef(false);
 
+  const alwaysDrawingController = () => {
+    const el: HTMLCanvasElement = document.getElementsByClassName('canvasKeys' + id)[0] as HTMLCanvasElement;
+    const ctx: CanvasRenderingContext2D = el.getContext('2d') as CanvasRenderingContext2D;
+    if (doShowKeys) {
+      drawKeys();
+    }
+    ctx.clearRect(0, 0, maimaiValues.current.canvasWidth, maimaiValues.current.canvasHeight);
+    drawFrame(ctx, maimaiValues.current.canvasWidth - 100, 30);
+    drawCoord(ctx, maimaiValues.current.canvasWidth - 150, maimaiValues.current.canvasHeight - 50);
+  };
+
   /** 绘制外键 */
   const drawKeys = () => {
     const el: HTMLCanvasElement = document.getElementsByClassName('canvasKeys' + id)[0] as HTMLCanvasElement;
@@ -262,8 +274,6 @@ export default function Maisim(
 
     ctx.clearRect(0, 0, maimaiValues.current.canvasWidth, maimaiValues.current.canvasHeight);
     drawAllKeys(ctx, maimaiValues.current, areaFactory.current.keys, currentTouchingArea.current, keyStates);
-
-    drawFrame(ctx, maimaiValues.current.canvasWidth - 100, 30);
   };
 
   /** 绘制最上遮盖层（外键底层和周围白色） */
@@ -1230,6 +1240,16 @@ export default function Maisim(
     ctx.strokeText(currentTime.current.toString(), x, y + 20);
   };
 
+  /** 绘制指针坐标 */
+  const drawCoord = (ctx: CanvasRenderingContext2D, x: number = 0, y: number = 0) => {
+    ctx.strokeStyle = 'red';
+    ctx.font = '20px Arial';
+    ctx.strokeText(`#(${currentMousePosition.current[0].toFixed(1)}'${currentMousePosition.current[1].toFixed(1)})`, x, y);
+    const θ = ((π - atan2(currentMousePosition.current[0], -currentMousePosition.current[1])) / (2 * π)) * 360;
+    const r = lineLenByPoint([0, 0], currentMousePosition.current);
+    ctx.strokeText(`@(${θ.toFixed(1)}'${r.toFixed(1)})`, x, y + 30);
+  };
+
   /** 画一帧！ */
   const drawer = async () => {
     // 计算帧率
@@ -1354,12 +1374,16 @@ export default function Maisim(
   const onMouseMove = (e: MouseEvent) => {
     const x = e.offsetX,
       y = e.offsetY;
+
+    var rect = containerDivRef.current!;
+    const px = ((x * 2 - rect.clientWidth) / rect.clientWidth) * 100,
+      py = (-(y * 2 - rect.clientWidth) / rect.clientWidth) * 100;
+    currentMousePosition.current = [px, py];
   };
   //#endregion 指针事件 MouseEvent
 
   //#region Touch事件 TouchEvent
   const onTouchStart = (e: TouchEvent) => {
-    console.log(e);
     e.preventDefault(); //阻止事件的默认行为
     const touches: TouchList = e.targetTouches;
 
@@ -1402,7 +1426,6 @@ export default function Maisim(
         });
       }
     }
-    console.log(e);
   };
   const onTouchCancel = (e: TouchEvent) => {
     e.preventDefault(); //阻止事件的默认行为
@@ -1612,9 +1635,7 @@ export default function Maisim(
         // 画外部遮罩和外键底色
         drawOver();
 
-        if (doShowKeys) {
-          timer_drawkeys.current = setInterval(drawKeys, maimaiValues.current.timerPeriod);
-        }
+        timer_drawkeys.current = setInterval(alwaysDrawingController, maimaiValues.current.timerPeriod);
 
         // 计算用
         //ppqqAnglCalc();
