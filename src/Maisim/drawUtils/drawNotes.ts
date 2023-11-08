@@ -738,7 +738,7 @@ export const drawNote = (
                 ctx_slideTrack.save();
                 ctx_slideTrack.translate(values.center[0], values.center[1]);
                 // 观赏谱的话不需要旋转画布
-                if (isANumber(note.pos) && isANumber(note.endPos)) {
+                if (!slideLine.doSpecJudge) {
                   ctx_slideTrack.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
                 }
                 // 得从後往前画
@@ -816,7 +816,7 @@ export const drawNote = (
                 ctx_slideTrack.save();
                 ctx_slideTrack.translate(values.center[0], values.center[1]);
                 // 观赏谱的话不需要旋转画布
-                if (isANumber(note.pos) && isANumber(note.endPos)) {
+                if (!slideLine.doSpecJudge) {
                   ctx_slideTrack.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
                 }
                 // 得从後往前画
@@ -869,7 +869,7 @@ export const drawNote = (
                 ctx.save();
                 ctx.translate(values.center[0], values.center[1]);
                 // 观赏谱的话不需要旋转画布
-                if (isANumber(note.pos) && isANumber(note.endPos)) {
+                if (!slideLine.doSpecJudge) {
                   ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
                 }
 
@@ -907,7 +907,7 @@ export const drawNote = (
                 ctx.save();
                 ctx.translate(values.center[0], values.center[1]);
                 // 观赏谱的话不需要旋转画布
-                if (isANumber(note.pos) && isANumber(note.endPos)) {
+                if (!slideLine.doSpecJudge) {
                   ctx.rotate(((Number(slideLine.pos) - 1) * 22.5 * π) / 90);
                 }
 
@@ -959,7 +959,7 @@ export const drawNote = (
               ctx_slideTrack.save();
               ctx_slideTrack.translate(values.center[0], values.center[1]);
               // 观赏谱的话不需要旋转画布
-              if (isANumber(note.pos) && isANumber(note.endPos)) {
+              if (!note.doSpecJudge) {
                 ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
               }
               // 得从後往前画
@@ -991,7 +991,7 @@ export const drawNote = (
               ctx.save();
               ctx.translate(values.center[0], values.center[1]);
               // 观赏谱的话不需要旋转画布
-              if (isANumber(note.pos) && isANumber(note.endPos)) {
+              if (!note.doSpecJudge) {
                 ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
               }
 
@@ -1054,7 +1054,7 @@ export const drawNote = (
               ctx_slideTrack.save();
               ctx_slideTrack.translate(values.center[0], values.center[1]);
               // 观赏谱的话不需要旋转画布
-              if (isANumber(note.pos) && isANumber(note.endPos)) {
+              if (!note.doSpecJudge) {
                 ctx_slideTrack.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
               }
               // 得从後往前画
@@ -1100,7 +1100,7 @@ export const drawNote = (
                 ctx.save();
                 ctx.translate(values.center[0], values.center[1]);
                 // 观赏谱的话不需要旋转画布
-                if (isANumber(note.pos) && isANumber(note.endPos)) {
+                if (!note.doSpecJudge) {
                   ctx.rotate(((Number(note.pos) - 1) * 22.5 * π) / 90);
                 }
 

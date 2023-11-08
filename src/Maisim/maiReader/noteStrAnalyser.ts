@@ -310,6 +310,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
           let beginTime = 0;
 
           temp_slideLinesOri.forEach((slideLineOri, i) => {
+            const currentSlideLinePos = i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos;
             // const sections =
             //   slideLineOri.slideType === 'w'
             //     ? section_wifi(i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, slideLineOri.endPos!)
@@ -318,12 +319,13 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
               slideType: slideLineOri.slideType,
               endPos: slideLineOri.endPos,
               turnPos: slideLineOri.turnPos,
-              pos: i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos,
+              pos: currentSlideLinePos,
 
               /**  持续时间占比 */
               remainTime: slideLineOri.remainTime,
               beginTime,
               //sections,
+              doSpecJudge: !(isANumber(currentSlideLinePos) && isANumber(slideLineOri.endPos)),
             });
             beginTime += slideLineOri.remainTime ?? 0;
           });
@@ -364,6 +366,8 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
                 const crtAndNextChar = positions.substring(i, i + 2);
                 if (crtAndNextChar === 'qq' || crtAndNextChar === 'pp') {
                   types.push(crtAndNextChar);
+                } else {
+                  types.push(crtChar);
                 }
               } else if (crtChar === 'V') {
                 turnPoses.push(poses[j].substring(1, 2));
@@ -378,16 +382,19 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
             if (each_type === 'V') {
               turnPosesIndex++;
             }
+            const currentSlideLinePos = i === 0 ? noteRes.pos.replaceAll('_', '-') : poses[i - 1].replaceAll('_', '-'),
+              currentSlideLineEndPos = flipPos(poses[i].replaceAll('_', '-'), flipMode);
             return {
               slideType: flipTrack(each_type, flipMode),
               turnPos: each_type === 'V' ? flipPos(turnPoses[turnPosesIndex], flipMode) : '',
-              endPos: flipPos(poses[i].replaceAll('_', '-'), flipMode),
-              pos: i === 0 ? noteRes.pos.replaceAll('_', '-') : poses[i - 1].replaceAll('_', '-'),
+              endPos: currentSlideLineEndPos,
+              pos: currentSlideLinePos,
 
               /**  持续时间占比 */
               remainTime: 0,
               beginTime: 0,
               //sections: section(slideType, i === 0 ? noteRes.pos : temp_slideLinesOri[i - 1].endPos!, endPos!),
+              doSpecJudge: !(isANumber(currentSlideLinePos) && isANumber(currentSlideLineEndPos)),
             };
           });
 

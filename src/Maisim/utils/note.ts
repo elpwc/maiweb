@@ -43,6 +43,11 @@ export interface SlideLine {
 
   /** 分段信息 */
   sections?: SectionInfo[] | SectionInfo[][];
+
+  /** 是否对这个Note启用观赏谱判定 （因为一些观赏谱Note完全不能适用于现有的判定）
+   * 对于人体蜈蚣SLIDE，需要对每一条SLIDELINE单独判断
+   */
+  doSpecJudge?: boolean;
 }
 
 /** Slide轨迹 */
