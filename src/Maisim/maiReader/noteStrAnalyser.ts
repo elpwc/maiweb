@@ -143,7 +143,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
     }
     noteData = noteData.replaceAll('$', '');
   }
-  if (noteData.indexOf('@') > 0 && noteData.substring(0, 2) !== '@(') {
+  if (noteData.indexOf('@') > 0) {
     // SLIDE時にTAP、BREAKを強制的に○型にする
     noteRes.isTapStar = true;
     noteData = noteData.replaceAll('@', '');
@@ -165,6 +165,7 @@ export const analyse_note_original_data = (noteDataOri: string, index: number, c
       noteData = replaceAt(noteData, '-', '_', specPosPosition, noteData.indexOf(')', specPosPosition));
     });
   }
+  noteData = noteData.replaceAll('极(', '@(');
   if (noteData.indexOf('@(') !== -1) {
     const specPosPositions = findAllStr(noteData, '@(');
     specPosPositions.forEach(specPosPosition => {

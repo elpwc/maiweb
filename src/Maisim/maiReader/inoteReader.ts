@@ -75,6 +75,8 @@ export const read_inote = (
     // 疑似EACH。把[`]替换为[,速]，变成普通的两个节拍，仅仅留下[速]作为标识
     // 因为考虑到未来谱面的新Note可能会使用其他字母，所以这里使用汉字做转义符
     .replaceAll('`', ',速')
+    // 在noteStrAnalyser中《SLIDE時にTAP、BREAKを強制的に○型にする》的@处理完後再改回去，用汉字做转义符的原因同上
+    .replaceAll('@(', '极(')
     // 分离所有节拍
     .split(',')
     .map(e => {
@@ -126,7 +128,7 @@ export const read_inote = (
     const bpmSign = noteGroup[0].indexOf('(');
 
     if (bpmSign > -1) {
-      if (bpmSign === 0 || (bpmSign > 0 && noteGroup[0].substring(bpmSign - 1, bpmSign) !== '#' && noteGroup[0].substring(bpmSign - 1, bpmSign) !== '@')) {
+      if (bpmSign === 0 || (bpmSign > 0 && noteGroup[0].substring(bpmSign - 1, bpmSign) !== '#' && noteGroup[0].substring(bpmSign - 1, bpmSign) !== '极')) {
         currentBPM = Number(noteGroup[0].substring(bpmSign + 1, noteGroup[0].indexOf(')')));
         noteGroup[0] = noteGroup[0].substring(0, noteGroup[0].indexOf('(')) + noteGroup[0].substring(noteGroup[0].indexOf(')') + 1, noteGroup[0].length);
       }
@@ -298,7 +300,7 @@ export const read_inote = (
         let eachPairDistance = abs(eachPairPosMax - eachPairPosMin);
         if (eachPairDistance > 4) {
           eachPairDistance = 8 - eachPairDistance;
-          
+
           notesRes[eachPairPosMaxIndex].eachPairDistance = eachPairDistance;
           notesRes[eachPairPosMaxIndex].isEachPairFirst = true;
         } else {
