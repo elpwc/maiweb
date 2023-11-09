@@ -5,7 +5,7 @@ import { section, section_wifi } from '../slideTracks/section';
 import { FlipMode } from '../utils/types/flipMode';
 import { analyse_note_original_data } from './noteStrAnalyser';
 import { Note, Beat, SlideTrack, SlideLine } from '../utils/note';
-import { NoteType } from '../utils/types/noteType';
+import { NoteType, isTouchNoteType } from '../utils/types/noteType';
 import { Sheet } from '../utils/sheet';
 import MaimaiValues from '../maimaiValues';
 import { ChartError } from '../utils/chartError';
@@ -274,7 +274,7 @@ export const read_inote = (
       /** 除了TOUCH TOUCH HOLD的Note的index，大于1的话就喵 */
       let tapIndexes = [];
       tapIndexes = beatT.noteIndexes.filter(noteIndex => {
-        return notesRes[noteIndex].type !== NoteType.Touch && notesRes[noteIndex].type !== NoteType.TouchHold;
+        return !isTouchNoteType(notesRes[noteIndex].type);
       });
 
       if (tapIndexes.length > 1) {
@@ -298,7 +298,7 @@ export const read_inote = (
         let eachPairDistance = abs(eachPairPosMax - eachPairPosMin);
         if (eachPairDistance > 4) {
           eachPairDistance = 8 - eachPairDistance;
-
+          
           notesRes[eachPairPosMaxIndex].eachPairDistance = eachPairDistance;
           notesRes[eachPairPosMaxIndex].isEachPairFirst = true;
         } else {
